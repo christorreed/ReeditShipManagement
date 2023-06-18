@@ -2687,7 +2687,7 @@ namespace IngameScript
                     debugEcho("Custom Data Error! (vars)", "Failed to parse all the variables from custom data.");
                 }
 
-                sk_data = "                                                                                                                                 "  + 
+                sk_data = //"                                                                                                                                 "  + 
                     faction_tag;
 
                 if (spawn_open)
@@ -2695,7 +2695,7 @@ namespace IngameScript
                         friendly_tags;
 
                 sk_data += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
-                     "                                                                                                                                 " + 
+                     //"                                                                                                                                 " + 
                      faction_tag;
 
                 // alright so now we try to parse stance data

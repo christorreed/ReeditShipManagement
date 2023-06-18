@@ -6,7 +6,7 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 * Output a high-density, customisable LCD display (with hudlcd support)
 * Prevent configuration errors that can lead to combat failure or other mistakes.
 * Simplify ship control via fully-configurable 'stances'
-* Automate monotonous tasks like block naming so you can get a new ship up and running fast.=
+* Automate monotonous tasks like block naming so you can get a new ship up and running fast.
 
 # Quick Start Guide
 RSM does a lot, so it can be daunting at first, but it's easy once you know the basics.  Let's cover them now...
@@ -45,12 +45,54 @@ RSM will now initialise your ship. All blocks will be renamed with the ship name
 ## Enjoy
 Now that RSM is running, let's explore some features...
 
-* **Control the whole ship with Stances:**
+* **Control the whole ship with Stances**
+	* Set a stance with the command `Stance:StanceName` for example `Stance:Cruise` or `Stance:Combat`
+	* Setting a stance controls a number of functions on the ship all at once such as interior and exterior lights, drives and RCS, weapons, automatic repair systems, extractor management and EFC configuration.
+	* My favourite stances include...
+		* **Stance:Combat** Configures the ship for a long-range fight
+		* **Stance:CQB** Configures the ship for a CQB fight
+		* **Stance:Cruise** Configures the ship to fly a long distance.
+		* **Stance:Docking** Configures the ship to dock (spotlights on, main drives off)
+		* **Stance:Docked** Configures the ship to refuel/recharge at dock.
+	* There are many more stances, and all are fully configurable via the custom data on the RSM PB.  You can even add or remove new stances from the list there.
+* **Toggle hudlcd on and off!**
+	* This plugin is awesome, but sometimes I just want to take a screenshot!
+	* 'hudlcd:on', 'hudlcd:off',  'hudlcd:toggle' now turn all hudlcds on and off.
+* **Automatically handle Extractors**
+	* On DX, you probably know fuel tank components are loaded into Extractor blocks to refill your ship tanks.
+	* RSM does all of this automatically. Configured per stance, RSM will use fuel tanks from your inventory to either keep the ships tanks topped up, or else top them up a little only when they are totally empty.
+	* This also works with jerry cans on SG ships (yes, RSM works with SG).
+* **Automatically handle Spawns**
+	* Spawns are a vulnerability, and players can inject data into custom data of survival kits or medical rooms to open up spawn access.
+	* RSM clamps down on this hard, frequently resetting the custom data to prevent mismanagement.
+	* It also uses this chance to inject the owner's faction tag into all connected SKs and MRs.  If someone steals your ship and doens't check themselves, it might let you back on.
+	* RSM can also automatically handle opening and closing of your respawn point for your friends. You can configure a list of friendly faction tags or steamIds in the RSM PB custom data, and then use the `Spawn:Open` and `Spawn:Close` command to add or remove them.
+* **Save and load the position of projectors for easy alignment.**
+	* Run `Projectors:Save` to store offset and orientation to custom data.
+	* Run `Projectors:Load` after loading your BP to recall it's offset and orientation.
+* **Automatically handle Doors**
+	* RSM acts as a basic door management script, closing open doors after a timer runs out.
+	* For airlocks, RSM also disables other doors in the same airlock for a time to prevent loss of air.
+	* You can configure the timer values in the RSM PB custom data.
+* **Manage Antennas**
+	* Send a new hud message to all antennas with the command `Comms:Antenna Message`.
+* **MOAR LCDs, MOAR Data!**
+	* RSM's LCDs output a whole range of useful info, with each LCD configurable via custom data.
+	* The header section shows the ship name and current stance, as well as other useful messages.
+	* The inventory section shows a list of important inventory with quotas and bars.  Configure the quotas in the RSM PB custom data, or remove all together by setting to 0.
+	* The thrust section shows Decel (distance and time needed to stop), Accel (total thrust) and drive signature range. Switches from Best to Actual when a thrust override value is set.
+	* The comms section shows the current antenna hud message and range.
+	* The autorepair section shows the current status of autorepair blocks.
+	* The doors section shows a count of all doors and how many are closed.
+	* The advanced thrust section shows a range of additional thrust info including current mass, and decel at different thrust percentages.
+* **Automatically Configure Weapons**
+	* RSM sets a range of configuration options for weapons
+	* RSM can also handle a seperate group of 'Repel' PDCs always set to defend.
 
-
-## Developer Promise & Disclaimer
+## Developer Promise
 Draconis Expanse is a PvP environment, and scripts have been used as weapons before.  I have and will do that on other scripts, but **WE DON'T DO THAT HERE**.  As long as it's me (christophuck) handling the development of the script, it won't be used as a weapon, and I guarantee malicious code won't be added.  If you experience such a thing, it's a mistake, please report it!  The full, unobfuscated script is posted here for all to review.
 
+## Disclaimer
 **USE AT YOUR OWN RISK!**
 
 *This script is safe (all of my ships run it) but it is complex, and using it improperly can lead to damage or destruction of your ship.  Read the guide, ask questions, and practice.*

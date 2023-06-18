@@ -1,52 +1,9 @@
-﻿----------------------------------------------------------------------------------------------------------------------------------------------------
- REEDIT SHIP MANAGEMENT - V 1.0.0 (18/06/23)
-----------------------------------------------------------------------------------------------------------------------------------------------------
- Reedit Ship Management (RSM) is a broad, ship automation script tailor made for the Draconis Expanse server.
-
- • Provide a range quality-of-life functionality to make ships on DX easier to use and better.
- • Output a high-density, customisable LCD display (with hudlcd support)
- • Prevent configuration errors that can lead to combat failure or other mistakes.
- • Simplify ship control via fully-configurable 'stances'
- • Automate monotonous tasks like block naming so you can get a new ship up and running fast.
-
-----------------------------------------------------------------------------------------------------------------------------------------------------
-    | More info
-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-  More info and a quick start guide are available on the Reedit Ship Management github.
-  https://github.com/christorreed/ReeditShipManagement
-
-  Join the discussion on the Sigma Draconis Discord
-  https://discord.com/channels/516135382191177728/1066185228697211030/1066185233386446980
-
-----------------------------------------------------------------------------------------------------------------------------------------------------
-    | Developer Promise
-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-Draconis Expanse is a PvP environment, and scripts have been used as weapons before. I have and will do that on other scripts, 
-but WE DON'T DO THAT HERE. As long as it's me (christophuck) handling the development of the script, it won't be used as a weapon, 
-and I guarantee malicious code won't be added. If you experience such a thing, it's a mistake, please report it! The full, unobfuscated 
-script is posted here for all to review.
-
-----------------------------------------------------------------------------------------------------------------------------------------------------
-    | Disclaimer
-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-USE AT YOUR OWN RISK!
-This script is safe (all of my ships run it) but it is complex, and using it improperly can lead to damage or destruction of your ship.
-Read the guide, ask questions, and practice.
-
-DON'T FIGHT THE SCRIPT!
-What? My PDCs keep turning back on when I switch them off! lol, RSM is doing that, and for good reason.
-There's probably a stance or other option to achieve what you want with one command to RSM.
-If it's freaking you out, just turn off the RSM PB!
-
-----------------------------------------------------------------------------------------------------------------------------------------------------
-
 - 0.0.1
     Unreleased initial working version
+    
 - 0.1.0
     Initial release on Discord
+
 - 0.2.0
     Second release, now on steam.
     Improved init, now can be repeated, so you can update ship names, name new blocks.
@@ -65,10 +22,13 @@ If it's freaking you out, just turn off the RSM PB!
         > Fixed crash on no-inventory cockpit block
         > Fixed crash on door custom data parsing error
     Built Guide
+
 - 0.2.1
     Fixed a bug that caused block lists to overflow.
+
 - 0.2.2
     Fixed several bugs with the extraction management algorithm.
+
 - 0.3.0
     Added projection offset and orientation mangagement with projectors:save and projectors:load commands
     Added keep alive functionality to Sensors, LCDs & Cameras
@@ -77,27 +37,34 @@ If it's freaking you out, just turn off the RSM PB!
     Fixed bugs with fuel percentage calculations
     Fixed crash on command to destroyed block.
     Fixed crash on extractor management with no extractor on board
+
 - 0.3.1
     Fixed a bug caused a crash if no antenna.
     No longer forcing LCD padding.
+
 - 0.3.2
     Improved init function autonaming of LCD blocks.
+
 - 0.3.3
     Added a delay to fuel extractor management retries so it won't constantly attempt to refuel.
     Minor bug fixes.
+
 - 0.4.0
     Script now automatically adds own faction tag to Medical Rooms and Survival Kits
     Added adjustable delimiter functionality. In custom data you can now set a character other than '.' to be used to name blocks during init.
     I've capitulated and decided to start referring to Programmable Blocks as PB Server rather than Server so it can be easily found.
     No longer numbering servers during init
     Changes to more smoothly permit additional configurable custom data options.
+
 - 0.4.1
     Fixed a bug with configurable block name delimiter functionality.
     Fixed a bug with custom data
+
 - 0.4.2
     Fixed a crash on set stance with certain grids.
     Changed defence PDC default keywork to 'Repel' so it doesn't interact with OPA PDCs which have defence in the name.
     Fixed a bug where repel/defence PDCs & railguns were not processed by the init command.
+    
 - 0.5.0
     Added support for some additional inventory items on the LCD...
         - 40mm Tungsten Teflon PDC Boxes
@@ -121,13 +88,17 @@ If it's freaking you out, just turn off the RSM PB!
     Added option to not change hangar door status with stance.
     Current stance is now retained across instances/restarts. 
     Updated guide to reflect several versions worth of changes.
+
 - 0.5.1
     Spaces are now ignored in all arguments to prevent syntax errors. This means no spaces in ship names
+
 - 0.6.0
     Battery discharge functionality added to stance management.
     Combat and CQB default stance data updated to discharge batteries. Note: reset your stance custom data to apply this change.
+
 - 0.6.1
     Fixed tank stockpile error
+
 - 0.7.0
     New option for extractor management; 3: keep ship tanks full.  In this mode, extractor is loaded sooner to keep fuel tanks on ship at max.
         - Specifically, fill up will occur when there is room for 3 fuel tanks components worth of H2 in the ship tanks.
@@ -141,11 +112,13 @@ If it's freaking you out, just turn off the RSM PB!
         - Add multiple by seperating with commas.
     Comms commands now permit spaces (ie for command 'Comms:Hello There', antenna was "RSG:HelloThere" is now "RSG:Hello There")
     Fixed a bug related to crashing during stance calls with high EFC burn percentages, such as during Stance:MaxCruise
+
 - 0.7.2
     Added crash prevention during PDC auto configuration error.  One player reported issues with PDCs which was causing a crash.
     I've prevented this crash, even though I can't replicate it.  It will throw an error if this occurs to you, if so recommend you
     grind and rebuild your PDCs as the repel mode function is bugged.
     Also removed the auto fire mode control on railguns and torpedoes.  I think it was working, but feedback was bad in the menu.
+
 - 0.8.0
     Added per-LCD configuration
         - Screen was starting to get a bit busy with new functionality.  Now you can spread it out across multiple screens.
@@ -157,20 +130,26 @@ If it's freaking you out, just turn off the RSM PB!
         - In advanced mode, a whole array of stopping distances are displayed.
     Fixed a bug causing some blocks without the correct naming to be included.
         - Note: if you have issues after this, make sure all blocks have the ship name in them by running init.
+
 - 0.8.1 / 0.8.2 / 0.8.3
     Bug fixes
+
 - 0.9.0
     Added support for HudLcd plugin.  You can now add the text 'hudlcd' into the custom data of RSM LCDs, and it won't be cleared.
         - Recommended settings: top left= "hudlcd:-.99:.99", "top right= hudlcd:.65:.99"
+
 - 0.9.1
     The basic thrust lcd output now defaults to 500ms when stationary, like the one from the advanced view.
+
 - 0.10.0
     New command with 3 arguments: 'hudlcd:on', 'hudlcd:off',  'hudlcd:toggle'
     Hudlcd is game changing, but sometimes you just want it to piss off and take in the stars around you.  The new commands search
     custom data of every LCD on the ship, and adjust the name in order to remove, or re-add, them to your hud.  Note that the
     command effects all LCDs, including ignored ones.
+
 - 0.11.0
     Improved LCD output 
+
 - 0.12.0
     Added acceleration output both max and actual to thrust and advanced thrust output pages.
     Spawn custom data management now effects all SKs and MRs regardless of block name, or construct.  RSM now fully cleans all
@@ -183,12 +162,12 @@ If it's freaking you out, just turn off the RSM PB!
     Replaced the 'idle' LCD status bar with a . .. ... pattern
     Cameras, sensors now have better name tidying on init.
     Added default hudlcd configurations.
-        - Setup 4 LCDs and name them <shipname>.LCD.[RSM].HUD1 to <shipname>.LCD.[RSM].HUD4
+        - Setup 4 LCDs and name them `<shipname>.LCD.[RSM].HUD1 to <shipname>.LCD.[RSM].HUD4`
         - Now run init.
         - RSM sets up HUD LCDs perfect for a 16x9 layout.
+
  - 0.12.1
     Fixed a small bug with default hudlcd configs.
+    
  - 0.12.2
     Fixed a bug with spawn custom data obfuscation.
-
-----------------------------------------------------------------------------------------------------------------------------------------------------
