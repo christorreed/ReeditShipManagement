@@ -539,15 +539,15 @@ namespace IngameScript
 
             string[] args = argument.Split(':');
 
-            // removes spaces except for comms commands
-            if (args[0].ToLower() != "comms")
-                args[1] = args[1].Replace(" ", string.Empty);
-
             if (args.Length != 2)
             {
                 debugEcho("Command Failed!", "Syntax Error!\nWTF is that?\n" + argument);
                 return;
             }
+
+            // removes spaces except for comms commands
+            if (args[0].ToLower() != "comms")
+                args[1] = args[1].Replace(" ", string.Empty);
 
             if (debug) Echo("Running " + args[0] + ":" + args[1]);
 
