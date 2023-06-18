@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33027.164
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reedit Ship Management", "Reedit Ship Management.csproj", "{C8D6060D-B655-4074-8531-D94309CEC2D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8D6060D-B655-4074-8531-D94309CEC2D1}.Debug|x64.ActiveCfg = Debug|x64
+		{C8D6060D-B655-4074-8531-D94309CEC2D1}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BAEFB1F6-72ED-467C-9F0A-92003AD97D64}
+	EndGlobalSection
+EndGlobal
