@@ -1382,7 +1382,7 @@ namespace IngameScript
                 else if (blockId.Contains("MyObjectBuilder_SensorBlock/"))
                     defaultName = "Sensor";
                 camerasAndSensorsAndLCDs[i].CustomName =
-                    ship_name + "." +
+                    ship_name + name_delimiter +
                     defaultName +
                     retainSuffix(camerasAndSensorsAndLCDs[i].CustomName);
             }
