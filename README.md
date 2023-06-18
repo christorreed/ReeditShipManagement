@@ -1,5 +1,5 @@
 # [RSM] Reedit Ship Management
-Reedit Ship Management (RSM) is a broad, ship automation script tailor made for the Draconis Expanse server.
+Reedit Ship Management (RSM) is a broad, ship automation script tailor made for the Draconis Expanse Space Engineers server.
 
 ![Reedit Ship Management](/thumb.png "Reedit Ship Management")
 
