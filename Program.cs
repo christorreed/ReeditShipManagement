@@ -679,7 +679,7 @@ namespace IngameScript
                 ToSearch[j].GetItems(inventoryItems/* ,a => a.ToString() == "Fuel_Tank"*/);
                
                 if (debug)
-                    Echo(inventoryItems.Count + " fuel tanks in inventory " + j + ".");
+                    Echo(inventoryItems.Count + " fuel tanks in inventory " + j);
 
                 for (int k = 0; k < inventoryItems.Count; k++)
                 {
@@ -779,7 +779,7 @@ namespace IngameScript
             // allows it to be saved across instances.
             Save();
 
-            if (debug) Echo("Found stance. Setting torpedoes to " + stance_data[stance_i][0] + ".");
+            if (debug) Echo("Found stance. Setting torpedoes to " + stance_data[stance_i][0]);
 
             for (int i = 0; i < torps.Count; i++)
             {
@@ -828,7 +828,7 @@ namespace IngameScript
                 Echo("Setting " + pdcs.Count + " PDCs, " 
                     + defencePdcs.Count + " defence PDCs to " 
                     + stance_data[stance_i][1] 
-                    + ".\nautoconfig = " + auto_configure_pdcs.ToString() + ".");
+                    + ".\nautoconfig = " + auto_configure_pdcs.ToString());
 
             bool RepelModeFucked = false;
 
@@ -984,7 +984,7 @@ namespace IngameScript
                 } 
             }
 
-            if (debug) Echo("Setting " + railguns.Count + " railguns to " + stance_data[stance_i][2] + ".");
+            if (debug) Echo("Setting " + railguns.Count + " railguns to " + stance_data[stance_i][2]);
             for (int i = 0; i < railguns.Count; i++)
             {
                 if (railguns[i].IsFunctional && railguns[i].CustomName.Contains(ship_name))
@@ -1060,7 +1060,7 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Setting " + thrustersMain.Count + " Epsteins to " + stance_data[stance_i][3] + ".");
+            if (debug) Echo("Setting " + thrustersMain.Count + " Epsteins to " + stance_data[stance_i][3]);
             for (int i = 0; i < thrustersMain.Count; i++)
             {
                 if (thrustersMain[i].IsFunctional && thrustersMain[i].CustomName.Contains(ship_name))
@@ -1073,7 +1073,7 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Setting " + thrustersRcs.Count + " RCS to " + stance_data[stance_i][4] + ".");
+            if (debug) Echo("Setting " + thrustersRcs.Count + " RCS to " + stance_data[stance_i][4]);
             for (int i = 0; i < thrustersRcs.Count; i++)
             {
                 if (thrustersRcs[i].IsFunctional && thrustersRcs[i].CustomName.Contains(ship_name))
@@ -1086,7 +1086,7 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Setting " + lightsSpotlights.Count + " spotlights to " + stance_data[stance_i][5] + ".");
+            if (debug) Echo("Setting " + lightsSpotlights.Count + " spotlights to " + stance_data[stance_i][5]);
             for (int i = 0; i < lightsSpotlights.Count; i++)
             {
                 if (lightsSpotlights[i].IsFunctional && lightsSpotlights[i].CustomName.Contains(ship_name))
@@ -1156,9 +1156,6 @@ namespace IngameScript
             }
 
             if (debug) Echo("Setting " + battery_blocks.Count + " batteries to recharge = " + stance_data[stance_i][16]);
-                /*+ tank_blocks.Count + " tanks  / stockpile " 
-                + stance_data[stance_i][16] + "."
-                );*/
 
             for (int i = 0; i < battery_blocks.Count; i++)
             {
@@ -1228,7 +1225,7 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Setting " + autorepairers.Count + " autorepair units to " + stance_data[stance_i][20] + ".");
+            if (debug) Echo("Setting " + autorepairers.Count + " autorepair units to " + stance_data[stance_i][20]);
             for (int i = 0; i < autorepairers.Count; i++)
             {
                 if (autorepairers[i].IsFunctional && autorepairers[i].CustomName.Contains(ship_name))
@@ -1241,7 +1238,7 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Setting " + extractors.Count + " extrators to " + stance_data[stance_i][21] + ".");
+            if (debug) Echo("Setting " + extractors.Count + " extrators to " + stance_data[stance_i][21]);
             for (int i = 0; i < extractors.Count; i++)
             {
                 if (extractors[i].IsFunctional && extractors[i].CustomName.Contains(ship_name))
@@ -1258,7 +1255,7 @@ namespace IngameScript
             }
 
 
-            if (debug) Echo("Setting " + hangarDoors.Count + " hangar doors units to " + stance_data[stance_i][23] + ".");
+            if (debug) Echo("Setting " + hangarDoors.Count + " hangar doors units to " + stance_data[stance_i][23]);
             for (int i = 0; i < hangarDoors.Count; i++)
             {
                 if (hangarDoors[i].IsFunctional && hangarDoors[i].CustomName.Contains(ship_name))
@@ -1325,7 +1322,7 @@ namespace IngameScript
 
                 // misc blocks don't need numbers
                 everythingElse[i].CustomName =
-                    ship_name + "." +
+                    ship_name + name_delimiter +
                     defaultName +
                     retainSuffix(everythingElse[i].CustomName);
             }
