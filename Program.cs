@@ -2201,21 +2201,39 @@ namespace IngameScript
                             thrustersMain.Add(allBlocks[i]);
                     }
 
-                    // PDCs 
+                    // PDCs (old)
                     // MyObjectBuilder_LargeMissileTurret/Ostman-Jazinski Flak Cannon
                     // MyObjectBuilder_LargeGatlingTurret/Nariman Dynamics PDC
                     // MyObjectBuilder_LargeGatlingTurret/Redfields Ballistics PDC
                     // MyObjectBuilder_LargeGatlingTurret/Voltaire Collective Anti Personnel PDC
                     // MyObjectBuilder_LargeGatlingTurret/Outer Planets Alliance Point Defence Cannon
 
+
+
+
+
+                    /* PDCs NEW
+                    ConveyorSorter/Ostman-Jazinski Flak Cannon
+                    ConveyorSorter/Nariman Dynamics PDC
+                    ConveyorSorter/Nariman Dynamics PDC Slope Base
+                    ConveyorSorter/Voltaire Collective Anti Personnel PDC
+                    ConveyorSorter/Outer Planets Alliance Point Defence Cannon
+                    ConveyorSorter/Redfields Ballistics PDC
+                    ConveyorSorter/Redfields Ballistics PDC Slope Base
+                    */
+
+
+
                     else if (
-                        blockId.Contains("MyObjectBuilder_LargeGatlingTurret/")
+                        blockId.Contains("ConveyorSorter/Ostman-Jazinski Flak Cannon")
                         ||
-                        // flak is an annoying edge case
-                        blockId.Contains("MyObjectBuilder_LargeMissileTurret/Ostman-Jazinski Flak Cannon")
+                        blockId.Contains("ConveyorSorter/Nariman Dynamics PDC")
                         ||
-                        // angled PDCs are just fucking weird.
-                        blockId.Contains("PDC Slope")
+                        blockId.Contains("ConveyorSorter/Voltaire Collective Anti Personnel PDC")
+                        ||
+                        blockId.Contains("ConveyorSorter/Outer Planets Alliance Point Defence Cannon")
+                        ||
+                        blockId.Contains("ConveyorSorter/Redfields Ballistics PDC")
                         )
                     {
                         if (allBlocks[i].CustomName.Contains(defence_pdc_keyword))
@@ -2251,12 +2269,31 @@ namespace IngameScript
                     else if (blockId.Contains("MyObjectBuilder_Beacon/"))
                         beacons.Add(allBlocks[i]);
 
-                    // Torpedoes
+                    // Torpedoes (old)
                     // MyObjectBuilder_SmallMissileLauncherReload/Tycho Class Torpedo Mount
                     // MyObjectBuilder_SmallMissileLauncherReload/Apollo Class Torpedo Launcher
                     // MyObjectBuilder_SmallMissileLauncherReload/Ares_Class_Torpedo_Launcher_F
                     // MyObjectBuilder_SmallMissileLauncherReload/Ares_Class_TorpedoLauncher
                     // MyObjectBuilder_SmallMissileLauncherReload/ZeusClass_Rapid_Torpedo_Launcher
+
+                    /* Torpedoes NEW
+                    ConveyorSorter/Apollo Class Torpedo Launcher
+                    ConveyorSorter/Tycho Class Torpedo Mount
+                    ConveyorSorter/Ares_Class_Torpedo_Launcher
+                    ConveyorSorter/Ares_Class_Torpedo_Launcher_F
+                    ConveyorSorter/ZeusClass_Rapid_Torpedo_Launcher
+                    */
+
+                    else if (
+                        blockId.Contains("ConveyorSorter/Apollo Class Torpedo Launcher")
+                        ||
+                        blockId.Contains("ConveyorSorter/Tycho Class Torpedo Mount")
+                        ||
+                        blockId.Contains("ConveyorSorter/Ares_Class_Torpedo_Launcher")
+                        ||
+                        blockId.Contains("ConveyorSorter/ZeusClass_Rapid_Torpedo_Launcher")
+                        )
+                        torps.Add(allBlocks[i]);
 
                     // Railguns 
                     // MyObjectBuilder_LargeMissileTurret/Mounted Zakosetara Heavy Railgun
@@ -2265,14 +2302,17 @@ namespace IngameScript
                     // MyObjectBuilder_LargeMissileTurret/V-14 Stiletto Light Railgun
                     // MyObjectBuilder_LargeMissileTurret/VX-12 Foehammer Ultra-Heavy Railgun
 
-                    else if (
-                        blockId.Contains("MyObjectBuilder_SmallMissileLauncherReload/")
-                        &&
-                        // dumb edge case, railguns are also the same as above, so.
-                        !blockId.Contains("Railgun")
-                        )
-                        torps.Add(allBlocks[i]);
+                    /* Railguns NEW
+                    ConveyorSorter/Zakosetara Heavy Railgun
+                    ConveyorSorter/Mounted Zakosetara Heavy Railgun
+                    ConveyorSorter/T-47 Roci Light Fixed Railgun
+                    ConveyorSorter/Farren-Pattern Heavy Railgun
+                    ConveyorSorter/Dawson-Pattern Medium Railgun
+                    ConveyorSorter/VX-12 Foehammer Ultra-Heavy Railgun
+                    ConveyorSorter/V-14 Stiletto Light Railgun
+                    */
 
+                    // guess this one can stay simple for now.
                     else if (blockId.Contains("Railgun"))
                         railguns.Add(allBlocks[i]);
 
@@ -2333,10 +2373,11 @@ namespace IngameScript
                         servers.Add(allBlocks[i]);
                         //serversEfc = null;
                         if (allBlocks[i].CustomName.Contains("[EFC]"))
+                        {
+                            // TODO, if there's only one, why did i make this a list? lol
                             serversEfc.Clear();
-                        serversEfc.Add(allBlocks[i]);
-                        //if (serversEfc.Count < 1)
-                        //    debugEcho("No [EFC] server!", "Make sure you tag your Expanse Flight Controls server with '[EFC]' for it to be controlled when you recall a stance..");
+                            serversEfc.Add(allBlocks[i]);
+                        }
                     }
 
 
