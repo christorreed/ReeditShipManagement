@@ -216,7 +216,7 @@ namespace IngameScript
         // Stance data
         int stance_i = 0;
         // these are default values that will be over written by updateCustomData();
-        List<string> stance_names = new List<string>(new string[]{ "Cruise", "MaxCruise", "Docked", "Docking", "NoAttack", "Coast", "Combat", "CQB", "Sleep" });
+        List<string> stance_names = new List<string>(new string[]{ "Cruise", "MaxCruise", "Docked", "Docking", "NoAttack", "Coast", "Combat", "CQB", "Sleep", "StealthCruise" });
 
         List<int[]> stance_data = new List<int[]>
         {
@@ -224,7 +224,7 @@ namespace IngameScript
                 1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on
+                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on
                 0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
@@ -251,7 +251,7 @@ namespace IngameScript
                 1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on
+                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on
                 0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
@@ -278,7 +278,7 @@ namespace IngameScript
                 1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                0,      // 3: epstein drives; 0: off, 1: on
+                0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 0,      // 4: rcs thrusters; 0: off, 1: on
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
@@ -305,7 +305,7 @@ namespace IngameScript
                 1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                0,      // 3: epstein drives; 0: off, 1: on
+                0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on
                 2,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
@@ -332,7 +332,7 @@ namespace IngameScript
                 0,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on
+                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
@@ -359,7 +359,7 @@ namespace IngameScript
                 1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                0,      // 3: epstein drives; 0: off, 1: on
+                0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 0,      // 4: rcs thrusters; 0: off, 1: on
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
@@ -387,7 +387,7 @@ namespace IngameScript
                 2,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on
+                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
@@ -414,7 +414,7 @@ namespace IngameScript
                 2,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 3,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on
+                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
@@ -441,7 +441,7 @@ namespace IngameScript
                 0,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                0,      // 3: epstein drives; 0: off, 1: on
+                0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 0,      // 4: rcs thrusters; 0: off, 1: on
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
@@ -461,6 +461,32 @@ namespace IngameScript
                 0,      // 20: autorepair; 0: off, 1: on
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 2,      // 22: keep-alives for connectors, gyros, lcds; 0: ignore, 1: force on, 2: force off
+                0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
+            },
+            new int[] { // StealthCruise
+                1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
+                2,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
+                1,      // 4: rcs thrusters; 0: off, 1: on
+                0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
+                0,      // 6: exterior lights; 0: off, 1: on
+                0,     // 7: Red - Exterior lights colour
+                0,    // 8: Green - Exterior lights colour
+                0,    // 9: Blue - Exterior lights colour
+                255,    // 10: Alpha - Exterior lights colour
+                1,      // 11: interior lights lights; 0: off, 1: on
+                30,     // 12: Red - Interior lights colour
+                144,    // 13: Green - Interior lights colour
+                225,    // 14: Blue - Interior lights colour
+                255,    // 15: Alpha - Interior lights colour
+                0,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts, 2: discharge batts
+                0,      // 17: EFC boost; 0: off, 1: on
+                2,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
+                0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC
+                0,      // 20: autorepair; 0: off, 1: on
+                3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
+                1,      // 22: keep-alives for connectors, tanks, batteries, gyros, lcds; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
         };
@@ -801,12 +827,12 @@ namespace IngameScript
                                 torps[i].SetValue("WC_FocusFire", true);
                                 torps[i].SetValue("WC_Grids", true);
                                 torps[i].SetValue("WC_LargeGrid", true);
-                                torps[i].SetValue("WC_SmallGrid", true);
+                                torps[i].SetValue("WC_SmallGrid", false);
                                 torps[i].SetValue("WC_FocusFire", true);
                                 setBlockRepelOff(torps[i]);
                             }
                             break;
-                        case 3:
+                        /*case 3:
                             torps[i].ApplyAction("OnOff_On");
                             //setBlockFireModeAuto(torps[i]);
 
@@ -815,12 +841,12 @@ namespace IngameScript
                                 torps[i].SetValue("WC_FocusFire", true);
                                 torps[i].SetValue("WC_Grids", true);
                                 torps[i].SetValue("WC_LargeGrid", true);
-                                torps[i].SetValue("WC_SmallGrid", true);
+                                torps[i].SetValue("WC_SmallGrid", false);
                                 torps[i].SetValue("WC_FocusFire", true);
                                 setBlockRepelOff(torps[i]);
                             }
 
-                            break;
+                            break;*/
                     }
                 }
             }
@@ -1060,7 +1086,7 @@ namespace IngameScript
             {
                 if (thrustersMain[i].IsFunctional && thrustersMain[i].CustomName.Contains(ship_name))
                 {
-                    // 3: epstein drives; 0: off, 1: on
+                    // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                     if (stance_data[stance_i][3] == 0
                         ||
                         (stance_data[stance_i][3] == 2 && !thrustersMain[i].CustomName.Contains(min_drives_keyword))
@@ -2804,7 +2830,7 @@ namespace IngameScript
             for (int i = 0; i < stance_names.Count; i++)
             {
                 stance_text += " - Stance:" + stance_names[i] + " - \n"
-                    + "torpedoes; 0: off, 1: hold fire, 2: AI weapons free;\n="
+                    + "torpedoes; 0: off, 1: on;\n="
                     + stance_data[i][0] + "\n"
                     + "pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence\n="
                     + stance_data[i][1] + "\n"
