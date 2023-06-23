@@ -44,6 +44,7 @@ namespace IngameScript
         string ignore_keyword = "REEDAV";
         // the keyword for defence PDCs (secondary PDCs group)
         string defence_pdc_keyword = "Repel";
+        string min_drives_keyword = "Min";
         bool auto_configure_pdcs = true;
 
         // number of loops before each door will be closed
@@ -1060,7 +1061,10 @@ namespace IngameScript
                 if (thrustersMain[i].IsFunctional && thrustersMain[i].CustomName.Contains(ship_name))
                 {
                     // 3: epstein drives; 0: off, 1: on
-                    if (stance_data[stance_i][3] == 0)
+                    if (stance_data[stance_i][3] == 0
+                        ||
+                        (stance_data[stance_i][3] == 2 && !thrustersMain[i].CustomName.Contains(min_drives_keyword))
+                        )
                         thrustersMain[i].ApplyAction("OnOff_Off");
                     else
                         thrustersMain[i].ApplyAction("OnOff_On");
@@ -2573,6 +2577,10 @@ namespace IngameScript
                                     defence_pdc_keyword = value;
                                     
                                     break;
+                                case "Keyword used to identify minimum epstein drives.":
+                                    config_count++;
+                                    min_drives_keyword = value;
+                                    break;
                                 case "Keyword to ignore block.":
                                     config_count++;
                                     ignore_keyword = value;
@@ -2673,7 +2681,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 24)
+                    if (config_count == 25)
                     {
                         parsedVars = true;
                     }
@@ -2802,7 +2810,7 @@ namespace IngameScript
                     + stance_data[i][1] + "\n"
                     + "railguns; 0: off, 1: hold fire, 2: AI weapons free;\n="
                     + stance_data[i][2] + "\n"
-                    + "epstein drives; 0: off, 1: on\n="
+                    + "epstein drives; 0: off, 1: on, 2: minimum on only\n="
                     + stance_data[i][3] + "\n"
                     + "rcs thrusters; 0: off, 1: on\n="
                     + stance_data[i][4] + "\n"
@@ -2851,7 +2859,8 @@ namespace IngameScript
                 + "Block name delimiter, used by init. One character only!\n=" + name_delimiter + "\n"
                 + "Keyword used to identify RSM LCDs.\n=" + lcd_keyword + "\n"
                 + "Keyword used to identify autorepair systems\n=" + autorepair_keyword + "\n"
-                + "Keyword used to identify defence PDCs.\n=" + defence_pdc_keyword + "\n"
+                + "Keyword used to identify minimum epstein drives.\n=" + min_drives_keyword + "\n"
+                + "Keyword used to identify minimum drives.\n=" + defence_pdc_keyword + "\n"
                 + "Keyword to ignore block.\n=" + ignore_keyword + "\n"
                 + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + auto_configure_pdcs + "\n"
                 + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", friendly_tags.Split('\n'))) + "\n"
