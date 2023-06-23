@@ -2123,6 +2123,8 @@ namespace IngameScript
                 if (blockId.Contains("LargeMedicalRoom") || blockId.Contains("SurvivalKit"))
                 {
                     allBlocks[i].CustomData = sk_data;
+                    if (!allBlocks[i].CustomName.Contains(ignore_keyword))
+                        allBlocks[i].ApplyAction("OnOff_On");
                 }
 
                 // only do this for items on my 'construct' not connected ships.
