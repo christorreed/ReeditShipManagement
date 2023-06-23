@@ -789,10 +789,10 @@ namespace IngameScript
                     switch (stance_data[stance_i][0])
                     {
                         case 0:
-                            setBlockOff(torps[i]);
+                            torps[i].ApplyAction("OnOff_Off");
                             break;
                         case 1:
-                            setBlockOn(torps[i]);
+                            torps[i].ApplyAction("OnOff_On");
 
                             //setBlockFireModeManual(torps[i]);
                             if (auto_configure_pdcs)
@@ -806,7 +806,7 @@ namespace IngameScript
                             }
                             break;
                         case 3:
-                            setBlockOn(torps[i]);
+                            torps[i].ApplyAction("OnOff_On");
                             //setBlockFireModeAuto(torps[i]);
 
                             if (auto_configure_pdcs)
@@ -842,13 +842,13 @@ namespace IngameScript
                     switch (stance_data[stance_i][1])
                     {
                         case 0:
-                            setBlockOff(pdcs[i]);
+                            pdcs[i].ApplyAction("OnOff_Off");
                             break;
                         case 1:
-                            setBlockOff(pdcs[i]);
+                            pdcs[i].ApplyAction("OnOff_Off");
                             break;
                         case 2:
-                            setBlockOn(pdcs[i]);
+                            pdcs[i].ApplyAction("OnOff_On");
                             if (auto_configure_pdcs)
                             {
 
@@ -888,7 +888,7 @@ namespace IngameScript
                             }
                             break;
                         case 3:
-                            setBlockOn(pdcs[i]);
+                            pdcs[i].ApplyAction("OnOff_On");
                             if (auto_configure_pdcs)
                             {
                                 try
@@ -958,12 +958,12 @@ namespace IngameScript
                     switch (stance_data[stance_i][1])
                     {
                         case 0:
-                            setBlockOff(defencePdcs[i]);
+                            defencePdcs[i].ApplyAction("OnOff_Off");
                             break;
                         case 1:
                         case 2:
                         case 3:
-                            setBlockOn(defencePdcs[i]);
+                            defencePdcs[i].ApplyAction("OnOff_On");
                             if (auto_configure_pdcs)
                             {
                                 setBlockRepelOn(defencePdcs[i]);
@@ -994,10 +994,10 @@ namespace IngameScript
                     switch (stance_data[stance_i][2])
                     {
                         case 0:
-                            setBlockOff(railguns[i]);
+                            railguns[i].ApplyAction("OnOff_Off");
                             break;
                         case 1:
-                            setBlockOn(railguns[i]);
+                            railguns[i].ApplyAction("OnOff_On");
 
                             //setBlockFireModeManual(railguns[i]);
                             if (auto_configure_pdcs)
@@ -1023,7 +1023,7 @@ namespace IngameScript
                             }
                             break;
                         case 3:
-                            setBlockOn(railguns[i]);
+                            railguns[i].ApplyAction("OnOff_On");
                             //setBlockFireModeAuto(railguns[i]);
 
                             if (auto_configure_pdcs)
@@ -1051,12 +1051,6 @@ namespace IngameScript
 
                             break;
                     }
-
-
-                    /*if (stance_data[stance_i][2] == 0)
-                        setBlockOff(railguns[i]);
-                    else
-                        setBlockOn(railguns[i]);*/
                 }
             }
 
@@ -1067,9 +1061,9 @@ namespace IngameScript
                 {
                     // 3: epstein drives; 0: off, 1: on
                     if (stance_data[stance_i][3] == 0)
-                        setBlockOff(thrustersMain[i]);
+                        thrustersMain[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(thrustersMain[i]);
+                        thrustersMain[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1080,9 +1074,9 @@ namespace IngameScript
                 {
                     // 4: rcs thrusters; 0: off, 1: on
                     if (stance_data[stance_i][4] == 0)
-                        setBlockOff(thrustersRcs[i]);
+                        thrustersRcs[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(thrustersRcs[i]);
+                        thrustersRcs[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1093,13 +1087,13 @@ namespace IngameScript
                 {
                     // 5: spotlights; 0: off, 1: on, 2: on max radius
                     if (stance_data[stance_i][5] == 0)
-                        setBlockOff(lightsSpotlights[i]);
+                        lightsSpotlights[i].ApplyAction("OnOff_Off");
                     else
                     {
                         if (stance_data[stance_i][5] == 2)
                             (lightsSpotlights[i] as IMyLightingBlock).Radius = 9999;
                     }
-                        setBlockOn(lightsSpotlights[i]);
+                        lightsSpotlights[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1114,9 +1108,9 @@ namespace IngameScript
                 {
                     // 6: exterior lights; 0: off, 1: on
                     if (stance_data[stance_i][6] == 0)
-                        setBlockOff(lightsNav[i]);
+                        lightsNav[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(lightsNav[i]);
+                        lightsNav[i].ApplyAction("OnOff_On");
 
                     lightsNav[i].SetValue("Color",
                         new Color(
@@ -1140,9 +1134,9 @@ namespace IngameScript
                 {
                     // 11: interior lights lights; 0: off, 1: on
                     if (stance_data[stance_i][11] == 0)
-                        setBlockOff(lightsInterior[i]);
+                        lightsInterior[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(lightsInterior[i]);
+                        lightsInterior[i].ApplyAction("OnOff_On");
 
                     lightsInterior[i].SetValue("Color",
                         new Color(
@@ -1232,9 +1226,9 @@ namespace IngameScript
                 {
                     // 20: autorepair; 0: off, 1: on
                     if (stance_data[stance_i][20] == 0)
-                        setBlockOff(autorepairers[i]);
+                        autorepairers[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(autorepairers[i]);
+                       autorepairers[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1245,9 +1239,9 @@ namespace IngameScript
                 {
                     // 21: extractor; 0: off, 1: on, 2: auto load below 10%
                     if (stance_data[stance_i][21] == 0)
-                        setBlockOff(extractors[i]);
+                        extractors[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(extractors[i]);
+                        extractors[i].ApplyAction("OnOff_On");
 
                     if (stance_data[stance_i][21] >= 2)
                         manageExtractors();
@@ -1500,15 +1494,6 @@ namespace IngameScript
 
             debugEcho("COMMS: " + comms, "Set comms to " + comms);
         }
-        void setBlockOff(IMyTerminalBlock block)
-        {
-                block.ApplyAction("OnOff_Off");
-        }
-
-        void setBlockOn(IMyTerminalBlock block)
-        {
-                block.ApplyAction("OnOff_On");
-        }
 
         void setBlockRepelOn(IMyTerminalBlock block)
         {
@@ -1651,7 +1636,7 @@ namespace IngameScript
                 {
                     // turn on/off as required
                     if (camerasAndSensorsAndLCDs[i].IsFunctional)
-                        setBlockOn(camerasAndSensorsAndLCDs[i]);
+                        camerasAndSensorsAndLCDs[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1776,9 +1761,9 @@ namespace IngameScript
                 {
                     // turn torps on for 1+
                     if (stance_data[stance_i][0] < 1)
-                        setBlockOff(torps[i]);
+                        torps[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(torps[i]);
+                        torps[i].ApplyAction("OnOff_Off");
                 }
 
             }
@@ -1789,9 +1774,9 @@ namespace IngameScript
                 {
                     // turn PDCs off for 2+
                     if (stance_data[stance_i][1] < 2)
-                        setBlockOff(pdcs[i]);
+                        pdcs[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(pdcs[i]);
+                        pdcs[i].ApplyAction("OnOff_On");
                 }
 
             }
@@ -1802,9 +1787,9 @@ namespace IngameScript
                 {
                     // turn defence pdcs on for 1+
                     if (stance_data[stance_i][1] < 1)
-                        setBlockOff(defencePdcs[i]);
+                        defencePdcs[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(defencePdcs[i]);
+                        defencePdcs[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1815,9 +1800,9 @@ namespace IngameScript
                 {
                     // turn railguns on for 1+
                     if (stance_data[stance_i][2] < 1)
-                        setBlockOff(railguns[i]);
+                        railguns[i].ApplyAction("OnOff_Off");
                     else
-                        setBlockOn(railguns[i]);
+                        railguns[i].ApplyAction("OnOff_On");
                 }
             }
             if (adjustKeepAlives)
@@ -1826,9 +1811,9 @@ namespace IngameScript
                 for (int i = 0; i < gyros.Count; i++)
                 {
                     if (adjustThemTo)
-                        setBlockOn(gyros[i]);
+                        gyros[i].ApplyAction("OnOff_On");
                     else
-                        setBlockOff(gyros[i]);
+                        gyros[i].ApplyAction("OnOff_Off");
                 }
             }
 
