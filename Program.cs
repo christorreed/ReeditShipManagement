@@ -2095,6 +2095,7 @@ namespace IngameScript
             bool sg_extractors = true;
 
             int ignoreCount = 0;
+            int disownedCount = 0;
 
             List<IMyTerminalBlock> allBlocks = new List<IMyTerminalBlock>();
             GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(allBlocks);
@@ -2105,6 +2106,7 @@ namespace IngameScript
                 // we build the general lists by parsing this little string...
                 string blockId = allBlocks[i].BlockDefinition.ToString();
 
+                // handle spawns
                 if (blockId.Contains("LargeMedicalRoom") || blockId.Contains("SurvivalKit"))
                 {
                     allBlocks[i].CustomData = sk_data;
@@ -2117,7 +2119,9 @@ namespace IngameScript
                 /*&& allBlocks[i].CustomName.Contains(ship_name)*/ // this breaks init of course lol
                 {
 
-
+                    // check for unowned blocks
+                    if (allBlocks[i].GetOwnerFactionTag() != faction_tag)
+                        disownedCount++;
 
                     // ignore blocks with the ignore keyword.
                     if (allBlocks[i].CustomName.Contains(ignore_keyword))
@@ -2460,16 +2464,7 @@ namespace IngameScript
                     else
                     {
                         everythingElse.Add(allBlocks[i]);
-
-                        // I'm also going to manage survival kits/medical kits here.
-                        // putting a tag into the custom data allows that faction to spawn there
-                        // this forces that tag into all survival kits an medical rooms
-                        // on the off chance someone steals a ship but doesn't scroll and check
-                        // this sneaky trick will let you respawn on the ship and claim it back.
-
                     }
-                        
-
                 }
             }
 
@@ -2478,6 +2473,15 @@ namespace IngameScript
                 extractor_keep_full_threshold = (fuel_tank_keep_full_multiplier * jerry_can_capacity);
             else
                 extractor_keep_full_threshold = (fuel_tank_keep_full_multiplier * fuel_tank_capacity);
+
+            if (disownedCount > 0)
+            {
+                debugEcho("!!UNOWNED BLOCKS!!", "!!UNOWNED BLOCKS!! RUN !claim.  Some blocks on the current construct are owned by a player in another faction!");
+
+                // TODO
+                // add other actions if unowned blocks detected.
+
+            }
 
             if (debug) Echo("Finished full refresh.\nIgnored " + ignoreCount + " blocks."); 
 
