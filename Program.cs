@@ -1031,11 +1031,11 @@ namespace IngameScript
                             {
                                 try
                                 {
-                                    railguns[i].SetValue("WC_FocusFire", true);
+     
                                     railguns[i].SetValue("WC_Grids", true);
                                     railguns[i].SetValue("WC_LargeGrid", true);
                                     railguns[i].SetValue("WC_SmallGrid", true);
-                                    railguns[i].SetValue("WC_FocusFire", true);
+                                    //railguns[i].SetValue("WC_FocusFire", true);
                        
                                     setBlockRepelOff(railguns[i]);
                                 }
@@ -1057,11 +1057,11 @@ namespace IngameScript
                             {
                                 try
                                 {
-                                    railguns[i].SetValue("WC_FocusFire", true);
+
                                     railguns[i].SetValue("WC_Grids", true);
                                     railguns[i].SetValue("WC_LargeGrid", true);
                                     railguns[i].SetValue("WC_SmallGrid", true);
-                                    railguns[i].SetValue("WC_FocusFire", true);
+                                    //railguns[i].SetValue("WC_FocusFire", true);
 
                                 
                                     setBlockRepelOff(railguns[i]);
@@ -2145,13 +2145,16 @@ namespace IngameScript
                 }
 
                 // only do this for items on my 'construct' not connected ships.
-                if (Me.IsSameConstructAs(allBlocks[i])   )
+                if (Me.IsSameConstructAs(allBlocks[i]))
                 /*&& allBlocks[i].CustomName.Contains(ship_name)*/ // this breaks init of course lol
                 {
-
                     // check for unowned blocks
-                    if (allBlocks[i].GetOwnerFactionTag() != faction_tag)
+                    string Tag = allBlocks[i].GetOwnerFactionTag();
+                    if (Tag != faction_tag && Tag != "")
+                    {
+                        Echo(">>>" + Tag + "<<<");
                         disownedCount++;
+                    }
 
                     // ignore blocks with the ignore keyword.
                     if (allBlocks[i].CustomName.Contains(ignore_keyword))
@@ -2246,15 +2249,15 @@ namespace IngameScript
 
 
                     else if (
-                        blockId.Contains("ConveyorSorter/Ostman-Jazinski Flak Cannon")
+                        blockId.Contains("Ostman-Jazinski Flak Cannon")
                         ||
-                        blockId.Contains("ConveyorSorter/Nariman Dynamics PDC")
+                        blockId.Contains("Nariman Dynamics PDC")
                         ||
-                        blockId.Contains("ConveyorSorter/Voltaire Collective Anti Personnel PDC")
+                        blockId.Contains("Voltaire Collective Anti Personnel PDC")
                         ||
-                        blockId.Contains("ConveyorSorter/Outer Planets Alliance Point Defence Cannon")
+                        blockId.Contains("Outer Planets Alliance Point Defence Cannon")
                         ||
-                        blockId.Contains("ConveyorSorter/Redfields Ballistics PDC")
+                        blockId.Contains("Redfields Ballistics PDC")
                         )
                     {
                         if (allBlocks[i].CustomName.Contains(defence_pdc_keyword))
@@ -2306,15 +2309,19 @@ namespace IngameScript
                     */
 
                     else if (
-                        blockId.Contains("ConveyorSorter/Apollo Class Torpedo Launcher")
+                        blockId.Contains("Apollo Class Torpedo Launcher")
                         ||
-                        blockId.Contains("ConveyorSorter/Tycho Class Torpedo Mount")
+                        blockId.Contains("Tycho Class Torpedo Mount")
                         ||
-                        blockId.Contains("ConveyorSorter/Ares_Class_Torpedo_Launcher")
+                        blockId.Contains("Ares_Class_Torpedo_Launcher")
                         ||
-                        blockId.Contains("ConveyorSorter/ZeusClass_Rapid_Torpedo_Launcher")
+                        blockId.Contains("Ares_Class_TorpedoLauncher") // lol
+                        ||
+                        blockId.Contains("ZeusClass_Rapid_Torpedo_Launcher")
                         )
                         torps.Add(allBlocks[i]);
+
+                    else if (allBlocks[i].CustomName.Contains("Torpedo")) { Echo(">>" + blockId + "<<"); }
 
                     // Railguns 
                     // MyObjectBuilder_LargeMissileTurret/Mounted Zakosetara Heavy Railgun
@@ -2750,12 +2757,11 @@ namespace IngameScript
                     debugEcho("Custom Data Error! (vars)", "Failed to parse all the variables from custom data.");
                 }
 
-                sk_data = //"                                                                                                                                 "  + 
+                sk_data = "                                                                                                                                 "  + 
                     faction_tag;
 
                 if (spawn_open)
-                    sk_data += "\n                                                                                                                                 " +
-                        friendly_tags;
+                    sk_data += "\n" +friendly_tags;
 
                 sk_data += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
                      //"                                                                                                                                 " + 
@@ -2825,7 +2831,7 @@ namespace IngameScript
                 Echo("No stances!");
             }
 
-            debugEcho("RESET CUSTOM DATA!", "Something went wrong, so custom data was reset.");
+            debugEcho("RESET CUSTOM DATA!", "Something went wrong, so custom data was reset.\nVars Parsed=" + parsedVars + "\nStances Parsed=" + parsedStances);
 
             for (int i = 0; i < stance_names.Count; i++)
             {
@@ -2886,7 +2892,7 @@ namespace IngameScript
                 + "Keyword used to identify RSM LCDs.\n=" + lcd_keyword + "\n"
                 + "Keyword used to identify autorepair systems\n=" + autorepair_keyword + "\n"
                 + "Keyword used to identify minimum epstein drives.\n=" + min_drives_keyword + "\n"
-                + "Keyword used to identify minimum drives.\n=" + defence_pdc_keyword + "\n"
+                + "Keyword used to identify defence PDCs.\n=" + defence_pdc_keyword + "\n"
                 + "Keyword to ignore block.\n=" + ignore_keyword + "\n"
                 + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + auto_configure_pdcs + "\n"
                 + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", friendly_tags.Split('\n'))) + "\n"
@@ -3204,7 +3210,7 @@ namespace IngameScript
             {
                 if (Item.TARGET != 0)
                 {
-                    if (debug) Echo("NAME = " + Item.NAME);
+                    //if (debug) Echo("NAME = " + Item.NAME);
                     
                     double percentage = (100 * ((double)Item.COUNT / (double)Item.TARGET));
                     string val = Item.COUNT + "/" + Item.TARGET;
