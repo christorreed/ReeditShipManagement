@@ -26,7 +26,7 @@ namespace IngameScript
         // lcd variables.
         const string lcd_divider = "--------------------------------";
         const string lcd_title = "     REEDIT SHIP MANAGEMENT     ";
-        string[] lcd_spinners = new string[] {"-","\\","|","/"};
+        string[] lcd_spinners = new string[] { "-", "\\", "|", "/" };
         int lcd_spinner_status = 0;
         const float lcd_font_size = 0.8f;
         Color lcd_font_colour = new Color(30, 144, 255, 255);
@@ -131,7 +131,7 @@ namespace IngameScript
         string current_comms = "";
         double current_comms_range = 0;
         double current_sig_range = 0;
-        
+
         bool airlock_name_error_called = false;
 
         // how long debug messages stay around for, in LCD refreshes.
@@ -150,7 +150,7 @@ namespace IngameScript
 
         bool build_advanced_thrust_data = false;
 
-        IMyShipController controller; 
+        IMyShipController controller;
 
         // Block lists, built at fullRefresh();
         List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
@@ -216,7 +216,7 @@ namespace IngameScript
         // Stance data
         int stance_i = 0;
         // these are default values that will be over written by updateCustomData();
-        List<string> stance_names = new List<string>(new string[]{ "Cruise", "MaxCruise", "Docked", "Docking", "NoAttack", "Coast", "Combat", "CQB", "Sleep", "StealthCruise" });
+        List<string> stance_names = new List<string>(new string[] { "Cruise", "MaxCruise", "Docked", "Docking", "NoAttack", "Coast", "Combat", "CQB", "Sleep", "StealthCruise" });
 
         List<int[]> stance_data = new List<int[]>
         {
@@ -517,10 +517,10 @@ namespace IngameScript
 
                 ITEMS.Add(buildItem("PDC      ", "MyObjectBuilder_AmmoMagazine", "40mmLeadSteelPDCBoxMagazine")); //3
                 ITEMS.Add(buildItem("PDC Tefl ", "MyObjectBuilder_AmmoMagazine", "40mmTungstenTeflonPDCBoxMagazine")); //4
-               
+
                 ITEMS.Add(buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine")); //5
                 ITEMS.Add(buildItem("RS Torp  ", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine")); //6
-                
+
                 ITEMS.Add(buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine")); //7
                 ITEMS.Add(buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine")); //8
                 ITEMS.Add(buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine")); //9
@@ -528,7 +528,7 @@ namespace IngameScript
             }
             catch
             {
-                debugEcho("Component error!","It seems like you might be missing one of the required mods?! Failed to build a list of components to check inventories for.");
+                debugEcho("Component error!", "It seems like you might be missing one of the required mods?! Failed to build a list of components to check inventories for.");
                 return;
             }
 
@@ -659,7 +659,7 @@ namespace IngameScript
             if (debug)
                 Echo("Fuel low, filling extractors...");
 
-             // don't want to get stuck in a loop trying this.
+            // don't want to get stuck in a loop trying this.
             need_fuel = false;
 
             IMyInventory thisInventory = null;
@@ -667,14 +667,14 @@ namespace IngameScript
 
             foreach (IMyTerminalBlock Extractor in extractors)
             {
-                if (Extractor!= null)
+                if (Extractor != null)
                 {
                     thisInventory = Extractor.GetInventory();
                     //Echo("Extractor mass = " + Extractor.Mass);
                     if (Extractor.Mass < 2500)
                     {
                         TankType = "SG_Fuel_Tank";
-                        if (debug) Echo("SG Extractor!");                    }
+                        if (debug) Echo("SG Extractor!"); }
                     break;
                 }
             }
@@ -704,7 +704,7 @@ namespace IngameScript
             {
                 List<MyInventoryItem> inventoryItems = new List<MyInventoryItem>();
                 ToSearch[j].GetItems(inventoryItems/* ,a => a.ToString() == "Fuel_Tank"*/);
-               
+
                 if (debug)
                     Echo(inventoryItems.Count + " fuel tanks in inventory " + j);
 
@@ -712,7 +712,7 @@ namespace IngameScript
                 {
                     if (
                         (inventoryItems[k].ToString().Contains(TankType))
-                        
+
                         )
                     {
                         if (debug)
@@ -832,29 +832,29 @@ namespace IngameScript
                                 setBlockRepelOff(torps[i]);
                             }
                             break;
-                        /*case 3:
-                            torps[i].ApplyAction("OnOff_On");
-                            //setBlockFireModeAuto(torps[i]);
+                            /*case 3:
+                                torps[i].ApplyAction("OnOff_On");
+                                //setBlockFireModeAuto(torps[i]);
 
-                            if (auto_configure_pdcs)
-                            {
-                                torps[i].SetValue("WC_FocusFire", true);
-                                torps[i].SetValue("WC_Grids", true);
-                                torps[i].SetValue("WC_LargeGrid", true);
-                                torps[i].SetValue("WC_SmallGrid", false);
-                                torps[i].SetValue("WC_FocusFire", true);
-                                setBlockRepelOff(torps[i]);
-                            }
+                                if (auto_configure_pdcs)
+                                {
+                                    torps[i].SetValue("WC_FocusFire", true);
+                                    torps[i].SetValue("WC_Grids", true);
+                                    torps[i].SetValue("WC_LargeGrid", true);
+                                    torps[i].SetValue("WC_SmallGrid", false);
+                                    torps[i].SetValue("WC_FocusFire", true);
+                                    setBlockRepelOff(torps[i]);
+                                }
 
-                            break;*/
+                                break;*/
                     }
                 }
             }
 
-            if (debug) 
-                Echo("Setting " + pdcs.Count + " PDCs, " 
-                    + defencePdcs.Count + " defence PDCs to " 
-                    + stance_data[stance_i][1] 
+            if (debug)
+                Echo("Setting " + pdcs.Count + " PDCs, "
+                    + defencePdcs.Count + " defence PDCs to "
+                    + stance_data[stance_i][1]
                     + ".\nautoconfig = " + auto_configure_pdcs.ToString());
 
             bool RepelModeFucked = false;
@@ -936,12 +936,12 @@ namespace IngameScript
                                         debugEcho("PDC Config error!", "Strange bug with your PDCs causing them not to autoconfigure. Recommend grinding and rebuilding them!");
                                     }
                                 }
-                        }
+                            }
                             break;
                     }
                 }
-                   
-                
+
+
 
 
                 /*
@@ -1004,11 +1004,11 @@ namespace IngameScript
                                 defencePdcs[i].SetValue("WC_Projectiles", true);
                                 defencePdcs[i].SetValue("WC_Biologicals", true);
 
-                               
+
                             }
                             break;
                     }
-                } 
+                }
             }
 
             if (debug) Echo("Setting " + railguns.Count + " railguns to " + stance_data[stance_i][2]);
@@ -1031,12 +1031,12 @@ namespace IngameScript
                             {
                                 try
                                 {
-     
+
                                     railguns[i].SetValue("WC_Grids", true);
                                     railguns[i].SetValue("WC_LargeGrid", true);
                                     railguns[i].SetValue("WC_SmallGrid", true);
                                     //railguns[i].SetValue("WC_FocusFire", true);
-                       
+
                                     setBlockRepelOff(railguns[i]);
                                 }
                                 catch
@@ -1063,7 +1063,7 @@ namespace IngameScript
                                     railguns[i].SetValue("WC_SmallGrid", true);
                                     //railguns[i].SetValue("WC_FocusFire", true);
 
-                                
+
                                     setBlockRepelOff(railguns[i]);
                                 }
                                 catch
@@ -1123,13 +1123,13 @@ namespace IngameScript
                         if (stance_data[stance_i][5] == 2)
                             (lightsSpotlights[i] as IMyLightingBlock).Radius = 9999;
                     }
-                        lightsSpotlights[i].ApplyAction("OnOff_On");
+                    lightsSpotlights[i].ApplyAction("OnOff_On");
                 }
             }
 
             if (debug) Echo(
                 "Setting " + lightsNav.Count + " exterior lights to " + stance_data[stance_i][6] + ".\n"
-                + "Colour (" + stance_data[stance_i][7] + "," + stance_data[stance_i][8] 
+                + "Colour (" + stance_data[stance_i][7] + "," + stance_data[stance_i][8]
                 + "," + stance_data[stance_i][9] + "," + stance_data[stance_i][10] + ")"
                 );
             for (int i = 0; i < lightsNav.Count; i++)
@@ -1199,7 +1199,7 @@ namespace IngameScript
                             battery_blocks[i].ChargeMode = ChargeMode.Recharge;
                     }
                 }
-                    
+
             }
 
             if (debug) Echo("Setting " + tank_blocks.Count + " tanks to stockpile = " + stance_data[stance_i][16]);
@@ -1223,29 +1223,33 @@ namespace IngameScript
 
             }
 
-           
 
-            if (debug) Echo("Setting " + serversEfc.Count+ " [EFC] servers to boost = " + stance_data[stance_i][17]);
-            if (debug) Echo(".\nburn % = " + burnArray[stance_data[stance_i][18]]);
-            if (debug) Echo("\nkill = " + stance_data[stance_i][19]);
+
+            if (debug) Echo("Setting " + serversEfc.Count + " [EFC] servers to boost = " + stance_data[stance_i][17]
+                /*+ ".\nburn % = " + burnArray[stance_data[stance_i][18]]
+                + ".\nkill = " + stance_data[stance_i][19]+*/
+                );
             for (int i = 0; i < serversEfc.Count; i++)
             {
                 if (serversEfc[i].IsFunctional && serversEfc[i].CustomName.Contains(ship_name))
                 {
-                    IMyProgrammableBlock cast = serversEfc[i] as IMyProgrammableBlock;
+
                     // 17: EFC boost; 0: off, 1: on
                     if (stance_data[stance_i][17] == 1)
-                        cast.TryRun("Boost On");
+                        runProgramable(serversEfc[i], "Boost On");
                     else
-                        cast.TryRun("Boost Off");
+                        runProgramable(serversEfc[i], "Boost Off");
 
                     // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                     if (stance_data[stance_i][18] > 0)
-                        cast.TryRun("Set Burn " + burnArray[stance_data[stance_i][18]]);
+                    {
+                        runProgramable(serversEfc[i], "Set Burn " + burnArray[stance_data[stance_i][18]]);
+                    }
+
 
                     // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                     if (stance_data[stance_i][19] == 1)
-                        cast.TryRun("Off");
+                        runProgramable(serversEfc[i], "Off");
                 }
             }
 
@@ -1258,7 +1262,7 @@ namespace IngameScript
                     if (stance_data[stance_i][20] == 0)
                         autorepairers[i].ApplyAction("OnOff_Off");
                     else
-                       autorepairers[i].ApplyAction("OnOff_On");
+                        autorepairers[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1338,7 +1342,7 @@ namespace IngameScript
 
                 // name overrides
                 //if (blockId.Contains("MyObjectBuilder_TextPanel/"))
-                    //defaultName = "LCD";
+                //defaultName = "LCD";
                 if (blockId.Contains("Door/"))
                     defaultName = "Door";
                 if (blockId.Contains("MyObjectBuilder_AirVent/"))
@@ -1362,19 +1366,19 @@ namespace IngameScript
                 {
                     defaultName = "LCD";
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD1"))
-                        camerasAndSensorsAndLCDs[i].CustomData = 
+                        camerasAndSensorsAndLCDs[i].CustomData =
                             "Show header=True\nShow Tanks & Batteries=False\nShow Inventory=True\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.29:0.99:0.5";
-                    
+
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD2"))
-                        camerasAndSensorsAndLCDs[i].CustomData = 
+                        camerasAndSensorsAndLCDs[i].CustomData =
                             "Show header=False\nShow Tanks & Batteries=True\nShow Inventory=False\nShow Thrust=True\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.53:0.99:0.5";
-                   
+
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD3"))
-                        camerasAndSensorsAndLCDs[i].CustomData = 
+                        camerasAndSensorsAndLCDs[i].CustomData =
                             "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=True\nShow Autorepair=True\nShow Doors=True\nShow Advanced Thrust=False\nhudlcd:0.77:0.99:0.5";
-                   
+
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD4"))
-                        camerasAndSensorsAndLCDs[i].CustomData = 
+                        camerasAndSensorsAndLCDs[i].CustomData =
                             "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=True\nhudlcd:-0.99:0.78:0.5";
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("[REEDAV].1"))
@@ -1434,7 +1438,7 @@ namespace IngameScript
             processList(lightsInterior, "Lights Interior");
             processList(lightsNav, "Lights Exterior");
             processList(lightsSpotlights, "Spotlights");
-            
+
 
             debugEcho("Initialised '" + ship + "'", "Good Hunting!");
 
@@ -1469,7 +1473,7 @@ namespace IngameScript
                 if (parsed.Length < 3) return "";
                 // start loop at 2 because 0 is the ship name and 1 is the block name.
                 for (int i = 2; i < parsed.Length; i++) {
-                    
+
                     // sometimes the third bit is just a number
                     // but i'm renumbering
                     // so fuck that cunt off.
@@ -1506,7 +1510,7 @@ namespace IngameScript
                 string blockNumber = name_delimiter + count.ToString().PadLeft(padDepth, '0');
                 if (no_numbers) blockNumber = "";
                 if (blocks.Count == 1) blockNumber = "";
-                blocks[i].CustomName = 
+                blocks[i].CustomName =
                     ship_name + name_delimiter
                     + name
                     + blockNumber
@@ -1940,7 +1944,7 @@ namespace IngameScript
                     lcds[i].FontSize = lcd_font_size;
                     lcds[i].Font = "Monospace";
                     //lcds[i].TextPadding = 0;
-                    lcds[i].Alignment =  TextAlignment.CENTER;
+                    lcds[i].Alignment = TextAlignment.CENTER;
                 }
             }
 
@@ -2092,6 +2096,7 @@ namespace IngameScript
             if (debug) Echo("Building general lists...");
 
             servers.Clear();
+            serversEfc.Clear();
             pdcs.Clear();
             defencePdcs.Clear();
             torps.Clear();
@@ -2402,8 +2407,6 @@ namespace IngameScript
                         //serversEfc = null;
                         if (allBlocks[i].CustomName.Contains("[EFC]"))
                         {
-                            // TODO, if there's only one, why did i make this a list? lol
-                            serversEfc.Clear();
                             serversEfc.Add(allBlocks[i]);
                         }
                     }
@@ -2520,7 +2523,7 @@ namespace IngameScript
 
             }
 
-            if (debug) Echo("Finished full refresh.\nIgnored " + ignoreCount + " blocks."); 
+            if (debug) Echo("Finished full refresh.\nIgnored " + ignoreCount + " blocks.");
 
             return;
 
@@ -2585,30 +2588,30 @@ namespace IngameScript
                                 case "Ship name. Blocks without this name will be ignored":
                                     config_count++;
                                     ship_name = value;
-                                    
+
                                     break;
                                 case "Block name delimiter, used by init. One character only!":
 
                                     config_count++;
                                     name_delimiter = char.Parse(value.Substring(0, 1));
-                                    
+
                                     if (debug) Echo("DELIMITER = " + name_delimiter);
-                                    
+
                                     break;
                                 case "Keyword used to identify RSM LCDs.":
                                     config_count++;
                                     lcd_keyword = value;
-                                    
+
                                     break;
                                 case "Keyword used to identify autorepair systems":
                                     config_count++;
                                     autorepair_keyword = value;
-                                    
+
                                     break;
                                 case "Keyword used to identify defence PDCs.":
                                     config_count++;
                                     defence_pdc_keyword = value;
-                                    
+
                                     break;
                                 case "Keyword used to identify minimum epstein drives.":
                                     config_count++;
@@ -2720,7 +2723,7 @@ namespace IngameScript
                     }
                     else
                     {
-                        if (debug) Echo("Did not get enough config items ("+ config_count + ") from custom data, resetting.");
+                        if (debug) Echo("Did not get enough config items (" + config_count + ") from custom data, resetting.");
                     }
 
                     //if (debug) Echo("Custom data variables array length =" + parse_dat.Length);
@@ -2757,11 +2760,11 @@ namespace IngameScript
                     debugEcho("Custom Data Error! (vars)", "Failed to parse all the variables from custom data.");
                 }
 
-                sk_data = "                                                                                                                                 "  + 
+                sk_data = "                                                                                                                                 " +
                     faction_tag;
 
                 if (spawn_open)
-                    sk_data += "\n" +friendly_tags;
+                    sk_data += "\n" + friendly_tags;
 
                 sk_data += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
                      //"                                                                                                                                 " + 
@@ -2851,12 +2854,12 @@ namespace IngameScript
 
                     + "exterior lights; 0: off, 1: on\n="
                     + stance_data[i][6]
-                    + "\nred=" + stance_data[i][7] + "\ngreen=" + stance_data[i][8] 
+                    + "\nred=" + stance_data[i][7] + "\ngreen=" + stance_data[i][8]
                     + "\nblue=" + stance_data[i][9] + "\nalpha=" + stance_data[i][10] + "\n"
 
                     + "interior lights lights; 0: off, 1: on\n="
                     + stance_data[i][11]
-                    + "\nred=" + stance_data[i][12] + "\ngreen=" + stance_data[i][13] 
+                    + "\nred=" + stance_data[i][12] + "\ngreen=" + stance_data[i][13]
                     + "\nblue=" + stance_data[i][14] + "\nalpha=" + stance_data[i][15] + "\n"
 
                     // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
@@ -3053,7 +3056,7 @@ namespace IngameScript
                                     airlock_name_error_called = true;
                                     debugEcho("Airlock door naming!", "There's a door block marked as .Airlock. that isn't named correctly. Please use ShipName.Door.Airlock.<Airlock_ID>.Door Name");
                                 }
-                                
+
                             }
                         }
 
@@ -3096,7 +3099,7 @@ namespace IngameScript
                 }
             }
 
-            
+
 
             if (marked_for_disabling != "")
             {
@@ -3107,7 +3110,7 @@ namespace IngameScript
                 string[] to_disable = marked_for_disabling.Split(',');
 
                 // now we run through them again, dealing with those marked for disabling...
-                    for (int i = 0; i < door_blocks.Count; i++)
+                for (int i = 0; i < door_blocks.Count; i++)
                 {
                     //Echo("manageDoors 4");
                     bool disable = false;
@@ -3140,7 +3143,7 @@ namespace IngameScript
             return;
         }
 
-        string buildDoorData(int open, int disabled) 
+        string buildDoorData(int open, int disabled)
         {
             return "-------------------------\n"
                 + "Reedit Ship Management" + "\n"
@@ -3168,7 +3171,7 @@ namespace IngameScript
             DotCount++;
             if (DotCount > 3) DotCount = 1;
 
-            
+
 
             if (debug_msg != "")
             {
@@ -3181,8 +3184,8 @@ namespace IngameScript
                 }
                 else
                 {
-                    debug_text = "\n\n" + debug_msg + "\n" 
-                        + (debug_msg_long.Length <= 100 ? debug_msg_long : debug_msg_long.Substring(0, 100)  + "...");
+                    debug_text = "\n\n" + debug_msg + "\n"
+                        + (debug_msg_long.Length <= 100 ? debug_msg_long : debug_msg_long.Substring(0, 100) + "...");
                 }
             }
             // add padding for nice formatting on screen...
@@ -3202,7 +3205,7 @@ namespace IngameScript
 
             string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
 
-            
+
             // this bit prevents adding stuff with target counts of 0.
             string sec_inventory_counts = lcd_divider + "\n\n";
 
@@ -3211,7 +3214,7 @@ namespace IngameScript
                 if (Item.TARGET != 0)
                 {
                     //if (debug) Echo("NAME = " + Item.NAME);
-                    
+
                     double percentage = (100 * ((double)Item.COUNT / (double)Item.TARGET));
                     string val = Item.COUNT + "/" + Item.TARGET;
                     if (val.Length < 9) val += new string(' ', (9 - val.Length));
@@ -3249,12 +3252,12 @@ namespace IngameScript
                     "\nAccel (Best):    " + (AccelMax + " Gs").PadLeft(15);
             }
 
-            string sec_header = 
-                lcd_divider + "\n" 
-                + centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, 32) + "\n" 
+            string sec_header =
+                lcd_divider + "\n"
+                + centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, 32) + "\n"
                 //+ lcd_title + "\n" 
                 + lcd_divider + "\n"
-                + centreText("STANCE: " + current_stance.ToUpper(), 32) + "\n" 
+                + centreText("STANCE: " + current_stance.ToUpper(), 32) + "\n"
                 + lcd_divider + "\n"
                 + centreText(debug_lcd, 32) + "\n";
 
@@ -3309,7 +3312,7 @@ namespace IngameScript
             }
 
 
-                    
+
 
 
 
@@ -3364,7 +3367,7 @@ namespace IngameScript
                 {
                     lcd_blocks[i].CustomData =
                         "Show header=" + show_header +
-                        "\nShow Tanks & Batteries=" + show_tanks_and_batts+
+                        "\nShow Tanks & Batteries=" + show_tanks_and_batts +
                         "\nShow Inventory=" + show_inventory +
                         "\nShow Thrust=" + show_thrust +
                         "\nShow Comms=" + show_comms +
@@ -3409,7 +3412,7 @@ namespace IngameScript
             if (thrust <= 0) return ("N/A").PadLeft(15);
 
             //s = 1/2 * v ^ 2 * (m / F)
-            double result = 0.5 * (Math.Pow(speed, 2) * ( mass / thrust ));
+            double result = 0.5 * (Math.Pow(speed, 2) * (mass / thrust));
 
             //t = v / (F / mass)
             double time = speed / (thrust / mass);
@@ -3421,7 +3424,7 @@ namespace IngameScript
             }
 
             return (Math.Round(result) + unit + " " + Math.Round(time) + "s").PadLeft(15);
-        } 
+        }
 
         string barMe(string bar_type)
         {
@@ -3483,7 +3486,7 @@ namespace IngameScript
                 if (try_this > 10) return new string('=', 10);
                 if (try_this != 0) ones_count = try_this;
             }
-                
+
             string ones = new string('=', ones_count);
             string zeros = new string(' ', 10 - ones_count);
             return ones + zeros;
@@ -3495,6 +3498,15 @@ namespace IngameScript
             int spaces = Width - Text.Length;
             int padLeft = spaces / 2 + Text.Length;
             return Text.PadLeft(padLeft).PadRight(Width);
+        }
+
+        void runProgramable(IMyTerminalBlock Pb, string Argument)
+        {
+            if (debug)
+                Echo("Running '" + Argument + "' on '" + Pb.CustomName + "'");
+            bool Success = (Pb as IMyProgrammableBlock).TryRun(Argument);
+            if (Success)
+                Echo("Failed to run '"+ Argument + "' on '" + Pb.CustomName + "'");
         }
     }
 }
