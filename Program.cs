@@ -1122,8 +1122,9 @@ namespace IngameScript
                     {
                         if (stance_data[stance_i][5] == 2)
                             (lightsSpotlights[i] as IMyLightingBlock).Radius = 9999;
+                        lightsSpotlights[i].ApplyAction("OnOff_On");
                     }
-                    lightsSpotlights[i].ApplyAction("OnOff_On");
+                    
                 }
             }
 
