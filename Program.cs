@@ -3196,9 +3196,9 @@ namespace IngameScript
                 if (antenna_blocks[0] != null)
                     output_comms = antenna_blocks[0].HudText.PadLeft(15);
 
-            string output_comms_range = (Math.Round((current_comms_range / 1000), 3).ToString() + " km").PadLeft(15);
+            string output_comms_range = (Math.Round((current_comms_range / 1000)).ToString() + " km").PadLeft(15);
 
-            string output_sig_range = (Math.Round((current_sig_range / 1000), 3).ToString() + " km").PadLeft(15);
+            string output_sig_range = (Math.Round((current_sig_range / 1000)).ToString() + " km").PadLeft(15);
 
             string output_ar = "      ACTIVE";
             if (autorepair_active == 1)
