@@ -61,11 +61,11 @@ Now that RSM is running, let's explore some features...
 	* Set a stance with the command `Stance:StanceName` for example `Stance:Cruise` or `Stance:Combat`
 	* Setting a stance controls a number of functions on the ship all at once such as interior and exterior lights, drives and RCS, weapons, automatic repair systems, extractor management and EFC configuration.
 	* My favourite stances include...
-		* **Stance:Combat** Configures the ship for a long-range fight
-		* **Stance:CQB** Configures the ship for a CQB fight
-		* **Stance:Cruise** Configures the ship to fly a long distance.
-		* **Stance:Docking** Configures the ship to dock (spotlights on, main drives off)
-		* **Stance:Docked** Configures the ship to refuel/recharge at dock.
+		* `Stance:Combat` Configures the ship for a long-range fight
+		* `Stance:CQB` Configures the ship for a CQB fight
+		* `Stance:Cruise` Configures the ship to fly a long distance.
+		* `Stance:Docking` Configures the ship to dock (spotlights on, main drives off)
+		* `Stance:Docked` Configures the ship to refuel/recharge at dock.
 	* There are many more stances, and all are fully configurable via the custom data on the RSM PB.  You can even add or remove new stances from the list there.
 * **Toggle hudlcd on and off!**
 	* This plugin is awesome, but sometimes I just want to take a screenshot!
@@ -159,7 +159,7 @@ Therefore RSM also has a command to open and close the spawn to friends. Configu
 	Comma seperated friendly factions or steam ids for survival kits.
 	=RSG,VOL,SUS,LHI,ITC,JSO,76561198217763901
 
-Now run **Spawn:Open** to add all of the configured tags to all spawns on the ship, opening them up to those friends.  You can then use the **Spawn:Close** command to remove the tags at any time. Friendly tags will also be removed on instance transition.
+Now run `Spawn:Open` to add all of the configured tags to all spawns on the ship, opening them up to those friends.  You can then use the `Spawn:Close` command to remove the tags at any time. Friendly tags will also be removed on instance transition.
 
 As per the *Developer Promise* below, I should note RSM uses the detected player faction tag only, and does not inject mine or any other tag or steamid and never will.
 
@@ -178,8 +178,8 @@ The hudlcd plugin is great and pairs well with RSM, but then you press TAB to ta
 
 RSM can save projector offset and orientation to a projector's custom data, and then recall it later.  This is useful since nexus often clears this data during transitions, fixships or hangar loads.
 
-* Load your BP into your projector(s) and position it manually.  When you're ready, run **Projectors:Save**.
-* Next time your ship is damaged and needs repair, load the same BP into the projector(s) and run **Projectors:Load** and the position will be recalled.
+* Load your BP into your projector(s) and position it manually.  When you're ready, run `Projectors:Save`.
+* Next time your ship is damaged and needs repair, load the same BP into the projector(s) and run `Projectors:Load` and the position will be recalled.
 
 ## Comms
 
