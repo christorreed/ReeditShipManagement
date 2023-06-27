@@ -136,13 +136,13 @@ Items after the second . in a name are retained during an init command. For exam
 The **Stance** command is a one-press ship mode button which can be used to alter a whole range of settings all at once and put your ship into a different *stance*.
 
 RSM comes with a range of default stances out of the box, here are my favourites...
-* **Stance:Cruise** - weapons defensive, drives & rcs on, external and internal lights on and blue, spotlights off, hangars closed, extractor keeping tanks topped up.
-* **Stance:StealthCruise** - same as above, except min drives on only.
-* **Stance:Docking** - weapons defensive, drives off, rcs on, external lights bright, internal lights purple, spotlights on, hangars unchanged, extractor keeping tanks topped up.
-* **Stance:Docked** - weapons defensive, drives & rcs off, external lights white, internal lights white, spotlights off, hangars unchanged, extractor off, stockpile & recharge on.
-* **Stance:Combat** - weapons offensive, drives & rcs on, external lights off, internal lights red, spotlights off, hangars unchanged, extractor keeping tanks topped up, batteries discharge.
-* **Stance:CQB** - weapons offensive with PDCs targetting LG, drives & rcs on, external lights off, internal lights amber, spotlights off, hangars unchanged, extractor keeping tanks topped up, batteries discharge.
-* **Stance:NoAttack** - weapons off, drives & rcs on, interior and exterior lights white,  spotlights off, hangars unchanged, extractor keeping tanks topped up.
+* `Stance:Cruise` - weapons defensive, drives & rcs on, external and internal lights on and blue, spotlights off, hangars closed, extractor keeping tanks topped up.
+* `Stance:StealthCruise` - same as above, except min drives on only.
+* `Stance:Docking` - weapons defensive, drives off, rcs on, external lights bright, internal lights purple, spotlights on, hangars unchanged, extractor keeping tanks topped up.
+* `Stance:Docked` - weapons defensive, drives & rcs off, external lights white, internal lights white, spotlights off, hangars unchanged, extractor off, stockpile & recharge on.
+* `Stance:Combat` - weapons offensive, drives & rcs on, external lights off, internal lights red, spotlights off, hangars unchanged, extractor keeping tanks topped up, batteries discharge.
+* `Stance:CQB` - weapons offensive with PDCs targetting LG, drives & rcs on, external lights off, internal lights amber, spotlights off, hangars unchanged, extractor keeping tanks topped up, batteries discharge.
+* `Stance:NoAttack` - weapons off, drives & rcs on, interior and exterior lights white,  spotlights off, hangars unchanged, extractor keeping tanks topped up.
 
 **Don't feel locked in! You can edit each of these settings for every stance, or even add new ones via the RSM PB custom data!**
 It's a long list, so I recommend going to the RSM *PB Server* and copying the *Custom Data* to notepad or an external IDE for easier editing.

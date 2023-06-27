@@ -634,19 +634,6 @@ namespace IngameScript
                         return;
                     }
 
-                case "printprops":
-
-                    List<IMyTerminalBlock> allBlocks = new List<IMyTerminalBlock>();
-                    GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(allBlocks);
-                    for (int i = 0; i < allBlocks.Count; i++)
-                    {
-                        if (allBlocks[i].CustomName.Contains(args[1]))
-                        {
-                            dump_string += allBlocks[i].BlockDefinition.ToString() + "\n";
-                            Echo("AS REQUESTED\n" + allBlocks[i].BlockDefinition.ToString());
-                        }
-                    }
-                    break;
                 default:
                     debugEcho("Command Failed!", "Syntax Error!\nCommand not recognised\n" + args[0].ToLower());
                     return;
