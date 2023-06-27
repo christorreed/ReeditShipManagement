@@ -2,6 +2,8 @@
 
 Reedit Ship Management (RSM) is a broad, ship automation script tailor made for the Draconis Expanse Space Engineers server.
 
+[QUICK START GUIDE][# Quick Start Guide]
+
 ![Reedit Ship Management](/thumb.png "Reedit Ship Management")
 
 [Subscribe to Reedit Ship Management on steam.](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140)
@@ -25,7 +27,7 @@ RSM does a lot, so it can be daunting at first, but it's easy once you know the 
 So you have a pretty new ship...  We'll run RSM in a minute, but first let's do a few preperation steps to make it easy...
 
 * **Name your lights:**
-	* Simply name sure the word `interior` is contained within the name of all interior lights, and NOT for exterior lights.
+	* Simply make sure the word `interior` is contained within the name of all interior lights, and NOT for exterior lights.
 * **Prepare for mass renaming:**
 	* RSM is going to rename every block on your ship, and you might have names you wish to retain.
 	* For example, you might have a camera called `Camera Forward`.
@@ -69,7 +71,7 @@ Now that RSM is running, let's explore some features...
 	* There are many more stances, and all are fully configurable via the custom data on the RSM PB.  You can even add or remove new stances from the list there.
 * **Toggle hudlcd on and off!**
 	* This plugin is awesome, but sometimes I just want to take a screenshot!
-	* 'hudlcd:on', 'hudlcd:off',  'hudlcd:toggle' now turn all hudlcds on and off.
+	* `hudlcd:on`, `hudlcd:off`,  `hudlcd:toggle` now turn all hudlcds on and off.
 * **Automatically handle Extractors**
 	* On DX, you probably know fuel tank components are loaded into Extractor blocks to refill your ship tanks.
 	* RSM does all of this automatically. Configured per stance, RSM will use fuel tanks from your inventory to either keep the ships tanks topped up, or else top them up a little only when they are totally empty.
@@ -199,7 +201,7 @@ Note that RSM doesn't currently control antenna range or power status; please co
 
 # Custom Data Configuration
 
-There's a whole range of settings which you can adjust in the RSM PB Server (*Programmable Block*) custom data. It's a long list, so I recommend going to the RSM *PB Server* and copying the *Custom Data* to notepad or an external IDE for easier editing.
+There's a whole range of settings which you can adjust in the RSM PB Server (*Programmable Block*) custom data. It's a long list, so I recommend going to the RSM PB Server and copying the *Custom Data* to notepad or an external IDE for easier editing.
 
 Some of the things you can edit include...
 
