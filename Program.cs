@@ -1785,7 +1785,7 @@ namespace IngameScript
                     if (stance_data[stance_i][0] < 1)
                         torps[i].ApplyAction("OnOff_Off");
                     else
-                        torps[i].ApplyAction("OnOff_Off");
+                        torps[i].ApplyAction("OnOff_On");
                 }
 
             }
