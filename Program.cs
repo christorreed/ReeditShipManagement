@@ -156,7 +156,7 @@ namespace IngameScript
         List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
         List<IMyTextPanel> lcd_blocks = new List<IMyTextPanel>();
         List<IMyGasTank> tank_blocks = new List<IMyGasTank>();
-        List<IMyBatteryBlock> battery_blocks = new List<IMyBatteryBlock>();
+
         List<IMyDoor> door_blocks = new List<IMyDoor>();
         List<IMyBeacon> beacon_blocks = new List<IMyBeacon>();
         List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
@@ -1167,24 +1167,25 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Setting " + battery_blocks.Count + " batteries to recharge = " + stance_data[stance_i][16]);
+            if (debug) Echo("Setting " + batteries.Count + " batteries to recharge = " + stance_data[stance_i][16]);
 
-            for (int i = 0; i < battery_blocks.Count; i++)
+            for (int i = 0; i < batteries.Count; i++)
             {
-                if (battery_blocks[i] != null)
+                if (batteries[i] != null)
                 {
-                    if (battery_blocks[i].IsFunctional)
+                    if (batteries[i].IsFunctional)
                     {
+                        IMyBatteryBlock Battery = batteries[i] as IMyBatteryBlock;
                         // always fucking on
-                        battery_blocks[i].Enabled = true;
+                        Battery.Enabled = true;
 
                         // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                         if (stance_data[stance_i][16] == 0)
-                            battery_blocks[i].ChargeMode = ChargeMode.Auto;
+                            Battery.ChargeMode = ChargeMode.Auto;
                         else if (stance_data[stance_i][16] == 2)
-                            battery_blocks[i].ChargeMode = ChargeMode.Discharge;
+                            Battery.ChargeMode = ChargeMode.Discharge;
                         else
-                            battery_blocks[i].ChargeMode = ChargeMode.Recharge;
+                            Battery.ChargeMode = ChargeMode.Recharge;
                     }
                 }
 
@@ -1309,7 +1310,6 @@ namespace IngameScript
             if (debug) Echo("Initialising a ship as '" + ship + "'.");
 
             // this rebuilds general that we need here lists.
-            // true tells this to rebuild them ALL!
             fullRefresh();
 
             // i now christen this ship, the RSG whatever the fuck
@@ -1353,6 +1353,8 @@ namespace IngameScript
                 if (blockId.Contains("MyObjectBuilder_TextPanel/"))
                 {
                     defaultName = "LCD";
+
+
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD1"))
                         camerasAndSensorsAndLCDs[i].CustomData =
                             "Show header=True\nShow Tanks & Batteries=False\nShow Inventory=True\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.29:0.99:0.5";
@@ -1709,16 +1711,17 @@ namespace IngameScript
             bat_total = 0;
 
             // iterate over batteries
-            if (debug) Echo("Iterating over " + battery_blocks.Count + " batteries...");
-            for (int i = 0; i < battery_blocks.Count; i++)
+            if (debug) Echo("Iterating over " + batteries.Count + " batteries...");
+            for (int i = 0; i < batteries.Count; i++)
             {
-                if (battery_blocks[i].IsFunctional)
+                if (batteries[i].IsFunctional)
                 {
+                    IMyBatteryBlock Battery = batteries[i] as IMyBatteryBlock;
                     // turn on!
-                    battery_blocks[i].Enabled = true;
+                    Battery.Enabled = true;
 
-                    bat_actual += battery_blocks[i].CurrentStoredPower;
-                    bat_total += battery_blocks[i].MaxStoredPower;
+                    bat_actual += Battery.CurrentStoredPower;
+                    bat_total += Battery.MaxStoredPower;
                 }
             }
 
@@ -1894,7 +1897,7 @@ namespace IngameScript
             antenna_blocks.Clear();
             door_blocks.Clear();
             tank_blocks.Clear();
-            battery_blocks.Clear();
+
             cargo_inventory.Clear();
             projector_blocks.Clear();
 
@@ -1922,7 +1925,12 @@ namespace IngameScript
             for (int i = 0; i < lcds.Count; i++)
             {
                 // block is an LCD we're going to write our data too.
-                if (lcds[i].CustomName.Contains(lcd_keyword) && lcds[i].CustomName.Contains(ship_name) && !lcds[i].CustomName.Contains(ignore_keyword))
+                if (
+                    lcds[i].CustomName.Contains(lcd_keyword) 
+                    && 
+                    lcds[i].CustomName.Contains(ship_name) 
+                    && 
+                    !lcds[i].CustomName.Contains(ignore_keyword))
                 {
                     lcd_blocks.Add(lcds[i]);
 
@@ -1967,21 +1975,6 @@ namespace IngameScript
                 if (tanks[i].CustomName.Contains(ship_name) && !tanks[i].CustomName.Contains(ignore_keyword))
                 {
                     tank_blocks.Add(tanks[i]);
-                }
-            }
-
-            if (debug) Echo("Building batteries list...");
-
-            // recalculate Battery list
-            List<IMyBatteryBlock> batteriez = new List<IMyBatteryBlock>();
-            GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(batteriez);
-
-            for (int i = 0; i < batteriez.Count; i++)
-            {
-
-                if (batteriez[i].CustomName.Contains(ship_name) && !batteriez[i].CustomName.Contains(ignore_keyword))
-                {
-                    battery_blocks.Add(batteriez[i]);
                 }
             }
 
