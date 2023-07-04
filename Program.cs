@@ -1708,20 +1708,6 @@ namespace IngameScript
                         tank_o2_actual += (Tank.Capacity * Tank.FilledRatio);
                     }
                 }
-                else
-                {
-                    // update the global tank values.
-                    if (blockId.Contains("Hydro"))
-                    {
-                        tank_h2_total += Tank.Capacity;
-                        //tank_h2_actual += (Tank.Capacity * Tank.FilledRatio);
-                    }
-                    else
-                    {
-                        tank_o2_total += Tank.Capacity;
-                        //tank_o2_actual += (Tank.Capacity * Tank.FilledRatio);
-                    }
-                }
             }
 
 
