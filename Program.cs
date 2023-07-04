@@ -103,8 +103,30 @@ namespace IngameScript
 
         double tank_h2_actual = 0;
         double tank_h2_total = 0;
+        double tank_h2_init = 0;
         double tank_o2_actual = 0;
         double tank_o2_total = 0;
+        double tank_o2_init = 0;
+
+        float reactors_init = 0;
+        float thrust_main_init = 0;
+        float thrust_rcs_init = 0;
+
+        int pdcs_init = 0;
+        int torps_init = 0;
+        int railguns_init = 0;
+        int gyros_init = 0;
+
+        double integrity_tanks_H2 = 0;
+        double integrity_tanks_O2 = 0;
+        double integrity_bats = 0;
+        double integrity_pdcs = 0;
+        double integrity_torps = 0;
+        double integrity_railguns = 0;
+        double integrity_main_thrust = 0;
+        double integrity_rcs_thrust = 0;
+        double integrity_gyros = 0;
+        double integrity_reactors = 0;
 
         int min_fuel = 10;
 
@@ -122,6 +144,7 @@ namespace IngameScript
 
         double bat_actual = 0;
         double bat_total = 0;
+        double bat_init = 0;
 
         int doors_count = 0;
         int doors_count_closed = 0;
@@ -139,9 +162,6 @@ namespace IngameScript
         int debug_dwell = 0;
         string debug_msg = "";
         string debug_msg_long = "";
-
-        // the dump string, can be used to dump crap into the custom data for debugging.
-        string dump_string = "";
 
         double velocity;
         float mass;
@@ -179,6 +199,7 @@ namespace IngameScript
         List<IMyTerminalBlock> extractors = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> reactorsSmall = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> reactorsLarge = new List<IMyTerminalBlock>();
+        List<IMyTerminalBlock> reactorsAll = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> h2Engines = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> cargosSmall = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> cargosLarge = new List<IMyTerminalBlock>();
@@ -543,10 +564,8 @@ namespace IngameScript
         {
 
             Storage = current_stance;
-
-            // TODO
-            // this works, but doesn't work well with nexus.
-            // might need to save stance elsewhere.
+            // not using this cause it doesn't work very well with nexus
+            // thus using custom data instead.
 
         }
 
@@ -792,7 +811,11 @@ namespace IngameScript
 
             // stores the current stance to persistance
             // allows it to be saved across instances.
-            Save();
+            //Save();
+            // lol no, persistance is shit, this just simply doens't always work
+            // i think it's a nexus thing, also server seems to clear this on boot maybe
+            // custom data instead.
+
 
             if (debug) Echo("Found stance. Setting torpedoes to " + stance_data[stance_i][0]);
 
@@ -1318,9 +1341,38 @@ namespace IngameScript
             // it's now public variable official.
             ship_name = ship;
 
-            // we have to do this again
-            // to make sure the name doesn't reset from custom data
-            // on the next fullRefresh();
+
+
+            // now I calculate subsystem total capacities in order to check for damage later.
+            bat_init = 0;
+            for (int i = 0; i < batteries.Count; i++)
+                bat_init += (batteries[i] as IMyBatteryBlock).MaxStoredPower;
+
+            tank_h2_init = 0;
+            for (int i = 0; i < tanksH2.Count; i++)
+                tank_h2_init += (tanksH2[i] as IMyGasTank).Capacity;
+
+            tank_o2_init = 0;
+            for (int i = 0; i < tanksO2.Count; i++)
+                tank_o2_init += (tanksO2[i] as IMyGasTank).Capacity;
+
+            reactors_init = 0;
+            for (int i = 0; i < reactorsAll.Count; i++)
+                reactors_init += (reactorsAll[i] as IMyReactor).MaxOutput;
+
+            thrust_main_init = 0;
+            for (int i = 0; i < thrustersMain.Count; i++)
+                thrust_main_init += (thrustersMain[i] as IMyThrust).MaxThrust;
+
+            thrust_rcs_init = 0;
+            for (int i = 0; i < thrustersRcs.Count; i++)
+                thrust_rcs_init += (thrustersRcs[i] as IMyThrust).MaxThrust;
+
+            pdcs_init = pdcs.Count + defencePdcs.Count;
+            torps_init = torps.Count;
+            railguns_init = railguns.Count;
+            gyros_init = gyros.Count;
+
             updateCustomData(true);
 
             for (int i = 0; i < everythingElse.Count; i++)
@@ -1710,8 +1762,8 @@ namespace IngameScript
                 }
             }
 
-
-
+            integrity_tanks_H2 = Math.Round(100 * (tank_h2_total / tank_h2_init));
+            integrity_tanks_O2 = Math.Round(100 * (tank_o2_total / tank_o2_init));
 
             bat_actual = 0;
             bat_total = 0;
@@ -1730,6 +1782,8 @@ namespace IngameScript
                     bat_total += Battery.MaxStoredPower;
                 }
             }
+
+            integrity_bats = Math.Round(100 * (bat_total / bat_init));
 
             // iterate over inventories
             if (debug) Echo("Iterating over " + cargo_inventory.Count + " inventories...");
@@ -1786,10 +1840,12 @@ namespace IngameScript
             }
 
             if (debug) Echo("Iterating over " + torps.Count + " torpedoes...");
+            double FunctionalTorps = 0;
             for (int i = 0; i < torps.Count; i++)
             {
                 if (torps[i].IsFunctional && torps[i].CustomName.Contains(ship_name))
                 {
+                    FunctionalTorps++;
                     // turn torps on for 1+
                     if (stance_data[stance_i][0] < 1)
                         torps[i].ApplyAction("OnOff_Off");
@@ -1798,11 +1854,16 @@ namespace IngameScript
                 }
 
             }
+            integrity_torps = Math.Round(100 * (FunctionalTorps / torps_init));
+
+
             if (debug) Echo("Iterating over " + pdcs.Count + " PDCs...");
+            double FunctionalPDCs = 0;
             for (int i = 0; i < pdcs.Count; i++)
             {
                 if (pdcs[i].IsFunctional && pdcs[i].CustomName.Contains(ship_name))
                 {
+                    FunctionalPDCs++;
                     // turn PDCs off for 2+
                     if (stance_data[stance_i][1] < 2)
                         pdcs[i].ApplyAction("OnOff_Off");
@@ -1816,6 +1877,7 @@ namespace IngameScript
             {
                 if (defencePdcs[i].IsFunctional && defencePdcs[i].CustomName.Contains(ship_name))
                 {
+                    FunctionalPDCs++;
                     // turn defence pdcs on for 1+
                     if (stance_data[stance_i][1] < 1)
                         defencePdcs[i].ApplyAction("OnOff_Off");
@@ -1823,12 +1885,15 @@ namespace IngameScript
                         defencePdcs[i].ApplyAction("OnOff_On");
                 }
             }
+            integrity_pdcs = Math.Round(100 * (FunctionalPDCs / pdcs_init));
 
             if (debug) Echo("Iterating over " + railguns.Count + " railguns...");
+            double FunctionalRailguns = 0;
             for (int i = 0; i < railguns.Count; i++)
             {
                 if (railguns[i].IsFunctional && railguns[i].CustomName.Contains(ship_name))
                 {
+                    FunctionalRailguns++;
                     // turn railguns on for 1+
                     if (stance_data[stance_i][2] < 1)
                         railguns[i].ApplyAction("OnOff_Off");
@@ -1836,18 +1901,35 @@ namespace IngameScript
                         railguns[i].ApplyAction("OnOff_On");
                 }
             }
-            if (adjustKeepAlives)
+            integrity_railguns = Math.Round(100 * (FunctionalRailguns / railguns_init));
+
+
+            if (debug) Echo("Iterating over " + gyros.Count + " gyros...");
+            double FunctionalGyros = 0;
+            for (int i = 0; i < gyros.Count; i++)
             {
-                if (debug) Echo("Iterating over " + gyros.Count + " gyros...");
-                for (int i = 0; i < gyros.Count; i++)
+                if (gyros[i].IsFunctional && gyros[i].CustomName.Contains(ship_name))
                 {
-                    if (adjustThemTo)
-                        gyros[i].ApplyAction("OnOff_On");
-                    else
-                        gyros[i].ApplyAction("OnOff_Off");
+                    FunctionalGyros++;
+                    if (adjustKeepAlives)
+                    {
+                        if (adjustThemTo)
+                            gyros[i].ApplyAction("OnOff_On");
+                        else
+                            gyros[i].ApplyAction("OnOff_Off");
+                    }
                 }
             }
+            integrity_gyros = Math.Round(100 * (FunctionalGyros / gyros_init));
 
+            if (debug) Echo("Iterating over " + reactorsAll.Count + " reactors...");
+            double FunctionalReactors = 0;
+            for (int i = 0; i < reactorsAll.Count; i++)
+            {
+                if (reactorsAll[i].IsFunctional && reactorsAll[i].CustomName.Contains(ship_name))
+                    FunctionalReactors += (reactorsAll[i] as IMyReactor).MaxOutput;
+            }
+            integrity_reactors = Math.Round(100 * (FunctionalReactors / reactors_init));
 
             // calculate current thrust.
             max_thrust = 0;
@@ -1861,6 +1943,15 @@ namespace IngameScript
                 }
 
             }
+            integrity_main_thrust = Math.Round(100 * (max_thrust / thrust_main_init));
+
+            float MaxRcsThrust = 0;
+            foreach (IMyTerminalBlock thruster in thrustersRcs)
+            {
+                if (thruster.IsFunctional && thruster.CustomName.Contains(ship_name))
+                    MaxRcsThrust += (thruster as IMyThrust).MaxThrust;
+            }
+            integrity_rcs_thrust = Math.Round(100 * (MaxRcsThrust / thrust_rcs_init));
 
             try
             {
@@ -1868,9 +1959,6 @@ namespace IngameScript
                 velocity = controller.GetShipSpeed();
                 mass = controller.CalculateShipMass().PhysicalMass;
             } catch { }
-
-
-
 
             manageExtractors();
             manageDoors();
@@ -1902,7 +1990,6 @@ namespace IngameScript
             lcd_blocks.Clear();
             antenna_blocks.Clear();
             door_blocks.Clear();
-
             cargo_inventory.Clear();
             projector_blocks.Clear();
 
@@ -1921,7 +2008,7 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Building LCDs list (" + lcd_keyword + ")...");
+            if (debug) Echo("Building LCDs list...");
 
             // recalculate LCD list
             List<IMyTextPanel> lcds = new List<IMyTextPanel>();
@@ -2033,7 +2120,7 @@ namespace IngameScript
 
             // now_reactors = cargo_inventory.Count;
 
-            if (debug) Echo("Building reactors list...");
+            if (debug) Echo("Building reactor inventory list...");
 
             // reactors now. use above var to find these ones later.
             List<IMyReactor> reactors = new List<IMyReactor>();
@@ -2083,6 +2170,7 @@ namespace IngameScript
             extractors.Clear();
             reactorsSmall.Clear();
             reactorsLarge.Clear();
+            reactorsAll.Clear();
             h2Engines.Clear();
             cargosSmall.Clear();
             cargosLarge.Clear();
@@ -2146,6 +2234,7 @@ namespace IngameScript
 
                     else if (blockId.Contains("MyObjectBuilder_Reactor/"))
                     {
+                        reactorsAll.Add(allBlocks[i]);
                         if (blockId.Contains("SmallGenerator"))
                             reactorsSmall.Add(allBlocks[i]);
                         else
@@ -2300,8 +2389,7 @@ namespace IngameScript
                         )
                         torps.Add(allBlocks[i]);
 
-                    else if (allBlocks[i].CustomName.Contains("Torpedo")) { Echo(">>" + blockId + "<<"); }
-
+                   
                     // Railguns 
                     // MyObjectBuilder_LargeMissileTurret/Mounted Zakosetara Heavy Railgun
                     // MyObjectBuilder_LargeMissileTurret/Farren-Pattern Heavy Railgun
@@ -2687,17 +2775,63 @@ namespace IngameScript
                                     friendly_tags = string.Join("\n", value.Split(','));
                                     //debug = bool.Parse(value);
                                     break;
+
+                                case "Current Stance":
+                                    config_count++;
+                                    current_stance = value;
+                                    break;
+
+                                case "Reactor Integrity":
+                                    config_count++;
+                                    reactors_init = float.Parse(value);
+                                    break;
+                                case "PDC Integrity":
+                                    config_count++;
+                                    pdcs_init = int.Parse(value);
+                                    break;
+                                case "Torpedo Integrity":
+                                    config_count++;
+                                    torps_init = int.Parse(value);
+                                    break;
+                                case "Railgun Integrity":
+                                    config_count++;
+                                    railguns_init = int.Parse(value);
+                                    break;
+                                case "H2 Tank Integrity":
+                                    config_count++;
+                                    tank_h2_init = double.Parse(value);
+                                    break;
+                                case "O2 Tank Integrity":
+                                    config_count++;
+                                    tank_o2_init = double.Parse(value);
+                                    break;
+                                case "Epstein Integrity":
+                                    config_count++;
+                                    thrust_main_init = float.Parse(value);
+                                    break;
+                                case "RCS Integrity":
+                                    config_count++;
+                                    thrust_rcs_init = float.Parse(value);
+                                    break;
+                                case "Gyro Integrity":
+                                    config_count++;
+                                    gyros_init = int.Parse(value);
+                                    break;
+
                             }
                         }
                     }
 
-                    if (config_count == 25)
+                    if (config_count == 35)
                     {
                         parsedVars = true;
                     }
+
+
+
                     else
                     {
-                        if (debug) Echo("Did not get enough config items (" + config_count + ") from custom data, resetting.");
+                        Echo("Did not get enough config items (" + config_count + ") from custom data, resetting.");
                     }
 
                     //if (debug) Echo("Custom data variables array length =" + parse_dat.Length);
@@ -2794,11 +2928,14 @@ namespace IngameScript
                 {
                     debugEcho("Custom Data Error! (stances)", "Failed to parse all the stance variables from custom data.");
                 }
+
+                // STOP HERE IF EVERYTHING PARSED WELL!
+                if (parsedVars && parsedStances) return;
+
             }
 
-            // STOP HERE IF EVERYTHING PARSED WELL!
-            if (parsedVars && parsedStances) return;
 
+  
             string stance_text = "";
 
             if (stance_names.Count != stance_data.Count) debugEcho("Weird Error!", "Um, so...\nstance_names.Count != stance_data.Count");
@@ -2808,7 +2945,10 @@ namespace IngameScript
                 Echo("No stances!");
             }
 
-            debugEcho("RESET CUSTOM DATA!", "Something went wrong, so custom data was reset.\nVars Parsed=" + parsedVars + "\nStances Parsed=" + parsedStances);
+            if (!dontParse)
+                debugEcho("RESET CUSTOM DATA!", "Something went wrong, so custom data was reset.\nVars Parsed=" + parsedVars + "\nStances Parsed=" + parsedStances);
+            else
+                Echo("Saved custom data.");
 
             for (int i = 0; i < stance_names.Count; i++)
             {
@@ -2864,7 +3004,6 @@ namespace IngameScript
                 + "If this data can't be parsed, it will be reset!" + "\n"
 
                 + "\n---- [General Settings] ----\n"
-                + "Ship name. Blocks without this name will be ignored\n=" + ship_name + "\n"
                 + "Block name delimiter, used by init. One character only!\n=" + name_delimiter + "\n"
                 + "Keyword used to identify RSM LCDs.\n=" + lcd_keyword + "\n"
                 + "Keyword used to identify autorepair systems\n=" + autorepair_keyword + "\n"
@@ -2900,9 +3039,26 @@ namespace IngameScript
                 + "Throttle script (x100 ticks pause between loops, default 0)\n=" + wait_count + "\n"
                 + "Full refresh frequency (x100 ticks, default 50)\n=" + refresh_freq + "\n"
                 + "Verbose script debugging. Prints more logging info to PB details.\n=" + debug + "\n"
+
+                 + "\n---- [System] ----\n"
+                 + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"
+                 + "Ship name. Blocks without this name will be ignored\n=" + ship_name + "\n"
+                 + "Current Stance\n=" + current_stance + "\n"
+                 + "Reactor Integrity\n=" + reactors_init + "\n"
+                 + "PDC Integrity\n=" + pdcs_init + "\n"
+                 + "Torpedo Integrity\n=" + torps_init + "\n"
+                 + "Railgun Integrity\n=" + railguns_init + "\n"
+                 + "H2 Tank Integrity\n=" + tank_h2_init + "\n"
+                 + "O2 Tank Integrity\n=" + tank_o2_init + "\n"
+                 + "Epstein Integrity\n=" + thrust_main_init + "\n"
+                 + "RCS Integrity\n=" + thrust_rcs_init + "\n"
+                 + "Gyro Integrity\n=" + gyros_init + "\n"
+
+
                 + "\n---- [Stances] ----\n"
                 + stance_text
-                + "-------------------------\n\n\n\n\n" + dump_string;
+
+                + "-------------------------\n\n\n\n\n";
 
             return;
 
@@ -3199,9 +3355,6 @@ namespace IngameScript
 
             sec_inventory_counts += "\n";
 
-            if (current_stance == "N/A")
-                if (Storage != "") current_stance = Storage;
-
             double vel = Math.Round(velocity);
             string vel_msg = "Velocity:        ";
 
@@ -3259,6 +3412,35 @@ namespace IngameScript
                 lcd_divider + "\n\n"
                + "Doors Closed:    " + output_doors + "\n\n";
 
+            string sec_integrity =
+                lcd_divider + "\n\n";
+
+            if (reactors_init > 0)
+                sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + " %").PadRight(9) + "\n";
+            if (bat_init > 0)
+                sec_integrity += "Batteries [" + generateBar(integrity_bats) + "] " + (integrity_bats + " %").PadRight(9) + "\n";
+            if (pdcs_init > 0)
+                sec_integrity += "PDCs      [" + generateBar(integrity_pdcs) + "] " + (integrity_pdcs + " %").PadRight(9) + "\n";
+            if (torps_init > 0)
+                sec_integrity += "Torpedoes [" + generateBar(integrity_torps) + "] " + (integrity_torps + " %").PadRight(9) + "\n";
+            if (railguns_init > 0)
+                sec_integrity += "Railguns  [" + generateBar(integrity_railguns) + "] " + (integrity_railguns + " %").PadRight(9) + "\n";
+            if (tank_h2_init > 0)
+                sec_integrity += "H2 Tanks  [" + generateBar(integrity_tanks_H2) + "] " + (integrity_tanks_H2 + " %").PadRight(9) + "\n";
+            if (tank_o2_init > 0)
+                sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + " %").PadRight(9) + "\n";
+            if (thrust_main_init > 0)
+                sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + " %").PadRight(9) + "\n";
+            if (thrust_rcs_init > 0)
+                sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + " %").PadRight(9) + "\n";
+            if (gyros_init > 0)
+                sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + " %").PadRight(9) + "\n\n";
+
+
+            if (sec_integrity == lcd_divider + "\n\n") // nothing init basically.
+                sec_integrity = lcd_divider + "\n\n" 
+                    + "Run init when ship is fully repaired\n to display subsystem integrity!" + "\n\n";
+
             string sec_thrust_advanced = "";
 
             if (build_advanced_thrust_data)
@@ -3300,40 +3482,87 @@ namespace IngameScript
                 bool show_comms = true;
                 bool show_autorepair = false;
                 bool show_doors = false;
+                bool show_integrity = false;
                 bool show_thrust_advanced = false;
 
                 bool AllGood = false;
+                string hudlcd_safe = "";
                 try
                 {
                     // Parse LCD Panel Data
                     string[] LcdConfigs = lcd_blocks[i].CustomData.Split('\n');
 
-                    LcdConfigs = Array.FindAll(LcdConfigs, item => (!item.Contains("hudlcd") && !item.Contains("hudXlcd")));
 
-                    if (LcdConfigs.Length == 8)
+                    int config_count = 0;
+
+                    foreach (string LcdConfig in LcdConfigs)
                     {
-                        foreach (string LcdConfig in LcdConfigs)
+                        if (LcdConfig.Contains("hudlcd"))
+                            hudlcd_safe = LcdConfig;
+                        if (LcdConfig.Contains("="))
                         {
                             string[] Parsed = LcdConfig.Split('=');
+
                             if (Parsed[0] == "Show Tanks & Batteries")
+                            {
                                 show_tanks_and_batts = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
+
                             else if (Parsed[0] == "Show header")
+                            {
                                 show_header = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
+
                             else if (Parsed[0] == "Show Inventory")
+                            {
                                 show_inventory = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
+
                             else if (Parsed[0] == "Show Thrust")
+                            {
                                 show_thrust = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
+
                             else if (Parsed[0] == "Show Comms")
+                            {
                                 show_comms = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
+
                             else if (Parsed[0] == "Show Autorepair")
+                            {
                                 show_autorepair = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
+
                             else if (Parsed[0] == "Show Doors")
+                            {
                                 show_doors = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
+
+                            else if (Parsed[0] == "Show Subsystem Integrity")
+                            {
+                                show_integrity = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
+
                             else if (Parsed[0] == "Show Advanced Thrust")
+                            {
                                 show_thrust_advanced = bool.Parse(Parsed[1]);
+                                config_count++;
+                            }
                         }
-                        AllGood = true;
+                        
+                            
                     }
+                    if (config_count == 9)
+                        AllGood = true;
+
                 }
                 catch { }
 
@@ -3347,7 +3576,9 @@ namespace IngameScript
                         "\nShow Comms=" + show_comms +
                         "\nShow Autorepair=" + show_autorepair +
                         "\nShow Doors=" + show_doors +
-                        "\nShow Advanced Thrust=" + show_thrust_advanced;
+                        "\nShow Subsystem Integrity=" + show_integrity +
+                        "\nShow Advanced Thrust=" + show_thrust_advanced
+                        +"\n" + hudlcd_safe;
                 }
 
                 string output_text = "";
@@ -3359,6 +3590,7 @@ namespace IngameScript
                 if (show_comms) output_text += sec_comms;
                 if (show_autorepair) output_text += sec_autorepair;
                 if (show_doors) output_text += sec_doors;
+                if (show_integrity) output_text += sec_integrity;
                 if (show_thrust_advanced)
                 {
                     output_text += sec_thrust_advanced;
@@ -3453,17 +3685,24 @@ namespace IngameScript
 
         string generateBar(double percentage)
         {
-            int ones_count = 0;
-            if (percentage > 0)
+            try
             {
-                int try_this = (int)percentage / 10;
-                if (try_this > 10) return new string('=', 10);
-                if (try_this != 0) ones_count = try_this;
-            }
+                int ones_count = 0;
+                if (percentage > 0)
+                {
+                    int try_this = (int)percentage / 10;
+                    if (try_this > 10) return new string('=', 10);
+                    if (try_this != 0) ones_count = try_this;
+                }
 
-            string ones = new string('=', ones_count);
-            string zeros = new string(' ', 10 - ones_count);
-            return ones + zeros;
+                string ones = new string('=', ones_count);
+                string zeros = new string(' ', 10 - ones_count);
+                return ones + zeros;
+            }
+            catch
+            {
+                return "#ERR#";
+            }
 
         }
 
