@@ -155,7 +155,7 @@ namespace IngameScript
         // Block lists, built at fullRefresh();
         List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
         List<IMyTextPanel> lcd_blocks = new List<IMyTextPanel>();
-        List<IMyGasTank> tank_blocks = new List<IMyGasTank>();
+
 
         List<IMyDoor> door_blocks = new List<IMyDoor>();
         List<IMyBeacon> beacon_blocks = new List<IMyBeacon>();
@@ -184,6 +184,7 @@ namespace IngameScript
         List<IMyTerminalBlock> cargosLarge = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> tanksH2 = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> tanksO2 = new List<IMyTerminalBlock>();
+        List<IMyTerminalBlock> allTanks = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> antennas = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> beacons = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> batteries = new List<IMyTerminalBlock>();
@@ -1191,22 +1192,23 @@ namespace IngameScript
 
             }
 
-            if (debug) Echo("Setting " + tank_blocks.Count + " tanks to stockpile = " + stance_data[stance_i][16]);
+            if (debug) Echo("Setting " + allTanks.Count + " tanks to stockpile = " + stance_data[stance_i][16]);
 
-            for (int i = 0; i < tank_blocks.Count; i++)
+            for (int i = 0; i < allTanks.Count; i++)
             {
-                if (tank_blocks[i] != null)
+                if (allTanks[i] != null)
                 {
-                    if (tank_blocks[i].IsFunctional)
+                    if (allTanks[i].IsFunctional)
                     {
+                        IMyGasTank Tank = allTanks[i] as IMyGasTank;
                         // why would this ever be off
-                        tank_blocks[i].Enabled = true;
+                        Tank.Enabled = true;
 
                         // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                         if (stance_data[stance_i][16] == 1)
-                            tank_blocks[i].Stockpile = true;
+                            Tank.Stockpile = true;
                         else
-                            tank_blocks[i].Stockpile = false;
+                            Tank.Stockpile = false;
                     }
                 }
 
@@ -1683,29 +1685,47 @@ namespace IngameScript
             tank_o2_actual = 0;
 
             // iterate over tanks
-            if (debug) Echo("Iterating over " + tank_blocks.Count + " tanks...");
-            for (int i = 0; i < tank_blocks.Count; i++)
+            if (debug) Echo("Iterating over " + allTanks.Count + " tanks...");
+            for (int i = 0; i < allTanks.Count; i++)
             {
-                if (tank_blocks[i].IsFunctional)
+                IMyGasTank Tank = allTanks[i] as IMyGasTank;
+                string blockId = Tank.BlockDefinition.ToString();
+
+                if (Tank.IsFunctional)
                 {
                     // turn on!
-                    tank_blocks[i].Enabled = true;
-
-                    string blockId = tank_blocks[i].BlockDefinition.ToString();
+                    Tank.Enabled = true;
 
                     // update the global tank values.
                     if (blockId.Contains("Hydro"))
                     {
-                        tank_h2_total += tank_blocks[i].Capacity;
-                        tank_h2_actual += (tank_blocks[i].Capacity * tank_blocks[i].FilledRatio);
+                        tank_h2_total += Tank.Capacity;
+                        tank_h2_actual += (Tank.Capacity * Tank.FilledRatio);
                     }
                     else
                     {
-                        tank_o2_total += tank_blocks[i].Capacity;
-                        tank_o2_actual += (tank_blocks[i].Capacity * tank_blocks[i].FilledRatio);
+                        tank_o2_total += Tank.Capacity;
+                        tank_o2_actual += (Tank.Capacity * Tank.FilledRatio);
+                    }
+                }
+                else
+                {
+                    // update the global tank values.
+                    if (blockId.Contains("Hydro"))
+                    {
+                        tank_h2_total += Tank.Capacity;
+                        //tank_h2_actual += (Tank.Capacity * Tank.FilledRatio);
+                    }
+                    else
+                    {
+                        tank_o2_total += Tank.Capacity;
+                        //tank_o2_actual += (Tank.Capacity * Tank.FilledRatio);
                     }
                 }
             }
+
+
+
 
             bat_actual = 0;
             bat_total = 0;
@@ -1896,7 +1916,6 @@ namespace IngameScript
             lcd_blocks.Clear();
             antenna_blocks.Clear();
             door_blocks.Clear();
-            tank_blocks.Clear();
 
             cargo_inventory.Clear();
             projector_blocks.Clear();
@@ -1961,20 +1980,6 @@ namespace IngameScript
                     )
                 {
                     door_blocks.Add(doors[i]);
-                }
-            }
-
-            if (debug) Echo("Building tanks list...");
-
-            // recalculate Tank list
-            List<IMyGasTank> tanks = new List<IMyGasTank>();
-            GridTerminalSystem.GetBlocksOfType<IMyGasTank>(tanks);
-
-            for (int i = 0; i < tanks.Count; i++)
-            {
-                if (tanks[i].CustomName.Contains(ship_name) && !tanks[i].CustomName.Contains(ignore_keyword))
-                {
-                    tank_blocks.Add(tanks[i]);
                 }
             }
 
@@ -2097,6 +2102,7 @@ namespace IngameScript
             cargosLarge.Clear();
             tanksH2.Clear();
             tanksO2.Clear();
+            allTanks.Clear();
             antennas.Clear();
             beacons.Clear();
             batteries.Clear();
@@ -2192,6 +2198,7 @@ namespace IngameScript
 
                     else if (blockId.Contains("MyObjectBuilder_OxygenTank/"))
                     {
+                        allTanks.Add(allBlocks[i]);
                         if (blockId.Contains("Hydro"))
                             tanksH2.Add(allBlocks[i]);
                         else
