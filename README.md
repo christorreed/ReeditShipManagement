@@ -41,7 +41,7 @@ So you have a pretty new ship...  We'll run RSM in a minute, but first let's do 
 * **Prepare your LCDs:**
 	* RSM outputs a range of data that is available on LCD blocks including hudlcd support.
 	* There are lots of ways to set this up, but let's try out the default option first.  This will work better if you install the hudlcd plugin first.
-	* Place 4 LCDs and name them `..[RSM].HUD1` to `..[RSM].HUD4`.  Again, trust me, this will make sense shortly...
+	* Place 5 LCDs and name them `..[RSM].HUD1` to `..[RSM].HUD5`.  Again, trust me, this will make sense shortly...
 	* RSM will also configure an LCD name `[EFC]` with hudlcd if you have one.
 * **Build the PB:**
 	* You will need a Programmable Block to run RSM.
@@ -116,7 +116,7 @@ The **Init** command prepares your ship for use with RSM. Input a ship name with
 * Renames every block on the ship to include the ship's name.
 	* Note that blocks which do not have the ship's name in their block name will be ignored by RSM in most circumstances.
 * Automatically configures hudlcd
-	* If you're running the hudlcd plugin, add `[RSM].HUD1` - `[RSM].HUD4` to the names of LCDs and RSM will automatically configure and position them on your hud. Also adjusts [EFC] tagged LCDs.
+	* If you're running the hudlcd plugin, add `[RSM].HUD1` - `[RSM].HUD5` to the names of LCDs and RSM will automatically configure and position them on your hud. Also adjusts [EFC] tagged LCDs.
 * You can run **Init** as many times as you like, or never.
 
 ### Naming Syntax

@@ -46,6 +46,7 @@ namespace IngameScript
         string defence_pdc_keyword = "Repel";
         string min_drives_keyword = "Min";
         bool auto_configure_pdcs = true;
+        bool disable_lighting = false; // ew, why disable.  silly germ.
 
         // number of loops before each door will be closed
         int door_open_time = 3;
@@ -1121,75 +1122,83 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Setting " + lightsSpotlights.Count + " spotlights to " + stance_data[stance_i][5]);
-            for (int i = 0; i < lightsSpotlights.Count; i++)
+            if (disable_lighting)
             {
-                if (lightsSpotlights[i].IsFunctional && lightsSpotlights[i].CustomName.Contains(ship_name))
+                if (debug) Echo("No lighting commands were processed because the disable all lighting control option is enabled.");
+            }
+            else
+            {
+                if (debug) Echo("Setting " + lightsSpotlights.Count + " spotlights to " + stance_data[stance_i][5]);
+                for (int i = 0; i < lightsSpotlights.Count; i++)
                 {
-                    // 5: spotlights; 0: off, 1: on, 2: on max radius
-                    if (stance_data[stance_i][5] == 0)
-                        lightsSpotlights[i].ApplyAction("OnOff_Off");
-                    else
+                    if (lightsSpotlights[i].IsFunctional && lightsSpotlights[i].CustomName.Contains(ship_name))
                     {
-                        if (stance_data[stance_i][5] == 2)
-                            (lightsSpotlights[i] as IMyLightingBlock).Radius = 9999;
-                        lightsSpotlights[i].ApplyAction("OnOff_On");
+                        // 5: spotlights; 0: off, 1: on, 2: on max radius
+                        if (stance_data[stance_i][5] == 0)
+                            lightsSpotlights[i].ApplyAction("OnOff_Off");
+                        else
+                        {
+                            if (stance_data[stance_i][5] == 2)
+                                (lightsSpotlights[i] as IMyLightingBlock).Radius = 9999;
+                            lightsSpotlights[i].ApplyAction("OnOff_On");
+                        }
+
                     }
-                    
                 }
-            }
 
-            if (debug) Echo(
-                "Setting " + lightsNav.Count + " exterior lights to " + stance_data[stance_i][6] + ".\n"
-                + "Colour (" + stance_data[stance_i][7] + "," + stance_data[stance_i][8]
-                + "," + stance_data[stance_i][9] + "," + stance_data[stance_i][10] + ")"
-                );
-            for (int i = 0; i < lightsNav.Count; i++)
-            {
-                if (lightsNav[i].IsFunctional && lightsNav[i].CustomName.Contains(ship_name))
+                if (debug) Echo(
+                    "Setting " + lightsNav.Count + " exterior lights to " + stance_data[stance_i][6] + ".\n"
+                    + "Colour (" + stance_data[stance_i][7] + "," + stance_data[stance_i][8]
+                    + "," + stance_data[stance_i][9] + "," + stance_data[stance_i][10] + ")"
+                    );
+                for (int i = 0; i < lightsNav.Count; i++)
                 {
-                    // 6: exterior lights; 0: off, 1: on
-                    if (stance_data[stance_i][6] == 0)
-                        lightsNav[i].ApplyAction("OnOff_Off");
-                    else
-                        lightsNav[i].ApplyAction("OnOff_On");
+                    if (lightsNav[i].IsFunctional && lightsNav[i].CustomName.Contains(ship_name))
+                    {
+                        // 6: exterior lights; 0: off, 1: on
+                        if (stance_data[stance_i][6] == 0)
+                            lightsNav[i].ApplyAction("OnOff_Off");
+                        else
+                            lightsNav[i].ApplyAction("OnOff_On");
 
-                    lightsNav[i].SetValue("Color",
-                        new Color(
-                            stance_data[stance_i][7],
-                            stance_data[stance_i][8],
-                            stance_data[stance_i][9],
-                            stance_data[stance_i][10]
-                            )
-                        );
+                        lightsNav[i].SetValue("Color",
+                            new Color(
+                                stance_data[stance_i][7],
+                                stance_data[stance_i][8],
+                                stance_data[stance_i][9],
+                                stance_data[stance_i][10]
+                                )
+                            );
+                    }
                 }
-            }
 
-            if (debug) Echo(
-                "Setting " + lightsInterior.Count + " exterior lights to " + stance_data[stance_i][11] + ".\n"
-                + "Colour (" + stance_data[stance_i][12] + "," + stance_data[stance_i][13]
-                + "," + stance_data[stance_i][14] + "," + stance_data[stance_i][15] + ")"
-                );
-            for (int i = 0; i < lightsInterior.Count; i++)
-            {
-                if (lightsInterior[i].IsFunctional && lightsInterior[i].CustomName.Contains(ship_name))
+                if (debug) Echo(
+                    "Setting " + lightsInterior.Count + " exterior lights to " + stance_data[stance_i][11] + ".\n"
+                    + "Colour (" + stance_data[stance_i][12] + "," + stance_data[stance_i][13]
+                    + "," + stance_data[stance_i][14] + "," + stance_data[stance_i][15] + ")"
+                    );
+                for (int i = 0; i < lightsInterior.Count; i++)
                 {
-                    // 11: interior lights lights; 0: off, 1: on
-                    if (stance_data[stance_i][11] == 0)
-                        lightsInterior[i].ApplyAction("OnOff_Off");
-                    else
-                        lightsInterior[i].ApplyAction("OnOff_On");
+                    if (lightsInterior[i].IsFunctional && lightsInterior[i].CustomName.Contains(ship_name))
+                    {
+                        // 11: interior lights lights; 0: off, 1: on
+                        if (stance_data[stance_i][11] == 0)
+                            lightsInterior[i].ApplyAction("OnOff_Off");
+                        else
+                            lightsInterior[i].ApplyAction("OnOff_On");
 
-                    lightsInterior[i].SetValue("Color",
-                        new Color(
-                            stance_data[stance_i][12],
-                            stance_data[stance_i][13],
-                            stance_data[stance_i][14],
-                            stance_data[stance_i][15]
-                            )
-                        );
+                        lightsInterior[i].SetValue("Color",
+                            new Color(
+                                stance_data[stance_i][12],
+                                stance_data[stance_i][13],
+                                stance_data[stance_i][14],
+                                stance_data[stance_i][15]
+                                )
+                            );
+                    }
                 }
             }
+            
 
             if (debug) Echo("Setting " + batteries.Count + " batteries to recharge = " + stance_data[stance_i][16]);
 
@@ -1399,6 +1408,31 @@ namespace IngameScript
 
             bool EfcLcdFound = false;
 
+            // this is just for extra hudlcd defaults.
+            List<IMyTextPanel> AllOtherLCDs = new List<IMyTextPanel>();
+            GridTerminalSystem.GetBlocksOfType<IMyTextPanel>(AllOtherLCDs);
+            for (int i = 0; i < AllOtherLCDs.Count; i++)
+            {
+                if (AllOtherLCDs[i].CustomName.Contains("[REEDAV].1"))
+                    AllOtherLCDs[i].CustomData =
+                        "Show Targeting Info=True\nFirst Missile=0\nLast Missile=0\nExtra Missile Info=False\nhudlcd:0.79:0.31:.50";
+
+                if (AllOtherLCDs[i].CustomName.Contains("[REEDAV].2"))
+                    AllOtherLCDs[i].CustomData =
+                        "Show Targeting Info=False\nFirst Missile=1\nLast Missile=24\nExtra Missile Info=False\nhudlcd:0.79:0:.50";
+
+                if (AllOtherLCDs[i].CustomName.Contains("[EFC]"))
+                {
+                    if (!EfcLcdFound)
+                    {
+                        EfcLcdFound = true;
+                        AllOtherLCDs[i].CustomData = "hudlcd:-0.76:0.78:0.47";
+                    }
+                    else
+                        AllOtherLCDs[i].CustomData = "";
+                }
+            }
+
             for (int i = 0; i < camerasAndSensorsAndLCDs.Count; i++)
             {
                 string defaultName = camerasAndSensorsAndLCDs[i].DefinitionDisplayNameText;
@@ -1411,38 +1445,25 @@ namespace IngameScript
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD1"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=True\nShow Tanks & Batteries=False\nShow Inventory=True\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.29:0.99:0.5";
+                            "Show header=True\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Subsystem Integrity=False\nShow Advanced Thrust=False\nhudlcd:-0.60:0.99:0.8";
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD2"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=True\nShow Inventory=False\nShow Thrust=True\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.53:0.99:0.5";
+                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Subsystem Integrity=True\nShow Advanced Thrust=False\nhudlcd:0.29:0.99:0.5";
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD3"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=True\nShow Autorepair=True\nShow Doors=True\nShow Advanced Thrust=False\nhudlcd:0.77:0.99:0.5";
+                            "Show header=False\nShow Tanks & Batteries=True\nShow Inventory=False\nShow Thrust=True\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.53:0.99:0.5";
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD4"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=True\nhudlcd:-0.99:0.78:0.5";
+                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=True\nShow Autorepair=True\nShow Doors=True\nShow Advanced Thrust=False\nhudlcd:0.77:0.99:0.5";
 
-                    if (camerasAndSensorsAndLCDs[i].CustomName.Contains("[REEDAV].1"))
+                    if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD5"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show Targeting Info=True\nFirst Missile=0\nLast Missile=0\nExtra Missile Info=False\nhudlcd:0.79:0.31:.50";
+                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=True\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=True\nhudlcd:-0.99:0.78:0.47";
 
-                    if (camerasAndSensorsAndLCDs[i].CustomName.Contains("[REEDAV].2"))
-                        camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show Targeting Info=False\nFirst Missile=1\nLast Missile=24\nExtra Missile Info=False\nhudlcd:0.79:0:.50";
 
-                    if (camerasAndSensorsAndLCDs[i].CustomName.Contains("[EFC]"))
-                    {
-                        if (EfcLcdFound)
-                        {
-                            EfcLcdFound = true;
-                            camerasAndSensorsAndLCDs[i].CustomData = "hudlcd:-0.99:0.35:0.65";
-                        }
-                        else
-                            camerasAndSensorsAndLCDs[i].CustomData = "";
-                    }
 
 
                 }
@@ -1703,18 +1724,20 @@ namespace IngameScript
                 if (debug) Echo("Iterating over " + connector_blocks.Count + " connectors...");
                 for (int i = 0; i < connector_blocks.Count; i++)
                 {
-                    // turn on/off as required
-                    if (connector_blocks[i].IsFunctional)
-                        connector_blocks[i].Enabled = adjustThemTo;
+                    if (connector_blocks[i] != null)
+                        // turn on/off as required
+                        if (connector_blocks[i].IsFunctional)
+                            connector_blocks[i].Enabled = adjustThemTo;
                 }
 
                 // iterate over cameras, sensors, lcds
                 if (debug) Echo("Iterating over " + camerasAndSensorsAndLCDs.Count + " cameras...");
                 for (int i = 0; i < camerasAndSensorsAndLCDs.Count; i++)
                 {
-                    // turn on/off as required
-                    if (camerasAndSensorsAndLCDs[i].IsFunctional)
-                        camerasAndSensorsAndLCDs[i].ApplyAction("OnOff_On");
+                    if (camerasAndSensorsAndLCDs[i] != null)
+                        // turn on/off as required
+                        if (camerasAndSensorsAndLCDs[i].IsFunctional)
+                            camerasAndSensorsAndLCDs[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1724,11 +1747,15 @@ namespace IngameScript
             if (debug) Echo("Iterating over " + antenna_blocks.Count + " antennas...");
             for (int i = 0; i < antenna_blocks.Count; i++)
             {
-                if (antenna_blocks[i].IsFunctional)
+                if (antenna_blocks[i] != null)
                 {
-                    float range = antenna_blocks[i].Radius;
-                    if (range > current_comms_range) current_comms_range = range;
+                    if (antenna_blocks[i].IsFunctional)
+                    {
+                        float range = antenna_blocks[i].Radius;
+                        if (range > current_comms_range) current_comms_range = range;
+                    }
                 }
+
             }
 
             tank_h2_total = 0;
@@ -1740,24 +1767,28 @@ namespace IngameScript
             if (debug) Echo("Iterating over " + allTanks.Count + " tanks...");
             for (int i = 0; i < allTanks.Count; i++)
             {
-                IMyGasTank Tank = allTanks[i] as IMyGasTank;
-                string blockId = Tank.BlockDefinition.ToString();
 
-                if (Tank.IsFunctional)
+                if (allTanks[i] != null)
                 {
-                    // turn on!
-                    Tank.Enabled = true;
+                    IMyGasTank Tank = allTanks[i] as IMyGasTank;
+                    string blockId = Tank.BlockDefinition.ToString();
 
-                    // update the global tank values.
-                    if (blockId.Contains("Hydro"))
+                    if (Tank.IsFunctional)
                     {
-                        tank_h2_total += Tank.Capacity;
-                        tank_h2_actual += (Tank.Capacity * Tank.FilledRatio);
-                    }
-                    else
-                    {
-                        tank_o2_total += Tank.Capacity;
-                        tank_o2_actual += (Tank.Capacity * Tank.FilledRatio);
+                        // turn on!
+                        Tank.Enabled = true;
+
+                        // update the global tank values.
+                        if (blockId.Contains("Hydro"))
+                        {
+                            tank_h2_total += Tank.Capacity;
+                            tank_h2_actual += (Tank.Capacity * Tank.FilledRatio);
+                        }
+                        else
+                        {
+                            tank_o2_total += Tank.Capacity;
+                            tank_o2_actual += (Tank.Capacity * Tank.FilledRatio);
+                        }
                     }
                 }
             }
@@ -1772,14 +1803,17 @@ namespace IngameScript
             if (debug) Echo("Iterating over " + batteries.Count + " batteries...");
             for (int i = 0; i < batteries.Count; i++)
             {
-                if (batteries[i].IsFunctional)
+                if (batteries[i] != null)
                 {
-                    IMyBatteryBlock Battery = batteries[i] as IMyBatteryBlock;
-                    // turn on!
-                    Battery.Enabled = true;
+                    if (batteries[i].IsFunctional)
+                    {
+                        IMyBatteryBlock Battery = batteries[i] as IMyBatteryBlock;
+                        // turn on!
+                        Battery.Enabled = true;
 
-                    bat_actual += Battery.CurrentStoredPower;
-                    bat_total += Battery.MaxStoredPower;
+                        bat_actual += Battery.CurrentStoredPower;
+                        bat_total += Battery.MaxStoredPower;
+                    }
                 }
             }
 
@@ -1843,15 +1877,19 @@ namespace IngameScript
             double FunctionalTorps = 0;
             for (int i = 0; i < torps.Count; i++)
             {
-                if (torps[i].IsFunctional && torps[i].CustomName.Contains(ship_name))
+                if (torps[i] != null)
                 {
-                    FunctionalTorps++;
-                    // turn torps on for 1+
-                    if (stance_data[stance_i][0] < 1)
-                        torps[i].ApplyAction("OnOff_Off");
-                    else
-                        torps[i].ApplyAction("OnOff_On");
+                    if (torps[i].IsFunctional && torps[i].CustomName.Contains(ship_name))
+                    {
+                        FunctionalTorps++;
+                        // turn torps on for 1+
+                        if (stance_data[stance_i][0] < 1)
+                            torps[i].ApplyAction("OnOff_Off");
+                        else
+                            torps[i].ApplyAction("OnOff_On");
+                    }
                 }
+
 
             }
             integrity_torps = Math.Round(100 * (FunctionalTorps / torps_init));
@@ -1861,29 +1899,37 @@ namespace IngameScript
             double FunctionalPDCs = 0;
             for (int i = 0; i < pdcs.Count; i++)
             {
-                if (pdcs[i].IsFunctional && pdcs[i].CustomName.Contains(ship_name))
+                if (pdcs[i] != null)
                 {
-                    FunctionalPDCs++;
-                    // turn PDCs off for 2+
-                    if (stance_data[stance_i][1] < 2)
-                        pdcs[i].ApplyAction("OnOff_Off");
-                    else
-                        pdcs[i].ApplyAction("OnOff_On");
+                    if (pdcs[i].IsFunctional && pdcs[i].CustomName.Contains(ship_name))
+                    {
+                        FunctionalPDCs++;
+                        // turn PDCs off for 2+
+                        if (stance_data[stance_i][1] < 2)
+                            pdcs[i].ApplyAction("OnOff_Off");
+                        else
+                            pdcs[i].ApplyAction("OnOff_On");
+                    }
                 }
+
 
             }
             if (debug) Echo("Iterating over " + defencePdcs.Count + " defence PDCs...");
             for (int i = 0; i < defencePdcs.Count; i++)
             {
-                if (defencePdcs[i].IsFunctional && defencePdcs[i].CustomName.Contains(ship_name))
+                if (defencePdcs[i] != null)
                 {
-                    FunctionalPDCs++;
-                    // turn defence pdcs on for 1+
-                    if (stance_data[stance_i][1] < 1)
-                        defencePdcs[i].ApplyAction("OnOff_Off");
-                    else
-                        defencePdcs[i].ApplyAction("OnOff_On");
+                    if (defencePdcs[i].IsFunctional && defencePdcs[i].CustomName.Contains(ship_name))
+                    {
+                        FunctionalPDCs++;
+                        // turn defence pdcs on for 1+
+                        if (stance_data[stance_i][1] < 1)
+                            defencePdcs[i].ApplyAction("OnOff_Off");
+                        else
+                            defencePdcs[i].ApplyAction("OnOff_On");
+                    }
                 }
+
             }
             integrity_pdcs = Math.Round(100 * (FunctionalPDCs / pdcs_init));
 
@@ -1891,14 +1937,17 @@ namespace IngameScript
             double FunctionalRailguns = 0;
             for (int i = 0; i < railguns.Count; i++)
             {
-                if (railguns[i].IsFunctional && railguns[i].CustomName.Contains(ship_name))
+                if (railguns[i] != null)
                 {
-                    FunctionalRailguns++;
-                    // turn railguns on for 1+
-                    if (stance_data[stance_i][2] < 1)
-                        railguns[i].ApplyAction("OnOff_Off");
-                    else
-                        railguns[i].ApplyAction("OnOff_On");
+                    if (railguns[i].IsFunctional && railguns[i].CustomName.Contains(ship_name))
+                    {
+                        FunctionalRailguns++;
+                        // turn railguns on for 1+
+                        if (stance_data[stance_i][2] < 1)
+                            railguns[i].ApplyAction("OnOff_Off");
+                        else
+                            railguns[i].ApplyAction("OnOff_On");
+                    }
                 }
             }
             integrity_railguns = Math.Round(100 * (FunctionalRailguns / railguns_init));
@@ -1908,15 +1957,18 @@ namespace IngameScript
             double FunctionalGyros = 0;
             for (int i = 0; i < gyros.Count; i++)
             {
-                if (gyros[i].IsFunctional && gyros[i].CustomName.Contains(ship_name))
+                if (gyros[i]!= null)
                 {
-                    FunctionalGyros++;
-                    if (adjustKeepAlives)
+                    if (gyros[i].IsFunctional && gyros[i].CustomName.Contains(ship_name))
                     {
-                        if (adjustThemTo)
-                            gyros[i].ApplyAction("OnOff_On");
-                        else
-                            gyros[i].ApplyAction("OnOff_Off");
+                        FunctionalGyros++;
+                        if (adjustKeepAlives)
+                        {
+                            if (adjustThemTo)
+                                gyros[i].ApplyAction("OnOff_On");
+                            else
+                                gyros[i].ApplyAction("OnOff_Off");
+                        }
                     }
                 }
             }
@@ -1936,20 +1988,23 @@ namespace IngameScript
             actual_thrust = 0;
             foreach (IMyTerminalBlock thruster in thrustersMain)
             {
-                if (thruster.IsFunctional && thruster.CustomName.Contains(ship_name))
+                if (thruster != null)
                 {
-                    max_thrust += (thruster as IMyThrust).MaxThrust;
-                    actual_thrust += (thruster as IMyThrust).CurrentThrust;
+                    if (thruster.IsFunctional && thruster.CustomName.Contains(ship_name))
+                    {
+                        max_thrust += (thruster as IMyThrust).MaxThrust;
+                        actual_thrust += (thruster as IMyThrust).CurrentThrust;
+                    }
                 }
-
             }
             integrity_main_thrust = Math.Round(100 * (max_thrust / thrust_main_init));
 
             float MaxRcsThrust = 0;
             foreach (IMyTerminalBlock thruster in thrustersRcs)
             {
-                if (thruster.IsFunctional && thruster.CustomName.Contains(ship_name))
-                    MaxRcsThrust += (thruster as IMyThrust).MaxThrust;
+                if (thruster != null)
+                    if (thruster.IsFunctional && thruster.CustomName.Contains(ship_name))
+                        MaxRcsThrust += (thruster as IMyThrust).MaxThrust;
             }
             integrity_rcs_thrust = Math.Round(100 * (MaxRcsThrust / thrust_rcs_init));
 
@@ -2688,6 +2743,11 @@ namespace IngameScript
                                     auto_configure_pdcs = bool.Parse(value);
                                     break;
 
+                                case "Disable lighting all control.":
+                                    config_count++;
+                                    disable_lighting = bool.Parse(value);
+                                    break;
+
                                 case "Fusion Fuel count":
                                     config_count++;
                                     ITEMS[0].TARGET = int.Parse(value);
@@ -2822,7 +2882,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 35)
+                    if (config_count == 36)
                     {
                         parsedVars = true;
                     }
@@ -2963,15 +3023,15 @@ namespace IngameScript
                     + stance_data[i][3] + "\n"
                     + "rcs thrusters; 0: off, 1: on\n="
                     + stance_data[i][4] + "\n"
-                    + "spotlights; 0: off, 1: on, 2: on max radius\n="
+                    + "spotlights; 0: off, 1: on, 2: on max radius, 3: no change\n="
                     + stance_data[i][5] + "\n"
 
-                    + "exterior lights; 0: off, 1: on\n="
+                    + "exterior lights; 0: off, 1: on, 3: no change\n="
                     + stance_data[i][6]
                     + "\nred=" + stance_data[i][7] + "\ngreen=" + stance_data[i][8]
                     + "\nblue=" + stance_data[i][9] + "\nalpha=" + stance_data[i][10] + "\n"
 
-                    + "interior lights lights; 0: off, 1: on\n="
+                    + "interior lights lights; 0: off, 1: on, 3: no change\n="
                     + stance_data[i][11]
                     + "\nred=" + stance_data[i][12] + "\ngreen=" + stance_data[i][13]
                     + "\nblue=" + stance_data[i][14] + "\nalpha=" + stance_data[i][15] + "\n"
@@ -3011,6 +3071,7 @@ namespace IngameScript
                 + "Keyword used to identify defence PDCs.\n=" + defence_pdc_keyword + "\n"
                 + "Keyword to ignore block.\n=" + ignore_keyword + "\n"
                 + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + auto_configure_pdcs + "\n"
+                + "Disable lighting all control.\n=" + disable_lighting + "\n"
                 + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", friendly_tags.Split('\n'))) + "\n"
 
                 + "\n---- [Target Item Quantities] ----\n"
@@ -3375,7 +3436,7 @@ namespace IngameScript
             }
             else
             {
-                output_decel_short = "Decel (Best):    " + stopDistance(max_thrust, vel) +
+                output_decel_short = "Decel (Dampener):" + stopDistance(max_thrust, vel, true) +
                     "\nAccel (Best):    " + (AccelMax + " Gs").PadLeft(15);
             }
 
@@ -3454,7 +3515,7 @@ namespace IngameScript
                     "\nActual Accel:    " + (AccelActual + " Gs").PadLeft(15) +
                     "\nMax Thrust:      " + ((max_thrust / 1000000) + " MN").PadLeft(15) +
                     "\nActual Thrust:   " + ((actual_thrust / 1000000) + " MN").PadLeft(15) +
-                    "\nDecel (Best):    " + stopDistance(max_thrust, vel) +
+                    "\nDecel (Dampener):" + stopDistance(max_thrust, vel, true) +
                     "\nDecel (Actual):  " + stopDistance(actual_thrust, vel) +
                     "\nDecel (90%):     " + stopDistance((float)(max_thrust * 0.9), vel) +
                     "\nDecel (80%):     " + stopDistance((float)(max_thrust * 0.8), vel) +
@@ -3612,10 +3673,12 @@ namespace IngameScript
             return;
         }
 
-        string stopDistance(float thrust, double speed)
+        string stopDistance(double thrust, double speed, bool dampeners = false)
         {
 
             if (thrust <= 0) return ("N/A").PadLeft(15);
+
+            if (dampeners) thrust = thrust * 1.5;
 
             //s = 1/2 * v ^ 2 * (m / F)
             double result = 0.5 * (Math.Pow(speed, 2) * (mass / thrust));
