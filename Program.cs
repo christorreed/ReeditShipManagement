@@ -564,7 +564,7 @@ namespace IngameScript
         public void Save()
         {
 
-            Storage = current_stance;
+            //Storage = current_stance;
             // not using this cause it doesn't work very well with nexus
             // thus using custom data instead.
 
@@ -809,6 +809,8 @@ namespace IngameScript
             }
 
             current_stance = stance;
+
+            updateCustomData(true);
 
             // stores the current stance to persistance
             // allows it to be saved across instances.
