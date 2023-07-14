@@ -910,7 +910,11 @@ namespace IngameScript
                                     pdcs[i].SetValue("WC_SmallGrid", true);
 
                                     //if (debug) Echo("Repel mode");
-                                    setBlockRepelOn(pdcs[i]);
+                                    //setBlockRepelOn(pdcs[i]);
+
+                                    // removing default repel mode as per daniamal's recommendation
+                                    // less effective now that torpedoes spread.
+                                    setBlockRepelOff(pdcs[i]);
                                 }
                                 catch
                                 {
@@ -1007,7 +1011,7 @@ namespace IngameScript
                             defencePdcs[i].ApplyAction("OnOff_On");
                             if (auto_configure_pdcs)
                             {
-                                setBlockRepelOn(defencePdcs[i]);
+                                //setBlockRepelOn(defencePdcs[i]);
 
                                 // accounts for PMWs
                                 defencePdcs[i].SetValue("WC_Grids", true);
