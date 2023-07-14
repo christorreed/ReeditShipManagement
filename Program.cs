@@ -189,6 +189,7 @@ namespace IngameScript
         List<IMyTerminalBlock> pdcs = new List<IMyTerminalBlock>(); // turn on/off at quickRefresh(); setup at stance set
         List<IMyTerminalBlock> defencePdcs = new List<IMyTerminalBlock>(); // turn on/off at quickRefresh(); setup at stance set
         List<IMyTerminalBlock> torps = new List<IMyTerminalBlock>(); // handle at quickRefresh();
+        List<IMyTerminalBlock> coilguns = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> railguns = new List<IMyTerminalBlock>(); // handle at quickRefresh();
         List<IMyTerminalBlock> thrustersMain = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> thrustersRcs = new List<IMyTerminalBlock>(); // handle at stance set
@@ -547,7 +548,7 @@ namespace IngameScript
                 ITEMS.Add(buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine")); //7
                 ITEMS.Add(buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine")); //8
                 ITEMS.Add(buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine")); //9
-                ITEMS.Add(buildItem("T-47     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine")); //10
+                ITEMS.Add(buildItem("80mm     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine")); //10
             }
             catch
             {
@@ -1495,6 +1496,7 @@ namespace IngameScript
             processList(pdcs, "PDC");
             processList(defencePdcs, "PDC");
             processList(railguns, "Railgun");
+            processList(coilguns, "Coilgun");
             processList(antennas, "Antenna");
             processList(hangarDoors, "Hangar Door");
             processList(gyros, "Gyroscope");
@@ -2472,6 +2474,14 @@ namespace IngameScript
                     else if (blockId.Contains("Railgun"))
                         railguns.Add(allBlocks[i]);
 
+                    else if (blockId.Contains("Coilgun"))
+                    {
+                        // treat these as a railgun
+                        railguns.Add(allBlocks[i]);
+                        // this just for init
+                        coilguns.Add(allBlocks[i]);
+                    }         
+
                     // Batteries
                     // MyObjectBuilder_BatteryBlock/LargeBlockBatteryBlockWarfare2
                     // MyObjectBuilder_BatteryBlock/LargeBlockBatteryBlock
@@ -2812,6 +2822,7 @@ namespace IngameScript
                                     config_count++;
                                     ITEMS[10].TARGET = int.Parse(value);
                                     break;
+
 
 
                                 case "Doors open timer (x100 ticks, default 3)":
