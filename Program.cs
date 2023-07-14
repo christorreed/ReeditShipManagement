@@ -1011,7 +1011,7 @@ namespace IngameScript
                             defencePdcs[i].ApplyAction("OnOff_On");
                             if (auto_configure_pdcs)
                             {
-                                //setBlockRepelOn(defencePdcs[i]);
+                                setBlockRepelOn(defencePdcs[i]);
 
                                 // accounts for PMWs
                                 defencePdcs[i].SetValue("WC_Grids", true);
