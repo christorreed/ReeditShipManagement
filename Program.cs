@@ -1605,7 +1605,7 @@ namespace IngameScript
         void setBlockRepelOn(IMyTerminalBlock block)
         {
             bool repelStatus = block.GetValue<bool>("WC_Repel");
-            // Echo("Repel status=" + repelStatus.ToString());
+            //Echo("Repel status=" + repelStatus);
             if (!repelStatus)
                 block.ApplyAction("WC_RepelMode");
         }
@@ -1613,8 +1613,8 @@ namespace IngameScript
         void setBlockRepelOff(IMyTerminalBlock block)
         {
             bool repelStatus = block.GetValue<bool>("WC_Repel");
-            // Echo("Repel status=" + repelStatus.ToString());
-            if (!repelStatus)
+            //Echo("Repel status=" + repelStatus);
+            if (repelStatus)
                 block.ApplyAction("WC_RepelMode");
         }
 
