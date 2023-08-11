@@ -1714,11 +1714,7 @@ namespace IngameScript
             if (debug)
             {
                 Echo("quickRefresh();");
-                Echo("\nstance_i=" + stance_i);
-                Echo("\nstance_names.Count=" + stance_names.Count.ToString());
-                Echo("\nstance_data.Count=" + stance_data.Count.ToString());
-                Echo("\nStance=" + stance_names[stance_i]);
-                Echo("\nstance_data[stance_i].Count=" + stance_data[stance_i].Length.ToString());
+                Echo("\nstance =" + stance_names[stance_i] + "(" + stance_i + ")");
             }
 
 
@@ -1930,7 +1926,8 @@ namespace IngameScript
                         if (AUTOLOAD)
                         {
                             IMyInventory thisInventory = torps[i].GetInventory();
-                            if (!thisInventory.IsFull) TO_LOAD.Add(torps[i]);
+                            // sneaky extra line here excludes tycho class torp launchers from autoloading.
+                            if (!thisInventory.IsFull && !torps[i].BlockDefinition.ToString().Contains("Tycho")) TO_LOAD.Add(torps[i]);
                         }
 
                         if (torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
@@ -2171,23 +2168,22 @@ namespace IngameScript
                     // tidy up the LCD as well.
                     lcds[i].ContentType = ContentType.TEXT_AND_IMAGE;
 
-                    try
-                    {
-                        if (!disable_text_colour_enforcement)
-                            lcds[i].FontColor = new Color(
-                                    stance_data[stance_i][12],
-                                    stance_data[stance_i][13],
-                                    stance_data[stance_i][14],
-                                    stance_data[stance_i][15]
-                                    );
-                    }
-                    catch { }
+                    
+                    
+                    if (!disable_text_colour_enforcement)
+                        lcds[i].FontColor = new Color(
+                                stance_data[stance_i][12],
+                                stance_data[stance_i][13],
+                                stance_data[stance_i][14],
+                                stance_data[stance_i][15]
+                                );
+                  
 
 
                     lcds[i].FontSize = lcd_font_size;
                     lcds[i].Font = "Monospace";
                     //lcds[i].TextPadding = 0;
-                    lcds[i].Alignment = TextAlignment.LEFT;
+                    lcds[i].Alignment = TextAlignment.CENTER;
                 }
             }
 
@@ -3187,7 +3183,8 @@ namespace IngameScript
 
             foreach (double Percent in ADVANCED_THRUST_PERCENTS)
             {
-                DecelPercents += (Percent * 100).ToString() + ",";
+                if (DecelPercents != "") DecelPercents += ",";
+                DecelPercents += (Percent * 100).ToString();
             }
 
             Me.CustomData =
@@ -3314,6 +3311,9 @@ namespace IngameScript
 
         void loadInventory(IMyTerminalBlock ToLoad, List<IMyInventory> SourceInventories, string ItemType, int ItemCount)
         {
+
+            if (debug) Echo("Loading block " + ToLoad.CustomName + " with item type " + ItemType + " from " + SourceInventories.Count + " sources.");
+
             IMyInventory ToLoadInventory = ToLoad.GetInventory();
 
             foreach (IMyInventory Source in SourceInventories)
@@ -3334,6 +3334,8 @@ namespace IngameScript
                 }
                 catch { }
             }
+
+            if (debug) Echo("Loading failed.");
         }
 
         void manageAutoload()
@@ -3341,7 +3343,7 @@ namespace IngameScript
 
             if (!AUTOLOAD) return;
 
-            if (debug) Echo("Managing Autoload...");
+            if (debug) Echo("Managing Autoload, " + TO_LOAD.Count + " weapons to be loaded...");
 
             bool Ammo_Low = false;
 
@@ -3361,9 +3363,64 @@ namespace IngameScript
             {
                 string AmmoType = WC_PB_API.GetActiveAmmo(Weapon, 0);
 
+
+
+                // lol these ammo types are crappy and have to be manually processed.
+                switch (AmmoType)
+                {
+                    case "220mm Explosive Torpedo":
+                        AmmoType = "220mmExplosiveTorpedoMagazine";
+                        break;
+
+                    case "MCRN Torpedo High Spread":
+                    case "MCRN Torpedo Low Spread":
+                        AmmoType = "220mmMCRNTorpedoMagazine";
+                        break;
+
+                    case "UNN Torpedo High Spread":
+                    case "UNN Torpedo Low Spread":
+                        AmmoType = "220mmUNNTorpedoMagazine";
+                        break;
+
+                    case "40mm Tungsten-Teflon Ammo":
+                        AmmoType = "40mmTungstenTeflonPDCBoxMagazine";
+                        break;
+
+                    case "40mm Lead-Steel PDC Box Ammo":
+                        AmmoType = "40mmLeadSteelPDCBoxMagazine";
+                        break;
+
+                    case "Ramshackle Torpedo Magazine":
+                        AmmoType = "RamshackleTorpedoMagazine";
+                        break;
+
+                    case "120mm Lead-Steel Slug Ammo":
+                        AmmoType = "120mmLeadSteelSlugMagazine";
+                        break;
+
+                    case "100mm Tungsten-Uranium Slug UNN Ammo":
+                        AmmoType = "100mmTungstenUraniumSlugUNNMagazine";
+                        break;
+
+                    case "100mm Tungsten-Uranium Slug MCRN Ammo":
+                        AmmoType = "100mmTungstenUraniumSlugMCRNMagazine";
+                        break;
+
+                    case "80mm Tungsten-Uranium Sabot Ammo":
+                        AmmoType = "80mmTungstenUraniumSabotMagazine";
+                        break;
+
+                    default:
+                    if (debug) Echo("Unknown AmmoType = " + AmmoType);
+                        break;
+
+                }
+
                 foreach (ITEM Item in ITEMS)
                 {
-                    if (Item.NAME == AmmoType) // this is the correct item for this ammo type.
+                    //if (debug) Echo("Checking " + Item.TYPE.SubtypeId);
+
+                    if (Item.TYPE.SubtypeId == AmmoType) // this is the correct item for this ammo type.
                     {
                         if (Item.STORED_IN.Count > 0) // there are inventories where this item is stored.
                             loadInventory(Weapon, Item.STORED_IN, AmmoType, 99);
@@ -3377,6 +3434,8 @@ namespace IngameScript
             {
                 debugEcho("Ammo Low!", "Ammo Low! Some weapons cannot autoload because there is no spare ammo!");
             }
+
+            TO_LOAD.Clear();
         }
 
         void manageDoors()
@@ -3739,7 +3798,7 @@ namespace IngameScript
 
                 foreach (double Percent in ADVANCED_THRUST_PERCENTS)
                 {
-                    sec_thrust_advanced += "\nDecel(" + (Percent * 100) + " %):     " + stopDistance((float)(max_thrust * Percent), vel);
+                    sec_thrust_advanced += "\nDecel (" + (Percent * 100) + "%):     " + stopDistance((float)(max_thrust * Percent), vel);
                 }
 
                 sec_thrust_advanced += "\n\n";
