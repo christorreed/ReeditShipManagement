@@ -1924,7 +1924,7 @@ namespace IngameScript
                     if (torps[i].IsFunctional)
                     {
                         if (AUTOLOAD)
-                            if (!inventorySomewhatFull(pdcs[i])) TO_LOAD.Add(torps[i]);
+                            if (!inventorySomewhatFull(torps[i])) TO_LOAD.Add(torps[i]);
 
                         if (torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
                         {
