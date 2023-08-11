@@ -72,9 +72,9 @@ namespace IngameScript
             public MyItemType TYPE;
         }
 
-        ITEM LG_FUEL_TANKS;
+        /*ITEM LG_FUEL_TANKS;
         ITEM SG_FUEL_TANKS;
-        ITEM REACTOR_FUEL;
+        ITEM REACTOR_FUEL;*/
 
         List<ITEM> ITEMS = new List<ITEM>();
 
@@ -83,9 +83,9 @@ namespace IngameScript
             ITEM NewItem = new ITEM();
             NewItem.NAME = LCDName;
             NewItem.TYPE = new MyItemType(SubTypeID, TypeID);
-            if (TypeID == "Fuel_Tank") LG_FUEL_TANKS = NewItem;
+            /*if (TypeID == "Fuel_Tank") LG_FUEL_TANKS = NewItem;
             if (TypeID == "SG_Fuel_Tank") SG_FUEL_TANKS = NewItem;
-            if (TypeID == "FusionFuel") REACTOR_FUEL = NewItem;
+            if (TypeID == "FusionFuel") REACTOR_FUEL = NewItem;*/
             return NewItem;
         }
 
@@ -1404,6 +1404,15 @@ namespace IngameScript
             torps_init = torps.Count;
             railguns_init = railguns.Count;
             gyros_init = gyros.Count;
+
+
+            // now lets calculate the inventory counts and set them as targets.
+
+            foreach (ITEM Item in ITEMS)
+            {
+                Item.TARGET = Item.COUNT;
+            }
+
 
             updateCustomData(true);
 
