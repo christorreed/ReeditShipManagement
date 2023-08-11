@@ -1878,34 +1878,33 @@ namespace IngameScript
 
                     foreach (ITEM Item in ITEMS)
                     {
-                        // don't bother with items that won't be displayed on the LCD.
-                        if (Item.TARGET != 0)
+
+
+                        MyInventoryItem? check = cargo_inventory[i].FindItem(Item.TYPE);
+                        if (check != null)
                         {
-                            MyInventoryItem? check = cargo_inventory[i].FindItem(Item.TYPE);
-                            if (check != null)
-                            {
-                                string[] parse_dat = check.ToString().Split('x');
-                                //Echo(">> " + parse_dat[0]);
-                                //Echo(">> " + check.ToString());
-                                double count = double.Parse(parse_dat[0]);
-                                Item.COUNT += (int)Math.Round(count);
+                            string[] parse_dat = check.ToString().Split('x');
+                            //Echo(">> " + parse_dat[0]);
+                            //Echo(">> " + check.ToString());
+                            double count = double.Parse(parse_dat[0]);
+                            Item.COUNT += (int)Math.Round(count);
 
 
-                                if (count > 0)
-                                    Item.STORED_IN.Add(cargo_inventory[i]);
+                            if (count > 0)
+                                Item.STORED_IN.Add(cargo_inventory[i]);
 
-                                /*// if we're counting fuel tanks
-                                // and we have more than one
-                                if (Item.NAME == "Fuel Tank" && count > 0)
-                                    // save this one later for manageExtractors();
-                                    fuel_tank_inventory.Add(cargo_inventory[i]);
+                            /*// if we're counting fuel tanks
+                            // and we have more than one
+                            if (Item.NAME == "Fuel Tank" && count > 0)
+                                // save this one later for manageExtractors();
+                                fuel_tank_inventory.Add(cargo_inventory[i]);
 
-                                if (Item.NAME == "Jerry Can" && count > 0)
-                                    // save this one later for manageExtractors();
-                                    sg_fuel_tank_inventory.Add(cargo_inventory[i]);*/
+                            if (Item.NAME == "Jerry Can" && count > 0)
+                                // save this one later for manageExtractors();
+                                sg_fuel_tank_inventory.Add(cargo_inventory[i]);*/
 
-                            }
                         }
+                        
 
                     }
                 }
@@ -1923,12 +1922,13 @@ namespace IngameScript
                 {
                     if (torps[i].IsFunctional)
                     {
+                        FunctionalTorps++;
                         if (AUTOLOAD)
                             if (!inventorySomewhatFull(torps[i])) TO_LOAD.Add(torps[i]);
 
                         if (torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
                         {
-                            FunctionalTorps++;
+                            
                             // turn torps on for 1+
                             if (stance_data[stance_i][0] < 1)
                                 torps[i].ApplyAction("OnOff_Off");
@@ -1951,7 +1951,7 @@ namespace IngameScript
                 {
                     if (pdcs[i].IsFunctional)
                     {
-
+                        FunctionalPDCs++;
                         if (AUTOLOAD)
                         {
 
@@ -1973,7 +1973,7 @@ namespace IngameScript
 
                         if (pdcs[i].CustomName.Contains(ship_name) && !pdcs[i].CustomName.Contains(ignore_keyword))
                         {
-                            FunctionalPDCs++;
+
                             // turn PDCs off for 2+
                             if (stance_data[stance_i][1] < 2)
                                 pdcs[i].ApplyAction("OnOff_Off");
@@ -1993,13 +1993,13 @@ namespace IngameScript
                 {
                     if (defencePdcs[i].IsFunctional)
                     {
-
+                        FunctionalPDCs++;
                         if (AUTOLOAD)
                             if (!inventorySomewhatFull(defencePdcs[i])) TO_LOAD.Add(defencePdcs[i]);
                         
                         if (defencePdcs[i].CustomName.Contains(ship_name) && !defencePdcs[i].CustomName.Contains(ignore_keyword))
                         {
-                            FunctionalPDCs++;
+
                             // turn defence pdcs on for 1+
                             if (stance_data[stance_i][1] < 1)
                                 defencePdcs[i].ApplyAction("OnOff_Off");
@@ -2020,13 +2020,13 @@ namespace IngameScript
                 {
                     if (railguns[i].IsFunctional)
                     {
-
+                        FunctionalRailguns++;
                         if (AUTOLOAD)
                             if (!inventorySomewhatFull(railguns[i])) TO_LOAD.Add(railguns[i]);
 
                         if (railguns[i].CustomName.Contains(ship_name) && !railguns[i].CustomName.Contains(ignore_keyword))
                         {
-                            FunctionalRailguns++;
+
                             // turn railguns on for 1+
                             if (stance_data[stance_i][2] < 1)
                                 railguns[i].ApplyAction("OnOff_Off");
@@ -3695,8 +3695,8 @@ namespace IngameScript
                     //if (debug) Echo("NAME = " + Item.NAME);
 
                     double percentage = (100 * ((double)Item.COUNT / (double)Item.TARGET));
-                    string val = Item.COUNT + "/" + Item.TARGET;
-                    if (val.Length < 9) val += new string(' ', (9 - val.Length));
+                    string val = (Item.COUNT + "/" + Item.TARGET).PadLeft(9);
+                    //if (val.Length < 9) val += new string(' ', (9 - val.Length));
                     if (val.Length > 9) val = val.Substring(0, 9);
                     sec_inventory_counts += Item.NAME + " [" + generateBar(percentage) + "] " + val + "\n";
                 }
@@ -3765,25 +3765,25 @@ namespace IngameScript
                 lcd_divider + "\n\n";
 
             if (reactors_init > 0)
-                sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + " %").PadRight(9) + "\n";
+                sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + " %").PadLeft(9) + "\n";
             if (bat_init > 0)
-                sec_integrity += "Batteries [" + generateBar(integrity_bats) + "] " + (integrity_bats + " %").PadRight(9) + "\n";
+                sec_integrity += "Batteries [" + generateBar(integrity_bats) + "] " + (integrity_bats + " %").PadLeft(9) + "\n";
             if (pdcs_init > 0)
-                sec_integrity += "PDCs      [" + generateBar(integrity_pdcs) + "] " + (integrity_pdcs + " %").PadRight(9) + "\n";
+                sec_integrity += "PDCs      [" + generateBar(integrity_pdcs) + "] " + (integrity_pdcs + " %").PadLeft(9) + "\n";
             if (torps_init > 0)
-                sec_integrity += "Torpedoes [" + generateBar(integrity_torps) + "] " + (integrity_torps + " %").PadRight(9) + "\n";
+                sec_integrity += "Torpedoes [" + generateBar(integrity_torps) + "] " + (integrity_torps + " %").PadLeft(9) + "\n";
             if (railguns_init > 0)
-                sec_integrity += "Railguns  [" + generateBar(integrity_railguns) + "] " + (integrity_railguns + " %").PadRight(9) + "\n";
+                sec_integrity += "Railguns  [" + generateBar(integrity_railguns) + "] " + (integrity_railguns + " %").PadLeft(9) + "\n";
             if (tank_h2_init > 0)
-                sec_integrity += "H2 Tanks  [" + generateBar(integrity_tanks_H2) + "] " + (integrity_tanks_H2 + " %").PadRight(9) + "\n";
+                sec_integrity += "H2 Tanks  [" + generateBar(integrity_tanks_H2) + "] " + (integrity_tanks_H2 + " %").PadLeft(9) + "\n";
             if (tank_o2_init > 0)
-                sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + " %").PadRight(9) + "\n";
+                sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + " %").PadLeft(9) + "\n";
             if (thrust_main_init > 0)
-                sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + " %").PadRight(9) + "\n";
+                sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + " %").PadLeft(9) + "\n";
             if (thrust_rcs_init > 0)
-                sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + " %").PadRight(9) + "\n";
+                sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + " %").PadLeft(9) + "\n";
             if (gyros_init > 0)
-                sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + " %").PadRight(9) + "\n\n";
+                sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + " %").PadLeft(9) + "\n\n";
 
 
             if (sec_integrity == lcd_divider + "\n\n") // nothing init basically.
@@ -3814,7 +3814,7 @@ namespace IngameScript
 
                 foreach (double Percent in ADVANCED_THRUST_PERCENTS)
                 {
-                    sec_thrust_advanced += "\nDecel (" + (Percent * 100) + "%):     " + stopDistance((float)(max_thrust * Percent), vel);
+                    sec_thrust_advanced += "\n" + ("Decel (" + (Percent * 100) + "%):").PadRight(17) + stopDistance((float)(max_thrust * Percent), vel);
                 }
 
                 sec_thrust_advanced += "\n\n";
@@ -4039,10 +4039,10 @@ namespace IngameScript
 
             bar = generateBar(percentage);
 
-            if (val.Length < 9) val += new string(' ', (9 - val.Length));
-            if (val.Length > 9) val = val.Substring(0, 9);
+            //if (val.Length < 9) val += new string(' ', (9 - val.Length));
+            //if (val.Length > 9) val = val.Substring(0, 9);
 
-            return " [" + bar + "] " + val;
+            return " [" + bar + "] " + val.PadLeft(9);
         }
 
         void debugEcho(string msg, string msg_long)
