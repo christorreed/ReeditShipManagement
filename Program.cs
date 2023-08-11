@@ -70,6 +70,7 @@ namespace IngameScript
             public int TARGET = 10;
             public int COUNT = 0;
             public MyItemType TYPE;
+            public List<IMyInventory> STORED_IN = new List<IMyInventory>();
         }
 
         /*ITEM LG_FUEL_TANKS;
@@ -235,8 +236,8 @@ namespace IngameScript
         //List<int> component_counts = new List<int>();
 
         double fuel_percentage = 100;
-        List<IMyInventory> fuel_tank_inventory = new List<IMyInventory>();
-        List<IMyInventory> sg_fuel_tank_inventory = new List<IMyInventory>();
+        //List<IMyInventory> fuel_tank_inventory = new List<IMyInventory>();
+        //List<IMyInventory> sg_fuel_tank_inventory = new List<IMyInventory>();
 
         // Stance data
         int stance_i = 0;
@@ -544,12 +545,16 @@ namespace IngameScript
                 ITEMS.Add(buildItem("PDC Tefl ", "MyObjectBuilder_AmmoMagazine", "40mmTungstenTeflonPDCBoxMagazine")); //4
 
                 ITEMS.Add(buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine")); //5
-                ITEMS.Add(buildItem("RS Torp  ", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine")); //6
+                ITEMS.Add(buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine")); //6
+                ITEMS.Add(buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmUNNTorpedoMagazine")); //7
+                ITEMS.Add(buildItem("RS Torp  ", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine")); //8
+                ITEMS.Add(buildItem("LRS Torp ", "MyObjectBuilder_AmmoMagazine", "LargeRamshackleTorpedoMagazine")); //9
 
-                ITEMS.Add(buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine")); //7
-                ITEMS.Add(buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine")); //8
-                ITEMS.Add(buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine")); //9
-                ITEMS.Add(buildItem("80mm     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine")); //10
+                ITEMS.Add(buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine")); //10
+                ITEMS.Add(buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine")); //11
+                ITEMS.Add(buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine")); //12
+                ITEMS.Add(buildItem("80mm     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine")); //13
+
             }
             catch
             {
@@ -702,8 +707,8 @@ namespace IngameScript
 
 
             List<IMyInventory> ToSearch;
-            if (TankType == "Fuel_Tank") ToSearch = fuel_tank_inventory;
-            else ToSearch = sg_fuel_tank_inventory;
+            if (TankType == "Fuel_Tank") ToSearch = ITEMS[1].STORED_IN;
+            else ToSearch = ITEMS[2].STORED_IN;
 
 
 
@@ -1860,10 +1865,8 @@ namespace IngameScript
             foreach (ITEM Item in ITEMS)
             {
                 Item.COUNT = 0;
+                Item.STORED_IN.Clear();
             }
-
-            fuel_tank_inventory.Clear();
-            sg_fuel_tank_inventory.Clear();
 
             for (int i = 0; i < cargo_inventory.Count; i++)
             {
@@ -1886,7 +1889,10 @@ namespace IngameScript
                                 Item.COUNT += (int)Math.Round(count);
 
 
-                                // if we're counting fuel tanks
+                                if (count > 0)
+                                    Item.STORED_IN.Add(cargo_inventory[i]);
+
+                                /*// if we're counting fuel tanks
                                 // and we have more than one
                                 if (Item.NAME == "Fuel Tank" && count > 0)
                                     // save this one later for manageExtractors();
@@ -1894,7 +1900,7 @@ namespace IngameScript
 
                                 if (Item.NAME == "Jerry Can" && count > 0)
                                     // save this one later for manageExtractors();
-                                    sg_fuel_tank_inventory.Add(cargo_inventory[i]);
+                                    sg_fuel_tank_inventory.Add(cargo_inventory[i]);*/
 
                             }
                         }
@@ -2837,34 +2843,52 @@ namespace IngameScript
                                     config_count++;
                                     ITEMS[5].TARGET = int.Parse(value);
                                     break;
+
+                                case "220mm MCRN torpedo count":
+                                    config_count++;
+                                    ITEMS[6].TARGET = int.Parse(value);
+                                    break;
+
+                                case "220mm UNN torpedo count":
+                                    config_count++;
+                                    ITEMS[7].TARGET = int.Parse(value);
+                                    break;
+
                                 case "Ramshackle torpedo count":
                                 // was like this in versions prior to 0.4.0
                                 case "Ramshackle torpedo Count":
                                     config_count++;
-                                    ITEMS[6].TARGET = int.Parse(value);
+                                    ITEMS[8].TARGET = int.Parse(value);
+                                    break;
+
+                                case "Large ramshacke torpedo count":
+                                    config_count++;
+                                    ITEMS[9].TARGET = int.Parse(value);
                                     break;
 
                                 case "Zako 120mm Railgun rounds count":
                                 // was like this in versions prior to 0.5.0
                                 case "Railgun rounds count":
                                     config_count++;
-                                    ITEMS[7].TARGET = int.Parse(value);
+                                    ITEMS[10].TARGET = int.Parse(value);
                                     break;
 
                                 case "Dawson 100mm UNN Railgun rounds count":
                                     config_count++;
-                                    ITEMS[8].TARGET = int.Parse(value);
+                                    ITEMS[11].TARGET = int.Parse(value);
                                     break;
 
                                 case "Stiletto 100mm MCRN Railgun rounds count":
                                     config_count++;
-                                    ITEMS[9].TARGET = int.Parse(value);
+                                    ITEMS[12].TARGET = int.Parse(value);
                                     break;
 
                                 case "T-47 80mm Railgun rounds count":
                                     config_count++;
-                                    ITEMS[10].TARGET = int.Parse(value);
+                                    ITEMS[13].TARGET = int.Parse(value);
                                     break;
+
+
 
 
 
@@ -2942,7 +2966,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 37)
+                    if (config_count == 40)
                     {
                         parsedVars = true;
                     }
@@ -3158,9 +3182,8 @@ namespace IngameScript
                 + "RCS Integrity\n=" + thrust_rcs_init + "\n"
                 + "Gyro Integrity\n=" + gyros_init + "\n"
 
-
-
-
+                + "\n---- [Inventory Counts] ----\n"
+                + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"
                 + "Fusion Fuel count\n=" + ITEMS[0].TARGET + "\n"
 
                 + "Fuel tank count\n=" + ITEMS[1].TARGET + "\n"
@@ -3170,12 +3193,19 @@ namespace IngameScript
                 + "40mm Teflon Tungsten PDC Magazine count\n=" + ITEMS[4].TARGET + "\n"
 
                 + "220mm Torpedo count\n=" + ITEMS[5].TARGET + "\n"
-                + "Ramshackle torpedo count\n=" + ITEMS[6].TARGET + "\n"
+                + "220mm MCRN torpedo count\n=" + ITEMS[6].TARGET + "\n"
+                + "220mm UNN torpedo count\n=" + ITEMS[7].TARGET + "\n"
 
-                + "Zako 120mm Railgun rounds count\n=" + ITEMS[7].TARGET + "\n"
-                + "Dawson 100mm UNN Railgun rounds count\n=" + ITEMS[8].TARGET + "\n"
-                + "Stiletto 100mm MCRN Railgun rounds count\n=" + ITEMS[9].TARGET + "\n"
-                + "T-47 80mm Railgun rounds count\n=" + ITEMS[10].TARGET + "\n"
+                + "Ramshackle torpedo count\n=" + ITEMS[8].TARGET + "\n"
+                + "Large ramshacke torpedo count\n=" + ITEMS[9].TARGET + "\n"
+
+                + "Zako 120mm Railgun rounds count\n=" + ITEMS[10].TARGET + "\n"
+                + "Dawson 100mm UNN Railgun rounds count\n=" + ITEMS[11].TARGET + "\n"
+                + "Stiletto 100mm MCRN Railgun rounds count\n=" + ITEMS[12].TARGET + "\n"
+                + "T-47 80mm Railgun rounds count\n=" + ITEMS[13].TARGET + "\n"
+
+
+
 
                 + "\n---- [Stances] ----\n"
                 + stance_text
