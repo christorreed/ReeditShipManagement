@@ -286,7 +286,7 @@ namespace IngameScript
                 255,    // 10: Alpha - Exterior lights colour
                 1,      // 11: interior lights lights; 0: off, 1: on
                 36,     // 12: Red - Interior lights colour
-                17,     // 13: Green - Interior lights colour
+                69,     // 13: Green - Interior lights colour
                 225,    // 14: Blue - Interior lights colour
                 255,    // 15: Alpha - Interior lights colour
                 0,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
@@ -340,7 +340,7 @@ namespace IngameScript
                 255,    // 10: Alpha - Exterior lights colour
                 1,      // 11: interior lights lights; 0: off, 1: on
                 158,    // 12: Red - Interior lights colour
-                26,     // 13: Green - Interior lights colour
+                100,     // 13: Green - Interior lights colour
                 219,    // 14: Blue - Interior lights colour
                 255,    // 15: Alpha - Interior lights colour
                 0,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
@@ -2173,13 +2173,13 @@ namespace IngameScript
 
                     
                     
-                    if (!disable_text_colour_enforcement)
+                    /*if (!disable_text_colour_enforcement)
                         lcds[i].FontColor = new Color(
                                 stance_data[stance_i][12],
                                 stance_data[stance_i][13],
                                 stance_data[stance_i][14],
                                 stance_data[stance_i][15]
-                                );
+                                );*/
                   
 
 
@@ -2965,6 +2965,13 @@ namespace IngameScript
                                 case "Current Stance":
                                     config_count++;
                                     current_stance = value;
+
+                                    // update the stance_i value as well so lights and colours aren't effected.
+                                    for (int j = 0; j < stance_names.Count; j++)
+                                    {
+                                        if (current_stance == stance_names[j]) stance_i = j;
+                                    }
+
                                     break;
 
                                 case "Reactor Integrity":
@@ -3835,6 +3842,15 @@ namespace IngameScript
 
             for (int i = 0; i < lcd_blocks.Count; i++)
             {
+                // force colour
+                if (!disable_text_colour_enforcement)
+                    lcd_blocks[i].FontColor = new Color(
+                            stance_data[stance_i][12],
+                            stance_data[stance_i][13],
+                            stance_data[stance_i][14],
+                            stance_data[stance_i][15]
+                            );
+
                 bool show_header = true;
                 bool show_tanks_and_batts = true;
                 bool show_inventory = true;
