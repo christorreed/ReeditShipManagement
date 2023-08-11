@@ -1714,7 +1714,7 @@ namespace IngameScript
             if (debug)
             {
                 Echo("quickRefresh();");
-                Echo("\nstance =" + stance_names[stance_i] + "(" + stance_i + ")");
+                Echo("\nstance = " + stance_names[stance_i] + "(" + stance_i + ")");
             }
 
 
@@ -1924,11 +1924,7 @@ namespace IngameScript
                     if (torps[i].IsFunctional)
                     {
                         if (AUTOLOAD)
-                        {
-                            IMyInventory thisInventory = torps[i].GetInventory();
-                            // sneaky extra line here excludes tycho class torp launchers from autoloading.
-                            if (!thisInventory.IsFull && !torps[i].BlockDefinition.ToString().Contains("Tycho")) TO_LOAD.Add(torps[i]);
-                        }
+                            if (!inventorySomewhatFull(pdcs[i])) TO_LOAD.Add(torps[i]);
 
                         if (torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
                         {
@@ -1958,8 +1954,21 @@ namespace IngameScript
 
                         if (AUTOLOAD)
                         {
-                            IMyInventory thisInventory = pdcs[i].GetInventory();
-                            if (!thisInventory.IsFull) TO_LOAD.Add(pdcs[i]);
+
+                            if (AUTOLOAD)
+                                if (!inventorySomewhatFull(pdcs[i])) TO_LOAD.Add(pdcs[i]);
+
+                            // rofl.
+                            // IsFull doesn't work because volume of a full inner PDC is...
+                            // 1000000 / 1000002
+                            // so instead now I just confirm that it's > 95% full.
+
+                            /*IMyInventory thisInventory = pdcs[i].GetInventory();
+                            bool SomewhatFull = thisInventory.CurrentVolume.RawValue > (thisInventory.MaxVolume.RawValue * 0.95);
+                            Echo("CurrentVolume:" + thisInventory.CurrentVolume.RawValue + ", Threshold:" + (thisInventory.MaxVolume.RawValue * 0.9) + ", Max:" + thisInventory.MaxVolume.RawValue);
+                            Echo("full:" + thisInventory.IsFull);
+                            Echo("somewhat full:" + SomewhatFull);
+                            if (!SomewhatFull) TO_LOAD.Add(pdcs[i]);*/
                         }
 
                         if (pdcs[i].CustomName.Contains(ship_name) && !pdcs[i].CustomName.Contains(ignore_keyword))
@@ -1986,11 +1995,8 @@ namespace IngameScript
                     {
 
                         if (AUTOLOAD)
-                        {
-                            IMyInventory thisInventory = defencePdcs[i].GetInventory();
-                            if (!thisInventory.IsFull) TO_LOAD.Add(defencePdcs[i]);
-                        }
-
+                            if (!inventorySomewhatFull(defencePdcs[i])) TO_LOAD.Add(defencePdcs[i]);
+                        
                         if (defencePdcs[i].CustomName.Contains(ship_name) && !defencePdcs[i].CustomName.Contains(ignore_keyword))
                         {
                             FunctionalPDCs++;
@@ -2016,10 +2022,7 @@ namespace IngameScript
                     {
 
                         if (AUTOLOAD)
-                        {
-                            IMyInventory thisInventory = railguns[i].GetInventory();
-                            if (!thisInventory.IsFull) TO_LOAD.Add(railguns[i]);
-                        }
+                            if (!inventorySomewhatFull(railguns[i])) TO_LOAD.Add(railguns[i]);
 
                         if (railguns[i].CustomName.Contains(ship_name) && !railguns[i].CustomName.Contains(ignore_keyword))
                         {
@@ -2736,7 +2739,7 @@ namespace IngameScript
             bool parsedVars = false;
             bool parsedStances = false;
 
-            if (debug) Echo("Parsing PB custom data...");
+            if (debug) Echo("updateCustomData(dontParse = " + dontParse + ");\n");
 
             if (dontParse == false)
             {
@@ -3307,6 +3310,12 @@ namespace IngameScript
                 if (stance_data[stance_i][21] == 3)
                     Echo("Keeping tanks full\n(" + tank_h2_actual + " < " + (tank_h2_total - extractor_keep_full_threshold) + ")");
             }
+        }
+
+        bool inventorySomewhatFull(IMyTerminalBlock Block) // is a block's inventory > 95% full.
+        {
+            IMyInventory thisInventory = Block.GetInventory();
+            return thisInventory.CurrentVolume.RawValue > (thisInventory.MaxVolume.RawValue * 0.95);
         }
 
         void loadInventory(IMyTerminalBlock ToLoad, List<IMyInventory> SourceInventories, string ItemType, int ItemCount)
