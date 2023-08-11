@@ -23,13 +23,15 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
 
+        WcPbApi WC_PB_API;
+
         // lcd variables.
         const string lcd_divider = "--------------------------------";
-        const string lcd_title = "     REEDIT SHIP MANAGEMENT     ";
+        //const string lcd_title = "     REEDIT SHIP MANAGEMENT     ";
         string[] lcd_spinners = new string[] { "-", "\\", "|", "/" };
         int lcd_spinner_status = 0;
         const float lcd_font_size = 0.8f;
-        Color lcd_font_colour = new Color(30, 144, 255, 255);
+        //Color lcd_font_colour = new Color(30, 144, 255, 255);
 
         // CUSTOM DATA STUFF
         // these are default values can also be set from custom data
@@ -73,10 +75,6 @@ namespace IngameScript
             public List<IMyInventory> STORED_IN = new List<IMyInventory>();
         }
 
-        /*ITEM LG_FUEL_TANKS;
-        ITEM SG_FUEL_TANKS;
-        ITEM REACTOR_FUEL;*/
-
         List<ITEM> ITEMS = new List<ITEM>();
 
         ITEM buildItem(string LCDName, string SubTypeID, string TypeID)
@@ -84,12 +82,11 @@ namespace IngameScript
             ITEM NewItem = new ITEM();
             NewItem.NAME = LCDName;
             NewItem.TYPE = new MyItemType(SubTypeID, TypeID);
-            /*if (TypeID == "Fuel_Tank") LG_FUEL_TANKS = NewItem;
-            if (TypeID == "SG_Fuel_Tank") SG_FUEL_TANKS = NewItem;
-            if (TypeID == "FusionFuel") REACTOR_FUEL = NewItem;*/
             return NewItem;
         }
 
+        bool AUTOLOAD = true;
+        List<IMyTerminalBlock> TO_LOAD = new List<IMyTerminalBlock>();
 
         string faction_tag;
 
@@ -172,6 +169,8 @@ namespace IngameScript
         float actual_thrust;
 
         bool build_advanced_thrust_data = false;
+        bool ADVANCED_THRUST_SHOW_BASICS = true;
+        List<double> ADVANCED_THRUST_PERCENTS = new List<double>();
 
         IMyShipController controller;
 
@@ -562,6 +561,13 @@ namespace IngameScript
                 return;
             }
 
+            // default thrust percentages.
+            ADVANCED_THRUST_PERCENTS.Add(0.5);
+            ADVANCED_THRUST_PERCENTS.Add(0.25);
+            ADVANCED_THRUST_PERCENTS.Add(0.15);
+            ADVANCED_THRUST_PERCENTS.Add(0.1);
+            ADVANCED_THRUST_PERCENTS.Add(0.05);
+
             // this is the bit that actually makes it loop, yo
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
         }
@@ -834,7 +840,7 @@ namespace IngameScript
 
             for (int i = 0; i < torps.Count; i++)
             {
-                if (torps[i].IsFunctional && torps[i].CustomName.Contains(ship_name))
+                if (torps[i].IsFunctional && torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
                 {
                     // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
                     switch (stance_data[stance_i][0])
@@ -887,7 +893,7 @@ namespace IngameScript
             {
                 //if (debug) Echo("PDC " + i + "(" + pdcs[i].CustomName + ")");
 
-                if (pdcs[i].IsFunctional && pdcs[i].CustomName.Contains(ship_name))
+                if (pdcs[i].IsFunctional && pdcs[i].CustomName.Contains(ship_name) && !pdcs[i].CustomName.Contains(ignore_keyword))
                 {
                     // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                     switch (stance_data[stance_i][1])
@@ -1007,7 +1013,7 @@ namespace IngameScript
 
                 if (debug) Echo("Def PDC " + i);
 
-                if (defencePdcs[i].IsFunctional && defencePdcs[i].CustomName.Contains(ship_name))
+                if (defencePdcs[i].IsFunctional && defencePdcs[i].CustomName.Contains(ship_name) && !defencePdcs[i].CustomName.Contains(ignore_keyword))
                 {
                     // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                     switch (stance_data[stance_i][1])
@@ -1042,7 +1048,7 @@ namespace IngameScript
             if (debug) Echo("Setting " + railguns.Count + " railguns to " + stance_data[stance_i][2]);
             for (int i = 0; i < railguns.Count; i++)
             {
-                if (railguns[i].IsFunctional && railguns[i].CustomName.Contains(ship_name))
+                if (railguns[i].IsFunctional && railguns[i].CustomName.Contains(ship_name) && !railguns[i].CustomName.Contains(ignore_keyword))
                 {
                     // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
 
@@ -1133,7 +1139,7 @@ namespace IngameScript
                     // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                     if (stance_data[stance_i][4] == 0)
                         thrustersRcs[i].ApplyAction("OnOff_Off");
-                    else if (stance_data[stance_i][4] == 1 || 
+                    else if (stance_data[stance_i][4] == 1 ||
                         (stance_data[stance_i][4] > 1) && thrustersMain.Count < 1)
                         thrustersRcs[i].ApplyAction("OnOff_On");
                     else if (stance_data[stance_i][4] == 2) // all on, fwd off.
@@ -1229,7 +1235,7 @@ namespace IngameScript
                     }
                 }
             }
-            
+
 
             if (debug) Echo("Setting " + batteries.Count + " batteries to recharge = " + stance_data[stance_i][16]);
 
@@ -1919,14 +1925,23 @@ namespace IngameScript
             {
                 if (torps[i] != null)
                 {
-                    if (torps[i].IsFunctional && torps[i].CustomName.Contains(ship_name))
+                    if (torps[i].IsFunctional)
                     {
-                        FunctionalTorps++;
-                        // turn torps on for 1+
-                        if (stance_data[stance_i][0] < 1)
-                            torps[i].ApplyAction("OnOff_Off");
-                        else
-                            torps[i].ApplyAction("OnOff_On");
+                        if (AUTOLOAD)
+                        {
+                            IMyInventory thisInventory = torps[i].GetInventory();
+                            if (!thisInventory.IsFull) TO_LOAD.Add(torps[i]);
+                        }
+
+                        if (torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
+                        {
+                            FunctionalTorps++;
+                            // turn torps on for 1+
+                            if (stance_data[stance_i][0] < 1)
+                                torps[i].ApplyAction("OnOff_Off");
+                            else
+                                torps[i].ApplyAction("OnOff_On");
+                        }
                     }
                 }
 
@@ -1941,14 +1956,25 @@ namespace IngameScript
             {
                 if (pdcs[i] != null)
                 {
-                    if (pdcs[i].IsFunctional && pdcs[i].CustomName.Contains(ship_name))
+                    if (pdcs[i].IsFunctional)
                     {
-                        FunctionalPDCs++;
-                        // turn PDCs off for 2+
-                        if (stance_data[stance_i][1] < 2)
-                            pdcs[i].ApplyAction("OnOff_Off");
-                        else
-                            pdcs[i].ApplyAction("OnOff_On");
+
+                        if (AUTOLOAD)
+                        {
+                            IMyInventory thisInventory = pdcs[i].GetInventory();
+                            if (!thisInventory.IsFull) TO_LOAD.Add(pdcs[i]);
+                        }
+
+                        if (pdcs[i].CustomName.Contains(ship_name) && !pdcs[i].CustomName.Contains(ignore_keyword))
+                        {
+                            FunctionalPDCs++;
+                            // turn PDCs off for 2+
+                            if (stance_data[stance_i][1] < 2)
+                                pdcs[i].ApplyAction("OnOff_Off");
+                            else
+                                pdcs[i].ApplyAction("OnOff_On");
+                        }
+
                     }
                 }
 
@@ -1959,14 +1985,24 @@ namespace IngameScript
             {
                 if (defencePdcs[i] != null)
                 {
-                    if (defencePdcs[i].IsFunctional && defencePdcs[i].CustomName.Contains(ship_name))
+                    if (defencePdcs[i].IsFunctional)
                     {
-                        FunctionalPDCs++;
-                        // turn defence pdcs on for 1+
-                        if (stance_data[stance_i][1] < 1)
-                            defencePdcs[i].ApplyAction("OnOff_Off");
-                        else
-                            defencePdcs[i].ApplyAction("OnOff_On");
+
+                        if (AUTOLOAD)
+                        {
+                            IMyInventory thisInventory = defencePdcs[i].GetInventory();
+                            if (!thisInventory.IsFull) TO_LOAD.Add(defencePdcs[i]);
+                        }
+
+                        if (defencePdcs[i].CustomName.Contains(ship_name) && !defencePdcs[i].CustomName.Contains(ignore_keyword))
+                        {
+                            FunctionalPDCs++;
+                            // turn defence pdcs on for 1+
+                            if (stance_data[stance_i][1] < 1)
+                                defencePdcs[i].ApplyAction("OnOff_Off");
+                            else
+                                defencePdcs[i].ApplyAction("OnOff_On");
+                        }
                     }
                 }
 
@@ -1979,14 +2015,24 @@ namespace IngameScript
             {
                 if (railguns[i] != null)
                 {
-                    if (railguns[i].IsFunctional && railguns[i].CustomName.Contains(ship_name))
+                    if (railguns[i].IsFunctional)
                     {
-                        FunctionalRailguns++;
-                        // turn railguns on for 1+
-                        if (stance_data[stance_i][2] < 1)
-                            railguns[i].ApplyAction("OnOff_Off");
-                        else
-                            railguns[i].ApplyAction("OnOff_On");
+
+                        if (AUTOLOAD)
+                        {
+                            IMyInventory thisInventory = railguns[i].GetInventory();
+                            if (!thisInventory.IsFull) TO_LOAD.Add(railguns[i]);
+                        }
+
+                        if (railguns[i].CustomName.Contains(ship_name) && !railguns[i].CustomName.Contains(ignore_keyword))
+                        {
+                            FunctionalRailguns++;
+                            // turn railguns on for 1+
+                            if (stance_data[stance_i][2] < 1)
+                                railguns[i].ApplyAction("OnOff_Off");
+                            else
+                                railguns[i].ApplyAction("OnOff_On");
+                        }
                     }
                 }
             }
@@ -1997,7 +2043,7 @@ namespace IngameScript
             double FunctionalGyros = 0;
             for (int i = 0; i < gyros.Count; i++)
             {
-                if (gyros[i]!= null)
+                if (gyros[i] != null)
                 {
                     if (gyros[i].IsFunctional && gyros[i].CustomName.Contains(ship_name))
                     {
@@ -2056,6 +2102,7 @@ namespace IngameScript
             } catch { }
 
             manageExtractors();
+            manageAutoload();
             manageDoors();
             updateLcd();
             return;
@@ -2113,10 +2160,10 @@ namespace IngameScript
             {
                 // block is an LCD we're going to write our data too.
                 if (
-                    lcds[i].CustomName.Contains(lcd_keyword) 
-                    && 
-                    lcds[i].CustomName.Contains(ship_name) 
-                    && 
+                    lcds[i].CustomName.Contains(lcd_keyword)
+                    &&
+                    lcds[i].CustomName.Contains(ship_name)
+                    &&
                     !lcds[i].CustomName.Contains(ignore_keyword))
                 {
                     lcd_blocks.Add(lcds[i]);
@@ -2330,8 +2377,80 @@ namespace IngameScript
                         disownedCount++;
                     }
 
+                    /* PDCs NEW
+                    ConveyorSorter/Ostman-Jazinski Flak Cannon
+                    ConveyorSorter/Nariman Dynamics PDC
+                    ConveyorSorter/Nariman Dynamics PDC Slope Base
+                    ConveyorSorter/Voltaire Collective Anti Personnel PDC
+                    ConveyorSorter/Outer Planets Alliance Point Defence Cannon
+                    ConveyorSorter/Redfields Ballistics PDC
+                    ConveyorSorter/Redfields Ballistics PDC Slope Base
+                    */
+
+                    if (
+                        blockId.Contains("Ostman-Jazinski Flak Cannon")
+                        ||
+                        blockId.Contains("Nariman Dynamics PDC")
+                        ||
+                        blockId.Contains("Voltaire Collective Anti Personnel PDC")
+                        ||
+                        blockId.Contains("Outer Planets Alliance Point Defence Cannon")
+                        ||
+                        blockId.Contains("Redfields Ballistics PDC")
+                        )
+                    {
+                        if (allBlocks[i].CustomName.Contains(defence_pdc_keyword))
+                            defencePdcs.Add(allBlocks[i]);
+                        else
+                            pdcs.Add(allBlocks[i]);
+                    }
+
+                    /* Torpedoes NEW
+                    ConveyorSorter/Apollo Class Torpedo Launcher
+                    ConveyorSorter/Tycho Class Torpedo Mount
+                    ConveyorSorter/Ares_Class_Torpedo_Launcher
+                    ConveyorSorter/Ares_Class_Torpedo_Launcher_F
+                    ConveyorSorter/ZeusClass_Rapid_Torpedo_Launcher
+                    */
+
+                    else if (
+                        blockId.Contains("Apollo Class Torpedo Launcher")
+                        ||
+                        blockId.Contains("Tycho Class Torpedo Mount")
+                        ||
+                        blockId.Contains("Ares_Class_Torpedo_Launcher")
+                        ||
+                        blockId.Contains("Ares_Class_TorpedoLauncher") // lol
+                        ||
+                        blockId.Contains("ZeusClass_Rapid_Torpedo_Launcher")
+                        )
+                        torps.Add(allBlocks[i]);
+
+                    /* Railguns NEW
+                    ConveyorSorter/Zakosetara Heavy Railgun
+                    ConveyorSorter/Mounted Zakosetara Heavy Railgun
+                    ConveyorSorter/T-47 Roci Light Fixed Railgun
+                    ConveyorSorter/Farren-Pattern Heavy Railgun
+                    ConveyorSorter/Dawson-Pattern Medium Railgun
+                    ConveyorSorter/VX-12 Foehammer Ultra-Heavy Railgun
+                    ConveyorSorter/V-14 Stiletto Light Railgun
+                    */
+
+                    // guess this one can stay simple for now.
+                    else if (blockId.Contains("Railgun"))
+                        railguns.Add(allBlocks[i]);
+
+                    else if (blockId.Contains("Coilgun"))
+                    {
+                        // treat these as a railgun
+                        railguns.Add(allBlocks[i]);
+                        // this just for init
+                        coilguns.Add(allBlocks[i]);
+                    }
+
+
                     // ignore blocks with the ignore keyword.
-                    if (allBlocks[i].CustomName.Contains(ignore_keyword))
+                    else if (allBlocks[i].CustomName.Contains(ignore_keyword))
                         ignoreCount++;
 
                     // Reactors
@@ -2401,47 +2520,6 @@ namespace IngameScript
                             thrustersMain.Add(allBlocks[i]);
                     }
 
-                    // PDCs (old)
-                    // MyObjectBuilder_LargeMissileTurret/Ostman-Jazinski Flak Cannon
-                    // MyObjectBuilder_LargeGatlingTurret/Nariman Dynamics PDC
-                    // MyObjectBuilder_LargeGatlingTurret/Redfields Ballistics PDC
-                    // MyObjectBuilder_LargeGatlingTurret/Voltaire Collective Anti Personnel PDC
-                    // MyObjectBuilder_LargeGatlingTurret/Outer Planets Alliance Point Defence Cannon
-
-
-
-
-
-                    /* PDCs NEW
-                    ConveyorSorter/Ostman-Jazinski Flak Cannon
-                    ConveyorSorter/Nariman Dynamics PDC
-                    ConveyorSorter/Nariman Dynamics PDC Slope Base
-                    ConveyorSorter/Voltaire Collective Anti Personnel PDC
-                    ConveyorSorter/Outer Planets Alliance Point Defence Cannon
-                    ConveyorSorter/Redfields Ballistics PDC
-                    ConveyorSorter/Redfields Ballistics PDC Slope Base
-                    */
-
-
-
-                    else if (
-                        blockId.Contains("Ostman-Jazinski Flak Cannon")
-                        ||
-                        blockId.Contains("Nariman Dynamics PDC")
-                        ||
-                        blockId.Contains("Voltaire Collective Anti Personnel PDC")
-                        ||
-                        blockId.Contains("Outer Planets Alliance Point Defence Cannon")
-                        ||
-                        blockId.Contains("Redfields Ballistics PDC")
-                        )
-                    {
-                        if (allBlocks[i].CustomName.Contains(defence_pdc_keyword))
-                            defencePdcs.Add(allBlocks[i]);
-                        else
-                            pdcs.Add(allBlocks[i]);
-                    }
-
 
                     // Antennas
                     // MyObjectBuilder_RadioAntenna/AntennaCube
@@ -2468,64 +2546,6 @@ namespace IngameScript
 
                     else if (blockId.Contains("MyObjectBuilder_Beacon/"))
                         beacons.Add(allBlocks[i]);
-
-                    // Torpedoes (old)
-                    // MyObjectBuilder_SmallMissileLauncherReload/Tycho Class Torpedo Mount
-                    // MyObjectBuilder_SmallMissileLauncherReload/Apollo Class Torpedo Launcher
-                    // MyObjectBuilder_SmallMissileLauncherReload/Ares_Class_Torpedo_Launcher_F
-                    // MyObjectBuilder_SmallMissileLauncherReload/Ares_Class_TorpedoLauncher
-                    // MyObjectBuilder_SmallMissileLauncherReload/ZeusClass_Rapid_Torpedo_Launcher
-
-                    /* Torpedoes NEW
-                    ConveyorSorter/Apollo Class Torpedo Launcher
-                    ConveyorSorter/Tycho Class Torpedo Mount
-                    ConveyorSorter/Ares_Class_Torpedo_Launcher
-                    ConveyorSorter/Ares_Class_Torpedo_Launcher_F
-                    ConveyorSorter/ZeusClass_Rapid_Torpedo_Launcher
-                    */
-
-                    else if (
-                        blockId.Contains("Apollo Class Torpedo Launcher")
-                        ||
-                        blockId.Contains("Tycho Class Torpedo Mount")
-                        ||
-                        blockId.Contains("Ares_Class_Torpedo_Launcher")
-                        ||
-                        blockId.Contains("Ares_Class_TorpedoLauncher") // lol
-                        ||
-                        blockId.Contains("ZeusClass_Rapid_Torpedo_Launcher")
-                        )
-                        torps.Add(allBlocks[i]);
-
-                   
-                    // Railguns 
-                    // MyObjectBuilder_LargeMissileTurret/Mounted Zakosetara Heavy Railgun
-                    // MyObjectBuilder_LargeMissileTurret/Farren-Pattern Heavy Railgun
-                    // MyObjectBuilder_LargeMissileTurret/Dawson-Pattern Medium Railgun
-                    // MyObjectBuilder_LargeMissileTurret/V-14 Stiletto Light Railgun
-                    // MyObjectBuilder_LargeMissileTurret/VX-12 Foehammer Ultra-Heavy Railgun
-
-                    /* Railguns NEW
-                    ConveyorSorter/Zakosetara Heavy Railgun
-                    ConveyorSorter/Mounted Zakosetara Heavy Railgun
-                    ConveyorSorter/T-47 Roci Light Fixed Railgun
-                    ConveyorSorter/Farren-Pattern Heavy Railgun
-                    ConveyorSorter/Dawson-Pattern Medium Railgun
-                    ConveyorSorter/VX-12 Foehammer Ultra-Heavy Railgun
-                    ConveyorSorter/V-14 Stiletto Light Railgun
-                    */
-
-                    // guess this one can stay simple for now.
-                    else if (blockId.Contains("Railgun"))
-                        railguns.Add(allBlocks[i]);
-
-                    else if (blockId.Contains("Coilgun"))
-                    {
-                        // treat these as a railgun
-                        railguns.Add(allBlocks[i]);
-                        // this just for init
-                        coilguns.Add(allBlocks[i]);
-                    }         
 
                     // Batteries
                     // MyObjectBuilder_BatteryBlock/LargeBlockBatteryBlockWarfare2
@@ -2813,6 +2833,29 @@ namespace IngameScript
                                     disable_text_colour_enforcement = bool.Parse(value);
                                     break;
 
+                                case "Enable Weapon Autoload Functionality.":
+                                    config_count++;
+                                    AUTOLOAD = bool.Parse(value);
+                                    break;
+
+
+
+                                case "Show basic telemetry.":
+                                    config_count++;
+                                    ADVANCED_THRUST_SHOW_BASICS = bool.Parse(value);
+                                    break;
+                                case "Show Decel Percentages (comma seperated).":
+                                    config_count++;
+                                    ADVANCED_THRUST_PERCENTS.Clear();
+                                    string[] Percents = value.Split(',');
+                                    foreach (string Percent in Percents)
+                                    {
+                                        ADVANCED_THRUST_PERCENTS.Add(double.Parse(Percent) / 100);
+                                    }
+                                    break;
+
+
+
                                 case "Fusion Fuel count":
                                     config_count++;
                                     ITEMS[0].TARGET = int.Parse(value);
@@ -2966,7 +3009,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 40)
+                    if (config_count == 43)
                     {
                         parsedVars = true;
                     }
@@ -3079,7 +3122,7 @@ namespace IngameScript
             }
 
 
-  
+
             string stance_text = "";
 
             if (stance_names.Count != stance_data.Count) debugEcho("Weird Error!", "Um, so...\nstance_names.Count != stance_data.Count");
@@ -3140,6 +3183,12 @@ namespace IngameScript
                     ;
             }
 
+            string DecelPercents = "";
+
+            foreach (double Percent in ADVANCED_THRUST_PERCENTS)
+            {
+                DecelPercents += (Percent * 100).ToString() + ",";
+            }
 
             Me.CustomData =
                 "-------------------------\n"
@@ -3154,6 +3203,7 @@ namespace IngameScript
                 + "Keyword used to identify minimum epstein drives.\n=" + min_drives_keyword + "\n"
                 + "Keyword used to identify defence PDCs.\n=" + defence_pdc_keyword + "\n"
                 + "Keyword to ignore block.\n=" + ignore_keyword + "\n"
+                + "Enable Weapon Autoload Functionality.\n=" + AUTOLOAD + "\n"
                 + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + auto_configure_pdcs + "\n"
                 + "Disable lighting all control.\n=" + disable_lighting + "\n"
                 + "Disable LCD Text Colour Enforcement.\n=" + disable_text_colour_enforcement + "\n"
@@ -3162,6 +3212,11 @@ namespace IngameScript
                 + "\n---- [Door Timers] ----\n"
                 + "Doors open timer (x100 ticks, default 3)\n=" + door_open_time + "\n"
                 + "Airlock doors disabled timer (x100 ticks, default 6)\n=" + door_airlock_time + "\n"
+
+                + "\n---- [Advanced Thrust LCD] ----\n"
+                + "Show basic telemetry.\n=" + ADVANCED_THRUST_SHOW_BASICS + "\n"
+                + "Show Decel Percentages (comma seperated).\n=" + DecelPercents + "\n"
+
 
                 + "\n---- [Performance & Debugging] ----\n"
                 + "Throttle script (x100 ticks pause between loops, default 0)\n=" + wait_count + "\n"
@@ -3254,6 +3309,73 @@ namespace IngameScript
 
                 if (stance_data[stance_i][21] == 3)
                     Echo("Keeping tanks full\n(" + tank_h2_actual + " < " + (tank_h2_total - extractor_keep_full_threshold) + ")");
+            }
+        }
+
+        void loadInventory(IMyTerminalBlock ToLoad, List<IMyInventory> SourceInventories, string ItemType, int ItemCount)
+        {
+            IMyInventory ToLoadInventory = ToLoad.GetInventory();
+
+            foreach (IMyInventory Source in SourceInventories)
+            {
+                try
+                {
+                    List<MyInventoryItem> Items = new List<MyInventoryItem>();
+                    Source.GetItems(Items);
+
+                    foreach (MyInventoryItem Item in Items)
+                    {
+                        if (Item.ToString().Contains(ItemType))
+                        {
+                            bool success = ToLoadInventory.TransferItemFrom(Source, Item, ItemCount);
+                            if (success) return;
+                        }
+                    }
+                }
+                catch { }
+            }
+        }
+
+        void manageAutoload()
+        {
+
+            if (!AUTOLOAD) return;
+
+            if (debug) Echo("Managing Autoload...");
+
+            bool Ammo_Low = false;
+
+            if (WC_PB_API == null)
+            {
+                try
+                {
+                    WC_PB_API = new WcPbApi();
+                    WC_PB_API.Activate(Me);
+                }
+                catch { 
+                    WC_PB_API = null;
+                }
+            }
+
+            foreach (IMyTerminalBlock Weapon in TO_LOAD)
+            {
+                string AmmoType = WC_PB_API.GetActiveAmmo(Weapon, 0);
+
+                foreach (ITEM Item in ITEMS)
+                {
+                    if (Item.NAME == AmmoType) // this is the correct item for this ammo type.
+                    {
+                        if (Item.STORED_IN.Count > 0) // there are inventories where this item is stored.
+                            loadInventory(Weapon, Item.STORED_IN, AmmoType, 99);
+                        else // there arne't any inventories where this item is stored.
+                            Ammo_Low = true;
+                    }
+                }
+            }
+
+            if (Ammo_Low)
+            {
+                debugEcho("Ammo Low!", "Ammo Low! Some weapons cannot autoload because there is no spare ammo!");
             }
         }
 
@@ -3598,25 +3720,43 @@ namespace IngameScript
             if (build_advanced_thrust_data)
             {
 
+                string Basics = "";
+                if (ADVANCED_THRUST_SHOW_BASICS)
+                {
+                    Basics =
+                        "\nMass:            " + (Math.Round((mass / 1000000), 2) + " Mkg").PadLeft(15) +
+                        "\n" + vel_msg + (vel + " ms").PadLeft(15) +
+                        "\nMax Accel:       " + (AccelMax + " Gs").PadLeft(15) +
+                        "\nActual Accel:    " + (AccelActual + " Gs").PadLeft(15);
+                }
+
                 sec_thrust_advanced =
-                    lcd_divider + "\n" +
-                    "\nMass:            " + (Math.Round((mass / 1000000), 2) + " Mkg").PadLeft(15) +
-                    "\n" + vel_msg + (vel + " ms").PadLeft(15) +
-                    "\nMax Accel:       " + (AccelMax + " Gs").PadLeft(15) +
-                    "\nActual Accel:    " + (AccelActual + " Gs").PadLeft(15) +
+                    lcd_divider + "\n" + Basics +
                     "\nMax Thrust:      " + ((max_thrust / 1000000) + " MN").PadLeft(15) +
                     "\nActual Thrust:   " + ((actual_thrust / 1000000) + " MN").PadLeft(15) +
                     "\nDecel (Dampener):" + stopDistance(max_thrust, vel, true) +
-                    "\nDecel (Actual):  " + stopDistance(actual_thrust, vel) +
-                    "\nDecel (90%):     " + stopDistance((float)(max_thrust * 0.9), vel) +
-                    "\nDecel (80%):     " + stopDistance((float)(max_thrust * 0.8), vel) +
-                    "\nDecel (70%):     " + stopDistance((float)(max_thrust * 0.7), vel) +
-                    "\nDecel (60%):     " + stopDistance((float)(max_thrust * 0.6), vel) +
-                    "\nDecel (50%):     " + stopDistance((float)(max_thrust * 0.5), vel) +
-                    "\nDecel (40%):     " + stopDistance((float)(max_thrust * 0.4), vel) +
-                    "\nDecel (30%):     " + stopDistance((float)(max_thrust * 0.3), vel) +
-                    "\nDecel (20%):     " + stopDistance((float)(max_thrust * 0.2), vel) +
-                    "\nDecel (10%):     " + stopDistance((float)(max_thrust * 0.1), vel) + "\n\n";
+                    "\nDecel (Actual):  " + stopDistance(actual_thrust, vel);
+
+                foreach (double Percent in ADVANCED_THRUST_PERCENTS)
+                {
+                    sec_thrust_advanced += "\nDecel(" + (Percent * 100) + " %):     " + stopDistance((float)(max_thrust * Percent), vel);
+                }
+
+                sec_thrust_advanced += "\n\n";
+
+                //ADVANCED_THRUST_PERCENTS
+
+
+                /*
+                "\nDecel (90%):     " + stopDistance((float)(max_thrust * 0.9), vel) +
+                "\nDecel (80%):     " + stopDistance((float)(max_thrust * 0.8), vel) +
+                "\nDecel (70%):     " + stopDistance((float)(max_thrust * 0.7), vel) +
+                "\nDecel (60%):     " + stopDistance((float)(max_thrust * 0.6), vel) +
+                "\nDecel (50%):     " + stopDistance((float)(max_thrust * 0.5), vel) +
+                "\nDecel (40%):     " + stopDistance((float)(max_thrust * 0.4), vel) +
+                "\nDecel (30%):     " + stopDistance((float)(max_thrust * 0.3), vel) +
+                "\nDecel (20%):     " + stopDistance((float)(max_thrust * 0.2), vel) +
+                "\nDecel (10%):     " + stopDistance((float)(max_thrust * 0.1), vel) + "\n\n"*/
             }
 
 
@@ -3875,6 +4015,227 @@ namespace IngameScript
             if (Success)
                 Echo("Failed to run '"+ Argument + "' on '" + Pb.CustomName + "'");
         }
+
+        public class WcPbApi
+        {
+            private Action<ICollection<MyDefinitionId>> _getCoreWeapons;
+            private Action<ICollection<MyDefinitionId>> _getCoreStaticLaunchers;
+            private Action<ICollection<MyDefinitionId>> _getCoreTurrets;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, IDictionary<string, int>, bool> _getBlockWeaponMap;
+            private Func<long, MyTuple<bool, int, int>> _getProjectilesLockedOn;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, IDictionary<MyDetectedEntityInfo, float>> _getSortedThreats;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, ICollection<Sandbox.ModAPI.Ingame.MyDetectedEntityInfo>> _getObstructions;
+            private Func<long, int, MyDetectedEntityInfo> _getAiFocus;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, long, int, bool> _setAiFocus;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, MyDetectedEntityInfo> _getWeaponTarget;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, long, int> _setWeaponTarget;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, bool, int> _fireWeaponOnce;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, bool, bool, int> _toggleWeaponFire;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, bool, bool, bool> _isWeaponReadyToFire;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, float> _getMaxWeaponRange;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, ICollection<string>, int, bool> _getTurretTargetTypes;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, ICollection<string>, int> _setTurretTargetTypes;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, float> _setBlockTrackingRange;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, long, int, bool> _isTargetAligned;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, long, int, MyTuple<bool, Vector3D?>> _isTargetAlignedExtended;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, long, int, bool> _canShootTarget;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, long, int, Vector3D?> _getPredictedTargetPos;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, float> _getHeatLevel;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, float> _currentPowerConsumption;
+            private Func<MyDefinitionId, float> _getMaxPower;
+            private Func<long, bool> _hasGridAi;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, bool> _hasCoreWeapon;
+            private Func<long, float> _getOptimalDps;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, string> _getActiveAmmo;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, string> _setActiveAmmo;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, Action<long, int, ulong, long, Vector3D, bool>> _monitorProjectile;
+            private Action<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, Action<long, int, ulong, long, Vector3D, bool>> _unMonitorProjectile;
+            private Func<ulong, MyTuple<Vector3D, Vector3D, float, float, long, string>> _getProjectileState;
+            private Func<long, float> _getConstructEffectiveDps;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, long> _getPlayerController;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, Matrix> _getWeaponAzimuthMatrix;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, Matrix> _getWeaponElevationMatrix;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, long, bool, bool, bool> _isTargetValid;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, int, MyTuple<Vector3D, Vector3D>> _getWeaponScope;
+            private Func<Sandbox.ModAPI.Ingame.IMyTerminalBlock, MyTuple<bool, bool>> _isInRange;
+
+            public bool Activate(Sandbox.ModAPI.Ingame.IMyTerminalBlock pbBlock)
+            {
+                var dict = pbBlock.GetProperty("WcPbAPI")?.As<IReadOnlyDictionary<string, Delegate>>().GetValue(pbBlock);
+                if (dict == null) throw new Exception("WcPbAPI failed to activate");
+                return ApiAssign(dict);
+            }
+
+            public bool ApiAssign(IReadOnlyDictionary<string, Delegate> delegates)
+            {
+                if (delegates == null)
+                    return false;
+
+                AssignMethod(delegates, "GetCoreWeapons", ref _getCoreWeapons);
+                AssignMethod(delegates, "GetCoreStaticLaunchers", ref _getCoreStaticLaunchers);
+                AssignMethod(delegates, "GetCoreTurrets", ref _getCoreTurrets);
+                AssignMethod(delegates, "GetBlockWeaponMap", ref _getBlockWeaponMap);
+                AssignMethod(delegates, "GetProjectilesLockedOn", ref _getProjectilesLockedOn);
+                AssignMethod(delegates, "GetSortedThreats", ref _getSortedThreats);
+                AssignMethod(delegates, "GetObstructions", ref _getObstructions);
+                AssignMethod(delegates, "GetAiFocus", ref _getAiFocus);
+                AssignMethod(delegates, "SetAiFocus", ref _setAiFocus);
+                AssignMethod(delegates, "GetWeaponTarget", ref _getWeaponTarget);
+                AssignMethod(delegates, "SetWeaponTarget", ref _setWeaponTarget);
+                AssignMethod(delegates, "FireWeaponOnce", ref _fireWeaponOnce);
+                AssignMethod(delegates, "ToggleWeaponFire", ref _toggleWeaponFire);
+                AssignMethod(delegates, "IsWeaponReadyToFire", ref _isWeaponReadyToFire);
+                AssignMethod(delegates, "GetMaxWeaponRange", ref _getMaxWeaponRange);
+                AssignMethod(delegates, "GetTurretTargetTypes", ref _getTurretTargetTypes);
+                AssignMethod(delegates, "SetTurretTargetTypes", ref _setTurretTargetTypes);
+                AssignMethod(delegates, "SetBlockTrackingRange", ref _setBlockTrackingRange);
+                AssignMethod(delegates, "IsTargetAligned", ref _isTargetAligned);
+                AssignMethod(delegates, "IsTargetAlignedExtended", ref _isTargetAlignedExtended);
+                AssignMethod(delegates, "CanShootTarget", ref _canShootTarget);
+                AssignMethod(delegates, "GetPredictedTargetPosition", ref _getPredictedTargetPos);
+                AssignMethod(delegates, "GetHeatLevel", ref _getHeatLevel);
+                AssignMethod(delegates, "GetCurrentPower", ref _currentPowerConsumption);
+                AssignMethod(delegates, "GetMaxPower", ref _getMaxPower);
+                AssignMethod(delegates, "HasGridAi", ref _hasGridAi);
+                AssignMethod(delegates, "HasCoreWeapon", ref _hasCoreWeapon);
+                AssignMethod(delegates, "GetOptimalDps", ref _getOptimalDps);
+                AssignMethod(delegates, "GetActiveAmmo", ref _getActiveAmmo);
+                AssignMethod(delegates, "SetActiveAmmo", ref _setActiveAmmo);
+                AssignMethod(delegates, "MonitorProjectile", ref _monitorProjectile);
+                AssignMethod(delegates, "UnMonitorProjectile", ref _unMonitorProjectile);
+                AssignMethod(delegates, "GetProjectileState", ref _getProjectileState);
+                AssignMethod(delegates, "GetConstructEffectiveDps", ref _getConstructEffectiveDps);
+                AssignMethod(delegates, "GetPlayerController", ref _getPlayerController);
+                AssignMethod(delegates, "GetWeaponAzimuthMatrix", ref _getWeaponAzimuthMatrix);
+                AssignMethod(delegates, "GetWeaponElevationMatrix", ref _getWeaponElevationMatrix);
+                AssignMethod(delegates, "IsTargetValid", ref _isTargetValid);
+                AssignMethod(delegates, "GetWeaponScope", ref _getWeaponScope);
+                AssignMethod(delegates, "IsInRange", ref _isInRange);
+                return true;
+            }
+
+            private void AssignMethod<T>(IReadOnlyDictionary<string, Delegate> delegates, string name, ref T field) where T : class
+            {
+                if (delegates == null)
+                {
+                    field = null;
+                    return;
+                }
+
+                Delegate del;
+                if (!delegates.TryGetValue(name, out del))
+                    throw new Exception($"{GetType().Name} :: Couldn't find {name} delegate of type {typeof(T)}");
+
+                field = del as T;
+                if (field == null)
+                    throw new Exception(
+                        $"{GetType().Name} :: Delegate {name} is not type {typeof(T)}, instead it's: {del.GetType()}");
+            }
+
+            public void GetAllCoreWeapons(ICollection<MyDefinitionId> collection) => _getCoreWeapons?.Invoke(collection);
+
+            public void GetAllCoreStaticLaunchers(ICollection<MyDefinitionId> collection) =>
+                _getCoreStaticLaunchers?.Invoke(collection);
+
+            public void GetAllCoreTurrets(ICollection<MyDefinitionId> collection) => _getCoreTurrets?.Invoke(collection);
+
+            public bool GetBlockWeaponMap(Sandbox.ModAPI.Ingame.IMyTerminalBlock weaponBlock, IDictionary<string, int> collection) =>
+                _getBlockWeaponMap?.Invoke(weaponBlock, collection) ?? false;
+
+            public MyTuple<bool, int, int> GetProjectilesLockedOn(long victim) =>
+                _getProjectilesLockedOn?.Invoke(victim) ?? new MyTuple<bool, int, int>();
+
+            public void GetSortedThreats(Sandbox.ModAPI.Ingame.IMyTerminalBlock pBlock, IDictionary<MyDetectedEntityInfo, float> collection) =>
+                _getSortedThreats?.Invoke(pBlock, collection);
+            public void GetObstructions(Sandbox.ModAPI.Ingame.IMyTerminalBlock pBlock, ICollection<Sandbox.ModAPI.Ingame.MyDetectedEntityInfo> collection) =>
+                _getObstructions?.Invoke(pBlock, collection);
+            public MyDetectedEntityInfo? GetAiFocus(long shooter, int priority = 0) => _getAiFocus?.Invoke(shooter, priority);
+
+            public bool SetAiFocus(Sandbox.ModAPI.Ingame.IMyTerminalBlock pBlock, long target, int priority = 0) =>
+                _setAiFocus?.Invoke(pBlock, target, priority) ?? false;
+
+            public MyDetectedEntityInfo? GetWeaponTarget(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId = 0) =>
+                _getWeaponTarget?.Invoke(weapon, weaponId);
+
+            public void SetWeaponTarget(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, long target, int weaponId = 0) =>
+                _setWeaponTarget?.Invoke(weapon, target, weaponId);
+
+            public void FireWeaponOnce(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, bool allWeapons = true, int weaponId = 0) =>
+                _fireWeaponOnce?.Invoke(weapon, allWeapons, weaponId);
+
+            public void ToggleWeaponFire(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, bool on, bool allWeapons, int weaponId = 0) =>
+                _toggleWeaponFire?.Invoke(weapon, on, allWeapons, weaponId);
+
+            public bool IsWeaponReadyToFire(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId = 0, bool anyWeaponReady = true,
+                bool shootReady = false) =>
+                _isWeaponReadyToFire?.Invoke(weapon, weaponId, anyWeaponReady, shootReady) ?? false;
+
+            public float GetMaxWeaponRange(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId) =>
+                _getMaxWeaponRange?.Invoke(weapon, weaponId) ?? 0f;
+
+            public bool GetTurretTargetTypes(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, IList<string> collection, int weaponId = 0) =>
+                _getTurretTargetTypes?.Invoke(weapon, collection, weaponId) ?? false;
+
+            public void SetTurretTargetTypes(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, IList<string> collection, int weaponId = 0) =>
+                _setTurretTargetTypes?.Invoke(weapon, collection, weaponId);
+
+            public void SetBlockTrackingRange(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, float range) =>
+                _setBlockTrackingRange?.Invoke(weapon, range);
+
+            public bool IsTargetAligned(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, long targetEnt, int weaponId) =>
+                _isTargetAligned?.Invoke(weapon, targetEnt, weaponId) ?? false;
+
+            public MyTuple<bool, Vector3D?> IsTargetAlignedExtended(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, long targetEnt, int weaponId) =>
+                _isTargetAlignedExtended?.Invoke(weapon, targetEnt, weaponId) ?? new MyTuple<bool, Vector3D?>();
+
+            public bool CanShootTarget(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, long targetEnt, int weaponId) =>
+                _canShootTarget?.Invoke(weapon, targetEnt, weaponId) ?? false;
+
+            public Vector3D? GetPredictedTargetPosition(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, long targetEnt, int weaponId) =>
+                _getPredictedTargetPos?.Invoke(weapon, targetEnt, weaponId) ?? null;
+
+            public float GetHeatLevel(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon) => _getHeatLevel?.Invoke(weapon) ?? 0f;
+            public float GetCurrentPower(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon) => _currentPowerConsumption?.Invoke(weapon) ?? 0f;
+            public float GetMaxPower(MyDefinitionId weaponDef) => _getMaxPower?.Invoke(weaponDef) ?? 0f;
+            public bool HasGridAi(long entity) => _hasGridAi?.Invoke(entity) ?? false;
+            public bool HasCoreWeapon(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon) => _hasCoreWeapon?.Invoke(weapon) ?? false;
+            public float GetOptimalDps(long entity) => _getOptimalDps?.Invoke(entity) ?? 0f;
+
+            public string GetActiveAmmo(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId) =>
+                _getActiveAmmo?.Invoke(weapon, weaponId) ?? null;
+
+            public void SetActiveAmmo(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId, string ammoType) =>
+                _setActiveAmmo?.Invoke(weapon, weaponId, ammoType);
+
+            public void MonitorProjectileCallback(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId, Action<long, int, ulong, long, Vector3D, bool> action) =>
+                _monitorProjectile?.Invoke(weapon, weaponId, action);
+
+            public void UnMonitorProjectileCallback(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId, Action<long, int, ulong, long, Vector3D, bool> action) =>
+                _unMonitorProjectile?.Invoke(weapon, weaponId, action);
+
+            public MyTuple<Vector3D, Vector3D, float, float, long, string> GetProjectileState(ulong projectileId) =>
+                _getProjectileState?.Invoke(projectileId) ?? new MyTuple<Vector3D, Vector3D, float, float, long, string>();
+
+            public float GetConstructEffectiveDps(long entity) => _getConstructEffectiveDps?.Invoke(entity) ?? 0f;
+
+            public long GetPlayerController(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon) => _getPlayerController?.Invoke(weapon) ?? -1;
+
+            public Matrix GetWeaponAzimuthMatrix(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId) =>
+                _getWeaponAzimuthMatrix?.Invoke(weapon, weaponId) ?? Matrix.Zero;
+
+            public Matrix GetWeaponElevationMatrix(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId) =>
+                _getWeaponElevationMatrix?.Invoke(weapon, weaponId) ?? Matrix.Zero;
+
+            public bool IsTargetValid(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, long targetId, bool onlyThreats, bool checkRelations) =>
+                _isTargetValid?.Invoke(weapon, targetId, onlyThreats, checkRelations) ?? false;
+
+            public MyTuple<Vector3D, Vector3D> GetWeaponScope(Sandbox.ModAPI.Ingame.IMyTerminalBlock weapon, int weaponId) =>
+                _getWeaponScope?.Invoke(weapon, weaponId) ?? new MyTuple<Vector3D, Vector3D>();
+            // terminalBlock, Threat, Other, Something
+            public MyTuple<bool, bool> IsInRange(Sandbox.ModAPI.Ingame.IMyTerminalBlock block) =>
+                _isInRange?.Invoke(block) ?? new MyTuple<bool, bool>();
+        }
+
     }
 }
 
