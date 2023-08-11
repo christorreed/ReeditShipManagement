@@ -47,6 +47,7 @@ namespace IngameScript
         string min_drives_keyword = "Min";
         bool auto_configure_pdcs = true;
         bool disable_lighting = false; // ew, why disable.  silly germ.
+        bool disable_text_colour_enforcement; // ew, why disable.  silly germ.
 
         // number of loops before each door will be closed
         int door_open_time = 3;
@@ -249,7 +250,7 @@ namespace IngameScript
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on
+                2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
@@ -276,7 +277,7 @@ namespace IngameScript
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on
+                2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
@@ -303,7 +304,7 @@ namespace IngameScript
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                0,      // 4: rcs thrusters; 0: off, 1: on
+                0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
@@ -330,7 +331,7 @@ namespace IngameScript
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on
+                1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 2,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
@@ -357,7 +358,7 @@ namespace IngameScript
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on
+                1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 255,    // 7: Red - Exterior lights colour
@@ -384,7 +385,7 @@ namespace IngameScript
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                0,      // 4: rcs thrusters; 0: off, 1: on
+                0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,      // 7: Red - Exterior lights colour
@@ -412,7 +413,7 @@ namespace IngameScript
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on
+                1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,      // 7: Red - Exterior lights colour
@@ -439,7 +440,7 @@ namespace IngameScript
                 3,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on
+                1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,      // 7: Red - Exterior lights colour
@@ -466,7 +467,7 @@ namespace IngameScript
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                0,      // 4: rcs thrusters; 0: off, 1: on
+                0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,      // 7: Red - Exterior lights colour
@@ -492,7 +493,7 @@ namespace IngameScript
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on
+                2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                 0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,     // 7: Red - Exterior lights colour
@@ -1121,11 +1122,26 @@ namespace IngameScript
             {
                 if (thrustersRcs[i].IsFunctional && thrustersRcs[i].CustomName.Contains(ship_name))
                 {
-                    // 4: rcs thrusters; 0: off, 1: on
+                    // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
                     if (stance_data[stance_i][4] == 0)
                         thrustersRcs[i].ApplyAction("OnOff_Off");
-                    else
+                    else if (stance_data[stance_i][4] == 1 || 
+                        (stance_data[stance_i][4] > 1) && thrustersMain.Count < 1)
                         thrustersRcs[i].ApplyAction("OnOff_On");
+                    else if (stance_data[stance_i][4] == 2) // all on, fwd off.
+                    {
+                        if ((thrustersRcs[i] as IMyThrust).GridThrustDirection == Vector3I.Backward)
+                            thrustersRcs[i].ApplyAction("OnOff_Off");
+                        else
+                            thrustersRcs[i].ApplyAction("OnOff_On");
+                    }
+                    else if (stance_data[stance_i][4] == 3) // all on, reverse off.
+                    {
+                        if ((thrustersRcs[i] as IMyThrust).GridThrustDirection == Vector3I.Forward)
+                            thrustersRcs[i].ApplyAction("OnOff_Off");
+                        else
+                            thrustersRcs[i].ApplyAction("OnOff_On");
+                    }
                 }
             }
 
@@ -2091,11 +2107,24 @@ namespace IngameScript
 
                     // tidy up the LCD as well.
                     lcds[i].ContentType = ContentType.TEXT_AND_IMAGE;
-                    lcds[i].FontColor = lcd_font_colour;
+
+                    try
+                    {
+                        if (!disable_text_colour_enforcement)
+                            lcds[i].FontColor = new Color(
+                                    stance_data[stance_i][12],
+                                    stance_data[stance_i][13],
+                                    stance_data[stance_i][14],
+                                    stance_data[stance_i][15]
+                                    );
+                    }
+                    catch { }
+
+
                     lcds[i].FontSize = lcd_font_size;
                     lcds[i].Font = "Monospace";
                     //lcds[i].TextPadding = 0;
-                    lcds[i].Alignment = TextAlignment.CENTER;
+                    lcds[i].Alignment = TextAlignment.LEFT;
                 }
             }
 
@@ -2763,6 +2792,10 @@ namespace IngameScript
                                     config_count++;
                                     disable_lighting = bool.Parse(value);
                                     break;
+                                case "Disable LCD Text Colour Enforcement.":
+                                    config_count++;
+                                    disable_text_colour_enforcement = bool.Parse(value);
+                                    break;
 
                                 case "Fusion Fuel count":
                                     config_count++;
@@ -2899,7 +2932,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 36)
+                    if (config_count == 37)
                     {
                         parsedVars = true;
                     }
@@ -3038,7 +3071,7 @@ namespace IngameScript
                     + stance_data[i][2] + "\n"
                     + "epstein drives; 0: off, 1: on, 2: minimum on only\n="
                     + stance_data[i][3] + "\n"
-                    + "rcs thrusters; 0: off, 1: on\n="
+                    + "rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off\n="
                     + stance_data[i][4] + "\n"
                     + "spotlights; 0: off, 1: on, 2: on max radius, 3: no change\n="
                     + stance_data[i][5] + "\n"
@@ -3089,10 +3122,35 @@ namespace IngameScript
                 + "Keyword to ignore block.\n=" + ignore_keyword + "\n"
                 + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + auto_configure_pdcs + "\n"
                 + "Disable lighting all control.\n=" + disable_lighting + "\n"
+                + "Disable LCD Text Colour Enforcement.\n=" + disable_text_colour_enforcement + "\n"
                 + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", friendly_tags.Split('\n'))) + "\n"
 
-                + "\n---- [Target Item Quantities] ----\n"
-                + "> Set to 0 to remove from LCD.\n"
+                + "\n---- [Door Timers] ----\n"
+                + "Doors open timer (x100 ticks, default 3)\n=" + door_open_time + "\n"
+                + "Airlock doors disabled timer (x100 ticks, default 6)\n=" + door_airlock_time + "\n"
+
+                + "\n---- [Performance & Debugging] ----\n"
+                + "Throttle script (x100 ticks pause between loops, default 0)\n=" + wait_count + "\n"
+                + "Full refresh frequency (x100 ticks, default 50)\n=" + refresh_freq + "\n"
+                + "Verbose script debugging. Prints more logging info to PB details.\n=" + debug + "\n"
+
+                + "\n---- [System] ----\n"
+                + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"
+                + "Ship name. Blocks without this name will be ignored\n=" + ship_name + "\n"
+                + "Current Stance\n=" + current_stance + "\n"
+                + "Reactor Integrity\n=" + reactors_init + "\n"
+                + "PDC Integrity\n=" + pdcs_init + "\n"
+                + "Torpedo Integrity\n=" + torps_init + "\n"
+                + "Railgun Integrity\n=" + railguns_init + "\n"
+                + "H2 Tank Integrity\n=" + tank_h2_init + "\n"
+                + "O2 Tank Integrity\n=" + tank_o2_init + "\n"
+                + "Epstein Integrity\n=" + thrust_main_init + "\n"
+                + "RCS Integrity\n=" + thrust_rcs_init + "\n"
+                + "Gyro Integrity\n=" + gyros_init + "\n"
+
+
+
+
                 + "Fusion Fuel count\n=" + ITEMS[0].TARGET + "\n"
 
                 + "Fuel tank count\n=" + ITEMS[1].TARGET + "\n"
@@ -3108,30 +3166,6 @@ namespace IngameScript
                 + "Dawson 100mm UNN Railgun rounds count\n=" + ITEMS[8].TARGET + "\n"
                 + "Stiletto 100mm MCRN Railgun rounds count\n=" + ITEMS[9].TARGET + "\n"
                 + "T-47 80mm Railgun rounds count\n=" + ITEMS[10].TARGET + "\n"
-
-                + "\n---- [Door Timers] ----\n"
-                + "Doors open timer (x100 ticks, default 3)\n=" + door_open_time + "\n"
-                + "Airlock doors disabled timer (x100 ticks, default 6)\n=" + door_airlock_time + "\n"
-
-                + "\n---- [Performance & Debugging] ----\n"
-                + "Throttle script (x100 ticks pause between loops, default 0)\n=" + wait_count + "\n"
-                + "Full refresh frequency (x100 ticks, default 50)\n=" + refresh_freq + "\n"
-                + "Verbose script debugging. Prints more logging info to PB details.\n=" + debug + "\n"
-
-                 + "\n---- [System] ----\n"
-                 + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"
-                 + "Ship name. Blocks without this name will be ignored\n=" + ship_name + "\n"
-                 + "Current Stance\n=" + current_stance + "\n"
-                 + "Reactor Integrity\n=" + reactors_init + "\n"
-                 + "PDC Integrity\n=" + pdcs_init + "\n"
-                 + "Torpedo Integrity\n=" + torps_init + "\n"
-                 + "Railgun Integrity\n=" + railguns_init + "\n"
-                 + "H2 Tank Integrity\n=" + tank_h2_init + "\n"
-                 + "O2 Tank Integrity\n=" + tank_o2_init + "\n"
-                 + "Epstein Integrity\n=" + thrust_main_init + "\n"
-                 + "RCS Integrity\n=" + thrust_rcs_init + "\n"
-                 + "Gyro Integrity\n=" + gyros_init + "\n"
-
 
                 + "\n---- [Stances] ----\n"
                 + stance_text
