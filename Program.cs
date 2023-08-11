@@ -606,6 +606,9 @@ namespace IngameScript
                 case "init":
                     initShip(args[1]);
                     return;
+                case "initbasic":
+                    initShip(args[1], true);
+                    return;
                 case "stance":
                     setStance(args[1]);
                     return;
@@ -1361,7 +1364,7 @@ namespace IngameScript
             }
         }
 
-        void initShip(string ship)
+        void initShip(string ship, bool basic = false)
         {
 
             if (debug) Echo("Initialising a ship as '" + ship + "'.");
@@ -1373,46 +1376,44 @@ namespace IngameScript
             // it's now public variable official.
             ship_name = ship;
 
-
-
-            // now I calculate subsystem total capacities in order to check for damage later.
-            bat_init = 0;
-            for (int i = 0; i < batteries.Count; i++)
-                bat_init += (batteries[i] as IMyBatteryBlock).MaxStoredPower;
-
-            tank_h2_init = 0;
-            for (int i = 0; i < tanksH2.Count; i++)
-                tank_h2_init += (tanksH2[i] as IMyGasTank).Capacity;
-
-            tank_o2_init = 0;
-            for (int i = 0; i < tanksO2.Count; i++)
-                tank_o2_init += (tanksO2[i] as IMyGasTank).Capacity;
-
-            reactors_init = 0;
-            for (int i = 0; i < reactorsAll.Count; i++)
-                reactors_init += (reactorsAll[i] as IMyReactor).MaxOutput;
-
-            thrust_main_init = 0;
-            for (int i = 0; i < thrustersMain.Count; i++)
-                thrust_main_init += (thrustersMain[i] as IMyThrust).MaxThrust;
-
-            thrust_rcs_init = 0;
-            for (int i = 0; i < thrustersRcs.Count; i++)
-                thrust_rcs_init += (thrustersRcs[i] as IMyThrust).MaxThrust;
-
-            pdcs_init = pdcs.Count + defencePdcs.Count;
-            torps_init = torps.Count;
-            railguns_init = railguns.Count;
-            gyros_init = gyros.Count;
-
-
-            // now lets calculate the inventory counts and set them as targets.
-
-            foreach (ITEM Item in ITEMS)
+            if (!basic)
             {
-                Item.TARGET = Item.COUNT;
-            }
+                // now I calculate subsystem total capacities in order to check for damage later.
+                bat_init = 0;
+                for (int i = 0; i < batteries.Count; i++)
+                    bat_init += (batteries[i] as IMyBatteryBlock).MaxStoredPower;
 
+                tank_h2_init = 0;
+                for (int i = 0; i < tanksH2.Count; i++)
+                    tank_h2_init += (tanksH2[i] as IMyGasTank).Capacity;
+
+                tank_o2_init = 0;
+                for (int i = 0; i < tanksO2.Count; i++)
+                    tank_o2_init += (tanksO2[i] as IMyGasTank).Capacity;
+
+                reactors_init = 0;
+                for (int i = 0; i < reactorsAll.Count; i++)
+                    reactors_init += (reactorsAll[i] as IMyReactor).MaxOutput;
+
+                thrust_main_init = 0;
+                for (int i = 0; i < thrustersMain.Count; i++)
+                    thrust_main_init += (thrustersMain[i] as IMyThrust).MaxThrust;
+
+                thrust_rcs_init = 0;
+                for (int i = 0; i < thrustersRcs.Count; i++)
+                    thrust_rcs_init += (thrustersRcs[i] as IMyThrust).MaxThrust;
+
+                pdcs_init = pdcs.Count + defencePdcs.Count;
+                torps_init = torps.Count;
+                railguns_init = railguns.Count;
+                gyros_init = gyros.Count;
+
+                // now lets set current item counts as the target.
+                foreach (ITEM Item in ITEMS)
+                {
+                    Item.TARGET = Item.COUNT;
+                }
+            }
 
             updateCustomData(true);
 
