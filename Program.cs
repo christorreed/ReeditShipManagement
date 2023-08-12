@@ -1275,10 +1275,10 @@ namespace IngameScript
 
                         // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                         if (stance_data[stance_i][16] == 1)
-                            if (!Tank.Stockpile)
+                            //if (!Tank.Stockpile)
                                 Tank.Stockpile = true;
                         else
-                            if (Tank.Stockpile)
+                            //if (Tank.Stockpile)
                                  Tank.Stockpile = false;
                     }
                 }
