@@ -39,10 +39,10 @@ namespace IngameScript
         string ship_name = "Untitled Ship";
         // the keyword for LCDs to be controlled by this script.
         string lcd_keyword = "[RSM]";
-        // the keyword for autorepair systems
+        // the keyword for aux systems
         // will be set automatically for welders at Init
         // set rotors etc later as well
-        string autorepair_keyword = "[Autorepair]";
+        string aux_keyword = "[Autorepair]";
         string ignore_keyword = "REEDAV";
         // the keyword for defence PDCs (secondary PDCs group)
         string defence_pdc_keyword = "Repel";
@@ -145,6 +145,8 @@ namespace IngameScript
         double bat_actual = 0;
         double bat_total = 0;
         double bat_init = 0;
+
+        double max_power = 0;
 
         int doors_count = 0;
         int doors_count_closed = 0;
@@ -1394,7 +1396,7 @@ namespace IngameScript
                 // now I calculate subsystem total capacities in order to check for damage later.
                 bat_init = 0;
                 for (int i = 0; i < batteries.Count; i++)
-                    bat_init += (batteries[i] as IMyBatteryBlock).MaxStoredPower;
+                    bat_init += (batteries[i] as IMyBatteryBlock).MaxOutput;
 
                 tank_h2_init = 0;
                 for (int i = 0; i < tanksH2.Count; i++)
@@ -1842,6 +1844,8 @@ namespace IngameScript
             bat_actual = 0;
             bat_total = 0;
 
+            max_power = 0;
+
             // iterate over batteries
             if (debug) Echo("Iterating over " + batteries.Count + " batteries...");
             for (int i = 0; i < batteries.Count; i++)
@@ -1856,11 +1860,12 @@ namespace IngameScript
 
                         bat_actual += Battery.CurrentStoredPower;
                         bat_total += Battery.MaxStoredPower;
+                        max_power += Battery.MaxOutput;
                     }
                 }
             }
 
-            integrity_bats = Math.Round(100 * (bat_total / bat_init));
+            integrity_bats = Math.Round(100 * (max_power / bat_init));
 
             // iterate over inventories
             if (debug) Echo("Iterating over " + cargo_inventory.Count + " inventories...");
@@ -2067,8 +2072,14 @@ namespace IngameScript
             for (int i = 0; i < reactorsAll.Count; i++)
             {
                 if (reactorsAll[i].IsFunctional && reactorsAll[i].CustomName.Contains(ship_name))
+                
                     FunctionalReactors += (reactorsAll[i] as IMyReactor).MaxOutput;
+                
+
             }
+
+            max_power += FunctionalReactors;
+
             integrity_reactors = Math.Round(100 * (FunctionalReactors / reactors_init));
 
             // calculate current thrust.
@@ -2804,7 +2815,7 @@ namespace IngameScript
                                     break;
                                 case "Keyword used to identify autorepair systems":
                                     config_count++;
-                                    autorepair_keyword = value;
+                                    aux_keyword = value;
 
                                     break;
                                 case "Keyword used to identify defence PDCs.":
@@ -3033,7 +3044,7 @@ namespace IngameScript
 
                     /*ship_name = parse_dat[1];
                     lcd_keyword = parse_dat[2];
-                    autorepair_keyword = parse_dat[3];
+                    aux_keyword = parse_dat[3];
                     defence_pdc_keyword = parse_dat[4];
                     ignore_keyword = parse_dat[5];
                     auto_configure_pdcs = bool.Parse(parse_dat[6]);
@@ -3208,7 +3219,7 @@ namespace IngameScript
                 + "\n---- [General Settings] ----\n"
                 + "Block name delimiter, used by init. One character only!\n=" + name_delimiter + "\n"
                 + "Keyword used to identify RSM LCDs.\n=" + lcd_keyword + "\n"
-                + "Keyword used to identify autorepair systems\n=" + autorepair_keyword + "\n"
+                + "Keyword used to identify autorepair systems\n=" + aux_keyword + "\n"
                 + "Keyword used to identify minimum epstein drives.\n=" + min_drives_keyword + "\n"
                 + "Keyword used to identify defence PDCs.\n=" + defence_pdc_keyword + "\n"
                 + "Keyword to ignore block.\n=" + ignore_keyword + "\n"
@@ -3669,7 +3680,6 @@ namespace IngameScript
                         + (debug_msg_long.Length <= 100 ? debug_msg_long : debug_msg_long.Substring(0, 100) + "...");
                 }
             }
-            // add padding for nice formatting on screen...
             string output_comms = current_comms;
 
             if (antenna_blocks.Count > 0)
@@ -3680,25 +3690,21 @@ namespace IngameScript
 
             string output_sig_range = (Math.Round((current_sig_range / 1000)).ToString() + " km").PadLeft(15);
 
-            string output_ar = "      ACTIVE";
+            string output_aux = "      ACTIVE";
             if (autorepair_active == 1)
-                output_ar = "     INACTIVE";
+                output_aux = "     INACTIVE";
 
             string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
 
-
-            // this bit prevents adding stuff with target counts of 0.
-            string sec_inventory_counts = lcd_divider + "\n\n";
+            string sec_inventory_counts =
+                "-- Inventory -------------------" + "\n\n";
 
             foreach (ITEM Item in ITEMS)
             {
                 if (Item.TARGET != 0)
                 {
-                    //if (debug) Echo("NAME = " + Item.NAME);
-
                     double percentage = (100 * ((double)Item.COUNT / (double)Item.TARGET));
                     string val = (Item.COUNT + "/" + Item.TARGET).PadLeft(9);
-                    //if (val.Length < 9) val += new string(' ', (9 - val.Length));
                     if (val.Length > 9) val = val.Substring(0, 9);
                     sec_inventory_counts += Item.NAME + " [" + generateBar(percentage) + "] " + val + "\n";
                 }
@@ -3733,39 +3739,42 @@ namespace IngameScript
             string sec_header =
                 lcd_divider + "\n"
                 + centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, 32) + "\n"
-                //+ lcd_title + "\n" 
                 + lcd_divider + "\n"
                 + centreText("STANCE: " + current_stance.ToUpper(), 32) + "\n"
                 + lcd_divider + "\n"
                 + centreText(debug_lcd, 32) + "\n";
 
             string sec_tanks_and_batts =
-                lcd_divider + "\n\n"
+               "-- Power & Gas -----------------" + "\n\n"
+                + "Max Power:" + (max_power + " MW").PadLeft(22) + "\n"
                 + "Fuel     " + barMe("H2") + "\n"
                 + "Oxygen   " + barMe("O2") + "\n"
                 + "Battery  " + barMe("Battery") + "\n\n";
 
             string sec_thrust =
-                lcd_divider + "\n\n"
+               "-- Thrust ----------------------" + "\n\n"
                 + output_decel_short
                 + "\nDrive Signature: " + output_sig_range + "\n\n";
 
             string sec_comms =
-                lcd_divider + "\n\n"
+                "-- Communications --------------" + "\n\n"
                 + "Comms:           " + output_comms + "\n"
                 + "Comms Range:     " + output_comms_range + "\n\n";
 
-            string sec_autorepair =
-                lcd_divider + "\n\n"
-                + "Autorepair:         " + output_ar + "\n\n";
+            string sec_aux =
+                "-- Auxiliary  ------------------" + "\n\n"
+                + aux_keyword + ":" + output_aux.PadLeft(31 - aux_keyword.Length) + "\n\n";
 
             string sec_doors =
-                lcd_divider + "\n\n"
+               "-- Doors -----------------------" + "\n\n"
                + "Doors Closed:    " + output_doors + "\n\n";
 
             string sec_integrity =
-                lcd_divider + "\n\n";
+                "-- Subsystem Integrity ---------" + "\n\n";
+                
 
+            
+                
             if (reactors_init > 0)
                 sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + " %").PadLeft(9) + "\n";
             if (bat_init > 0)
@@ -3808,7 +3817,8 @@ namespace IngameScript
                 }
 
                 sec_thrust_advanced =
-                    lcd_divider + "\n" + Basics +
+                    "-- Telemetry & Thrust ----------" + "\n"
+                    + Basics +
                     "\nMax Thrust:      " + ((max_thrust / 1000000) + " MN").PadLeft(15) +
                     "\nActual Thrust:   " + ((actual_thrust / 1000000) + " MN").PadLeft(15) +
                     "\nDecel (Dampener):" + stopDistance(max_thrust, vel, true) +
@@ -3820,20 +3830,6 @@ namespace IngameScript
                 }
 
                 sec_thrust_advanced += "\n\n";
-
-                //ADVANCED_THRUST_PERCENTS
-
-
-                /*
-                "\nDecel (90%):     " + stopDistance((float)(max_thrust * 0.9), vel) +
-                "\nDecel (80%):     " + stopDistance((float)(max_thrust * 0.8), vel) +
-                "\nDecel (70%):     " + stopDistance((float)(max_thrust * 0.7), vel) +
-                "\nDecel (60%):     " + stopDistance((float)(max_thrust * 0.6), vel) +
-                "\nDecel (50%):     " + stopDistance((float)(max_thrust * 0.5), vel) +
-                "\nDecel (40%):     " + stopDistance((float)(max_thrust * 0.4), vel) +
-                "\nDecel (30%):     " + stopDistance((float)(max_thrust * 0.3), vel) +
-                "\nDecel (20%):     " + stopDistance((float)(max_thrust * 0.2), vel) +
-                "\nDecel (10%):     " + stopDistance((float)(max_thrust * 0.1), vel) + "\n\n"*/
             }
 
 
@@ -3858,7 +3854,7 @@ namespace IngameScript
                 bool show_inventory = true;
                 bool show_thrust = true;
                 bool show_comms = true;
-                bool show_autorepair = false;
+                bool show_aux = false;
                 bool show_doors = false;
                 bool show_integrity = false;
                 bool show_thrust_advanced = false;
@@ -3911,9 +3907,9 @@ namespace IngameScript
                                 config_count++;
                             }
 
-                            else if (Parsed[0] == "Show Autorepair")
+                            else if (Parsed[0] == "Show Autorepair" || Parsed[0] == "Show Auxiliary")
                             {
-                                show_autorepair = bool.Parse(Parsed[1]);
+                                show_aux = bool.Parse(Parsed[1]);
                                 config_count++;
                             }
 
@@ -3952,7 +3948,7 @@ namespace IngameScript
                         "\nShow Inventory=" + show_inventory +
                         "\nShow Thrust=" + show_thrust +
                         "\nShow Comms=" + show_comms +
-                        "\nShow Autorepair=" + show_autorepair +
+                        "\nShow Auxiliary=" + show_aux +
                         "\nShow Doors=" + show_doors +
                         "\nShow Subsystem Integrity=" + show_integrity +
                         "\nShow Advanced Thrust=" + show_thrust_advanced
@@ -3966,7 +3962,7 @@ namespace IngameScript
                 if (show_inventory) output_text += sec_inventory_counts;
                 if (show_thrust) output_text += sec_thrust;
                 if (show_comms) output_text += sec_comms;
-                if (show_autorepair) output_text += sec_autorepair;
+                if (show_aux) output_text += sec_aux;
                 if (show_doors) output_text += sec_doors;
                 if (show_integrity) output_text += sec_integrity;
                 if (show_thrust_advanced)
@@ -4075,8 +4071,11 @@ namespace IngameScript
                     if (try_this != 0) ones_count = try_this;
                 }
 
+                char zero = ' ';
+                if (percentage < 10 && (lcd_spinner_status == 0 || lcd_spinner_status == 2)) zero = '!';
+
                 string ones = new string('=', ones_count);
-                string zeros = new string(' ', 10 - ones_count);
+                string zeros = new string(zero, 10 - ones_count);
                 return ones + zeros;
             }
             catch
