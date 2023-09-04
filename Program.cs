@@ -1362,7 +1362,7 @@ namespace IngameScript
 
         void setHudLcd(string state)
         {
-
+            state = state.ToLower();
             List<IMyTextPanel> all_lcds = new List<IMyTextPanel>();
             GridTerminalSystem.GetBlocksOfType<IMyTextPanel>(all_lcds);
 
