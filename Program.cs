@@ -2566,13 +2566,6 @@ namespace IngameScript
                     else if (blockId.Contains("MyObjectBuilder_BatteryBlock/"))
                         batteries.Add(allBlocks[i]);
 
-                    // Batteries
-                    // MyObjectBuilder_BatteryBlock/LargeBlockBatteryBlockWarfare2
-                    // MyObjectBuilder_BatteryBlock/LargeBlockBatteryBlock
-
-                    else if (blockId.Contains("MyObjectBuilder_BatteryBlock/"))
-                        batteries.Add(allBlocks[i]);
-
                     // Extractors
                     // MyObjectBuilder_OxygenGenerator/Extractor
 
