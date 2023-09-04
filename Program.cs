@@ -150,7 +150,7 @@ namespace IngameScript
 
         int doors_count = 0;
         int doors_count_closed = 0;
-        int autorepair_active = 0;
+        int aux_active = 0;
 
         string current_stance = "N/A";
         string current_comms = "";
@@ -199,7 +199,7 @@ namespace IngameScript
         List<IMyTerminalBlock> lightsSpotlights = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> lightsNav = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> lightsInterior = new List<IMyTerminalBlock>(); // handle at stance set
-        List<IMyTerminalBlock> autorepairers = new List<IMyTerminalBlock>(); // handle at stance set
+        List<IMyTerminalBlock> auxiliaries = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> gyros = new List<IMyTerminalBlock>(); // handle at quickRefresh();
         List<IMyTerminalBlock> extractors = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> reactorsSmall = new List<IMyTerminalBlock>();
@@ -268,7 +268,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 2,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, gyros, lcds; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -295,7 +295,7 @@ namespace IngameScript
                 1,      // 17: EFC boost; 0: off, 1: on
                 5,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -322,7 +322,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 0,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -349,7 +349,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 0,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -376,7 +376,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 0,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -403,7 +403,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 0,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -431,7 +431,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 0,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -458,7 +458,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 0,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -485,7 +485,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 0,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 2,      // 22: keep-alives for connectors, gyros, lcds; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -511,7 +511,7 @@ namespace IngameScript
                 0,      // 17: EFC boost; 0: off, 1: on
                 2,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC
-                0,      // 20: autorepair; 0: off, 1: on
+                0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, gyros, lcds; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
@@ -1317,16 +1317,16 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Setting " + autorepairers.Count + " autorepair units to " + stance_data[stance_i][20]);
-            for (int i = 0; i < autorepairers.Count; i++)
+            if (debug) Echo("Setting " + auxiliaries.Count + " aux block to " + stance_data[stance_i][20]);
+            for (int i = 0; i < auxiliaries.Count; i++)
             {
-                if (autorepairers[i].IsFunctional && autorepairers[i].CustomName.Contains(ship_name))
+                if (auxiliaries[i].IsFunctional && auxiliaries[i].CustomName.Contains(ship_name))
                 {
-                    // 20: autorepair; 0: off, 1: on
+                    // 20: auxiliary blocks; 0: off, 1: on
                     if (stance_data[stance_i][20] == 0)
-                        autorepairers[i].ApplyAction("OnOff_Off");
+                        auxiliaries[i].ApplyAction("OnOff_Off");
                     else
-                        autorepairers[i].ApplyAction("OnOff_On");
+                        auxiliaries[i].ApplyAction("OnOff_On");
                 }
             }
 
@@ -1494,23 +1494,23 @@ namespace IngameScript
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD1"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=True\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Subsystem Integrity=False\nShow Advanced Thrust=False\nhudlcd:-0.60:0.99:0.8";
+                            "Show header=True\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Auxiliary=False\nShow Doors=False\nShow Subsystem Integrity=False\nShow Advanced Thrust=False\nhudlcd:-0.60:0.99:0.8";
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD2"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Subsystem Integrity=True\nShow Advanced Thrust=False\nhudlcd:0.29:0.99:0.5";
+                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Auxiliary=False\nShow Doors=False\nShow Subsystem Integrity=True\nShow Advanced Thrust=False\nhudlcd:0.29:0.99:0.5";
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD3"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=True\nShow Inventory=False\nShow Thrust=True\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.53:0.99:0.5";
+                            "Show header=False\nShow Tanks & Batteries=True\nShow Inventory=False\nShow Thrust=True\nShow Comms=False\nShow Auxiliary=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.53:0.99:0.5";
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD4"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=True\nShow Autorepair=True\nShow Doors=True\nShow Advanced Thrust=False\nhudlcd:0.77:0.99:0.5";
+                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=True\nShow Auxiliary=True\nShow Doors=True\nShow Advanced Thrust=False\nhudlcd:0.77:0.99:0.5";
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD5"))
                         camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=True\nShow Thrust=False\nShow Comms=False\nShow Autorepair=False\nShow Doors=False\nShow Advanced Thrust=True\nhudlcd:-0.99:0.78:0.47";
+                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=True\nShow Thrust=False\nShow Comms=False\nShow Auxiliary=False\nShow Doors=False\nShow Advanced Thrust=True\nhudlcd:-0.99:0.78:0.47";
 
 
 
@@ -2333,7 +2333,7 @@ namespace IngameScript
             lightsSpotlights.Clear();
             lightsNav.Clear();
             lightsInterior.Clear();
-            autorepairers.Clear();
+            auxiliaries.Clear();
             gyros.Clear();
             extractors.Clear();
             reactorsSmall.Clear();
@@ -2808,6 +2808,7 @@ namespace IngameScript
 
                                     break;
                                 case "Keyword used to identify autorepair systems":
+                                case "Keyword used to identify auxiliary blocks":
                                     config_count++;
                                     aux_keyword = value;
 
@@ -3185,7 +3186,7 @@ namespace IngameScript
                     + stance_data[i][18] + "\n"
                     + "EFC kill; 0: no change, 1: run 'Off' on EFC.\n="
                     + stance_data[i][19] + "\n"
-                    + "autorepair; 0: off, 1: on\n="
+                    + "auxiliary blocks; 0: off, 1: on\n="
                     + stance_data[i][20] + "\n"
                     + "extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.\n="
                     + stance_data[i][21] + "\n"
@@ -3213,7 +3214,7 @@ namespace IngameScript
                 + "\n---- [General Settings] ----\n"
                 + "Block name delimiter, used by init. One character only!\n=" + name_delimiter + "\n"
                 + "Keyword used to identify RSM LCDs.\n=" + lcd_keyword + "\n"
-                + "Keyword used to identify autorepair systems\n=" + aux_keyword + "\n"
+                + "Keyword used to identify auxiliary blocks\n=" + aux_keyword + "\n"
                 + "Keyword used to identify minimum epstein drives.\n=" + min_drives_keyword + "\n"
                 + "Keyword used to identify defence PDCs.\n=" + defence_pdc_keyword + "\n"
                 + "Keyword to ignore block.\n=" + ignore_keyword + "\n"
@@ -3685,7 +3686,7 @@ namespace IngameScript
             string output_sig_range = (Math.Round((current_sig_range / 1000)).ToString() + " km").PadLeft(15);
 
             string output_aux = "      ACTIVE";
-            if (autorepair_active == 1)
+            if (aux_active == 1)
                 output_aux = "     INACTIVE";
 
             string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
