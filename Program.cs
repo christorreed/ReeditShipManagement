@@ -144,7 +144,7 @@ namespace IngameScript
 
         double bat_actual = 0;
         double bat_total = 0;
-        double bat_init = 0;
+        float bat_init = 0;
 
         double max_power = 0;
 
@@ -1393,6 +1393,7 @@ namespace IngameScript
 
             if (!basic)
             {
+
                 // now I calculate subsystem total capacities in order to check for damage later.
                 bat_init = 0;
                 for (int i = 0; i < batteries.Count; i++)
