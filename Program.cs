@@ -3666,7 +3666,7 @@ namespace IngameScript
             string spinner = lcd_spinners[lcd_spinner_status];
 
             string debug_text = "";
-            string debug_lcd = new String('.', DotCount); ;
+            string debug_lcd = new String('.', DotCount * 2);
 
             DotCount++;
             if (DotCount > 3) DotCount = 1;
@@ -3705,7 +3705,7 @@ namespace IngameScript
             string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
 
             string sec_inventory_counts =
-                "-- Inventory -------------------" + "\n\n";
+                "-- Inventory ----------------"+ spinner + "--" + "\n\n";
 
             foreach (ITEM Item in ITEMS)
             {
@@ -3753,32 +3753,32 @@ namespace IngameScript
                 + centreText(debug_lcd, 32) + "\n";
 
             string sec_tanks_and_batts =
-               "-- Power & Gas -----------------" + "\n\n"
+               "-- Power & Gas --------------" + spinner + "--" + "\n\n"
                 + "Max Power:" + (max_power + " MW").PadLeft(22) + "\n"
                 + "Fuel     " + barMe("H2") + "\n"
                 + "Oxygen   " + barMe("O2") + "\n"
                 + "Battery  " + barMe("Battery") + "\n\n";
 
             string sec_thrust =
-               "-- Thrust ----------------------" + "\n\n"
+               "-- Thrust -------------------" + spinner + "--" + "\n\n"
                 + output_decel_short
                 + "\nDrive Signature: " + output_sig_range + "\n\n";
 
             string sec_comms =
-                "-- Communications --------------" + "\n\n"
+                "-- Communications -----------" + spinner + "--" + "\n\n"
                 + "Comms:           " + output_comms + "\n"
                 + "Comms Range:     " + output_comms_range + "\n\n";
 
             string sec_aux =
-                "-- Auxiliary  ------------------" + "\n\n"
+                "-- Auxiliary  ---------------" + spinner + "--" + "\n\n"
                 + aux_keyword + ":" + output_aux.PadLeft(31 - aux_keyword.Length) + "\n\n";
 
             string sec_doors =
-               "-- Doors -----------------------" + "\n\n"
+               "-- Doors --------------------" + spinner + "--" + "\n\n"
                + "Doors Closed:    " + output_doors + "\n\n";
 
             string sec_integrity =
-                "-- Subsystem Integrity ---------" + "\n\n";
+                "-- Subsystem Integrity ------" + spinner + "--" + "\n\n";
                 
 
             
@@ -3825,7 +3825,7 @@ namespace IngameScript
                 }
 
                 sec_thrust_advanced =
-                    "-- Telemetry & Thrust ----------" + "\n"
+                    "-- Telemetry & Thrust -------" + spinner + "--" + "\n"
                     + Basics +
                     "\nMax Thrust:      " + ((max_thrust / 1000000) + " MN").PadLeft(15) +
                     "\nActual Thrust:   " + ((actual_thrust / 1000000) + " MN").PadLeft(15) +
