@@ -3655,7 +3655,6 @@ namespace IngameScript
                 + "-------------------------\n";
         }
 
-        int DotCount = 1;
 
         void updateLcd()
         {
@@ -3666,12 +3665,7 @@ namespace IngameScript
             string spinner = lcd_spinners[lcd_spinner_status];
 
             string debug_text = "";
-            string debug_lcd = new String('.', DotCount * 2);
-
-            DotCount++;
-            if (DotCount > 3) DotCount = 1;
-
-
+            string debug_lcd = new String('.', lcd_spinner_status * 2);
 
             if (debug_msg != "")
             {
