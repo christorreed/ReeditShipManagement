@@ -20,12 +20,20 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 
 # Quick Start Guide
 
-RSM does a lot, so it can be daunting at first, but it's easy once you know the basics.  Let's cover them now...
+RSM does a lot, so it can be daunting at first, but it's easy once you know the basics...
 
 ## Setting Up
 
-So you have a pretty new ship...  We'll run RSM in a minute, but first let's do a few preperation steps to make it easy...
+Before we run the init command to setup the ship, let's do a few preperation steps to make it easy...
 
+* **Install HudLcd Plugin**
+	* I recommend installing the HudLcd plugin.
+	* RSM is designed to work with HudLcd and will automatically set it up for you.
+* **Prepare your LCDs:**
+	* RSM outputs a range of data that is available on LCD blocks including hudlcd support.
+	* There are lots of ways to set this up, but let's try out the default option first.  This will work better if you install the hudlcd plugin first.
+	* Place 5 LCDs and name them `..[RSM].HUD1` to `..[RSM].HUD5`.  Again, trust me, this will make sense shortly...
+	* RSM will also configure an LCD name `[EFC]` with hudlcd if you have one.
 * **Name your lights:**
 	* Simply make sure the word `interior` is contained within the name of all interior lights, and NOT for exterior lights.
 * **Prepare for mass renaming:**
@@ -38,11 +46,9 @@ So you have a pretty new ship...  We'll run RSM in a minute, but first let's do 
 	* Airlocks are configured via name. RSM will rename all our doors shortly, but we can set this up now so it's ready to go.
 	* Think of a unique name for each pair of doors. In this example, we'll configure the Forward airlock.
 	* Rename the inner door to `..Airlock.Forward.Inner` and rename the outer door to `..Airlock.Forward.Outer`.
-* **Prepare your LCDs:**
-	* RSM outputs a range of data that is available on LCD blocks including hudlcd support.
-	* There are lots of ways to set this up, but let's try out the default option first.  This will work better if you install the hudlcd plugin first.
-	* Place 5 LCDs and name them `..[RSM].HUD1` to `..[RSM].HUD5`.  Again, trust me, this will make sense shortly...
-	* RSM will also configure an LCD name `[EFC]` with hudlcd if you have one.
+* **Load your Inventory**
+	* Fill your ship with ammo, fuel tanks and fusion fuel now.
+	* RSM will remember the quantity of each during the next step, and then display how many have been consumed on an LCD.
 * **Build the PB:**
 	* You will need a Programmable Block to run RSM.
 	* Build one on your ship, name it `..[RSM]` and load the latest version of [Reedit Ship Management from steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140).
@@ -68,7 +74,8 @@ Now that RSM is running, let's explore some features...
 		* `Stance:Cruise` Configures the ship to fly a long distance.
 		* `Stance:Docking` Configures the ship to dock (spotlights on, main drives off)
 		* `Stance:Docked` Configures the ship to refuel/recharge at dock.
-	* There are many more stances, and all are fully configurable via the custom data on the RSM PB.  You can even add or remove new stances from the list there.
+	* There are many more stances, and all are fully configurable via the custom data on the RSM PB.
+	* You can even add or remove new stances, or rename them to suit your needs.
 * **Toggle hudlcd on and off!**
 	* This plugin is awesome, but sometimes I just want to take a screenshot!
 	* `hudlcd:on`, `hudlcd:off`,  `hudlcd:toggle` now turn all hudlcds on and off.
