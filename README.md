@@ -20,11 +20,13 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 
 # Quick Start Guide
 
-RSM does a lot, so it can be daunting at first, but it's easy once you know the basics...
+RSM does a lot and can be daunting at first...
+
+### ...so please, read the guide!
 
 ## Setting Up
 
-Before we run the init command to setup the ship, let's do a few preperation steps to make it easy...
+Before we run the init command to setup the ship, let's do a few preperation steps...
 
 * **Install HudLcd Plugin**
 	* I recommend installing the HudLcd plugin.
