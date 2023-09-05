@@ -61,6 +61,12 @@ Now you're ready to rock. Run the RSM Programmable Block with the argument `Init
 
 RSM will now initialise your ship. All blocks will be renamed with the ship name, and your LCDs will be automatically configured and loaded for hudlcd.
 
+### You run Init again anytime!
+
+* Don't be afriad to run `Init:ShipName` again.  You can run it as many times as you like.
+* Data after the second `.` in a block name will be retained during the renaming process.  For more info, see *Naming Syntax* below.
+* Init also calulates sub system integrity and inventory count for ammo, fuel tanks and fusion fuel.  If you want to run init without updating those values, you can run `InitBasic:ShipName`.
+
 ## Enjoy
 
 Now that RSM is running, let's explore some features...
@@ -121,9 +127,12 @@ The **Init** command prepares your ship for use with RSM. Input a ship name with
 
 * Sets the provided name in the RSM PB custom data.
 * Renames every block on the ship to include the ship's name.
-	* Note that blocks which do not have the ship's name in their block name will be ignored by RSM in most circumstances.
+	* Since blocks which do not have the ship's name in their block name will be ignored by RSM in most circumstances, this is mandatory.
 * Automatically configures hudlcd
 	* If you're running the hudlcd plugin, add `[RSM].HUD1` - `[RSM].HUD5` to the names of LCDs and RSM will automatically configure and position them on your hud. Also adjusts [EFC] tagged LCDs.
+* Stores sub system integrity data to custom data so that RSM can detect the current damage level of each sub system.
+* Stores inventory data of ammo, fuel tanks and fusion fuel to custom data
+* You can also run `InitBasic:ShipName` to initialise the ship without updating inventory or subsystem values.
 * You can run **Init** as many times as you like, or never.
 
 ### Naming Syntax
