@@ -228,6 +228,10 @@ namespace IngameScript
         int refuel_failure_count = 0;
         int refuel_failure_threshold = 25;
 
+        // counter used to prevent the ammo low error from appearing constantly.
+        int ammo_low_count = 0;
+        int ammo_low_threshold = 50;
+
         // these are the EFC set burn percentages.
         int[] burnArray = new int[] { 0, 5, 25, 50, 75, 100 };
 
@@ -3456,7 +3460,16 @@ namespace IngameScript
 
             if (Ammo_Low)
             {
-                debugEcho("Ammo Low!", "Ammo Low! Some weapons cannot autoload because there is no spare ammo!");
+
+                if (ammo_low_count < ammo_low_threshold)
+                {
+                    ammo_low_count++;
+                }
+                else
+                {
+                    ammo_low_count = 0;
+                    debugEcho("Ammo Low!", "Ammo Low! Some weapons cannot autoload because there is no spare ammo!");
+                }
             }
 
             TO_LOAD.Clear();
