@@ -187,6 +187,8 @@ namespace IngameScript
         List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
         List<IMyProjector> projector_blocks = new List<IMyProjector>();
 
+        List<IMyAirVent> vents = new List<IMyAirVent>();
+
         // Block lists, also built at fullRefresh(); but differently
         List<IMyTerminalBlock> servers = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> serversEfc = new List<IMyTerminalBlock>(); // handle at stance set
@@ -211,6 +213,7 @@ namespace IngameScript
         List<IMyTerminalBlock> cargosLarge = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> tanksH2 = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> tanksO2 = new List<IMyTerminalBlock>();
+
         List<IMyTerminalBlock> allTanks = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> antennas = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> beacons = new List<IMyTerminalBlock>();
@@ -1512,8 +1515,8 @@ namespace IngameScript
                 //defaultName = "LCD";
                 if (blockId.Contains("Door/"))
                     defaultName = "Door";
-                if (blockId.Contains("MyObjectBuilder_AirVent/"))
-                    defaultName = "Vent";
+                /*if (blockId.Contains("MyObjectBuilder_AirVent/"))
+                    defaultName = "Vent";*/
 
                 // misc blocks don't need numbers
                 everythingElse[i].CustomName =
@@ -2603,6 +2606,12 @@ namespace IngameScript
                         else
                             tanksO2.Add(allBlocks[i]);
                     }
+
+                    // Vents
+                    // MyObjectBuilder_AirVent/...
+
+                    else if (blockId.Contains("MyObjectBuilder_AirVent/"))
+                        vents.Add(allBlocks[i] as IMyAirVent);
 
                     // Thrusters
                     // MyObjectBuilder_Thrust/ARYLNX_Epstein_Drive
