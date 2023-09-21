@@ -151,6 +151,9 @@ namespace IngameScript
 
         int doors_count = 0;
         int doors_count_closed = 0;
+
+        int vents_sealed = 0;
+
         int aux_active = 0;
 
         string current_stance = "N/A";
@@ -158,7 +161,7 @@ namespace IngameScript
         double current_comms_range = 0;
         double current_sig_range = 0;
 
-        bool airlock_name_error_called = false;
+        //bool airlock_name_error_called = false;
 
         // how long debug messages stay around for, in LCD refreshes.
         int debug_dwell_max = 4;
@@ -2009,6 +2012,14 @@ namespace IngameScript
                 {
                     if (debug) Echo("Failed to check an inventory, i=" + i);
                 }
+            }
+
+            if (debug) Echo("Iterating over " + vents.Count + " vents...");
+            vents_sealed = 0;
+            for (int i = 0; i < vents.Count; i++) 
+            {
+                IMyAirVent this_vent = vents[i] as IMyAirVent;
+                if (this_vent.CanPressurize) vents_sealed++;
             }
 
             if (debug) Echo("Iterating over " + torps.Count + " torpedoes...");
@@ -3875,6 +3886,8 @@ namespace IngameScript
 
             string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
 
+            string output_vents = (vents_sealed + "/" + vents.Count).PadLeft(15);
+
             string ammo_warning = "";
             
             if (missing_ammo != "")
@@ -3958,8 +3971,9 @@ namespace IngameScript
                 + aux_keyword + ":" + output_aux.PadLeft(31 - aux_keyword.Length) + "\n\n";
 
             string sec_doors =
-               "-- Doors --------------------" + spinner + "--" + "\n\n"
-               + "Doors Closed:    " + output_doors + "\n\n";
+               "-- Doors & Vents ------------" + spinner + "--" + "\n\n"
+               + "Doors Closed:    " + output_doors + "\n"
+               + "Vents Sealed:    " + output_vents + "\n\n";
 
             string sec_integrity =
                 "-- Subsystem Integrity ------" + spinner + "--" + "\n\n";
