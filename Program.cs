@@ -235,6 +235,7 @@ namespace IngameScript
         int ammo_low_threshold = 50;
 
         string missing_ammo = "";
+        //int ammo_warning_count = 0;
 
         // these are the EFC set burn percentages.
         int[] burnArray = new int[] { 0, 5, 25, 50, 75, 100 };
@@ -3550,7 +3551,7 @@ namespace IngameScript
                             Ammo_Low = true;
                             if (missing_ammo.Contains(AmmoType))
                             {
-                                if (missing_ammo != "") missing_ammo += ",";
+                                if (missing_ammo != "") missing_ammo += "\n";
                                 missing_ammo += AmmoType;
                             }
                         }
@@ -3560,7 +3561,6 @@ namespace IngameScript
 
             if (Ammo_Low)
             {
-
                 if (ammo_low_count < ammo_low_threshold)
                 {
                     ammo_low_count++;
@@ -3798,8 +3798,21 @@ namespace IngameScript
 
             string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
 
+            string ammo_warning = "";
+            
+            if (missing_ammo != "")
+            {
+                if (lcd_spinner_status == 0 || lcd_spinner_status == 2)
+                    ammo_warning += centreText("WARNING!", 32);
+                else
+                    ammo_warning += centreText("AMMO LOW!", 32);
+
+                ammo_warning += "\n" + missing_ammo + "\n\n";
+            }
+
+
             string sec_inventory_counts =
-                "-- Inventory ----------------"+ spinner + "--" + "\n\n";
+                "-- Inventory ----------------"+ spinner + "--" + "\n\n" + ammo_warning;
 
             foreach (ITEM Item in ITEMS)
             {
