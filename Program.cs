@@ -183,6 +183,10 @@ namespace IngameScript
 
 
         List<IMyDoor> door_blocks = new List<IMyDoor>();
+
+        List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
+        List<string> airlock_loop_prevention = new List<string>();
+
         List<IMyBeacon> beacon_blocks = new List<IMyBeacon>();
         List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
         List<IMyProjector> projector_blocks = new List<IMyProjector>();
@@ -224,7 +228,7 @@ namespace IngameScript
         List<IMyTerminalBlock> camerasAndSensorsAndLCDs = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> everythingElse = new List<IMyTerminalBlock>();
 
-        List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
+
 
         //List<MyInventoryItem?> fuel_tank_items = new List<MyInventoryItem?>();
 
@@ -3620,7 +3624,24 @@ namespace IngameScript
 
             for (int i = 0; i < door_blocks.Count; i++)
             {
+
+
+                // ShipName.Door.Airlock.<Airlock_ID>.Door Name
+                // 0        1    2       3            4
                 string[] name_bits = door_blocks[i].CustomName.Split('.');
+                bool is_airlock = false;
+                string airlock_id = "";
+                try
+                {
+
+                    if (name_bits[2] == "Airlock")
+                    {
+                        is_airlock = true;
+                        airlock_id = name_bits[3];
+                    }
+
+                }
+                catch {  }
                 doors_count++;
                 // is the door off or open?
                 // if not we kinda don't care
@@ -3661,31 +3682,18 @@ namespace IngameScript
                             // so lets mark other doors in this airlock for disabling.
 
                             if (debug) Echo("Door just opened... (" + door_blocks[i].CustomName + ")");
-                            try
-                            {
 
 
 
 
-                                // ShipName.Door.Airlock.<Airlock_ID>.Door Name
-                                // 0        1    2       3            4
 
-                                if (!marked_for_disabling.Contains(name_bits[3]))
+                                if (is_airlock && !marked_for_disabling.Contains(airlock_id))
                                 {
-                                    marked_for_disabling += name_bits[3] + ",";
+                                    marked_for_disabling += airlock_id + ",";
                                 }
 
 
-                            }
-                            catch
-                            {
-                                if (airlock_name_error_called)
-                                {
-                                    airlock_name_error_called = true;
-                                    debugEcho("Airlock door naming!", "There's a door block marked as .Airlock. that isn't named correctly. Please use ShipName.Door.Airlock.<Airlock_ID>.Door Name");
-                                }
 
-                            }
                         }
 
                         // force the door on if it's already open
@@ -3714,11 +3722,31 @@ namespace IngameScript
 
                             if (Vent.CustomName.Contains(name_bits[3]))
                             {
-                                if (Vent.CanPressurize && Vent.Depressurize)
+                                if (Vent.CanPressurize && Vent.GetOxygenLevel() < .01)
                                 {
                                     // airlock is sealed and depressurised!
                                     off_timer_count = 0;
                                     door_blocks[i].Enabled = true;
+
+                                    // check if we just did this, to prevent looping forever.
+
+                                    bool found = false;
+
+                                    for (int j = 0; j < airlock_loop_prevention.Count; j++)
+                                    { 
+                                        if (airlock_loop_prevention[j] == airlock_id)
+                                        {
+                                            airlock_loop_prevention.RemoveAt(j);
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!found)
+                                    {
+                                        door_blocks[i].OpenDoor();
+                                        airlock_loop_prevention.Add(name_bits[3]);
+                                    }
                                 }
 
                                 break;
