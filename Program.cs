@@ -849,7 +849,30 @@ namespace IngameScript
                 if (torps[i].IsFunctional && torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
                 {
                     // 0: torpedoes; 0: off, 1: on;
-                    switch (stance_data[stance_i][0])
+
+                    if (stance_data[stance_i][0] == 0)
+                    {
+                        torps[i].ApplyAction("OnOff_Off");
+                        break;
+                    }
+                    else
+                    {
+                        torps[i].ApplyAction("OnOff_On");
+
+                        //setBlockFireModeManual(torps[i]);
+                        if (auto_configure_pdcs)
+                        {
+                            torps[i].SetValue("WC_FocusFire", true);
+                            torps[i].SetValue("WC_Grids", true);
+                            torps[i].SetValue("WC_LargeGrid", true);
+                            torps[i].SetValue("WC_SmallGrid", false);
+                            torps[i].SetValue("WC_FocusFire", true);
+                            setBlockRepelOff(torps[i]);
+                        }
+                    }
+
+
+                    /*switch (stance_data[stance_i][0])
                     {
                         case 0:
                             torps[i].ApplyAction("OnOff_Off");
@@ -868,7 +891,7 @@ namespace IngameScript
                                 setBlockRepelOff(torps[i]);
                             }
                             break;
-                            /*case 3:
+                            case 3:
                                 torps[i].ApplyAction("OnOff_On");
                                 //setBlockFireModeAuto(torps[i]);
 
@@ -882,8 +905,8 @@ namespace IngameScript
                                     setBlockRepelOff(torps[i]);
                                 }
 
-                                break;*/
-                    }
+                                break;
+                    }*/
                 }
             }
 
