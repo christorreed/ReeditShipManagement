@@ -92,6 +92,8 @@ namespace IngameScript
 
         string friendly_tags = "";
 
+        string always_tags = "<my faction tag>";
+
         string sk_data = "";
 
         bool spawn_open = false;
@@ -231,6 +233,8 @@ namespace IngameScript
         // counter used to prevent the ammo low error from appearing constantly.
         int ammo_low_count = 0;
         int ammo_low_threshold = 50;
+
+        string missing_ammo = "";
 
         // these are the EFC set burn percentages.
         int[] burnArray = new int[] { 0, 5, 25, 50, 75, 100 };
@@ -2008,7 +2012,7 @@ namespace IngameScript
                     if (torps[i].IsFunctional)
                     {
                         FunctionalTorps++;
-                        if (AUTOLOAD)
+                        if (AUTOLOAD) { }
                             if (!inventorySomewhatFull(torps[i])) TO_LOAD.Add(torps[i]);
 
                         if (torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
@@ -3041,6 +3045,20 @@ namespace IngameScript
                                     break;
 
 
+                                case "Comma seperated always factions or steam ids for survival kits (uses your faction id by default).":
+                                    config_count++;
+                                    always_tags = "";
+                                    string[] tagz = value.Split(',');
+                                    foreach (string tag in tagz)
+                                    {
+                                        string output = tag;
+                                        if (output == "<my faction tag>") output = faction_tag;
+                                        if (always_tags != "") always_tags += "\n";
+                                        always_tags += output;
+                                    }
+                                    break;
+
+
                                 case "Comma seperated friendly factions or steam ids for survival kits.":
                                     config_count++;
                                     friendly_tags = string.Join("\n", value.Split(','));
@@ -3100,7 +3118,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 43)
+                    if (config_count == 44)
                     {
                         parsedVars = true;
                     }
@@ -3147,14 +3165,14 @@ namespace IngameScript
                 }
 
                 sk_data = "                                                                                                                                 " +
-                    faction_tag;
+                    always_tags;
 
                 if (spawn_open)
                     sk_data += "\n" + friendly_tags;
 
                 sk_data += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
                      //"                                                                                                                                 " + 
-                     faction_tag;
+                     always_tags;
 
                 // alright so now we try to parse stance data
                 try
@@ -3299,6 +3317,7 @@ namespace IngameScript
                 + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + auto_configure_pdcs + "\n"
                 + "Disable lighting all control.\n=" + disable_lighting + "\n"
                 + "Disable LCD Text Colour Enforcement.\n=" + disable_text_colour_enforcement + "\n"
+                + "Comma seperated always factions or steam ids for survival kits (uses your faction id by default).\n=" + (string.Join(",", always_tags.Split('\n'))) + "\n"
                 + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", friendly_tags.Split('\n'))) + "\n"
 
                 + "\n---- [Door Timers] ----\n"
@@ -3459,55 +3478,57 @@ namespace IngameScript
                 }
             }
 
+            missing_ammo = "";
+
             foreach (IMyTerminalBlock Weapon in TO_LOAD)
             {
                 string AmmoType = WC_PB_API.GetActiveAmmo(Weapon, 0);
 
-
+                string OutputAmmoType = "";
 
                 // lol these ammo types are crappy and have to be manually processed.
                 switch (AmmoType)
                 {
                     case "220mm Explosive Torpedo":
-                        AmmoType = "220mmExplosiveTorpedoMagazine";
+                        OutputAmmoType = "220mmExplosiveTorpedoMagazine";
                         break;
 
                     case "MCRN Torpedo High Spread":
                     case "MCRN Torpedo Low Spread":
-                        AmmoType = "220mmMCRNTorpedoMagazine";
+                        OutputAmmoType = "220mmMCRNTorpedoMagazine";
                         break;
 
                     case "UNN Torpedo High Spread":
                     case "UNN Torpedo Low Spread":
-                        AmmoType = "220mmUNNTorpedoMagazine";
+                        OutputAmmoType = "220mmUNNTorpedoMagazine";
                         break;
 
                     case "40mm Tungsten-Teflon Ammo":
-                        AmmoType = "40mmTungstenTeflonPDCBoxMagazine";
+                        OutputAmmoType = "40mmTungstenTeflonPDCBoxMagazine";
                         break;
 
                     case "40mm Lead-Steel PDC Box Ammo":
-                        AmmoType = "40mmLeadSteelPDCBoxMagazine";
+                        OutputAmmoType = "40mmLeadSteelPDCBoxMagazine";
                         break;
 
                     case "Ramshackle Torpedo Magazine":
-                        AmmoType = "RamshackleTorpedoMagazine";
+                        OutputAmmoType = "RamshackleTorpedoMagazine";
                         break;
 
                     case "120mm Lead-Steel Slug Ammo":
-                        AmmoType = "120mmLeadSteelSlugMagazine";
+                        OutputAmmoType = "120mmLeadSteelSlugMagazine";
                         break;
 
                     case "100mm Tungsten-Uranium Slug UNN Ammo":
-                        AmmoType = "100mmTungstenUraniumSlugUNNMagazine";
+                        OutputAmmoType = "100mmTungstenUraniumSlugUNNMagazine";
                         break;
 
                     case "100mm Tungsten-Uranium Slug MCRN Ammo":
-                        AmmoType = "100mmTungstenUraniumSlugMCRNMagazine";
+                        OutputAmmoType = "100mmTungstenUraniumSlugMCRNMagazine";
                         break;
 
                     case "80mm Tungsten-Uranium Sabot Ammo":
-                        AmmoType = "80mmTungstenUraniumSabotMagazine";
+                        OutputAmmoType = "80mmTungstenUraniumSabotMagazine";
                         break;
 
                     default:
@@ -3520,12 +3541,19 @@ namespace IngameScript
                 {
                     //if (debug) Echo("Checking " + Item.TYPE.SubtypeId);
 
-                    if (Item.TYPE.SubtypeId == AmmoType) // this is the correct item for this ammo type.
+                    if (Item.TYPE.SubtypeId == OutputAmmoType) // this is the correct item for this ammo type.
                     {
                         if (Item.STORED_IN.Count > 0) // there are inventories where this item is stored.
-                            loadInventory(Weapon, Item.STORED_IN, AmmoType, 99);
+                            loadInventory(Weapon, Item.STORED_IN, OutputAmmoType, 99);
                         else // there arne't any inventories where this item is stored.
+                        {
                             Ammo_Low = true;
+                            if (missing_ammo.Contains(AmmoType))
+                            {
+                                if (missing_ammo != "") missing_ammo += ",";
+                                missing_ammo += AmmoType;
+                            }
+                        }
                     }
                 }
             }
