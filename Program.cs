@@ -3555,7 +3555,8 @@ namespace IngameScript
 
                             // this will prevent overflowing ammo names from causing double ups here
                             // by truncating to 32 chars
-                            AmmoType = AmmoType.Substring(0, 32);
+                            if (AmmoType.Length > 32)
+                                AmmoType = AmmoType.Substring(0, 32);
 
                             if (!missing_ammo.Contains(AmmoType))
                             {
@@ -4198,11 +4199,14 @@ namespace IngameScript
                 if (percentage < 10) 
                 { 
                     if (lcd_spinner_status == 0)
-                        return "  !    !  ";
-                    if (lcd_spinner_status == 1 || lcd_spinner_status == 3)
-                        return "  ! !! !  ";
+                        return " ><    >< ";
+                    if (lcd_spinner_status == 1)
+                        return "  ><  ><  ";
                     if (lcd_spinner_status == 2)
-                        return " !! !! !! ";
+                        return "   ><><   ";
+                    if (lcd_spinner_status == 3)
+                        return "<   ><   >";
+
                 }
 
                 string ones = new string('=', ones_count);
