@@ -3689,6 +3689,9 @@ namespace IngameScript
                     {
                         //Echo("manageDoors 3");
                         // door is off.
+
+
+
                         off_timer_count++;
                         if (off_timer_count >= door_airlock_time)
                         {
@@ -3873,7 +3876,7 @@ namespace IngameScript
 
             string sec_tanks_and_batts =
                "-- Power & Gas --------------" + spinner + "--" + "\n\n"
-                + "Max Power:" + (max_power + " MW").PadLeft(22) + "\n"
+                + "Max Power:" + (Math.Round(max_power,2) + " MW").PadLeft(22) + "\n"
                 + "Fuel     " + barMe("H2") + "\n"
                 + "Oxygen   " + barMe("O2") + "\n"
                 + "Battery  " + barMe("Battery") + "\n\n";
