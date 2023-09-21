@@ -92,11 +92,10 @@ namespace IngameScript
 
         string friendly_tags = "";
 
-        string always_tags = "<my faction tag>";
-
         string sk_data = "";
 
         bool spawn_open = false;
+        bool spawn_private = false;
 
         int loop_step;
         int wait_step;
@@ -3046,17 +3045,9 @@ namespace IngameScript
                                     break;
 
 
-                                case "Comma seperated always factions or steam ids for survival kits (uses your faction id by default).":
+                                case "Private spawn (don't inject faction tag into SK custom data).":
                                     config_count++;
-                                    always_tags = "";
-                                    string[] tagz = value.Split(',');
-                                    foreach (string tag in tagz)
-                                    {
-                                        string output = tag;
-                                        if (output == "<my faction tag>") output = faction_tag;
-                                        if (always_tags != "") always_tags += "\n";
-                                        always_tags += output;
-                                    }
+                                    spawn_private = bool.Parse(value);
                                     break;
 
 
@@ -3165,15 +3156,27 @@ namespace IngameScript
                     debugEcho("Custom Data Error! (vars)", "Failed to parse all the variables from custom data.");
                 }
 
-                sk_data = "                                                                                                                                 " +
-                    always_tags;
+                if (spawn_private)
+                {
+                    if (spawn_open)
+                        sk_data = friendly_tags;
+                    else
+                        sk_data = "";
 
-                if (spawn_open)
-                    sk_data += "\n" + friendly_tags;
+                }
+                else
+                {
+                    sk_data = "                                                                                                                                 " +
+                        faction_tag;
 
-                sk_data += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
-                     //"                                                                                                                                 " + 
-                     always_tags;
+                    if (spawn_open)
+                        sk_data += "\n" + friendly_tags;
+
+                    sk_data += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+                         faction_tag;
+                }
+
+
 
                 // alright so now we try to parse stance data
                 try
@@ -3318,7 +3321,7 @@ namespace IngameScript
                 + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + auto_configure_pdcs + "\n"
                 + "Disable lighting all control.\n=" + disable_lighting + "\n"
                 + "Disable LCD Text Colour Enforcement.\n=" + disable_text_colour_enforcement + "\n"
-                + "Comma seperated always factions or steam ids for survival kits (uses your faction id by default).\n=" + (string.Join(",", always_tags.Split('\n'))) + "\n"
+                + "Private spawn (don't inject faction tag into SK custom data).\n=" + spawn_private + "\n"
                 + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", friendly_tags.Split('\n'))) + "\n"
 
                 + "\n---- [Door Timers] ----\n"
@@ -3549,10 +3552,15 @@ namespace IngameScript
                         else // there arne't any inventories where this item is stored.
                         {
                             Ammo_Low = true;
-                            if (missing_ammo.Contains(AmmoType))
+
+                            // this will prevent overflowing ammo names from causing double ups here
+                            // by truncating to 32 chars
+                            AmmoType = AmmoType.Substring(0, 32);
+
+                            if (!missing_ammo.Contains(AmmoType))
                             {
                                 if (missing_ammo != "") missing_ammo += "\n";
-                                missing_ammo += AmmoType;
+                                missing_ammo += centreText(AmmoType, 32);
                             }
                         }
                     }
