@@ -3805,7 +3805,7 @@ namespace IngameScript
                 if (lcd_spinner_status == 0 || lcd_spinner_status == 2)
                     ammo_warning += centreText("WARNING!", 32);
                 else
-                    ammo_warning += centreText("AMMO LOW!", 32);
+                    ammo_warning += centreText("NO AMMO!", 32);
 
                 ammo_warning += "\n" + missing_ammo + "\n\n";
             }
@@ -4187,7 +4187,15 @@ namespace IngameScript
                 }
 
                 char zero = ' ';
-                if (percentage < 10 && (lcd_spinner_status == 0 || lcd_spinner_status == 2)) zero = '!';
+                if (percentage < 10) 
+                { 
+                    if (lcd_spinner_status == 0)
+                        return "  !    !  ";
+                    if (lcd_spinner_status == 1 || lcd_spinner_status == 3)
+                        return "  ! !! !  ";
+                    if (lcd_spinner_status == 2)
+                        return " !! !! !! ";
+                }
 
                 string ones = new string('=', ones_count);
                 string zeros = new string(zero, 10 - ones_count);
@@ -4195,7 +4203,7 @@ namespace IngameScript
             }
             catch
             {
-                return "#ERR#";
+                return "# ERROR! #";
             }
 
         }
