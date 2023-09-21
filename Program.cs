@@ -187,8 +187,6 @@ namespace IngameScript
         List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
         List<IMyProjector> projector_blocks = new List<IMyProjector>();
 
-        List<IMyAirVent> vents = new List<IMyAirVent>();
-
         // Block lists, also built at fullRefresh(); but differently
         List<IMyTerminalBlock> servers = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> serversEfc = new List<IMyTerminalBlock>(); // handle at stance set
@@ -213,7 +211,7 @@ namespace IngameScript
         List<IMyTerminalBlock> cargosLarge = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> tanksH2 = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> tanksO2 = new List<IMyTerminalBlock>();
-
+        List<IMyTerminalBlock> vents = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> allTanks = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> antennas = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> beacons = new List<IMyTerminalBlock>();
@@ -225,6 +223,8 @@ namespace IngameScript
         // grouped together bc i'm only keeping them alive.
         List<IMyTerminalBlock> camerasAndSensorsAndLCDs = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> everythingElse = new List<IMyTerminalBlock>();
+
+        List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
 
         //List<MyInventoryItem?> fuel_tank_items = new List<MyInventoryItem?>();
 
@@ -1603,6 +1603,7 @@ namespace IngameScript
             processList(cargosLarge, "Cargo");
             processList(tanksH2, "Hydrogen Tank");
             processList(tanksO2, "Oxygen Tank");
+            processList(vents, "Vent");
             processList(thrustersRcs, "RCS");
             processList(thrustersMain, "Epstein");
             processList(pdcs, "PDC");
@@ -2611,7 +2612,12 @@ namespace IngameScript
                     // MyObjectBuilder_AirVent/...
 
                     else if (blockId.Contains("MyObjectBuilder_AirVent/"))
-                        vents.Add(allBlocks[i] as IMyAirVent);
+                    {
+                        vents.Add(allBlocks[i]);
+                        if (allBlocks[i].CustomName.Contains("Airlock"))
+                            airlock_vents.Add(allBlocks[i] as IMyAirVent);
+                    }
+
 
                     // Thrusters
                     // MyObjectBuilder_Thrust/ARYLNX_Epstein_Drive
@@ -3614,6 +3620,7 @@ namespace IngameScript
 
             for (int i = 0; i < door_blocks.Count; i++)
             {
+                string[] name_bits = door_blocks[i].CustomName.Split('.');
                 doors_count++;
                 // is the door off or open?
                 // if not we kinda don't care
@@ -3657,7 +3664,7 @@ namespace IngameScript
                             try
                             {
 
-                                string[] name_bits = door_blocks[i].CustomName.Split('.');
+
 
 
                                 // ShipName.Door.Airlock.<Airlock_ID>.Door Name
@@ -3699,6 +3706,24 @@ namespace IngameScript
                         //Echo("manageDoors 3");
                         // door is off.
 
+                        foreach (IMyAirVent Vent in airlock_vents)
+                        {
+
+                            // ShipName.Door.Airlock.<Airlock_ID>.Door Name
+                            // 0        1    2       3            4
+
+                            if (Vent.CustomName.Contains(name_bits[3]))
+                            {
+                                if (Vent.CanPressurize && Vent.Depressurize)
+                                {
+                                    // airlock is sealed and depressurised!
+                                    off_timer_count = 0;
+                                    door_blocks[i].Enabled = true;
+                                }
+
+                                break;
+                            }
+                        }
 
 
                         off_timer_count++;
