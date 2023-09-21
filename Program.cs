@@ -252,7 +252,7 @@ namespace IngameScript
         List<int[]> stance_data = new List<int[]>
         {
              new int[] { // Cruise
-                1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -279,7 +279,7 @@ namespace IngameScript
             },
 
             new int[] { // MaxCruise
-                1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -306,7 +306,7 @@ namespace IngameScript
             },
 
             new int[] { // Docked
-                1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -333,7 +333,7 @@ namespace IngameScript
             },
 
             new int[] { // Docking
-                1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -360,7 +360,7 @@ namespace IngameScript
             },
 
             new int[] { // NoAttack
-                0,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                0,      // 0: torpedoes; 0: off, 1: on;
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -387,7 +387,7 @@ namespace IngameScript
             },
 
             new int[] { // Coast
-                1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -415,7 +415,7 @@ namespace IngameScript
 
 
             new int[] { // Combat
-                2,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -442,7 +442,7 @@ namespace IngameScript
             },
 
             new int[] { // CQB
-                2,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                1,      // 0: torpedoes; 0: off, 1: on;
                 3,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -469,7 +469,7 @@ namespace IngameScript
             },
 
             new int[] { // Sleep
-                0,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                0,      // 0: torpedoes; 0: off, 1: on;
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -495,7 +495,7 @@ namespace IngameScript
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
             new int[] { // StealthCruise
-                1,      // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
@@ -848,7 +848,7 @@ namespace IngameScript
             {
                 if (torps[i].IsFunctional && torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
                 {
-                    // 0: torpedoes; 0: off, 1: hold fire, 2: AI weapons free;
+                    // 0: torpedoes; 0: off, 1: on;
                     switch (stance_data[stance_i][0])
                     {
                         case 0:
@@ -3235,7 +3235,6 @@ namespace IngameScript
                 + "\n---- [Advanced Thrust LCD] ----\n"
                 + "Show basic telemetry.\n=" + ADVANCED_THRUST_SHOW_BASICS + "\n"
                 + "Show Decel Percentages (comma seperated).\n=" + DecelPercents + "\n"
-
 
                 + "\n---- [Performance & Debugging] ----\n"
                 + "Throttle script (x100 ticks pause between loops, default 0)\n=" + wait_count + "\n"
