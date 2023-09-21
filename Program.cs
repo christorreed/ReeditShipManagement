@@ -2448,21 +2448,24 @@ namespace IngameScript
             for (int i = 0; i < allBlocks.Count; i++)
             {
 
-                // we build the general lists by parsing this little string...
-                string blockId = allBlocks[i].BlockDefinition.ToString();
 
-                // handle spawns
-                if (blockId.Contains("LargeMedicalRoom") || blockId.Contains("SurvivalKit"))
-                {
-                    allBlocks[i].CustomData = sk_data;
-                    if (!allBlocks[i].CustomName.Contains(ignore_keyword))
-                        allBlocks[i].ApplyAction("OnOff_On");
-                }
 
                 // only do this for items on my 'construct' not connected ships.
                 if (Me.IsSameConstructAs(allBlocks[i]))
                 /*&& allBlocks[i].CustomName.Contains(ship_name)*/ // this breaks init of course lol
                 {
+
+                    // we build the general lists by parsing this little string...
+                    string blockId = allBlocks[i].BlockDefinition.ToString();
+
+                    // handle spawns
+                    if (blockId.Contains("LargeMedicalRoom") || blockId.Contains("SurvivalKit"))
+                    {
+                        allBlocks[i].CustomData = sk_data;
+                        if (!allBlocks[i].CustomName.Contains(ignore_keyword))
+                            allBlocks[i].ApplyAction("OnOff_On");
+                    }
+
                     // check for unowned blocks
                     string Tag = allBlocks[i].GetOwnerFactionTag();
                     if (Tag != faction_tag && Tag != "")
