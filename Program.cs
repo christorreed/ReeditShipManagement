@@ -970,11 +970,6 @@ namespace IngameScript
                                     }
 
                                 }
-
-
-
-
-
                             }
                             break;
                         case 3:
@@ -1081,7 +1076,48 @@ namespace IngameScript
                 {
                     // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
 
-                    switch (stance_data[stance_i][2])
+                    if (stance_data[stance_i][2] == 0)
+                    {
+                        railguns[i].ApplyAction("OnOff_Off");
+                    }
+                    else
+                    {
+                        railguns[i].ApplyAction("OnOff_On");
+                        setBlockRepelOff(railguns[i]);
+
+
+                        // comment out in production
+                        /*if (i == 0)
+                        {
+                            List<ITerminalProperty> Props = new List<ITerminalProperty>();
+                            railguns[i].GetProperties(Props);
+                            foreach(ITerminalProperty Proppie in Props)
+                            {
+                                Echo(Proppie.Id);
+                            }
+
+                        }*/
+                        
+
+                        if (auto_configure_pdcs)
+                        {
+                            railguns[i].SetValue("WC_Grids", true);
+                            railguns[i].SetValue("WC_LargeGrid", true);
+                            railguns[i].SetValue("WC_SmallGrid", true);
+                            //railguns[i].SetValue("WC_FocusFire", true);
+                            if (stance_data[stance_i][2] < 2) // hold fire if less than 2
+                            {
+                                setBlockFireModeManual(railguns[i]);
+                            }
+                            else // weapons free
+                            {
+                                setBlockFireModeAuto(railguns[i]);
+                            }
+                        }
+
+                    }
+
+                    /*switch (stance_data[stance_i][2])
                     {
                         case 0:
                             railguns[i].ApplyAction("OnOff_Off");
@@ -1140,7 +1176,7 @@ namespace IngameScript
                             }
 
                             break;
-                    }
+                    }*/
                 }
             }
 
@@ -1689,14 +1725,28 @@ namespace IngameScript
 
         void setBlockFireModeManual(IMyTerminalBlock block)
         {
-            block.SetValue<Int64>("WC_Shoot Mode", 4);
-            if (debug) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
+            try
+            {
+                block.SetValue<Int64>("WC_Shoot Mode", 3);
+                if (debug) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
+            }
+            catch
+            {
+                Echo("Failed to set fire mode to manual on " + block.CustomName);
+            }
         }
 
         void setBlockFireModeAuto(IMyTerminalBlock block)
         {
-            block.SetValue<Int64>("WC_Shoot Mode", 0);
-            if (debug) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
+            try
+            {
+                block.SetValue<Int64>("WC_Shoot Mode", 0);
+                if (debug) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
+            }
+            catch
+            {
+                Echo("Failed to set fire mode to auto on " + block.CustomName);
+            }
         }
 
         void mainLoop()
