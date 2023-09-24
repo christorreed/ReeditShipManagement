@@ -26,12 +26,8 @@ namespace IngameScript
       
 
 
-        // lcd variables.
-        const string lcd_divider = "--------------------------------";
-        //const string lcd_title = "     REEDIT SHIP MANAGEMENT     ";
-        string[] lcd_spinners = new string[] { "-", "\\", "|", "/" };
-        int lcd_spinner_status = 0;
-        const float lcd_font_size = 0.8f;
+        
+        
 
 
         // CUSTOM DATA STUFF
@@ -184,13 +180,9 @@ namespace IngameScript
         // Block lists, built at fullRefresh();
         List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
         List<IMyTextPanel> lcd_blocks = new List<IMyTextPanel>();
-
-
         List<IMyDoor> door_blocks = new List<IMyDoor>();
-
         List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
         List<string> airlock_loop_prevention = new List<string>();
-
         List<IMyBeacon> beacon_blocks = new List<IMyBeacon>();
         List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
         List<IMyProjector> projector_blocks = new List<IMyProjector>();
@@ -321,14 +313,14 @@ namespace IngameScript
 
 
 
-        public void Save()
+        /*public void Save()
         {
 
             //Storage = current_stance;
             // not using this cause it doesn't work very well with nexus
             // thus using custom data instead.
 
-        }
+        }*/
 
         public void Main(string argument, UpdateType updateSource)
         {
@@ -341,7 +333,13 @@ namespace IngameScript
 
             if (argument == "")
             {
-                debugEcho("Command Failed!", "Argument Required!\ne.g.\nStance:Docked\nEvade:1\nComms:Whatsup?");
+                //debugEcho("Command Failed!", "Argument Required!\ne.g.\nStance:Docked\nEvade:1\nComms:Whatsup?");
+
+                ALERTS.Add(new ALERT(
+                    "COMMAND FAILED: Arg Required!", 
+                    "A command was ignored because the argument was blank." 
+                    ,3
+                    ));
                 return;
             }
 
@@ -349,7 +347,14 @@ namespace IngameScript
 
             if (args.Length != 2)
             {
-                debugEcho("Command Failed!", "Syntax Error!\nWTF is that?\n" + argument);
+                //debugEcho("Command Failed!", "Syntax Error!\nWTF is that?\n" + argument);
+
+                ALERTS.Add(new ALERT(
+                    "COMMAND FAILED: Syntax Error!",
+                    "A command was ignored because it wasn't recognised."
+                    , 3
+                    ));
+
                 return;
             }
 
@@ -385,13 +390,23 @@ namespace IngameScript
                     {
                         spawn_open = true;
                         fullRefresh();
-                        debugEcho("SK Open to Allies", "Opened SK to allies as defined in custom data (" + friendly_tags + ").");
+
+                        ALERTS.Add(new ALERT(
+                            "Spawns were opened to friends",
+                            "Spawns are now opened to the friends list as defined in PB custom data."
+                            , 2
+                            ));
                     }
                     else
                     {
                         spawn_open = false;
                         fullRefresh();
-                        debugEcho("SK Closed to Allies", "Closed SK to allies.");
+
+                        ALERTS.Add(new ALERT(
+                            "Spawns were closed to friends",
+                            "Spawns are now closed to the friends list as defined in PB custom data."
+                            , 2
+                            ));
                     }
                     break;
 
@@ -401,20 +416,23 @@ namespace IngameScript
                         foreach (IMyProjector Projector in projector_blocks)
                             saveProjectorPosition(Projector);
 
-                        debugEcho("Saved projector positions", projector_blocks.Count + " projector positions were saved to custom data.");
+                        ALERTS.Add(new ALERT(
+                            "Projector positions saved",
+                            "Projector positions were saved and stored to their custom data."
+                            , 2
+                            ));
                         return;
                     }
-                    else if (args[1].ToLower() == "load")
+                    else 
                     {
                         foreach (IMyProjector Projector in projector_blocks)
                             loadProjectorPosition(Projector);
 
-                        debugEcho("Loaded projector positions", projector_blocks.Count + " projectors were repositioned from custom data.");
-                        return;
-                    }
-                    else
-                    {
-                        debugEcho("Command Failed!", "Syntax Error!\nNo such projector command.\n" + argument);
+                        ALERTS.Add(new ALERT(
+                            "Projector positions loaded",
+                            "Projector positions were loaded from custom data."
+                            , 2
+                            ));
                         return;
                     }
 
@@ -2027,7 +2045,7 @@ namespace IngameScript
 
 
 
-                    lcds[i].FontSize = lcd_font_size;
+                    lcds[i].FontSize = LCD_FONT_SIZE;
                     lcds[i].Font = "Monospace";
                     //lcds[i].TextPadding = 0;
                     lcds[i].Alignment = TextAlignment.CENTER;

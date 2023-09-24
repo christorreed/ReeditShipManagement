@@ -22,17 +22,52 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+
+        // you spin me right round baby
+        int SPINNER_STATUS = 0;
+        string[] SPINNER_BITS = new string[] { "-", "\\", "|", "/" };
+
+        // general LCD vars
+        const int LCD_WIDTH = 32;
+        const float LCD_FONT_SIZE = 0.8f;
+        string LCD_DIVIDER = new String('-', LCD_WIDTH);
+
+        // alerts appear at the top of the warnings screen
+        // they are temporary messages which will be cleared at LIFETIME = 0;
+        class ALERT
+        {
+            public string MESSAGE;
+            public string LONG_MESSAGE;
+            public int PRIORITY;
+            public int LIFETIME;
+
+            public ALERT(string Message, string LongMessage, int Priority = 0, int Lifetime = 20)
+            {
+                if (Message.Length > LCD_WIDTH - 3)
+                    Message = Message.Substring(0, LCD_WIDTH - 3);
+
+                MESSAGE = Message.PadRight(LCD_WIDTH - 3);
+                LONG_MESSAGE = LongMessage;
+                PRIORITY = Priority;
+                LIFETIME = Lifetime;
+            }
+        }
+
+        String[] ALERT_PRIORITIES = new string[] { "[-]", "[=]", "[#]", "[!]" };
+        List<ALERT> ALERTS = new List<ALERT>();
+
+
         // updates all LCDs on the ship to display our data.
         void updateLcd()
         {
             if (debug) Echo("Updating LCDs...");
 
-            lcd_spinner_status++;
-            if (lcd_spinner_status >= lcd_spinners.Length) lcd_spinner_status = 0;
-            string spinner = lcd_spinners[lcd_spinner_status];
+            SPINNER_STATUS++;
+            if (SPINNER_STATUS >= SPINNER_BITS.Length) SPINNER_STATUS = 0;
+            string spinner = SPINNER_BITS[SPINNER_STATUS];
 
             string debug_text = "";
-            string debug_lcd = new String('.', lcd_spinner_status * 2);
+            string debug_lcd = new String('.', SPINNER_STATUS * 2);
 
             if (debug_msg != "")
             {
@@ -71,10 +106,10 @@ namespace IngameScript
 
             if (missing_ammo != "")
             {
-                if (lcd_spinner_status == 0 || lcd_spinner_status == 2)
-                    ammo_warning += centreText("WARNING!", 32);
+                if (SPINNER_STATUS == 0 || SPINNER_STATUS == 2)
+                    ammo_warning += centreText("WARNING!", LCD_WIDTH);
                 else
-                    ammo_warning += centreText("NO AMMO!", 32);
+                    ammo_warning += centreText("NO AMMO!", LCD_WIDTH);
 
                 ammo_warning += "\n" + missing_ammo + "\n\n";
             }
@@ -121,12 +156,12 @@ namespace IngameScript
             }
 
             string sec_header =
-                lcd_divider + "\n"
-                + centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, 32) + "\n"
-                + lcd_divider + "\n"
-                + centreText("STANCE: " + current_stance.ToUpper(), 32) + "\n"
-                + lcd_divider + "\n"
-                + centreText(debug_lcd, 32) + "\n";
+                LCD_DIVIDER + "\n"
+                + centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, LCD_WIDTH) + "\n"
+                + LCD_DIVIDER + "\n"
+                + centreText("STANCE: " + current_stance.ToUpper(), LCD_WIDTH) + "\n"
+                + LCD_DIVIDER + "\n"
+                + centreText(debug_lcd, LCD_WIDTH) + "\n";
 
             string sec_tanks_and_batts =
                "-- Power & Gas --------------" + spinner + "--" + "\n\n"
@@ -182,8 +217,8 @@ namespace IngameScript
                 sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + " %").PadLeft(9) + "\n\n";
 
 
-            if (sec_integrity == lcd_divider + "\n\n") // nothing init basically.
-                sec_integrity = lcd_divider + "\n\n"
+            if (sec_integrity == LCD_DIVIDER + "\n\n") // nothing init basically.
+                sec_integrity = LCD_DIVIDER + "\n\n"
                     + "Run init when ship is fully repaired\n to display subsystem integrity!" + "\n\n";
 
             string sec_thrust_advanced = "";
@@ -355,7 +390,7 @@ namespace IngameScript
                     output_text += sec_thrust_advanced;
                     build_advanced_thrust_data = true;
                 }
-                output_text += lcd_divider;
+                output_text += LCD_DIVIDER;
 
                 //Echo("Wrote to " + lcd_blocks[i].CustomName);
                 lcd_blocks[i].WriteText(output_text, false);
@@ -389,13 +424,13 @@ namespace IngameScript
                 char zero = ' ';
                 if (percentage < 10)
                 {
-                    if (lcd_spinner_status == 0)
+                    if (SPINNER_STATUS == 0)
                         return " ><    >< ";
-                    if (lcd_spinner_status == 1)
+                    if (SPINNER_STATUS == 1)
                         return "  ><  ><  ";
-                    if (lcd_spinner_status == 2)
+                    if (SPINNER_STATUS == 2)
                         return "   ><><   ";
-                    if (lcd_spinner_status == 3)
+                    if (SPINNER_STATUS == 3)
                         return "<   ><   >";
 
                 }
