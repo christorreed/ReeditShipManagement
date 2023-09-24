@@ -20,6 +20,11 @@ using VRageMath;
 
 namespace IngameScript
 {
+    partial class Program : MyGridProgram
+    {
+        WcPbApi WC_PB_API;
+    }
+
     public class WcPbApi
     {
         private Action<ICollection<MyDefinitionId>> _getCoreWeapons;
