@@ -1373,7 +1373,7 @@ namespace IngameScript
                                  false, // show_header
                                  false, // show_header_overlay
                                  false, // show_warnings
-                                 true, // show_tanks_and_batts
+                                 false, // show_tanks_and_batts
                                  false, // show_inventory
                                  false, // show_thrust
                                  true, // show_integrity
@@ -2277,6 +2277,7 @@ namespace IngameScript
             cargosLarge.Clear();
             tanksH2.Clear();
             tanksO2.Clear();
+            vents.Clear();
             allTanks.Clear();
             antennas.Clear();
             beacons.Clear();

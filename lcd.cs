@@ -25,7 +25,8 @@ namespace IngameScript
 
         // you spin me right round baby
         int SPINNER_STATUS = 0;
-        string[] SPINNER_BITS = new string[] { "-", "\\", "|", "/" };
+        //string[] SPINNER_BITS = new string[] { "-", "\\", "|", "/" };
+        string[] SPINNER_BITS = new string[] { "┐", "┘", "└", "┌" };
 
         // general LCD vars
         const int LCD_WIDTH = 32;
@@ -62,6 +63,8 @@ namespace IngameScript
 
             public STATUS_LIGHT(string Name, int Status, int Step)
             {
+                string blank = "    ";
+
                 while (Step > 3)
                 {
                     Step -= 4;
@@ -70,68 +73,68 @@ namespace IngameScript
                 if (Status == 0) // nominal
                 {
                     OUTPUT = "| " + Name.PadRight(4) + " |";
-                    OUTPUT_OVERLAY = "        ";
+                    OUTPUT_OVERLAY = "  " + blank + "  ";
                 } 
                 else if (Status == 1) // warning
                 {
                     OUTPUT = "| " + Name.PadRight(4) + " |";
-                    OUTPUT_OVERLAY = " -    - ";
+                    OUTPUT_OVERLAY = " -" + blank + "- ";
                 }
                 else if (Status == 2) // danger
                 {
-                    if (Step == 0 || Step == 2)
+                    if (Step == 0)
                     {
-                        OUTPUT = "|>" + Name.PadRight(4) + " |";
-                        OUTPUT_OVERLAY = "      < ";
+                        OUTPUT = "| " + Name.PadRight(4) + " |";
+                        OUTPUT_OVERLAY = " >" + blank + "< ";
                     }
-                    else if (Step == 1 || Step == 3)
+                    else if (Step == 1)
                     {
-                        OUTPUT = "| " + Name.PadRight(4) + "<|";
-                        OUTPUT_OVERLAY = " >      ";
+                        OUTPUT = "| " + Name.PadRight(4) + " |";
+                        OUTPUT_OVERLAY = " =" + blank + "= ";
                     }
-
+                    else if (Step == 2)
+                    {
+                        OUTPUT = "| " + Name.PadRight(4) + " |";
+                        OUTPUT_OVERLAY = " >" + blank + "< ";
+                    }
+                    else if (Step == 3)
+                    {
+                        OUTPUT = "| " + Name.PadRight(4) + " |";
+                        OUTPUT_OVERLAY = " =" + blank + "= ";
+                    }
 
                 }
                 else if (Status == 3) // critcal
                 {
 
-                    if (Step == 0 || Step == 2)
+                    if (Step == 0)
                     {
-                        OUTPUT_OVERLAY = " >" + Name.PadRight(4)  + "< ";
-                        OUTPUT = ">      <";
-                    }
-                    else if (Step == 1 || Step == 3)
-                    {
-                        OUTPUT = " >" + Name.PadRight(4)  + "< ";
-                        OUTPUT_OVERLAY = ">      <";
-
-                    }
-                    /*if (Step == 0)
-                    {
-                        OUTPUT_OVERLAY = " >" + Name.PadRight(4) + " |";
-                        OUTPUT = "|     < ";
+                        OUTPUT = "|>" + Name.PadRight(4) + "<|";
+                        OUTPUT_OVERLAY = " <" + blank + "> ";
                     }
                     else if (Step == 1)
                     {
-                        OUTPUT = "| " + Name.PadRight(4) + "< ";
-                        OUTPUT_OVERLAY = " >     |";
+                        OUTPUT = "||" + blank + "||";
+                        OUTPUT_OVERLAY = " -" + Name.PadRight(4) + "- ";
+
                     }
                     else if (Step == 2)
                     {
-                        OUTPUT_OVERLAY = " >" + Name.PadRight(4) + " |";
-                        OUTPUT = "|     < ";
+                        OUTPUT = "|<" + Name.PadRight(4) + ">|";
+                        OUTPUT_OVERLAY = " >" + blank + "< ";
                     }
                     else if (Step == 3)
                     {
-                        OUTPUT = "| " + Name.PadRight(4) + "< ";
-                        OUTPUT_OVERLAY = " >     |";
-                    }*/
+                        OUTPUT = "|-" + blank + "-|";
+                        OUTPUT_OVERLAY = " |" + Name.PadRight(4) + "| ";
+                    }
+
                 }
 
             }
         }
 
-        String[] ALERT_PRIORITIES = new string[] { "(- ", "(= ", "(# ", "(! " };
+        String[] ALERT_PRIORITIES = new string[] { "(- ", "(= ", "(x ", "(! " };
         List<ALERT> ALERTS = new List<ALERT>();
 
 
@@ -350,6 +353,18 @@ string sec_doors =
                 o2_priority = 1;
             }
 
+            // handle vents
+            //string output_vents = (vents_sealed + "/" + vents.Count).PadLeft(15);
+            if (vents.Count > vents_sealed)
+            {
+                int unsealed = (vents.Count - vents_sealed);
+                o2_priority++;
+                LCDAlerts.Add(new ALERT(
+                    unsealed + " vents are unsealed",
+                    unsealed + " vents are unsealed",
+                    1));
+            }
+
             StatusLights.Add(new STATUS_LIGHT("OXYG", o2_priority, SPINNER_STATUS + status_light_spice));
             status_light_spice++;
 
@@ -374,16 +389,15 @@ string sec_doors =
                 if (reactorsEmpty.Count > 0)
                 {
                     power_priority += 2;
-                    LCDAlerts.Add(new ALERT("Reactors need fuel!", "At least one reactor needs Fusion Fuel!", 3));
+                    LCDAlerts.Add(new ALERT("REACTORS NEED FUSION FUEL!", "At least one reactor needs Fusion Fuel!", 3));
                 }
 
-                if (ITEMS[0].PERCENTAGE > 5) // Fusion fuel below 5% of init quota.
+                if (ITEMS[0].PERCENTAGE < 5) // Fusion fuel below 5% of init quota.
                 {
                     power_priority += 2;
                     LCDAlerts.Add(new ALERT("FUSION FUEL LEVEL CRITICAL!", "Fusion fuel level is low!", 3));
                 }
-
-                if (ITEMS[0].PERCENTAGE > 10) // Fusion fuel below 10% of init quota.
+                else if (ITEMS[0].PERCENTAGE < 10) // Fusion fuel below 10% of init quota.
                 {
                     power_priority += 1;
                     LCDAlerts.Add(new ALERT("Fusion Fuel Level Low!", "Fusion fuel level is low!", 2));
@@ -404,6 +418,7 @@ string sec_doors =
                 {
                     string output_ammo = Ammo;
                     if (Ammo.Length > 23) output_ammo = Ammo.Substring(0, 23);
+                    output_ammo = output_ammo.ToUpper();
                     LCDAlerts.Add(new ALERT("NEED " + output_ammo + "!", "NEED " + output_ammo + "!  Ammo Critical!", 3));
                 }
                 weap_priority = 3;
@@ -421,7 +436,7 @@ string sec_doors =
                 string output_comms = current_comms;
                 if (antenna_blocks.Count > 0)
                     if (antenna_blocks[0] != null)
-                        output_comms = antenna_blocks[0].HudText.PadLeft(15);
+                        output_comms = antenna_blocks[0].HudText;
 
                 string output_range = "";
                 if (current_comms_range < 1000)
@@ -455,20 +470,9 @@ string sec_doors =
                     0));
             }
 
-            // handle vents
-            //string output_vents = (vents_sealed + "/" + vents.Count).PadLeft(15);
-            if (vents.Count > vents_sealed)
-            {
-                int unsealed = (vents.Count - vents_sealed);
-                LCDAlerts.Add(new ALERT(
-                    unsealed + " vents are unsealed",
-                    unsealed + " vents are unsealed",
-                    0));
-            }
-
 
             // sort alerts by priority.
-            LCDAlerts = LCDAlerts.OrderBy(a => a.PRIORITY).ToList();
+            LCDAlerts = LCDAlerts.OrderBy(a => a.PRIORITY).Reverse().ToList();
 
             string sec_warnings =
                 "-- Warnings -----------------" + spinner + "--\n\n";
@@ -495,17 +499,30 @@ string sec_doors =
                 status_lts_overlay += StatusLights[i].OUTPUT_OVERLAY;
             }
 
-            string sec_header =
+            /*string sec_header =
                 LCD_DIVIDER + "\n" +
                 centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
                 centreText(current_stance, LCD_WIDTH) + "\n" +
                 LCD_DIVIDER + "\n" +
+                status_lts + "\n";*/
+
+            string sec_header =
+                LCD_DIVIDER + "\n" +
+
+                "  " + spinner + " " + centreText(ship_name + " - " + current_stance, LCD_WIDTH - 8) + " " + spinner + "  \n" +
+
+                //centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
+                //centreText(current_stance, LCD_WIDTH) + "\n" +
+                LCD_DIVIDER + "\n" +
                 status_lts + "\n";
 
+            int overlay_status = SPINNER_STATUS + 2;
+            if (overlay_status > 3) overlay_status -= 4;
+            string spinner_overlay = SPINNER_BITS[overlay_status];
             string sec_header_overlay =
-                "\n\n\n\n" + status_lts_overlay;
+                "\n  " + spinner_overlay + "                          " + spinner_overlay + "  \n\n" + status_lts_overlay;
 
-
+            
 
             // ---------------------
             // Build Advanced Thrust
