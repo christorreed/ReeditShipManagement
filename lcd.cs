@@ -75,26 +75,38 @@ namespace IngameScript
                 else if (Status == 1) // warning
                 {
                     OUTPUT = "| " + Name.PadRight(4) + " |";
-                    OUTPUT_OVERLAY = " >    < ";
+                    OUTPUT_OVERLAY = " -    - ";
                 }
                 else if (Status == 2) // danger
                 {
                     if (Step == 0 || Step == 2)
                     {
-                        OUTPUT_OVERLAY = " >" + Name.PadRight(4) + "< ";
-                        OUTPUT = "|      |";
+                        OUTPUT = "|>" + Name.PadRight(4) + " |";
+                        OUTPUT_OVERLAY = "      < ";
                     }
                     else if (Step == 1 || Step == 3)
                     {
-                        OUTPUT_OVERLAY = "< " + Name.PadRight(4) + " >";
-                        OUTPUT = " |    | ";
+                        OUTPUT = "| " + Name.PadRight(4) + "<|";
+                        OUTPUT_OVERLAY = " >      ";
                     }
 
 
                 }
                 else if (Status == 3) // critcal
                 {
-                    if (Step == 0)
+
+                    if (Step == 0 || Step == 2)
+                    {
+                        OUTPUT_OVERLAY = " >" + Name.PadRight(4)  + "< ";
+                        OUTPUT = ">      <";
+                    }
+                    else if (Step == 1 || Step == 3)
+                    {
+                        OUTPUT = " >" + Name.PadRight(4)  + "< ";
+                        OUTPUT_OVERLAY = ">      <";
+
+                    }
+                    /*if (Step == 0)
                     {
                         OUTPUT_OVERLAY = " >" + Name.PadRight(4) + " |";
                         OUTPUT = "|     < ";
@@ -113,13 +125,13 @@ namespace IngameScript
                     {
                         OUTPUT = "| " + Name.PadRight(4) + "< ";
                         OUTPUT_OVERLAY = " >     |";
-                    }
+                    }*/
                 }
 
             }
         }
 
-        String[] ALERT_PRIORITIES = new string[] { "[- ", "[= ", "[# ", "[! " };
+        String[] ALERT_PRIORITIES = new string[] { "(- ", "(= ", "(# ", "(! " };
         List<ALERT> ALERTS = new List<ALERT>();
 
 
@@ -132,29 +144,10 @@ namespace IngameScript
             if (SPINNER_STATUS >= SPINNER_BITS.Length) SPINNER_STATUS = 0;
             string spinner = SPINNER_BITS[SPINNER_STATUS];
 
-
-
-
-            string output_comms = current_comms;
-            if (antenna_blocks.Count > 0)
-                if (antenna_blocks[0] != null)
-                    output_comms = antenna_blocks[0].HudText.PadLeft(15);
-
-            string output_comms_range = (Math.Round((current_comms_range / 1000)).ToString() + " km").PadLeft(15);
-
-            string output_sig_range = (Math.Round((current_sig_range / 1000)).ToString() + " km").PadLeft(15);
-
-            string output_aux = "      ACTIVE";
+            //string output_comms_range = (Math.Round((current_comms_range / 1000)).ToString() + " km").PadLeft(15);
+            /*string output_aux = "      ACTIVE";
             if (aux_active == 1)
-                output_aux = "     INACTIVE";
-
-            string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
-
-            string output_vents = (vents_sealed + "/" + vents.Count).PadLeft(15);
-
-
-
-
+                output_aux = "     INACTIVE";*/
 
 
             // -----------------------
@@ -180,6 +173,7 @@ namespace IngameScript
             // --------------------
             // Build thrust section
             // --------------------
+            string output_sig_range = (Math.Round((current_sig_range / 1000)).ToString() + " km").PadLeft(15);
             double vel = Math.Round(velocity);
             string vel_msg = "Velocity:        ";
 
@@ -420,6 +414,58 @@ string sec_doors =
             StatusLights.Add(new STATUS_LIGHT("WEAP", weap_priority, SPINNER_STATUS + status_light_spice));
             status_light_spice++;
 
+            // handle comms
+            if (COMMS_ON)
+            {
+
+                string output_comms = current_comms;
+                if (antenna_blocks.Count > 0)
+                    if (antenna_blocks[0] != null)
+                        output_comms = antenna_blocks[0].HudText.PadLeft(15);
+
+                string output_range = "";
+                if (current_comms_range < 1000)
+                    output_range = current_comms_range + "m";
+                else
+                    output_range = Math.Round(current_comms_range / 1000) + "km";
+
+                LCDAlerts.Add(new ALERT(
+                    "Comms ("+ output_range + "): " + output_comms, 
+                    "Antennas are broadcasting at a range of " + output_range + " with the message " + output_comms, 0));
+            }
+
+            // handle unowned
+            if (UNOWNED_BLOCKS > 0)
+            {
+                ALERTS.Add(new ALERT(
+                UNOWNED_BLOCKS + " UNOWNED BLOCKS!",
+                "RSM detected " + UNOWNED_BLOCKS + " terminal blocks on this grid owned by a player with a different faction tag."
+                , 3
+                ));
+            }
+
+            // handle doors
+            //string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
+            if (doors_count > doors_count_closed)
+            {
+                int open = (doors_count - doors_count_closed);
+                LCDAlerts.Add(new ALERT(
+                    open + " doors are open",
+                    open + " doors are open",
+                    0));
+            }
+
+            // handle vents
+            //string output_vents = (vents_sealed + "/" + vents.Count).PadLeft(15);
+            if (vents.Count > vents_sealed)
+            {
+                int unsealed = (vents.Count - vents_sealed);
+                LCDAlerts.Add(new ALERT(
+                    unsealed + " vents are unsealed",
+                    unsealed + " vents are unsealed",
+                    0));
+            }
+
 
             // sort alerts by priority.
             LCDAlerts = LCDAlerts.OrderBy(a => a.PRIORITY).ToList();
@@ -443,6 +489,12 @@ string sec_doors =
             string status_lts = "";
             string status_lts_overlay = "";
 
+            for (int i = 0; i < StatusLights.Count; i++) 
+            {
+                status_lts += StatusLights[i].OUTPUT;
+                status_lts_overlay += StatusLights[i].OUTPUT_OVERLAY;
+            }
+
             string sec_header =
                 LCD_DIVIDER + "\n" +
                 centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
@@ -460,9 +512,9 @@ string sec_doors =
             // ---------------------
             string sec_thrust_advanced = "\n" + spinner + "\n";
 
+            // only build this stuff if the player actually wants it.
             if (build_advanced_thrust_data)
             {
-
                 string Basics = "";
                 if (ADVANCED_THRUST_SHOW_BASICS)
                 {
@@ -489,25 +541,14 @@ string sec_doors =
                 sec_thrust_advanced += "\n\n";
             }
 
-
-
-
-
-
-
             for (int i = 0; i < lcd_blocks.Count; i++)
             {
                 bool show_header = true;
-                bool show_header_overlay = true;
-                bool show_warnings = true;
+                bool show_header_overlay = false;
+                bool show_warnings = false;
                 bool show_tanks_and_batts = true;
                 bool show_inventory = true;
                 bool show_thrust = true;
-                /*
-                bool show_comms = true;
-                bool show_aux = false;
-                bool show_doors = false;
-                */
                 bool show_integrity = false;
                 bool show_thrust_advanced = false;
 
@@ -606,24 +647,24 @@ string sec_doors =
                 }
                 catch { }
 
-                if (AllGood != true)
-                {
-                    lcd_blocks[i].CustomData =
-                        "Show Header=" + show_header +
-                        "\nShow Header Overlay=" + show_header_overlay +
-                        "\nShow Warnings=" + show_warnings +
-                        "\nShow Tanks & Batteries=" + show_tanks_and_batts +
-                        "\nShow Inventory=" + show_inventory +
-                        "\nShow Thrust=" + show_thrust +
-                        /*
-                        "\nShow Comms=" + show_comms +
-                        "\nShow Auxiliary=" + show_aux +
-                        "\nShow Doors=" + show_doors +
-                        */
-                        "\nShow Subsystem Integrity=" + show_integrity +
-                        "\nShow Advanced Thrust=" + show_thrust_advanced
-                        + "\n" + hudlcd_safe;
-                }
+                if (!AllGood)
+                    setLcdCustomData(lcd_blocks[i],
+                        new bool[] {
+                         show_header,
+                         show_header_overlay,
+                         show_warnings,
+                         show_tanks_and_batts,
+                         show_inventory,
+                         show_thrust,
+                         show_integrity,
+                         show_thrust_advanced
+                        }, hudlcd_safe);
+                    
+
+
+
+
+                
 
                 string output_text = "";
 
@@ -631,16 +672,11 @@ string sec_doors =
                     show_header = false;
 
                 if (show_header) output_text += sec_header;
-                if (show_header) output_text += sec_header_overlay;
+                if (show_header_overlay) output_text += sec_header_overlay;
                 if (show_warnings) output_text += sec_warnings;
                 if (show_tanks_and_batts) output_text += sec_tanks_and_batts;
                 if (show_inventory) output_text += sec_inventory_counts;
                 if (show_thrust) output_text += sec_thrust;
-                /*
-                if (show_comms) output_text += sec_comms;
-                if (show_aux) output_text += sec_aux;
-                if (show_doors) output_text += sec_doors;
-                */
 
                 if (show_integrity) output_text += sec_integrity;
                 if (show_thrust_advanced)
@@ -648,7 +684,7 @@ string sec_doors =
                     output_text += sec_thrust_advanced;
                     build_advanced_thrust_data = true;
                 }
-                output_text += LCD_DIVIDER;
+                if (!show_header_overlay) output_text += LCD_DIVIDER;
 
                 //Echo("Wrote to " + lcd_blocks[i].CustomName);
                 lcd_blocks[i].WriteText(output_text, false);
@@ -781,5 +817,18 @@ string sec_doors =
             return (Math.Round(result) + unit + " " + Math.Round(time) + "s").PadLeft(15);
         }
 
+        void setLcdCustomData(IMyTerminalBlock Lcd, bool[] Settings, string Append)
+        {
+            Lcd.CustomData =
+                "Show Header=" + Settings[0] +
+                "\nShow Header Overlay=" + Settings[1] +
+                "\nShow Warnings=" + Settings[2] +
+                "\nShow Tanks & Batteries=" + Settings[3] +
+                "\nShow Inventory=" + Settings[4] +
+                "\nShow Thrust=" + Settings[5] +
+                "\nShow Subsystem Integrity=" + Settings[6] +
+                "\nShow Advanced Thrust=" + Settings[7]
+                + "\n" + Append;
+        }
     }
 }

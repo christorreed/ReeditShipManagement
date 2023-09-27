@@ -29,8 +29,6 @@ namespace IngameScript
 
             if (debug) Echo("Managing Autoload, " + TO_LOAD.Count + " weapons to be loaded...");
 
-            bool Ammo_Low = false;
-
             if (WC_PB_API == null)
             {
                 try
@@ -115,8 +113,6 @@ namespace IngameScript
                             loadInventory(Weapon, Item.STORED_IN, OutputAmmoType, 99);
                         else // there arne't any inventories where this item is stored.
                         {
-                            Ammo_Low = true;
-
                             // this will prevent overflowing ammo names from causing double ups here
                             // by truncating to 32 chars
                             if (AmmoType.Length > 32)
@@ -132,7 +128,7 @@ namespace IngameScript
                 }
             }
 
-            if (Ammo_Low)
+            /*if (Ammo_Low)
             {
                 if (ammo_low_count < ammo_low_threshold)
                 {
@@ -143,7 +139,7 @@ namespace IngameScript
                     ammo_low_count = 0;
                     debugEcho("Ammo Low!", "Ammo Low! Some weapons cannot autoload because there is no spare ammo!");
                 }
-            }
+            }*/
 
             TO_LOAD.Clear();
         }

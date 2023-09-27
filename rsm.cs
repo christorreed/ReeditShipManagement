@@ -100,6 +100,8 @@ namespace IngameScript
 
         bool need_fuel = false;
 
+        int UNOWNED_BLOCKS = 0;
+
         double tank_h2_actual = 0;
         double tank_h2_total = 0;
         double tank_h2_init = 0;
@@ -157,15 +159,9 @@ namespace IngameScript
         string current_stance = "N/A";
         string current_comms = "";
         double current_comms_range = 0;
+        bool COMMS_ON = false;
+
         double current_sig_range = 0;
-
-        //bool airlock_name_error_called = false;
-
-        // how long debug messages stay around for, in LCD refreshes.
-        int debug_dwell_max = 4;
-        int debug_dwell = 0;
-        string debug_msg = "";
-        string debug_msg_long = "";
 
         double velocity;
         float mass;
@@ -236,10 +232,6 @@ namespace IngameScript
         bool NO_EXTRACTOR = false;
         bool NO_SPARE_TANKS = false;
 
-        // counter used to prevent the ammo low error from appearing constantly.
-        int ammo_low_count = 0;
-        int ammo_low_threshold = 50;
-
         string missing_ammo = "";
         //int ammo_warning_count = 0;
 
@@ -300,7 +292,7 @@ namespace IngameScript
             }
             catch
             {
-                debugEcho("Component error!", "It seems like you might be missing one of the required mods?! Failed to build a list of components to check inventories for.");
+                Echo("It seems like you might be missing one of the required mods?! Failed to build a list of components to check inventories for.");
                 return;
             }
 
@@ -337,7 +329,6 @@ namespace IngameScript
 
             if (argument == "")
             {
-                //debugEcho("Command Failed!", "Argument Required!\ne.g.\nStance:Docked\nEvade:1\nComms:Whatsup?");
 
                 ALERTS.Add(new ALERT(
                     "COMMAND FAILED: Arg Required!", 
@@ -351,7 +342,6 @@ namespace IngameScript
 
             if (args.Length != 2)
             {
-                //debugEcho("Command Failed!", "Syntax Error!\nWTF is that?\n" + argument);
 
                 ALERTS.Add(new ALERT(
                     "COMMAND FAILED: Syntax Error!",
@@ -441,7 +431,11 @@ namespace IngameScript
                     }
 
                 default:
-                    debugEcho("Command Failed!", "Syntax Error!\nCommand not recognised\n" + args[0].ToLower());
+                    ALERTS.Add(new ALERT(
+                        "COMMAND FAILED: Syntax Error!",
+                        "A command was ignored because it wasn't recognised."
+                        , 3
+                        ));
                     return;
             }
         }
@@ -478,7 +472,6 @@ namespace IngameScript
 
             if (thisInventory == null)
             {
-                debugEcho("NO EXTRACTOR!", "Failed to load a fuel tank! There is no extractor, cannot attempt to refuel!");
                 refuel_failure_count = 1;
                 NO_EXTRACTOR = true;
                 return;
@@ -526,7 +519,12 @@ namespace IngameScript
 
                         if (success)
                         {
-                            debugEcho("Loaded Fuel Tank", "Fuel levels are low, and management is active. Loaded a fuel tank into extractor.");
+
+                            ALERTS.Add(new ALERT(
+                                "Loaded Fuel Tank",
+                                "Fuel levels are low, and management is active. Successfully loaded a fuel tank into an extractor."
+                                , 1, 10
+                                ));
 
                             // dampens extractor filling from going nuts.
                             extractor_mgmt_wait = extractor_mgmt_wait_threshold;
@@ -595,7 +593,11 @@ namespace IngameScript
             }
             if (!found)
             {
-                debugEcho("Command Failed!", "Syntax Error!\nStance not recognised\n" + stance);
+                ALERTS.Add(new ALERT(
+                    "NO SUCH STANCE!",
+                    "A command was ignored because the provided stance doens't exist. Stance names are case sensitive!"
+                    , 3
+                    ));
                 return;
             }
 
@@ -685,7 +687,7 @@ namespace IngameScript
                     + stance_data[stance_i][1]
                     + ".\nautoconfig = " + auto_configure_pdcs.ToString());
 
-            bool RepelModeFucked = false;
+            //bool RepelModeFucked = false;
 
             for (int i = 0; i < pdcs.Count; i++)
             {
@@ -732,11 +734,12 @@ namespace IngameScript
                                 }
                                 catch
                                 {
-                                    if (!RepelModeFucked)
+                                    Echo("Strange PDC config error! Possible WC crash!");
+                                    /*if (!RepelModeFucked)
                                     {
                                         RepelModeFucked = true;
                                         debugEcho("PDC Config error!", "Strange bug with your PDCs causing them not to autoconfigure. Recommend grinding and rebuilding them!");
-                                    }
+                                    }*/
 
                                 }
                             }
@@ -757,11 +760,12 @@ namespace IngameScript
                                 }
                                 catch
                                 {
-                                    if (!RepelModeFucked)
+                                    Echo("Strange PDC config error! Possible WC crash!");
+                                    /*if (!RepelModeFucked)
                                     {
                                         RepelModeFucked = true;
                                         debugEcho("PDC Config error!", "Strange bug with your PDCs causing them not to autoconfigure. Recommend grinding and rebuilding them!");
-                                    }
+                                    }*/
                                 }
                             }
                             break;
@@ -1013,7 +1017,6 @@ namespace IngameScript
                                 (lightsSpotlights[i] as IMyLightingBlock).Radius = 9999;
                             lightsSpotlights[i].ApplyAction("OnOff_On");
                         }
-
                     }
                 }
 
@@ -1309,8 +1312,7 @@ namespace IngameScript
                         EfcLcdFound = true;
                         AllOtherLCDs[i].CustomData = "hudlcd:-0.76:0.78:0.47";
                     }
-                    else
-                        AllOtherLCDs[i].CustomData = "";
+                    else AllOtherLCDs[i].CustomData = ""; // prevent double ups in case there are two EFC PBs.
                 }
             }
 
@@ -1323,28 +1325,87 @@ namespace IngameScript
                 {
                     defaultName = "LCD";
 
-
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD1"))
-                        camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=True\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Auxiliary=False\nShow Doors=False\nShow Subsystem Integrity=False\nShow Advanced Thrust=False\nhudlcd:-0.60:0.99:0.8";
+                        setLcdCustomData(camerasAndSensorsAndLCDs[i],
+                            new bool[] {
+                                 true, // show_header
+                                 false, // show_header_overlay
+                                 false, // show_warnings
+                                 false, // show_tanks_and_batts
+                                 false, // show_inventory
+                                 false, // show_thrust
+                                 false, // show_integrity
+                                 false, // show_thrust_advanced
+                            }, "hudlcd:-0.60:0.99:0.8"); // hudlcd
+
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD2"))
-                        camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=False\nShow Auxiliary=False\nShow Doors=False\nShow Subsystem Integrity=True\nShow Advanced Thrust=False\nhudlcd:0.29:0.99:0.5";
+                        setLcdCustomData(camerasAndSensorsAndLCDs[i],
+                            new bool[] {
+                                 false, // show_header
+                                 false, // show_header_overlay
+                                 true, // show_warnings
+                                 false, // show_tanks_and_batts
+                                 false, // show_inventory
+                                 false, // show_thrust
+                                 false, // show_integrity
+                                 false, // show_thrust_advanced
+                             }, "hudlcd:0.29:0.99:0.5"); // hudlcd
+
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD3"))
-                        camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=True\nShow Inventory=False\nShow Thrust=True\nShow Comms=False\nShow Auxiliary=False\nShow Doors=False\nShow Advanced Thrust=False\nhudlcd:0.53:0.99:0.5";
+                        setLcdCustomData(camerasAndSensorsAndLCDs[i],
+                            new bool[] {
+                                 false, // show_header
+                                 false, // show_header_overlay
+                                 false, // show_warnings
+                                 true, // show_tanks_and_batts
+                                 false, // show_inventory
+                                 true, // show_thrust
+                                 false, // show_integrity
+                                 false, // show_thrust_advanced
+                            }, "hudlcd:0.53:0.99:0.5"); // hudlcd
+
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD4"))
-                        camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=False\nShow Thrust=False\nShow Comms=True\nShow Auxiliary=True\nShow Doors=True\nShow Advanced Thrust=False\nhudlcd:0.77:0.99:0.5";
+                        setLcdCustomData(camerasAndSensorsAndLCDs[i],
+                            new bool[] {
+                                 false, // show_header
+                                 false, // show_header_overlay
+                                 false, // show_warnings
+                                 true, // show_tanks_and_batts
+                                 false, // show_inventory
+                                 false, // show_thrust
+                                 true, // show_integrity
+                                 false, // show_thrust_advanced
+                            }, "hudlcd:0.77:0.99:0.5"); // hudlcd
+
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD5"))
-                        camerasAndSensorsAndLCDs[i].CustomData =
-                            "Show header=False\nShow Tanks & Batteries=False\nShow Inventory=True\nShow Thrust=False\nShow Comms=False\nShow Auxiliary=False\nShow Doors=False\nShow Advanced Thrust=True\nhudlcd:-0.99:0.78:0.47";
+                        setLcdCustomData(camerasAndSensorsAndLCDs[i],
+                            new bool[] {
+                                 false, // show_header
+                                 false, // show_header_overlay
+                                 false, // show_warnings
+                                 false, // show_tanks_and_batts
+                                 true, // show_inventory
+                                 false, // show_thrust
+                                 false, // show_integrity
+                                 true, // show_thrust_advanced
+                            }, "hudlcd:-0.99:0.78:0.47"); // hudlcd
 
-
+                    if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD6"))
+                        setLcdCustomData(camerasAndSensorsAndLCDs[i],
+                            new bool[] {
+                                 false, // show_header
+                                 true, // show_header_overlay
+                                 false, // show_warnings
+                                 false, // show_tanks_and_batts
+                                 false, // show_inventory
+                                 false, // show_thrust
+                                 false, // show_integrity
+                                 false, // show_thrust_advanced
+                            }, "hudlcd:-0.60:0.99:0.8"); // hudlcd
 
 
                 }
@@ -1387,8 +1448,11 @@ namespace IngameScript
             processList(lightsNav, "Lights Exterior");
             processList(lightsSpotlights, "Spotlights");
 
-
-            debugEcho("Initialised '" + ship + "'", "Good Hunting!");
+            ALERTS.Add(new ALERT(
+                "Init:" + ship,
+                "Initialised '" + ship + "\n'Good Hunting!"
+                , 3
+                ));
 
         }
 
@@ -1474,8 +1538,6 @@ namespace IngameScript
             {
                 antenna_blocks[i].HudText = comms;
             }
-
-            debugEcho("COMMS: " + comms, "Set comms to " + comms);
         }
 
         void setBlockRepelOn(IMyTerminalBlock block)
@@ -1635,6 +1697,7 @@ namespace IngameScript
                 }
             }
 
+            COMMS_ON = false;
 
             current_comms_range = 0;
             // iterate over antennas
@@ -1647,6 +1710,8 @@ namespace IngameScript
                     {
                         float range = antenna_blocks[i].Radius;
                         if (range > current_comms_range) current_comms_range = range;
+                        if (antenna_blocks[i].IsBroadcasting && antenna_blocks[i].Enabled)
+                            COMMS_ON = true;
                     }
                 }
 
@@ -2227,7 +2292,7 @@ namespace IngameScript
             bool sg_extractors = true;
 
             int ignoreCount = 0;
-            int disownedCount = 0;
+            UNOWNED_BLOCKS = 0;
 
             List<IMyTerminalBlock> allBlocks = new List<IMyTerminalBlock>();
             GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(allBlocks);
@@ -2258,7 +2323,7 @@ namespace IngameScript
                     if (Tag != faction_tag && Tag != "")
                     {
                         Echo(">>>" + Tag + "<<<");
-                        disownedCount++;
+                        UNOWNED_BLOCKS++;
                     }
 
                     /* PDCs NEW
@@ -2600,14 +2665,6 @@ namespace IngameScript
             else
                 extractor_keep_full_threshold = (fuel_tank_keep_full_multiplier * fuel_tank_capacity);
 
-            if (disownedCount > 0)
-            {
-                debugEcho("!!UNOWNED BLOCKS!!", "!!UNOWNED BLOCKS!! RUN !claim.  Some blocks on the current construct are owned by a player in another faction!");
-
-                // TODO
-                // add other actions if unowned blocks detected.
-
-            }
 
             if (debug) Echo("Finished full refresh.\nIgnored " + ignoreCount + " blocks.");
 
@@ -2651,7 +2708,7 @@ namespace IngameScript
                 }
                 catch
                 {
-                    debugEcho("Custom Data Error!", "Custom data invalid or blank.");
+                    if (debug) Echo("Custom Data Error! Custom data invalid or blank.");
                 }
 
                 // so now we attempt to parse the variables part.
@@ -2925,7 +2982,7 @@ namespace IngameScript
                 }
                 catch
                 {
-                    debugEcho("Custom Data Error! (vars)", "Failed to parse all the variables from custom data.");
+                    Echo("Custom Data Error (vars)");
                 }
 
                 if (spawn_private)
@@ -2998,7 +3055,7 @@ namespace IngameScript
                 }
                 catch
                 {
-                    debugEcho("Custom Data Error! (stances)", "Failed to parse all the stance variables from custom data.");
+                    Echo("Custom Data Error (stances)");
                 }
 
                 // STOP HERE IF EVERYTHING PARSED WELL!
@@ -3010,7 +3067,7 @@ namespace IngameScript
 
             string stance_text = "";
 
-            if (stance_names.Count != stance_data.Count) debugEcho("Weird Error!", "Um, so...\nstance_names.Count != stance_data.Count");
+            if (stance_names.Count != stance_data.Count) Echo("Um, so...\nstance_names.Count != stance_data.Count");
 
             if (stance_names.Count < 1 && debug)
             {
@@ -3018,7 +3075,12 @@ namespace IngameScript
             }
 
             if (!dontParse)
-                debugEcho("RESET CUSTOM DATA!", "Something went wrong, so custom data was reset.\nVars Parsed=" + parsedVars + "\nStances Parsed=" + parsedStances);
+                ALERTS.Add(new ALERT(
+                    "RESET CUSTOM DATA!",
+                    "Something went wrong, so custom data was reset.\nVars Parsed=" + parsedVars + "\nStances Parsed=" + parsedStances
+                    , 3
+                    ));
+
             else
                 Echo("Saved custom data.");
 
@@ -3242,7 +3304,7 @@ namespace IngameScript
 
 
      
-
+        /*
         void debugEcho(string msg, string msg_long)
         {
 
@@ -3258,7 +3320,7 @@ namespace IngameScript
             debug_msg = msg;
             debug_msg_long = msg_long;
         }
-
+        */
 
 
 
