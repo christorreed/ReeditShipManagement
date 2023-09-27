@@ -233,14 +233,15 @@ namespace IngameScript
 
     string buildDoorData(int open, int disabled)
     {
-        return "-------------------------\n"
-            + "Reedit Ship Management" + "\n"
-            + "-------------------------\n"
-            + "Timer count values, don't touch!" + "\n"
-            + "-------------------------\n"
-            + "Open Timer=" + open.ToString() + "\n"
-            + "Disabled Timer=" + disabled.ToString() + "\n"
-            + "-------------------------\n";
+        return 
+             "-------------------------\n" +
+             "Reedit Ship Management" + "\n"+
+             "-------------------------\n"+
+             "Timer count values, don't touch!" + "\n"+
+             "-------------------------\n"+
+             "Open Timer=" + open.ToString() + "\n"+
+             "Disabled Timer=" + disabled.ToString() + "\n"+
+             "-------------------------\n";
     }
 }
 }

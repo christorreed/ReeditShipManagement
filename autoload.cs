@@ -41,6 +41,8 @@ namespace IngameScript
                 catch
                 {
                     WC_PB_API = null;
+                    Echo("WcPbAPI failed to activate!");
+                    return;
                 }
             }
 
@@ -123,7 +125,7 @@ namespace IngameScript
                             if (!missing_ammo.Contains(AmmoType))
                             {
                                 if (missing_ammo != "") missing_ammo += "\n";
-                                missing_ammo += centreText(AmmoType, 32);
+                                missing_ammo += AmmoType;
                             }
                         }
                     }

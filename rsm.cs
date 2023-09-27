@@ -69,6 +69,7 @@ namespace IngameScript
             public int TARGET = 10;
             public int COUNT = 0;
             public MyItemType TYPE;
+            public double PERCENTAGE;
             public List<IMyInventory> STORED_IN = new List<IMyInventory>();
         }
 
@@ -224,13 +225,16 @@ namespace IngameScript
         List<IMyTerminalBlock> camerasAndSensorsAndLCDs = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> everythingElse = new List<IMyTerminalBlock>();
 
-
+        // empty reactors to be loaded with fusion fuel
+        List<IMyTerminalBlock> reactorsEmpty = new List<IMyTerminalBlock>();
 
         //List<MyInventoryItem?> fuel_tank_items = new List<MyInventoryItem?>();
 
         // counter used to prevent refuel from looping.
         int refuel_failure_count = 0;
         int refuel_failure_threshold = 25;
+        bool NO_EXTRACTOR = false;
+        bool NO_SPARE_TANKS = false;
 
         // counter used to prevent the ammo low error from appearing constantly.
         int ammo_low_count = 0;
@@ -454,6 +458,9 @@ namespace IngameScript
             IMyInventory thisInventory = null;
             string TankType = "Fuel_Tank";
 
+            NO_EXTRACTOR = false;
+            NO_SPARE_TANKS = false;
+
             foreach (IMyTerminalBlock Extractor in extractors)
             {
                 if (Extractor != null)
@@ -473,6 +480,7 @@ namespace IngameScript
             {
                 debugEcho("NO EXTRACTOR!", "Failed to load a fuel tank! There is no extractor, cannot attempt to refuel!");
                 refuel_failure_count = 1;
+                NO_EXTRACTOR = true;
                 return;
             }
 
@@ -528,8 +536,9 @@ namespace IngameScript
                     }
                 }
             }
+            // no spare tanks...
             refuel_failure_count = 1;
-            debugEcho("NO SPARE FUEL!", "Failed to load a fuel tank! Check your fuel levels, you probably have no auxiliary tanks and less than 10% fuel on board.");
+            NO_SPARE_TANKS = true;
         }
 
         void saveProjectorPosition(IMyProjector Projector)
@@ -1916,12 +1925,22 @@ namespace IngameScript
             integrity_gyros = Math.Round(100 * (FunctionalGyros / gyros_init));
 
             if (debug) Echo("Iterating over " + reactorsAll.Count + " reactors...");
+            reactorsEmpty.Clear();
             double FunctionalReactors = 0;
             for (int i = 0; i < reactorsAll.Count; i++)
             {
                 if (reactorsAll[i].IsFunctional && reactorsAll[i].CustomName.Contains(ship_name))
-
-                    FunctionalReactors += (reactorsAll[i] as IMyReactor).MaxOutput;
+                {
+                    if (inventoryEmpty(reactorsAll[i]))
+                    {
+                        reactorsEmpty.Add(reactorsAll[i]);
+                    }
+                    else
+                    {
+                        FunctionalReactors += (reactorsAll[i] as IMyReactor).MaxOutput;
+                    }
+                }
+                    
 
 
             }
@@ -2097,6 +2116,7 @@ namespace IngameScript
                 if (connectors[i].CustomName.Contains(ship_name) && !connectors[i].CustomName.Contains(ignore_keyword))
                 {
                     connector_blocks.Add(connectors[i]);
+                    cargo_inventory.Add(connectors[i].GetInventory());
                 }
             }
 
@@ -3182,6 +3202,12 @@ namespace IngameScript
         {
             IMyInventory thisInventory = Block.GetInventory();
             return thisInventory.CurrentVolume.RawValue > (thisInventory.MaxVolume.RawValue * 0.95);
+        }
+
+        bool inventoryEmpty(IMyTerminalBlock Block) // is a block's inventory totally empty
+        {
+            IMyInventory thisInventory = Block.GetInventory();
+            return thisInventory.VolumeFillFactor == 0;
         }
 
         void loadInventory(IMyTerminalBlock ToLoad, List<IMyInventory> SourceInventories, string ItemType, int ItemCount)
