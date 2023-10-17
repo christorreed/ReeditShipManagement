@@ -25,15 +25,25 @@ namespace IngameScript
 
         // you spin me right round baby
         int SPINNER_STATUS = 0;
-        //string[] SPINNER_BITS = new string[] { "-", "\\", "|", "/" };
-        string[] SPINNER_BITS = new string[] { "┐", "┘", "└", "┌" };
+        string[] BASIC_SPINNER_BITS = new string[] { "─", "\\", "│", "/" };
+        //string[] SPINNER_BITS = new string[] { "┐", "┘", "└", "┌" };
+        string[] SPINNER_BITS = new string[] { "▄ ", " ▄", " ▀", "▀ " };
+
+        string[] STANCE_DATA_OUT_TOGGLE = new string[] { " OFF", "  ON" };
+        string[] STANCE_DATA_OUT_MAINTHRUST = new string[] { " OFF", "  ON", " MIN" };
+        string[] STANCE_DATA_OUT_RCS = new string[] { " OFF", "  ON", "NFWD", "NREV" };
+        string[] STANCE_DATA_OUT_RAILS = new string[] { " OFF", "HOLD", "FREE" };
+        string[] STANCE_DATA_OUT_PDCS = new string[] { " OFF", "MDEF", " DEF", " CQB" };
+        string[] STANCE_DATA_OUT_TANKS = new string[] { "AUTO", "STOC", " AUTO" };
+        string[] STANCE_DATA_OUT_BATTS = new string[] { " AUTO", "CHG", " DCHG" };
+
 
         // general LCD vars
         const int LCD_WIDTH = 32;
         const float LCD_FONT_SIZE = 0.8f;
-        string LCD_DIVIDER = new String('-', LCD_WIDTH);
+        string LCD_DIVIDER = "└" + new String('─', LCD_WIDTH - 2) + "┘";
 
-        Color LCD_OVERLAY_COLOUR = new Color(255, 0, 0, 255);
+        Color LCD_OVERLAY_COLOUR = new Color(255, 116, 33, 255);
 
         // alerts appear at the top of the warnings screen
         // they are temporary messages which will be cleared at LIFETIME = 0;
@@ -72,70 +82,75 @@ namespace IngameScript
                             
                 if (Status == 0) // nominal
                 {
-                    OUTPUT = "| " + Name.PadRight(4) + " |";
+                    OUTPUT = "║ " + Name.PadRight(4) + " ║";
                     OUTPUT_OVERLAY = "  " + blank + "  ";
                 } 
                 else if (Status == 1) // warning
                 {
-                    OUTPUT = "| " + Name.PadRight(4) + " |";
-                    OUTPUT_OVERLAY = " -" + blank + "- ";
+                    if (Step == 0 || Step == 2) OUTPUT = "║─" + Name.PadRight(4) + " ║";
+                    else OUTPUT = "║ " + Name.PadRight(4) + "─║";
+                    OUTPUT_OVERLAY = " ░" + blank + "░ ";
                 }
                 else if (Status == 2) // danger
                 {
-                    if (Step == 0)
+                    if (Step == 0 || Step == 2)
                     {
-                        OUTPUT = "| " + Name.PadRight(4) + " |";
-                        OUTPUT_OVERLAY = " >" + blank + "< ";
+                        OUTPUT = "║ " + Name.PadRight(4) + "═║";
+                        OUTPUT_OVERLAY = "║▒" + blank + "░║";
                     }
-                    else if (Step == 1)
+                    else/* if (Step == 1)*/
                     {
-                        OUTPUT = "| " + Name.PadRight(4) + " |";
-                        OUTPUT_OVERLAY = " =" + blank + "= ";
+                        OUTPUT = "║═" + Name.PadRight(4) + " ║";
+                        OUTPUT_OVERLAY = "║░" + blank + "▒║";
                     }
+                    /*
                     else if (Step == 2)
                     {
-                        OUTPUT = "| " + Name.PadRight(4) + " |";
+                        OUTPUT = "║ " + Name.PadRight(4) + " ║";
                         OUTPUT_OVERLAY = " >" + blank + "< ";
                     }
                     else if (Step == 3)
                     {
-                        OUTPUT = "| " + Name.PadRight(4) + " |";
+                        OUTPUT = "║ " + Name.PadRight(4) + " ║";
                         OUTPUT_OVERLAY = " =" + blank + "= ";
                     }
-
+                    */
                 }
                 else if (Status == 3) // critcal
                 {
 
-                    if (Step == 0)
+                    if (Step == 0 || Step == 2)
                     {
-                        OUTPUT = "|>" + Name.PadRight(4) + "<|";
-                        OUTPUT_OVERLAY = " <" + blank + "> ";
+                        OUTPUT = "║!" + Name.PadRight(4) + "!║";
+                        OUTPUT_OVERLAY = "║▓" + blank + "▓║";
                     }
-                    else if (Step == 1)
+                    else /*if (Step == 1)*/
                     {
-                        OUTPUT = "||" + blank + "||";
-                        OUTPUT_OVERLAY = " -" + Name.PadRight(4) + "- ";
+                        OUTPUT = "║ " + blank + " ║";
+                        OUTPUT_OVERLAY = "║!" + Name.PadRight(4) + "!║";
 
                     }
+                    /*
                     else if (Step == 2)
                     {
-                        OUTPUT = "|<" + Name.PadRight(4) + ">|";
-                        OUTPUT_OVERLAY = " >" + blank + "< ";
+                        OUTPUT = "║-" + Name.PadRight(4) + "-║";
+                        OUTPUT_OVERLAY = "┼>" + blank + "< ";
                     }
                     else if (Step == 3)
                     {
-                        OUTPUT = "|-" + blank + "-|";
-                        OUTPUT_OVERLAY = " |" + Name.PadRight(4) + "| ";
+                        OUTPUT = "║-" + blank + "-║";
+                        OUTPUT_OVERLAY = "╬|" + Name.PadRight(4) + "| ";
                     }
-
+                    */
                 }
 
             }
         }
 
-        String[] ALERT_PRIORITIES = new string[] { "(- ", "(= ", "(x ", "(! " };
+        string[] ALERT_PRIORITIES = new string[] { "- ", "= ", "x ", "! " };
         List<ALERT> ALERTS = new List<ALERT>();
+
+
 
 
         // updates all LCDs on the ship to display our data.
@@ -146,6 +161,7 @@ namespace IngameScript
             SPINNER_STATUS++;
             if (SPINNER_STATUS >= SPINNER_BITS.Length) SPINNER_STATUS = 0;
             string spinner = SPINNER_BITS[SPINNER_STATUS];
+            string basic_spinner = BASIC_SPINNER_BITS[SPINNER_STATUS];
 
             //string output_comms_range = (Math.Round((current_comms_range / 1000)).ToString() + " km").PadLeft(15);
             /*string output_aux = "      ACTIVE";
@@ -158,7 +174,10 @@ namespace IngameScript
             // -----------------------
 
             string sec_inventory_counts =
-                "-- Inventory ----------------" + spinner + "--" + "\n\n";
+                "──┤ Inventory ├──────────────" + basic_spinner + "──\n\n";
+
+
+            
 
             foreach (ITEM Item in ITEMS)
             {
@@ -202,9 +221,10 @@ namespace IngameScript
             }
 
             string sec_thrust =
-               "-- Thrust -------------------" + spinner + "--\n\n"
-                + output_decel_short
-                + "\nDrive Signature: " + output_sig_range + "\n\n";
+
+               "──┤ Thrust ├─────────────────" + basic_spinner + "──\n\n" +
+                output_decel_short +
+                "\nDrive Signature: " + output_sig_range + "\n\n";
 
 
             
@@ -219,7 +239,7 @@ namespace IngameScript
             double battery_percentage = Math.Round(100 * (bat_actual / bat_total));
 
             string sec_tanks_and_batts =
-               "-- Power & Gas --------------" + spinner + "--\n\n" +
+               "──┤ Power & Gas ├────────────" + basic_spinner + "──\n\n" +
                 "Fuel      [" + generateBar(fuel_percentage) + "] " + (fuel_percentage + " %").PadLeft(9) + "\n" +
                 "Oxygen    [" + generateBar(oxygen_percentage) + "] " + (oxygen_percentage + " %").PadLeft(9) + "\n" +
                 "Battery   [" + generateBar(battery_percentage) + "] " + (battery_percentage + " %").PadLeft(9) + "\n" +
@@ -228,52 +248,21 @@ namespace IngameScript
 
 
 
-/*string sec_comms =
-    "-- Communications -----------" + spinner + "--" + "\n\n"
-    + "Comms:           " + output_comms + "\n"
-    + "Comms Range:     " + output_comms_range + "\n\n";
+            /*string sec_comms =
+                "-- Communications -----------" + spinner + "--" + "\n\n"
+                + "Comms:           " + output_comms + "\n"
+                + "Comms Range:     " + output_comms_range + "\n\n";
 
-string sec_aux =
-    "-- Auxiliary  ---------------" + spinner + "--" + "\n\n"
-    + aux_keyword + ":" + output_aux.PadLeft(31 - aux_keyword.Length) + "\n\n";
+            string sec_aux =
+                "-- Auxiliary  ---------------" + spinner + "--" + "\n\n"
+                + aux_keyword + ":" + output_aux.PadLeft(31 - aux_keyword.Length) + "\n\n";
 
-string sec_doors =
-   "-- Doors & Vents ------------" + spinner + "--" + "\n\n"
-   + "Doors Closed:    " + output_doors + "\n"
-   + "Vents Sealed:    " + output_vents + "\n\n";*/
-
-
-        // -------------------------
-        // Build Subsystem Integrity
-        // -------------------------
-        string sec_integrity =
-                "-- Subsystem Integrity ------" + spinner + "--\n\n";
-
-            if (reactors_init > 0)
-                sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + " %").PadLeft(9) + "\n";
-            if (bat_init > 0)
-                sec_integrity += "Batteries [" + generateBar(integrity_bats) + "] " + (integrity_bats + " %").PadLeft(9) + "\n";
-            if (pdcs_init > 0)
-                sec_integrity += "PDCs      [" + generateBar(integrity_pdcs) + "] " + (integrity_pdcs + " %").PadLeft(9) + "\n";
-            if (torps_init > 0)
-                sec_integrity += "Torpedoes [" + generateBar(integrity_torps) + "] " + (integrity_torps + " %").PadLeft(9) + "\n";
-            if (railguns_init > 0)
-                sec_integrity += "Railguns  [" + generateBar(integrity_railguns) + "] " + (integrity_railguns + " %").PadLeft(9) + "\n";
-            if (tank_h2_init > 0)
-                sec_integrity += "H2 Tanks  [" + generateBar(integrity_tanks_H2) + "] " + (integrity_tanks_H2 + " %").PadLeft(9) + "\n";
-            if (tank_o2_init > 0)
-                sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + " %").PadLeft(9) + "\n";
-            if (thrust_main_init > 0)
-                sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + " %").PadLeft(9) + "\n";
-            if (thrust_rcs_init > 0)
-                sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + " %").PadLeft(9) + "\n";
-            if (gyros_init > 0)
-                sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + " %").PadLeft(9) + "\n\n";
+            string sec_doors =
+               "-- Doors & Vents ------------" + spinner + "--" + "\n\n"
+               + "Doors Closed:    " + output_doors + "\n"
+               + "Vents Sealed:    " + output_vents + "\n\n";*/
 
 
-            if (sec_integrity == "-- Subsystem Integrity ------" + spinner + "--" + "\n\n") // nothing init basically.
-                sec_integrity = LCD_DIVIDER + "\n\n"
-                    + "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
 
 
             // -------------------------------------
@@ -446,7 +435,7 @@ string sec_doors =
 
                 LCDAlerts.Add(new ALERT(
                     "Comms ("+ output_range + "): " + output_comms, 
-                    "Antennas are broadcasting at a range of " + output_range + " with the message " + output_comms, 0));
+                    "Antenna(s) are broadcasting at a range of " + output_range + " with the message " + output_comms, 0));
             }
 
             // handle unowned
@@ -475,15 +464,60 @@ string sec_doors =
             LCDAlerts = LCDAlerts.OrderBy(a => a.PRIORITY).Reverse().ToList();
 
             string sec_warnings =
-                "-- Warnings -----------------" + spinner + "--\n\n";
+                "──┤ Warnings ├───────────────" + basic_spinner + "──\n\n";
+
+            if (LCDAlerts.Count < 1) sec_warnings += "No warnings\n";
+            else Echo("\n\n WARNINGS:");
 
             // output alerts to warnings list.
             for (int i = 0; i < LCDAlerts.Count; i++)
             {
                 sec_warnings += ALERT_PRIORITIES[LCDAlerts[i].PRIORITY] + LCDAlerts[i].MESSAGE + "\n";
-                Echo(ALERT_PRIORITIES[LCDAlerts[i].PRIORITY] + LCDAlerts[i].LONG_MESSAGE);
+                Echo("-" + ALERT_PRIORITIES[LCDAlerts[i].PRIORITY] + LCDAlerts[i].LONG_MESSAGE);
             }
+
+
+
             sec_warnings += "\n";
+
+
+
+
+            // -------------------------
+            // Build Subsystem Integrity
+            // -------------------------
+
+            int[] CurrentStance = stance_data[stance_i];
+
+            string sec_integrity =
+
+                "──┤ Subsystem Integrity ├────" + basic_spinner + "──\n\n";
+
+            if (reactors_init > 0)
+                sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + "% ").PadLeft(5) +  "\n";
+            if (bat_init > 0)
+                sec_integrity += "Batteries [" + generateBar(integrity_bats) + "] " + (integrity_bats + "% ").PadLeft(5) + STANCE_DATA_OUT_BATTS[CurrentStance[16]] + "\n";
+            if (pdcs_init > 0)
+                sec_integrity += "PDCs      [" + generateBar(integrity_pdcs) + "] " + (integrity_pdcs + "% ").PadLeft(5) + STANCE_DATA_OUT_PDCS[CurrentStance[1]] + "\n";
+            if (torps_init > 0)
+                sec_integrity += "Torpedoes [" + generateBar(integrity_torps) + "] " + (integrity_torps + "% ").PadLeft(5) + STANCE_DATA_OUT_TOGGLE[CurrentStance[0]] + "\n";
+            if (railguns_init > 0)
+                sec_integrity += "Railguns  [" + generateBar(integrity_railguns) + "] " + (integrity_railguns + "% ").PadLeft(5) + STANCE_DATA_OUT_RAILS[CurrentStance[2]] + "\n";
+            if (tank_h2_init > 0)
+                sec_integrity += "H2 Tanks  [" + generateBar(integrity_tanks_H2) + "] " + (integrity_tanks_H2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
+            if (tank_o2_init > 0)
+                sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
+            if (thrust_main_init > 0)
+                sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_MAINTHRUST[CurrentStance[3]] + "\n";
+            if (thrust_rcs_init > 0)
+                sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
+            if (gyros_init > 0)
+                sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + "% ").PadLeft(5) + "\n\n";
+
+
+            if (sec_integrity == "-- Subsystem Integrity ------" + spinner + "--" + "\n\n") // nothing init basically.
+                sec_integrity = LCD_DIVIDER + "\n\n"
+                    + "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
 
 
             // ------------------------
@@ -507,20 +541,25 @@ string sec_doors =
                 status_lts + "\n";*/
 
             string sec_header =
-                LCD_DIVIDER + "\n" +
 
-                "  " + spinner + " " + centreText(ship_name + " - " + current_stance, LCD_WIDTH - 8) + " " + spinner + "  \n" +
+                 centreText(ship_name.ToUpper(), LCD_WIDTH) + "\n" +
+                 "  " + spinner + " " + centreText(current_stance, LCD_WIDTH - 10) + " " + spinner + "  \n" +
+
 
                 //centreText(spinner + " " + ship_name.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
                 //centreText(current_stance, LCD_WIDTH) + "\n" +
-                LCD_DIVIDER + "\n" +
-                status_lts + "\n";
+                //LCD_DIVIDER + "\n" +
+
+                //"┌" + new String('─', LCD_WIDTH - 2) + "┐\n" +
+                "╔══════╗╔══════╗╔══════╗╔══════╗\n" +
+                status_lts + "\n" +
+                "╚══════╝╚══════╝╚══════╝╚══════╝\n";
 
             int overlay_status = SPINNER_STATUS + 2;
             if (overlay_status > 3) overlay_status -= 4;
             string spinner_overlay = SPINNER_BITS[overlay_status];
             string sec_header_overlay =
-                "\n  " + spinner_overlay + "                          " + spinner_overlay + "  \n\n" + status_lts_overlay;
+                "\n  " + spinner_overlay + "                        " + spinner_overlay + "  \n\n" + status_lts_overlay;
 
             
 
@@ -543,10 +582,11 @@ string sec_doors =
                 }
 
                 sec_thrust_advanced =
-                    "-- Telemetry & Thrust -------" + spinner + "--\n"
+
+                    "──┤ Telemetry & Thrust ├─────" + basic_spinner + "──\n"
                     + Basics +
-                    "\nMax Thrust:      " + ((max_thrust / 1000000) + " MN").PadLeft(15) +
-                    "\nActual Thrust:   " + ((actual_thrust / 1000000) + " MN").PadLeft(15) +
+                    //"\nMax Thrust:      " + ((max_thrust / 1000000) + " MN").PadLeft(15) +
+                    //"\nActual Thrust:   " + ((actual_thrust / 1000000) + " MN").PadLeft(15) +
                     "\nDecel (Dampener):" + stopDistance(max_thrust, vel, true) +
                     "\nDecel (Actual):  " + stopDistance(actual_thrust, vel);
 
@@ -701,7 +741,7 @@ string sec_doors =
                     output_text += sec_thrust_advanced;
                     build_advanced_thrust_data = true;
                 }
-                if (!show_header_overlay) output_text += LCD_DIVIDER;
+                //if (!show_header_overlay) output_text += LCD_DIVIDER;
 
                 //Echo("Wrote to " + lcd_blocks[i].CustomName);
                 lcd_blocks[i].WriteText(output_text, false);

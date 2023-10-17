@@ -195,8 +195,12 @@ namespace IngameScript
         List<IMyTerminalBlock> thrustersMain = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> thrustersRcs = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> lightsSpotlights = new List<IMyTerminalBlock>(); // handle at stance set
-        List<IMyTerminalBlock> lightsNav = new List<IMyTerminalBlock>(); // handle at stance set
+
+        List<IMyTerminalBlock> lightsNavPort = new List<IMyTerminalBlock>(); // handle at stance set
+        List<IMyTerminalBlock> lightsNavStarboard = new List<IMyTerminalBlock>(); // handle at stance set
+
         List<IMyTerminalBlock> lightsInterior = new List<IMyTerminalBlock>(); // handle at stance set
+        List<IMyTerminalBlock> lightsExterior = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> auxiliaries = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> gyros = new List<IMyTerminalBlock>(); // handle at quickRefresh();
         List<IMyTerminalBlock> extractors = new List<IMyTerminalBlock>(); // handle at stance set
@@ -250,6 +254,7 @@ namespace IngameScript
         // Stance data
         int stance_i = 0;
 
+        private Profiler PROFILER;
 
         public Program()
         {
@@ -267,6 +272,8 @@ namespace IngameScript
             wait_step = 0;
 
             faction_tag = Me.GetOwnerFactionTag();
+
+            PROFILER = new Profiler(Runtime);
 
             try
             {
@@ -299,7 +306,6 @@ namespace IngameScript
             // default thrust percentages.
             ADVANCED_THRUST_PERCENTS.Add(0.5);
             ADVANCED_THRUST_PERCENTS.Add(0.25);
-            ADVANCED_THRUST_PERCENTS.Add(0.15);
             ADVANCED_THRUST_PERCENTS.Add(0.1);
             ADVANCED_THRUST_PERCENTS.Add(0.05);
 
@@ -318,12 +324,22 @@ namespace IngameScript
 
         }*/
 
+        int INSTRUCTIONS = 0;
+        int INSTRUCTIONS_MAX = 0;
+
         public void Main(string argument, UpdateType updateSource)
         {
 
             if (updateSource == UpdateType.Update100)
             {
+                isThereAnEchoInHere();
+
                 mainLoop();
+
+                INSTRUCTIONS = Runtime.CurrentInstructionCount;
+                if (INSTRUCTIONS > INSTRUCTIONS_MAX)
+                    INSTRUCTIONS_MAX = Runtime.CurrentInstructionCount;
+
                 return;
             }
 
@@ -746,7 +762,7 @@ namespace IngameScript
                             break;
                         case 3:
                             pdcs[i].ApplyAction("OnOff_On");
-                            if (auto_configure_pdcs)
+                            if (auto_configure_pdcs) 
                             {
                                 try
                                 {
@@ -1021,21 +1037,22 @@ namespace IngameScript
                 }
 
                 if (debug) Echo(
-                    "Setting " + lightsNav.Count + " exterior lights to " + stance_data[stance_i][6] + ".\n"
+                    "Setting " + lightsExterior.Count + " exterior lights to " + stance_data[stance_i][6] + ".\n"
                     + "Colour (" + stance_data[stance_i][7] + "," + stance_data[stance_i][8]
                     + "," + stance_data[stance_i][9] + "," + stance_data[stance_i][10] + ")"
                     );
-                for (int i = 0; i < lightsNav.Count; i++)
+                for (int i = 0; i < lightsExterior.Count; i++)
                 {
-                    if (lightsNav[i].IsFunctional && lightsNav[i].CustomName.Contains(ship_name))
+                    if (lightsExterior[i].IsFunctional && lightsExterior[i].CustomName.Contains(ship_name))
                     {
                         // 6: exterior lights; 0: off, 1: on
                         if (stance_data[stance_i][6] == 0)
-                            lightsNav[i].ApplyAction("OnOff_Off");
+                            lightsExterior[i].ApplyAction("OnOff_Off");
                         else
-                            lightsNav[i].ApplyAction("OnOff_On");
+                            lightsExterior[i].ApplyAction("OnOff_On");
 
-                        lightsNav[i].SetValue("Color",
+
+                        lightsExterior[i].SetValue("Color",
                             new Color(
                                 stance_data[stance_i][7],
                                 stance_data[stance_i][8],
@@ -1043,6 +1060,36 @@ namespace IngameScript
                                 stance_data[stance_i][10]
                                 )
                             );
+                    }
+                }
+
+                // handle nav lights
+                for (int i = 0; i < lightsNavPort.Count; i++)
+                {
+                    // 6: exterior lights; 0: off, 1: on
+                    if (stance_data[stance_i][6] == 0)
+                    {
+                        lightsNavPort[i].ApplyAction("OnOff_Off");
+                        lightsNavPort[i].SetValue("Color", new Color(0, 0, 0, 255)); // black
+                    }
+                    else
+                    {
+                        lightsNavPort[i].ApplyAction("OnOff_On");
+                        lightsNavPort[i].SetValue("Color", new Color(255, 0, 0, 255)); // red
+                    }
+                }
+                for (int i = 0; i < lightsNavStarboard.Count; i++)
+                {
+                    // 6: exterior lights; 0: off, 1: on
+                    if (stance_data[stance_i][6] == 0)
+                    {
+                        lightsNavStarboard[i].ApplyAction("OnOff_Off");
+                        lightsNavStarboard[i].SetValue("Color", new Color(0, 0, 0, 255)); // black
+                    }
+                    else
+                    {
+                        lightsNavStarboard[i].ApplyAction("OnOff_On");
+                        lightsNavStarboard[i].SetValue("Color", new Color(0, 255, 0, 255)); // green
                     }
                 }
 
@@ -1299,18 +1346,18 @@ namespace IngameScript
             {
                 if (AllOtherLCDs[i].CustomName.Contains("[REEDAV].1"))
                     AllOtherLCDs[i].CustomData =
-                        "Show Targeting Info=True\nFirst Missile=0\nLast Missile=0\nExtra Missile Info=False\nhudlcd:0.79:0.31:.50";
+                        "Show Targeting Info=True\nFirst Missile=0\nLast Missile=0\nExtra Missile Info=False\nhudlcd:0.56:0:.48";
 
                 if (AllOtherLCDs[i].CustomName.Contains("[REEDAV].2"))
                     AllOtherLCDs[i].CustomData =
-                        "Show Targeting Info=False\nFirst Missile=1\nLast Missile=24\nExtra Missile Info=False\nhudlcd:0.79:0:.50";
+                        "Show Targeting Info=False\nFirst Missile=1\nLast Missile=24\nExtra Missile Info=False\nhudlcd:0.56:-.26:.48";
 
-                if (AllOtherLCDs[i].CustomName.Contains("[EFC]"))
+                if (AllOtherLCDs[i].CustomName.Contains("[EFC]") || AllOtherLCDs[i].CustomName.ToUpper().Contains("[NAVOS]"))
                 {
                     if (!EfcLcdFound)
                     {
                         EfcLcdFound = true;
-                        AllOtherLCDs[i].CustomData = "hudlcd:-0.76:0.78:0.47";
+                        AllOtherLCDs[i].CustomData = "hudlcd:-0.52:-0.7:0.52";
                     }
                     else AllOtherLCDs[i].CustomData = ""; // prevent double ups in case there are two EFC PBs.
                 }
@@ -1336,7 +1383,7 @@ namespace IngameScript
                                  false, // show_thrust
                                  false, // show_integrity
                                  false, // show_thrust_advanced
-                            }, "hudlcd:-0.60:0.99:0.8"); // hudlcd
+                            }, "hudlcd:-0.55:0.99:0.7"); // hudlcd
 
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD2"))
@@ -1350,7 +1397,7 @@ namespace IngameScript
                                  false, // show_thrust
                                  false, // show_integrity
                                  false, // show_thrust_advanced
-                             }, "hudlcd:0.29:0.99:0.5"); // hudlcd
+                             }, "hudlcd:0.22:0.99:0.55"); // hudlcd
 
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD3"))
@@ -1364,7 +1411,7 @@ namespace IngameScript
                                  true, // show_thrust
                                  false, // show_integrity
                                  false, // show_thrust_advanced
-                            }, "hudlcd:0.53:0.99:0.5"); // hudlcd
+                            }, "hudlcd:0.48:0.99:0.55"); // hudlcd
 
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD4"))
@@ -1378,7 +1425,7 @@ namespace IngameScript
                                  false, // show_thrust
                                  true, // show_integrity
                                  false, // show_thrust_advanced
-                            }, "hudlcd:0.77:0.99:0.5"); // hudlcd
+                            }, "hudlcd:0.74:0.99:0.55"); // hudlcd
 
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD5"))
@@ -1392,7 +1439,7 @@ namespace IngameScript
                                  false, // show_thrust
                                  false, // show_integrity
                                  true, // show_thrust_advanced
-                            }, "hudlcd:-0.99:0.78:0.47"); // hudlcd
+                            }, "hudlcd:0.75:0:.54"); // hudlcd
 
                     if (camerasAndSensorsAndLCDs[i].CustomName.Contains("HUD6"))
                         setLcdCustomData(camerasAndSensorsAndLCDs[i],
@@ -1405,7 +1452,7 @@ namespace IngameScript
                                  false, // show_thrust
                                  false, // show_integrity
                                  false, // show_thrust_advanced
-                            }, "hudlcd:-0.60:0.99:0.8"); // hudlcd
+                            }, "hudlcd:-0.55:0.99:0.7"); // hudlcd
 
 
                 }
@@ -1444,13 +1491,15 @@ namespace IngameScript
             processList(welders, "Welder");
             processList(grinders, "Grinder");
             processList(servers, "PB Server", true);
-            processList(lightsInterior, "Lights Interior");
-            processList(lightsNav, "Lights Exterior");
+            processList(lightsInterior, "Light.Interior");
+            processList(lightsExterior, "Light.Exterior");
+            processList(lightsNavStarboard, "Light.Nav.Starboard");
+            processList(lightsNavPort, "Light.Nav.Port");
             processList(lightsSpotlights, "Spotlights");
 
             ALERTS.Add(new ALERT(
                 "Init:" + ship,
-                "Initialised '" + ship + "\n'Good Hunting!"
+                "Initialised '" + ship + "'\nGood Hunting!"
                 , 3
                 ));
 
@@ -1584,6 +1633,7 @@ namespace IngameScript
 
         void mainLoop()
         {
+
             // do we need to wait before we loop?
             if (wait_step < wait_count)
             {
@@ -1967,7 +2017,6 @@ namespace IngameScript
             }
             integrity_railguns = Math.Round(100 * (FunctionalRailguns / railguns_init));
 
-
             if (debug) Echo("Iterating over " + gyros.Count + " gyros...");
             double FunctionalGyros = 0;
             for (int i = 0; i < gyros.Count; i++)
@@ -1984,6 +2033,9 @@ namespace IngameScript
                             else
                                 gyros[i].ApplyAction("OnOff_Off");
                         }
+
+
+                        
                     }
                 }
             }
@@ -2129,7 +2181,7 @@ namespace IngameScript
 
 
 
-                    lcds[i].FontSize = LCD_FONT_SIZE;
+                    //lcds[i].FontSize = LCD_FONT_SIZE;
                     lcds[i].Font = "Monospace";
                     //lcds[i].TextPadding = 0;
                     lcds[i].Alignment = TextAlignment.CENTER;
@@ -2264,8 +2316,10 @@ namespace IngameScript
             thrustersMain.Clear();
             thrustersRcs.Clear();
             lightsSpotlights.Clear();
-            lightsNav.Clear();
+            lightsExterior.Clear();
             lightsInterior.Clear();
+            lightsNavPort.Clear();
+            lightsNavStarboard.Clear();
             auxiliaries.Clear();
             gyros.Clear();
             extractors.Clear();
@@ -2580,8 +2634,15 @@ namespace IngameScript
                         // use name to determine grouping for lights
                         if (allBlocks[i].CustomName.ToUpper().Contains("INTERIOR"))
                             lightsInterior.Add(allBlocks[i]);
+                        else if (allBlocks[i].CustomName.ToUpper().Contains("NAV"))
+                        {
+                            if (allBlocks[i].CustomName.ToUpper().Contains("STARBOARD"))
+                                lightsNavStarboard.Add(allBlocks[i]);
+                            else
+                                lightsNavPort.Add(allBlocks[i]);
+                        }
                         else
-                            lightsNav.Add(allBlocks[i]);
+                            lightsExterior.Add(allBlocks[i]);
                     }
 
                     // Camera
@@ -3263,6 +3324,7 @@ namespace IngameScript
 
         bool inventorySomewhatFull(IMyTerminalBlock Block) // is a block's inventory > 95% full.
         {
+            if (Block == null) return false;
             IMyInventory thisInventory = Block.GetInventory();
             return thisInventory.CurrentVolume.RawValue > (thisInventory.MaxVolume.RawValue * 0.95);
         }
@@ -3335,6 +3397,21 @@ namespace IngameScript
                 Echo("Failed to run '" + Argument + "' on '" + Pb.CustomName + "'");
         }
 
+        void isThereAnEchoInHere() // Outputs stuff to the console.
+        {
+
+            
+            PROFILER.Run();
+
+
+            Echo("REEDIT SHIP MANAGEMENT \n" +
+   
+                "\n|- Refresh: " + loop_step + "/" + refresh_freq +
+                "\n|- Runtime Av/Tick: " + (Math.Round(PROFILER.RunningAverageMs,2) / 100) + " ms" +
+                "\n|- Runtime Max: " + Math.Round(PROFILER.MaxRuntimeMs,4) + " ms" +
+                "\n|- Instructions: " + INSTRUCTIONS + " (" + INSTRUCTIONS_MAX + ")");
+
+        }
     }
 }
 
