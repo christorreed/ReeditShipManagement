@@ -238,12 +238,17 @@ namespace IngameScript
             double oxygen_percentage = Math.Round(100 * (tank_o2_actual / tank_o2_total));
             double battery_percentage = Math.Round(100 * (bat_actual / bat_total));
 
+            double init_power = Math.Round(reactors_init + bat_init, 1);
+            double nice_max_power = Math.Round(max_power, 1);
+            double capacity_percentage = Math.Round(100 * (nice_max_power/init_power));
+
             string sec_tanks_and_batts =
                "──┤ Power & Gas ├────────────" + basic_spinner + "──\n\n" +
                 "Fuel      [" + generateBar(fuel_percentage) + "] " + (fuel_percentage + " %").PadLeft(9) + "\n" +
                 "Oxygen    [" + generateBar(oxygen_percentage) + "] " + (oxygen_percentage + " %").PadLeft(9) + "\n" +
                 "Battery   [" + generateBar(battery_percentage) + "] " + (battery_percentage + " %").PadLeft(9) + "\n" +
-                "Max Power:" + (Math.Round(max_power, 2) + " MW").PadLeft(22) + "\n\n";
+                "Capacity  [" + generateBar(capacity_percentage) + "] " + (capacity_percentage + " %").PadLeft(9) + "\n" +
+                "Max Power:" + (nice_max_power + " MW / " + init_power + " MW").PadLeft(22) + "\n\n";
 
 
 
@@ -429,7 +434,7 @@ namespace IngameScript
 
                 string output_range = "";
                 if (current_comms_range < 1000)
-                    output_range = current_comms_range + "m";
+                    output_range = Math.Round(current_comms_range) + "m";
                 else
                     output_range = Math.Round(current_comms_range / 1000) + "km";
 
@@ -494,7 +499,7 @@ namespace IngameScript
                 "──┤ Subsystem Integrity ├────" + basic_spinner + "──\n\n";
 
             if (reactors_init > 0)
-                sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + "% ").PadLeft(5) +  "\n";
+                sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + "% ").PadLeft(5) +  "    \n";
             if (bat_init > 0)
                 sec_integrity += "Batteries [" + generateBar(integrity_bats) + "] " + (integrity_bats + "% ").PadLeft(5) + STANCE_DATA_OUT_BATTS[CurrentStance[16]] + "\n";
             if (pdcs_init > 0)
@@ -512,7 +517,7 @@ namespace IngameScript
             if (thrust_rcs_init > 0)
                 sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
             if (gyros_init > 0)
-                sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + "% ").PadLeft(5) + "\n\n";
+                sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + "% ").PadLeft(5) + "    \n\n";
 
 
             if (sec_integrity == "-- Subsystem Integrity ------" + spinner + "--" + "\n\n") // nothing init basically.
