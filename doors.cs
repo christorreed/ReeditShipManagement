@@ -31,12 +31,12 @@ namespace IngameScript
             doors_count = 0;
             doors_count_closed = 0;
 
-            if (debug) Echo("Interating over doors...");
+            if (debug) Echo("Interating over " + door_blocks.Count + " doors...");
 
             for (int i = 0; i < door_blocks.Count; i++)
             {
-
-
+                if (debug) Echo("Door " + i + ": " + door_blocks[i].CustomName); 
+                
                 // ShipName.Door.Airlock.<Airlock_ID>.Door Name
                 // 0        1    2       3            4
                 string[] name_bits = door_blocks[i].CustomName.Split('.');
@@ -131,37 +131,42 @@ namespace IngameScript
                             // ShipName.Door.Airlock.<Airlock_ID>.Door Name
                             // 0        1    2       3            4
 
-                            if (Vent.CustomName.Contains(name_bits[3]))
+                            try
                             {
-                                if (Vent.CanPressurize && Vent.GetOxygenLevel() < .01)
+                                if (Vent.CustomName.Contains(name_bits[3]))
                                 {
-                                    // airlock is sealed and depressurised!
-                                    off_timer_count = 0;
-                                    door_blocks[i].Enabled = true;
-
-                                    // check if we just did this, to prevent looping forever.
-
-                                    bool found = false;
-
-                                    for (int j = 0; j < airlock_loop_prevention.Count; j++)
+                                    if (Vent.CanPressurize && Vent.GetOxygenLevel() < .01)
                                     {
-                                        if (airlock_loop_prevention[j] == airlock_id)
+                                        // airlock is sealed and depressurised!
+                                        off_timer_count = 0;
+                                        door_blocks[i].Enabled = true;
+
+                                        // check if we just did this, to prevent looping forever.
+
+                                        bool found = false;
+
+                                        for (int j = 0; j < airlock_loop_prevention.Count; j++)
                                         {
-                                            airlock_loop_prevention.RemoveAt(j);
-                                            found = true;
-                                            break;
+                                            if (airlock_loop_prevention[j] == airlock_id)
+                                            {
+                                                airlock_loop_prevention.RemoveAt(j);
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!found)
+                                        {
+                                            door_blocks[i].OpenDoor();
+                                            airlock_loop_prevention.Add(name_bits[3]);
                                         }
                                     }
 
-                                    if (!found)
-                                    {
-                                        door_blocks[i].OpenDoor();
-                                        airlock_loop_prevention.Add(name_bits[3]);
-                                    }
+                                    break;
                                 }
+                            } catch { }
 
-                                break;
-                            }
+
                         }
 
 
@@ -185,9 +190,10 @@ namespace IngameScript
                     if (door_blocks[i].OpenRatio == 0) doors_count_closed++;
 
                 }
+
             }
 
-
+            if (debug) Echo("Done, now disabling doors...");
 
             if (marked_for_disabling != "")
             {
@@ -228,7 +234,9 @@ namespace IngameScript
                 }
             }
 
-        return;
+            if (debug) Echo("Done mangaging doors.");
+
+            return;
     }
 
     string buildDoorData(int open, int disabled)
