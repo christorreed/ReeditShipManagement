@@ -23,13 +23,6 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
 
-      
-
-
-        
-        
-
-
         // CUSTOM DATA STUFF
         // these are default values can also be set from custom data
         // name is also set by init.
@@ -71,20 +64,28 @@ namespace IngameScript
             public MyItemType TYPE;
             public double PERCENTAGE;
             public List<IMyInventory> STORED_IN = new List<IMyInventory>();
+
+            public bool AMMO = false;
+            public bool IS_TORP = false;
+            public bool AMMO_LOW = false;
+            public List<IMyInventory> ARMED_IN = new List<IMyInventory>();
+
         }
 
         List<ITEM> ITEMS = new List<ITEM>();
 
-        ITEM buildItem(string LCDName, string SubTypeID, string TypeID)
+        ITEM buildItem(string LCDName, string SubTypeID, string TypeID, bool Ammo = false, bool Torp = false)
         {
             ITEM NewItem = new ITEM();
             NewItem.NAME = LCDName;
             NewItem.TYPE = new MyItemType(SubTypeID, TypeID);
+            NewItem.IS_TORP = Torp;
             return NewItem;
         }
 
         bool AUTOLOAD = true;
         List<IMyTerminalBlock> TO_LOAD = new List<IMyTerminalBlock>();
+        List<IMyTerminalBlock> TO_BALANCE_LOAD = new List<IMyTerminalBlock>();
 
         string faction_tag;
 
@@ -277,25 +278,28 @@ namespace IngameScript
 
             try
             {
+                // this order is important, don't change it.
 
                 ITEMS.Add(buildItem("Fusion F ", "MyObjectBuilder_Ingot", "FusionFuel")); //0
                 ITEMS.Add(buildItem("Fuel Tank", "MyObjectBuilder_Component", "Fuel_Tank")); //1
                 ITEMS.Add(buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank")); //2
 
-                ITEMS.Add(buildItem("PDC      ", "MyObjectBuilder_AmmoMagazine", "40mmLeadSteelPDCBoxMagazine")); //3
-                ITEMS.Add(buildItem("PDC Tefl ", "MyObjectBuilder_AmmoMagazine", "40mmTungstenTeflonPDCBoxMagazine")); //4
+                ITEMS.Add(buildItem("PDC      ", "MyObjectBuilder_AmmoMagazine", "40mmLeadSteelPDCBoxMagazine", true)); //3
+                ITEMS.Add(buildItem("PDC Tefl ", "MyObjectBuilder_AmmoMagazine", "40mmTungstenTeflonPDCBoxMagazine", true)); //4
 
-                ITEMS.Add(buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine")); //5
-                ITEMS.Add(buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine")); //6
-                ITEMS.Add(buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmUNNTorpedoMagazine")); //7
-                ITEMS.Add(buildItem("RS Torp  ", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine")); //8
-                ITEMS.Add(buildItem("LRS Torp ", "MyObjectBuilder_AmmoMagazine", "LargeRamshackleTorpedoMagazine")); //9
+                ITEMS.Add(buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine", true, true)); //5
+                ITEMS.Add(buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine", true, true)); //6
+                ITEMS.Add(buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmUNNTorpedoMagazine", true, true)); //7
+                ITEMS.Add(buildItem("RS Torp  ", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine", true, true)); //8
+                ITEMS.Add(buildItem("LRS Torp ", "MyObjectBuilder_AmmoMagazine", "LargeRamshackleTorpedoMagazine", true, true)); //9
 
-                ITEMS.Add(buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine")); //10
-                ITEMS.Add(buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine")); //11
-                ITEMS.Add(buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine")); //12
-                ITEMS.Add(buildItem("80mm     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine")); //13
+                ITEMS.Add(buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine", true)); //10
+                ITEMS.Add(buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine", true)); //11
+                ITEMS.Add(buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine", true)); //12
+                ITEMS.Add(buildItem("80mm     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine", true)); //13
 
+                ITEMS.Add(buildItem("Foehammr ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugMCRNMagazine", true)); //14
+                ITEMS.Add(buildItem("Farren   ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugUNNMagazine", true)); //15
             }
             catch
             {
@@ -657,43 +661,6 @@ namespace IngameScript
                             setBlockRepelOff(torps[i]);
                         }
                     }
-
-
-                    /*switch (stance_data[stance_i][0])
-                    {
-                        case 0:
-                            torps[i].ApplyAction("OnOff_Off");
-                            break;
-                        case 1:
-                            torps[i].ApplyAction("OnOff_On");
-
-                            //setBlockFireModeManual(torps[i]);
-                            if (auto_configure_pdcs)
-                            {
-                                torps[i].SetValue("WC_FocusFire", true);
-                                torps[i].SetValue("WC_Grids", true);
-                                torps[i].SetValue("WC_LargeGrid", true);
-                                torps[i].SetValue("WC_SmallGrid", false);
-                                torps[i].SetValue("WC_FocusFire", true);
-                                setBlockRepelOff(torps[i]);
-                            }
-                            break;
-                            case 3:
-                                torps[i].ApplyAction("OnOff_On");
-                                //setBlockFireModeAuto(torps[i]);
-
-                                if (auto_configure_pdcs)
-                                {
-                                    torps[i].SetValue("WC_FocusFire", true);
-                                    torps[i].SetValue("WC_Grids", true);
-                                    torps[i].SetValue("WC_LargeGrid", true);
-                                    torps[i].SetValue("WC_SmallGrid", false);
-                                    torps[i].SetValue("WC_FocusFire", true);
-                                    setBlockRepelOff(torps[i]);
-                                }
-
-                                break;
-                    }*/
                 }
             }
 
@@ -751,12 +718,6 @@ namespace IngameScript
                                 catch
                                 {
                                     Echo("Strange PDC config error! Possible WC crash!");
-                                    /*if (!RepelModeFucked)
-                                    {
-                                        RepelModeFucked = true;
-                                        debugEcho("PDC Config error!", "Strange bug with your PDCs causing them not to autoconfigure. Recommend grinding and rebuilding them!");
-                                    }*/
-
                                 }
                             }
                             break;
@@ -777,49 +738,17 @@ namespace IngameScript
                                 catch
                                 {
                                     Echo("Strange PDC config error! Possible WC crash!");
-                                    /*if (!RepelModeFucked)
-                                    {
-                                        RepelModeFucked = true;
-                                        debugEcho("PDC Config error!", "Strange bug with your PDCs causing them not to autoconfigure. Recommend grinding and rebuilding them!");
-                                    }*/
                                 }
                             }
                             break;
+
+                        case 4:
+                            // switch on only...
+                            pdcs[i].ApplyAction("OnOff_On");
+                            break;
+
                     }
                 }
-
-
-
-
-                /*
-                // comment out in production!
-                // print all properties
-                List<ITerminalProperty> resultList = new List<ITerminalProperty>();
-                pdcs[i].GetProperties(resultList);
-                string result = "\n\nALL PDC PROPERTIES\n";
-                for (int j = 0; j < resultList.Count; j++)
-                {
-                    result += resultList[j].Id + "\n";
-                }
-                dump_string += result;
-
-                // print all actions
-                List<ITerminalAction> actions = new List<ITerminalAction>();
-                string result2 = "\n\nALL PDC ACTIONS\n";
-                pdcs[i].GetActions(actions, (x) =>
-                {
-                    result2 += x.Id + "\n";
-                    return true;
-                }
-                );
-                dump_string += result2;
-                updateCustomData(true);
-
-                bool hmmm = pdcs[i].GetValue<bool>("WC_RepelMode");
-                //Echo("GetValue = " + hmmm.ToString());
-                return;
-                */
-
             }
             for (int i = 0; i < defencePdcs.Count; i++)
             {
@@ -854,6 +783,9 @@ namespace IngameScript
 
                             }
                             break;
+                        case 4:
+                            defencePdcs[i].ApplyAction("OnOff_On");
+                            break;
                     }
                 }
             }
@@ -874,20 +806,6 @@ namespace IngameScript
                         railguns[i].ApplyAction("OnOff_On");
                         setBlockRepelOff(railguns[i]);
 
-
-                        // comment out in production
-                        /*if (i == 0)
-                        {
-                            List<ITerminalProperty> Props = new List<ITerminalProperty>();
-                            railguns[i].GetProperties(Props);
-                            foreach(ITerminalProperty Proppie in Props)
-                            {
-                                Echo(Proppie.Id);
-                            }
-
-                        }*/
-
-
                         if (auto_configure_pdcs)
                         {
                             railguns[i].SetValue("WC_Grids", true);
@@ -905,67 +823,6 @@ namespace IngameScript
                         }
 
                     }
-
-                    /*switch (stance_data[stance_i][2])
-                    {
-                        case 0:
-                            railguns[i].ApplyAction("OnOff_Off");
-                            break;
-                        case 1:
-                            railguns[i].ApplyAction("OnOff_On");
-
-                            //setBlockFireModeManual(railguns[i]);
-                            if (auto_configure_pdcs)
-                            {
-                                try
-                                {
-
-                                    railguns[i].SetValue("WC_Grids", true);
-                                    railguns[i].SetValue("WC_LargeGrid", true);
-                                    railguns[i].SetValue("WC_SmallGrid", true);
-                                    //railguns[i].SetValue("WC_FocusFire", true);
-
-                                    setBlockRepelOff(railguns[i]);
-                                }
-                                catch
-                                {
-                                    if (!RepelModeFucked)
-                                    {
-                                        RepelModeFucked = true;
-                                        debugEcho("RG Config error!", "Strange bug with your RGs causing them not to autoconfigure. Recommend grinding and rebuilding them!");
-                                    }
-                                }
-                            }
-                            break;
-                        case 3:
-                            railguns[i].ApplyAction("OnOff_On");
-                            //setBlockFireModeAuto(railguns[i]);
-
-                            if (auto_configure_pdcs)
-                            {
-                                try
-                                {
-
-                                    railguns[i].SetValue("WC_Grids", true);
-                                    railguns[i].SetValue("WC_LargeGrid", true);
-                                    railguns[i].SetValue("WC_SmallGrid", true);
-                                    //railguns[i].SetValue("WC_FocusFire", true);
-
-
-                                    setBlockRepelOff(railguns[i]);
-                                }
-                                catch
-                                {
-                                    if (!RepelModeFucked)
-                                    {
-                                        RepelModeFucked = true;
-                                        debugEcho("RG Config error!", "Strange bug with your RGs causing them not to autoconfigure. Recommend grinding and rebuilding them!");
-                                    }
-                                }
-                            }
-
-                            break;
-                    }*/
                 }
             }
 
@@ -1634,6 +1491,20 @@ namespace IngameScript
         void mainLoop()
         {
 
+
+            try
+            {
+                WC_PB_API = new WcPbApi();
+                WC_PB_API.Activate(Me);
+            }
+            catch
+            {
+                WC_PB_API = null;
+                Echo("WcPbAPI failed to activate!");
+                return;
+            }
+            
+
             // do we need to wait before we loop?
             if (wait_step < wait_count)
             {
@@ -1839,6 +1710,20 @@ namespace IngameScript
             {
                 Item.COUNT = 0;
                 Item.STORED_IN.Clear();
+
+                // torps are harder because they can change ammo type.
+                if (Item.IS_TORP)
+                    Item.ARMED_IN.Clear();
+
+                // count PDCs, Railgun inventories for ammo.
+                // don't do torps; they can change, so we calculate them as we iterate over torps.
+                if (Item.AMMO && !Item.IS_TORP)
+                {
+                    foreach (IMyInventory WeapInv in Item.ARMED_IN)
+                    {
+                        Item.COUNT += WeapInv.GetItemAmount(Item.TYPE).ToIntSafe();
+                    }
+                }
             }
 
             for (int i = 0; i < cargo_inventory.Count; i++)
@@ -1850,8 +1735,15 @@ namespace IngameScript
                     foreach (ITEM Item in ITEMS)
                     {
 
+                        int Count = cargo_inventory[i].GetItemAmount(Item.TYPE).ToIntSafe();
+                        if (Count > 0)
+                        {
+                            Item.STORED_IN.Add(cargo_inventory[i]);
+                            Item.COUNT += Count;
+                        }
+                            
 
-                        MyInventoryItem? check = cargo_inventory[i].FindItem(Item.TYPE);
+                        /*MyInventoryItem? check = cargo_inventory[i].FindItem(Item.TYPE);
                         if (check != null)
                         {
                             string[] parse_dat = check.ToString().Split('x');
@@ -1863,18 +1755,7 @@ namespace IngameScript
 
                             if (count > 0)
                                 Item.STORED_IN.Add(cargo_inventory[i]);
-
-                            /*// if we're counting fuel tanks
-                            // and we have more than one
-                            if (Item.NAME == "Fuel Tank" && count > 0)
-                                // save this one later for manageExtractors();
-                                fuel_tank_inventory.Add(cargo_inventory[i]);
-
-                            if (Item.NAME == "Jerry Can" && count > 0)
-                                // save this one later for manageExtractors();
-                                sg_fuel_tank_inventory.Add(cargo_inventory[i]);*/
-
-                        }
+                        }*/
 
 
                     }
@@ -1902,12 +1783,57 @@ namespace IngameScript
                     if (torps[i].IsFunctional)
                     {
                         FunctionalTorps++;
-                        if (AUTOLOAD) { }
                         if (!inventorySomewhatFull(torps[i])) TO_LOAD.Add(torps[i]);
+
+                        string AmmoType = WC_PB_API.GetActiveAmmo(torps[i], 0);
+                        string OutputAmmoType = getOutputAmmoType(AmmoType);
+                        IMyInventory WeapInv = torps[i].GetInventory();
+
+                        if (debug) Echo("Launcher " + torps[i].CustomName + " needs " + OutputAmmoType);
+
+                        foreach (ITEM Item in ITEMS)
+                        {
+
+                            if (Item.IS_TORP)
+                            {
+                                //if (debug) Echo("Checking for " + Item.NAME);
+
+                                // this counts torps in launchers.
+                                int Count = WeapInv.GetItemAmount(Item.TYPE).ToIntSafe();
+                                Item.COUNT += Count;
+
+                                if (Item.TYPE.SubtypeId == OutputAmmoType)
+                                {
+                                    Item.ARMED_IN.Add(WeapInv);
+                                }
+                                else if (Count > 0)
+                                {
+                                    if (debug) Echo("Attempting to unload " + Count + "x " + Item.TYPE.SubtypeId + " from " + torps[i].CustomName + "...");
+
+                                    List<MyInventoryItem> Items = new List<MyInventoryItem>();
+                                    WeapInv.GetItems(Items);
+
+                                    foreach (MyInventoryItem InvItem in Items)
+                                    {
+                                        if (InvItem.ToString().Contains(Item.TYPE.SubtypeId))
+                                        {
+                                            foreach (IMyInventory CargoInv in cargo_inventory)
+                                            {
+                                                bool Success = CargoInv.TransferItemFrom(WeapInv, InvItem, Count);
+                                                if (Success)
+                                                {
+                                                    if (WeapInv.GetItemAmount(Item.TYPE).ToIntSafe() < 1)
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                         if (torps[i].CustomName.Contains(ship_name) && !torps[i].CustomName.Contains(ignore_keyword))
                         {
-
                             // turn torps on for 1+
                             if (stance_data[stance_i][0] < 1)
                                 torps[i].ApplyAction("OnOff_Off");
@@ -2066,20 +1992,45 @@ namespace IngameScript
 
             integrity_reactors = Math.Round(100 * (FunctionalReactors / reactors_init));
 
-            // calculate current thrust.
-            max_thrust = 0;
-            actual_thrust = 0;
+            float total_max = 0;
+            float on_max = 0;
+            float total_actual = 0;
+            float on_actual = 0;
+
             foreach (IMyTerminalBlock thruster in thrustersMain)
             {
                 if (thruster != null)
                 {
                     if (thruster.IsFunctional && thruster.CustomName.Contains(ship_name))
                     {
-                        max_thrust += (thruster as IMyThrust).MaxThrust;
-                        actual_thrust += (thruster as IMyThrust).CurrentThrust;
+                        IMyThrust Drive = thruster as IMyThrust;
+
+                        total_max += Drive.MaxThrust;
+                        total_actual += Drive.CurrentThrust;
+
+                        if (Drive.Enabled)
+                        {
+                            on_max += Drive.MaxThrust;
+                            on_actual += Drive.CurrentThrust;
+                        }
                     }
                 }
             }
+            // calculate current thrust.
+            // if nothing is on, we want to show numbers for all drives
+            if (on_max == 0)
+            {
+
+                max_thrust = total_max;
+                actual_thrust = total_max;
+            }
+            // but if some drives are on, show numbers for those drives only.
+            else
+            {
+                max_thrust = on_max;
+                actual_thrust = on_max;
+            }
+
             integrity_main_thrust = Math.Round(100 * (max_thrust / thrust_main_init));
 
             float MaxRcsThrust = 0;
@@ -2222,7 +2173,7 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Building connector list...");
+            if (debug) Echo("Building connector and collector lists...");
 
             // recalculate Connector list
             List<IMyShipConnector> connectors = new List<IMyShipConnector>();
@@ -2235,6 +2186,15 @@ namespace IngameScript
                     connector_blocks.Add(connectors[i]);
                     cargo_inventory.Add(connectors[i].GetInventory());
                 }
+            }
+
+            // also collectors, lets check inventories on them as well.
+            List<IMyCollector> collectors = new List<IMyCollector>();
+            GridTerminalSystem.GetBlocksOfType<IMyCollector>(collectors);
+
+            for (int i = 0; i < collectors.Count; i++)
+            {
+                cargo_inventory.Add(collectors[i].GetInventory());
             }
 
             if (debug) Echo("Building inventories list...");
@@ -2394,11 +2354,21 @@ namespace IngameScript
                     if (
                         blockId.Contains("Ostman-Jazinski Flak Cannon")
                         ||
-                        blockId.Contains("Nariman Dynamics PDC")
-                        ||
                         blockId.Contains("Voltaire Collective Anti Personnel PDC")
                         ||
                         blockId.Contains("Outer Planets Alliance Point Defence Cannon")
+                        )
+                    {
+                        if (allBlocks[i].CustomName.Contains(defence_pdc_keyword))
+                            defencePdcs.Add(allBlocks[i]);
+                        else
+                            pdcs.Add(allBlocks[i]);
+
+                        ITEMS[3].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
+
+                    else if (
+                        blockId.Contains("Nariman Dynamics PDC")
                         ||
                         blockId.Contains("Redfields Ballistics PDC")
                         )
@@ -2407,6 +2377,8 @@ namespace IngameScript
                             defencePdcs.Add(allBlocks[i]);
                         else
                             pdcs.Add(allBlocks[i]);
+
+                        ITEMS[4].ARMED_IN.Add(allBlocks[i].GetInventory());
                     }
 
                     /* Torpedoes NEW
@@ -2441,8 +2413,46 @@ namespace IngameScript
                     */
 
                     // guess this one can stay simple for now.
-                    else if (blockId.Contains("Railgun"))
+
+                    else if (
+                        blockId.Contains("Zakosetara Heavy Railgun")
+                        ||
+                        blockId.Contains("Mounted Zakosetara Heavy Railgun")
+                        )
+                    {
                         railguns.Add(allBlocks[i]);
+                        ITEMS[10].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
+
+                    else if (blockId.Contains("V-14 Stiletto Light Railgun"))
+                    {
+                        railguns.Add(allBlocks[i]);
+                        ITEMS[12].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
+
+                    else if (blockId.Contains("Dawson-Pattern Medium Railgun"))
+                    {
+                        railguns.Add(allBlocks[i]);
+                        ITEMS[11].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
+
+                    else if (blockId.Contains("T-47 Roci Light Fixed Railgun"))
+                    {
+                        railguns.Add(allBlocks[i]);
+                        ITEMS[13].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
+
+                    else if (blockId.Contains("VX-12 Foehammer Ultra-Heavy Railgun"))
+                    {
+                        railguns.Add(allBlocks[i]);
+                        ITEMS[14].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
+
+                    else if (blockId.Contains("Farren-Pattern Heavy Railgun"))
+                    {
+                        railguns.Add(allBlocks[i]);
+                        ITEMS[15].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
 
                     else if (blockId.Contains("Coilgun"))
                     {
@@ -2450,8 +2460,8 @@ namespace IngameScript
                         railguns.Add(allBlocks[i]);
                         // this just for init
                         coilguns.Add(allBlocks[i]);
+                        ITEMS[13].ARMED_IN.Add(allBlocks[i].GetInventory());
                     }
-
 
                     // ignore blocks with the ignore keyword.
                     else if (allBlocks[i].CustomName.Contains(ignore_keyword))
@@ -3151,7 +3161,7 @@ namespace IngameScript
                 stance_text += " - Stance:" + stance_names[i] + " - \n"
                     + "torpedoes; 0: off, 1: on;\n="
                     + stance_data[i][0] + "\n"
-                    + "pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence\n="
+                    + "pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only\n="
                     + stance_data[i][1] + "\n"
                     + "railguns; 0: off, 1: hold fire, 2: AI weapons free;\n="
                     + stance_data[i][2] + "\n"
@@ -3364,30 +3374,6 @@ namespace IngameScript
             if (debug) Echo("Loading failed.");
         }
 
-
-
-     
-        /*
-        void debugEcho(string msg, string msg_long)
-        {
-
-            if (debug)
-                Echo(msg + "\n" + msg_long);
-
-            if (debug_msg != "")
-            {
-                msg_long = msg_long + "\n\n" + debug_msg + "\n" + debug_msg_long;
-            }
-
-            debug_dwell = 0;
-            debug_msg = msg;
-            debug_msg_long = msg_long;
-        }
-        */
-
-
-
-
         void runProgramable(IMyTerminalBlock Pb, string Argument)
         {
             if (debug)
@@ -3399,11 +3385,7 @@ namespace IngameScript
 
         void isThereAnEchoInHere() // Outputs stuff to the console.
         {
-
-            
             PROFILER.Run();
-
-
             Echo("REEDIT SHIP MANAGEMENT \n" +
    
                 "\n|- Refresh: " + loop_step + "/" + refresh_freq +

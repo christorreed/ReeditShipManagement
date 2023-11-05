@@ -29,11 +29,11 @@ namespace IngameScript
         //string[] SPINNER_BITS = new string[] { "┐", "┘", "└", "┌" };
         string[] SPINNER_BITS = new string[] { "▄ ", " ▄", " ▀", "▀ " };
 
-        string[] STANCE_DATA_OUT_TOGGLE = new string[] { " OFF", "  ON" };
+        string[] STANCE_DATA_OUT_TOGGLE = new string[] { " OFF", "  ON", "  ON", "  ON", "  ON" }; // extras are there to cover old custom data.
         string[] STANCE_DATA_OUT_MAINTHRUST = new string[] { " OFF", "  ON", " MIN" };
         string[] STANCE_DATA_OUT_RCS = new string[] { " OFF", "  ON", "NFWD", "NREV" };
         string[] STANCE_DATA_OUT_RAILS = new string[] { " OFF", "HOLD", "FREE" };
-        string[] STANCE_DATA_OUT_PDCS = new string[] { " OFF", "MDEF", " DEF", " CQB" };
+        string[] STANCE_DATA_OUT_PDCS = new string[] { " OFF", "MDEF", " DEF", " CQB", "  ON" };
         string[] STANCE_DATA_OUT_TANKS = new string[] { "AUTO", "STOC", " AUTO" };
         string[] STANCE_DATA_OUT_BATTS = new string[] { " AUTO", "CHG", " DCHG" };
 
@@ -470,9 +470,11 @@ namespace IngameScript
 
             string sec_warnings =
                 "──┤ Warnings ├───────────────" + basic_spinner + "──\n\n";
-
+            
             if (LCDAlerts.Count < 1) sec_warnings += "No warnings\n";
             else Echo("\n\n WARNINGS:");
+
+
 
             // output alerts to warnings list.
             for (int i = 0; i < LCDAlerts.Count; i++)
@@ -480,8 +482,6 @@ namespace IngameScript
                 sec_warnings += ALERT_PRIORITIES[LCDAlerts[i].PRIORITY] + LCDAlerts[i].MESSAGE + "\n";
                 Echo("-" + ALERT_PRIORITIES[LCDAlerts[i].PRIORITY] + LCDAlerts[i].LONG_MESSAGE);
             }
-
-
 
             sec_warnings += "\n";
 
@@ -498,32 +498,38 @@ namespace IngameScript
 
                 "──┤ Subsystem Integrity ├────" + basic_spinner + "──\n\n";
 
-            if (reactors_init > 0)
-                sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + "% ").PadLeft(5) +  "    \n";
-            if (bat_init > 0)
-                sec_integrity += "Batteries [" + generateBar(integrity_bats) + "] " + (integrity_bats + "% ").PadLeft(5) + STANCE_DATA_OUT_BATTS[CurrentStance[16]] + "\n";
-            if (pdcs_init > 0)
-                sec_integrity += "PDCs      [" + generateBar(integrity_pdcs) + "] " + (integrity_pdcs + "% ").PadLeft(5) + STANCE_DATA_OUT_PDCS[CurrentStance[1]] + "\n";
-            if (torps_init > 0)
-                sec_integrity += "Torpedoes [" + generateBar(integrity_torps) + "] " + (integrity_torps + "% ").PadLeft(5) + STANCE_DATA_OUT_TOGGLE[CurrentStance[0]] + "\n";
-            if (railguns_init > 0)
-                sec_integrity += "Railguns  [" + generateBar(integrity_railguns) + "] " + (integrity_railguns + "% ").PadLeft(5) + STANCE_DATA_OUT_RAILS[CurrentStance[2]] + "\n";
-            if (tank_h2_init > 0)
-                sec_integrity += "H2 Tanks  [" + generateBar(integrity_tanks_H2) + "] " + (integrity_tanks_H2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
-            if (tank_o2_init > 0)
-                sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
-            if (thrust_main_init > 0)
-                sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_MAINTHRUST[CurrentStance[3]] + "\n";
-            if (thrust_rcs_init > 0)
-                sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
-            if (gyros_init > 0)
-                sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + "% ").PadLeft(5) + "    \n\n";
+            try
+            {
+                if (reactors_init > 0)
+                    sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + "% ").PadLeft(5) + "    \n";
+                if (bat_init > 0)
+                    sec_integrity += "Batteries [" + generateBar(integrity_bats) + "] " + (integrity_bats + "% ").PadLeft(5) + STANCE_DATA_OUT_BATTS[CurrentStance[16]] + "\n";
+                if (pdcs_init > 0)
+                    sec_integrity += "PDCs      [" + generateBar(integrity_pdcs) + "] " + (integrity_pdcs + "% ").PadLeft(5) + STANCE_DATA_OUT_PDCS[CurrentStance[1]] + "\n";
+                if (torps_init > 0)
+                    sec_integrity += "Torpedoes [" + generateBar(integrity_torps) + "] " + (integrity_torps + "% ").PadLeft(5) + STANCE_DATA_OUT_TOGGLE[CurrentStance[0]] + "\n";
+                if (railguns_init > 0)
+                    sec_integrity += "Railguns  [" + generateBar(integrity_railguns) + "] " + (integrity_railguns + "% ").PadLeft(5) + STANCE_DATA_OUT_RAILS[CurrentStance[2]] + "\n";
+                if (tank_h2_init > 0)
+                    sec_integrity += "H2 Tanks  [" + generateBar(integrity_tanks_H2) + "] " + (integrity_tanks_H2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
+                if (tank_o2_init > 0)
+                    sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
+                if (thrust_main_init > 0)
+                    sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_MAINTHRUST[CurrentStance[3]] + "\n";
+                if (thrust_rcs_init > 0)
+                    sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
+                if (gyros_init > 0)
+                    sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + "% ").PadLeft(5) + "    \n\n";
+            }
+
+            catch { }
 
 
             if (sec_integrity == "-- Subsystem Integrity ------" + spinner + "--" + "\n\n") // nothing init basically.
                 sec_integrity = LCD_DIVIDER + "\n\n"
                     + "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
 
+            if (debug) Echo("Building header...");
 
             // ------------------------
             // Build header and overlay
@@ -566,7 +572,7 @@ namespace IngameScript
             string sec_header_overlay =
                 "\n  " + spinner_overlay + "                        " + spinner_overlay + "  \n\n" + status_lts_overlay;
 
-            
+
 
             // ---------------------
             // Build Advanced Thrust
@@ -576,6 +582,9 @@ namespace IngameScript
             // only build this stuff if the player actually wants it.
             if (build_advanced_thrust_data)
             {
+
+                if (debug) Echo("Building advanced thrust...");
+
                 string Basics = "";
                 if (ADVANCED_THRUST_SHOW_BASICS)
                 {
@@ -602,6 +611,8 @@ namespace IngameScript
 
                 sec_thrust_advanced += "\n\n";
             }
+
+            if (debug) Echo("Interating over "+ lcd_blocks.Count + " LCDs");
 
             for (int i = 0; i < lcd_blocks.Count; i++)
             {

@@ -29,7 +29,7 @@ namespace IngameScript
         {
              new int[] { // Cruise
                 1,      // 0: torpedoes; 0: off, 1: on;
-                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -56,7 +56,7 @@ namespace IngameScript
 
             new int[] { // MaxCruise
                 1,      // 0: torpedoes; 0: off, 1: on;
-                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -83,7 +83,7 @@ namespace IngameScript
 
             new int[] { // Docked
                 1,      // 0: torpedoes; 0: off, 1: on;
-                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -110,7 +110,7 @@ namespace IngameScript
 
             new int[] { // Docking
                 1,      // 0: torpedoes; 0: off, 1: on;
-                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -137,7 +137,7 @@ namespace IngameScript
 
             new int[] { // NoAttack
                 0,      // 0: torpedoes; 0: off, 1: on;
-                0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -164,7 +164,7 @@ namespace IngameScript
 
             new int[] { // Coast
                 1,      // 0: torpedoes; 0: off, 1: on;
-                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -192,7 +192,7 @@ namespace IngameScript
 
             new int[] { // Combat
                 1,      // 0: torpedoes; 0: off, 1: on;
-                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -219,7 +219,7 @@ namespace IngameScript
 
             new int[] { // CQB
                 1,      // 0: torpedoes; 0: off, 1: on;
-                3,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                3,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -246,7 +246,7 @@ namespace IngameScript
 
             new int[] { // Sleep
                 0,      // 0: torpedoes; 0: off, 1: on;
-                0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
@@ -272,7 +272,7 @@ namespace IngameScript
             },
             new int[] { // StealthCruise
                 1,      // 0: torpedoes; 0: off, 1: on;
-                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
+                2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 2,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
                 2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
