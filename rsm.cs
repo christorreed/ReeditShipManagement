@@ -2020,7 +2020,6 @@ namespace IngameScript
             // if nothing is on, we want to show numbers for all drives
             if (on_max == 0)
             {
-
                 max_thrust = total_max;
                 actual_thrust = total_max;
             }
@@ -2031,7 +2030,7 @@ namespace IngameScript
                 actual_thrust = on_max;
             }
 
-            integrity_main_thrust = Math.Round(100 * (max_thrust / thrust_main_init));
+            integrity_main_thrust = Math.Round(100 * (total_max / thrust_main_init));
 
             float MaxRcsThrust = 0;
             foreach (IMyTerminalBlock thruster in thrustersRcs)
@@ -2949,7 +2948,15 @@ namespace IngameScript
                                     ITEMS[13].TARGET = int.Parse(value);
                                     break;
 
+                                case "Foehammer 120mm MCRN rounds count":
+                                    config_count++;
+                                    ITEMS[14].TARGET = int.Parse(value);
+                                    break;
 
+                                case "Farren 120mm UNN Railgun rounds count":
+                                    config_count++;
+                                    ITEMS[15].TARGET = int.Parse(value);
+                                    break;
 
 
 
@@ -3040,7 +3047,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 44)
+                    if (config_count == 46)
                     {
                         parsedVars = true;
                     }
@@ -3279,7 +3286,8 @@ namespace IngameScript
                 + "Stiletto 100mm MCRN Railgun rounds count\n=" + ITEMS[12].TARGET + "\n"
                 + "T-47 80mm Railgun rounds count\n=" + ITEMS[13].TARGET + "\n"
 
-
+                + "Foehammer 120mm MCRN rounds count\n=" + ITEMS[14].TARGET + "\n"
+                + "Farren 120mm UNN Railgun rounds count\n=" + ITEMS[15].TARGET + "\n"
 
 
                 + "\n---- [Stances] ----\n"
