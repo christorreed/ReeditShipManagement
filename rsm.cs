@@ -87,6 +87,8 @@ namespace IngameScript
         List<IMyTerminalBlock> TO_LOAD = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> TO_BALANCE_LOAD = new List<IMyTerminalBlock>();
 
+       List<string> FORCE_ENUMERATION = new List<string>();
+
         string faction_tag;
 
         string friendly_tags = "";
@@ -173,6 +175,8 @@ namespace IngameScript
         bool ADVANCED_THRUST_SHOW_BASICS = true;
         List<double> ADVANCED_THRUST_PERCENTS = new List<double>();
 
+        bool NAME_WEAPON_TYPES = false;
+
         IMyShipController controller;
 
         // Block lists, built at fullRefresh();
@@ -209,8 +213,8 @@ namespace IngameScript
         List<IMyTerminalBlock> reactorsLarge = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> reactorsAll = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> h2Engines = new List<IMyTerminalBlock>();
-        List<IMyTerminalBlock> cargosSmall = new List<IMyTerminalBlock>();
-        List<IMyTerminalBlock> cargosLarge = new List<IMyTerminalBlock>();
+        //List<IMyTerminalBlock> cargosSmall = new List<IMyTerminalBlock>();
+        List<IMyTerminalBlock> cargos = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> tanksH2 = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> tanksO2 = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> vents = new List<IMyTerminalBlock>();
@@ -1180,18 +1184,44 @@ namespace IngameScript
                 // Echo(blockId);
 
                 // name overrides
-                //if (blockId.Contains("MyObjectBuilder_TextPanel/"))
-                //defaultName = "LCD";
-                if (blockId.Contains("Door/"))
-                    defaultName = "Door";
-                /*if (blockId.Contains("MyObjectBuilder_AirVent/"))
-                    defaultName = "Vent";*/
 
-                // misc blocks don't need numbers
+                if (blockId.Contains("Door/")) defaultName = "Door";
+                else if (blockId.Contains("Solar")) defaultName = "Solar";
+                else if (blockId.Contains("Lidar")) defaultName = "Lidar";
+                else if (blockId.Contains("TimerBlock/")) defaultName = "Timer";
+                else if (blockId.Contains("Sorter/")) defaultName = "Sorter";
+                else if (blockId.Contains("MedicalRoom/")) defaultName = "Medical";
+                else if (blockId.Contains("MotorSuspension/")) defaultName = "Suspension";
+                else if (blockId.Contains("GravityGenerator")) defaultName = "Grav Gen";
+                else if (blockId.Contains("ButtonPanel")) defaultName = "Button Panel";
+
+                else if (blockId.Contains("/Glapion")) defaultName = "Gatling Cannon";
+                else if (blockId.Contains("/Kess")) defaultName = "Cannon";
+
+                else if (blockId.Contains("Connector/"))
+                {
+                    defaultName = "Connector";
+                    if (blockId.Contains("Passageway")) defaultName += ".Passageway";
+                }
+                else if (blockId.Contains("LandingGear/"))
+                {
+                    if (blockId.Contains("Clamp")) defaultName = "Clamp";
+                    else if (blockId.Contains("Magnetic")) defaultName = "Mag Lock";
+                    else defaultName = "Gear";
+                }
+
+                else if (blockId.Contains("Cockpit/")) 
+                {
+                    if (blockId.Contains("Console") || blockId.Contains("StandingCockpit")) defaultName = "Console";
+                    else defaultName = "Cockpit";
+                }
+
+                //Echo(blockId);
+
                 everythingElse[i].CustomName =
                     ship_name + name_delimiter +
                     defaultName +
-                    retainSuffix(everythingElse[i].CustomName);
+                    retainSuffix(everythingElse[i].CustomName, defaultName);
             }
 
             bool EfcLcdFound = false;
@@ -1326,8 +1356,8 @@ namespace IngameScript
             processList(reactorsSmall, "Reactor Small");
             processList(reactorsLarge, "Reactor");
             processList(h2Engines, "H2 Engine");
-            processList(cargosSmall, "Cargo Small");
-            processList(cargosLarge, "Cargo");
+            //processList(cargosSmall, "Cargo Small");
+            processList(cargos, "Cargo");
             processList(tanksH2, "Hydrogen Tank");
             processList(tanksO2, "Oxygen Tank");
             processList(vents, "Vent");
@@ -1347,11 +1377,11 @@ namespace IngameScript
             processList(drills, "Drill");
             processList(welders, "Welder");
             processList(grinders, "Grinder");
-            processList(servers, "PB Server", true);
-            processList(lightsInterior, "Light.Interior");
-            processList(lightsExterior, "Light.Exterior");
-            processList(lightsNavStarboard, "Light.Nav.Starboard");
-            processList(lightsNavPort, "Light.Nav.Port");
+            processList(servers, "PB Server");
+            processList(lightsInterior, "Light"+ name_delimiter + "Interior");
+            processList(lightsExterior, "Light" + name_delimiter + "Exterior");
+            processList(lightsNavStarboard, "Light" + name_delimiter + "Nav" + name_delimiter + "Starboard");
+            processList(lightsNavPort, "Light" + name_delimiter + "Nav" + name_delimiter + "Port");
             processList(lightsSpotlights, "Spotlights");
 
             ALERTS.Add(new ALERT(
@@ -1368,7 +1398,7 @@ namespace IngameScript
             Echo("Setting evade to " + state);
         }*/
 
-        string retainSuffix(string name)
+        string retainSuffix(string name, string new_name = "")
         {
             // Syntax            
             // <ship name>.<block type>.<padded count> for most blocks that you have a lot of
@@ -1387,6 +1417,9 @@ namespace IngameScript
             try
             {
                 string[] parsed = name.Split(name_delimiter);
+
+                string[] new_name_bits = new_name.Split(name_delimiter);
+
                 string result = "";
                 if (parsed.Length < 3) return "";
                 // start loop at 2 because 0 is the ship name and 1 is the block name.
@@ -1396,11 +1429,20 @@ namespace IngameScript
                     // sometimes the third bit is just a number
                     // but i'm renumbering
                     // so fuck that cunt off.
-                    if (i == 2)
+
+                    // actually now we're fucking off all numbers.
+                    // this is so we can have names with delimiters in them
+                    // (ie numbers aren't always i=2)
+                    int oldnum = 0;
+                    bool isNum = int.TryParse(parsed[i], out oldnum);
+                    if (isNum) parsed[i] = "";
+
+
+                    // this lets me have delimiters in the names fed into processList
+                    // basically it will ignore bits which are part of it's new name.
+                    foreach (string new_name_bit in new_name_bits)
                     {
-                        int oldnum = 0;
-                        bool isNum = int.TryParse(parsed[2], out oldnum);
-                        if (isNum) parsed[2] = "";
+                        if (new_name_bit == parsed[i]) parsed[i] = "";
                     }
 
 
@@ -1417,23 +1459,90 @@ namespace IngameScript
             }
         }
 
-        void processList(List<IMyTerminalBlock> blocks, string name, bool no_numbers = true)
+        void processList(List<IMyTerminalBlock> blocks, string name, bool numbers = false)
         {
+            if (FORCE_ENUMERATION.Count > 0)
+            {
+                foreach (string NumName in FORCE_ENUMERATION)
+                {
+                    if (name.Contains(NumName))
+                    {
+                        if (debug) Echo("Forcing enumeration '" + NumName + "' on " + name);
+                        numbers = true;
+                        break;
+                    }
+                }
+            }
+
+
+
+
             int count = 0;
             int padDepth = 2;
             if (blocks.Count < 10) padDepth = 1;
             if (blocks.Count > 99) padDepth = 3;
             for (int i = 0; i < blocks.Count; i++)
             {
+
+                string this_name = name;
+
+                if (NAME_WEAPON_TYPES)
+                {
+                    // some special name appendments.
+                    if (name == "PDC")
+                    {
+                        string blockId = blocks[i].BlockDefinition.ToString();
+                        if (blockId.Contains("Flak")) this_name += ".Flak";
+                        else if (blockId.Contains("Voltaire")) this_name += ".Volt";
+                        else if (blockId.Contains("Outer Planets Alliance")) this_name += ".OPA";
+                        else if (blockId.Contains("Nariman")) this_name += ".Nari";
+                        else if (blockId.Contains("Redfields")) this_name += ".Red";
+                    }
+                    else if (name == "Torpedo")
+                    {
+                        string blockId = blocks[i].BlockDefinition.ToString();
+                        if (blockId.Contains("Apollo")) this_name += ".Apollo";
+                        else if (blockId.Contains("Tycho")) this_name += ".Tycho";
+                        else if (blockId.Contains("Ares")) this_name += ".Ares";
+                        else if (blockId.Contains("Artemis")) this_name += ".Art";
+
+                    }
+                }
+
+                // for chem thrusters.
+                if (name == "Epstein")
+                {
+                    string blockId = blocks[i].BlockDefinition.ToString();
+                    if (blockId.Contains("Hydro")) this_name = "Chemical";
+                }
+
+                // for cargos
+                else if (name == "Cargo")
+                {
+
+                    double Max = blocks[i].GetInventory().MaxVolume.RawValue;
+                    double VolumeFactor = Math.Round(Max / 1265625024, 1);
+                    if (VolumeFactor == 0) VolumeFactor = 0.1;
+
+                    this_name += " [" + VolumeFactor + "]";
+                }
+
+                else if (name == "Light" + name_delimiter + "Interior")
+                {
+                    string blockId = blocks[i].BlockDefinition.ToString();
+                    if (blockId.Contains("Kitchen")) this_name += ".Kitchen";
+                    else if (blockId.Contains("Aquarium")) this_name += ".Aquarium";
+                }
+
                 count++;
                 string blockNumber = name_delimiter + count.ToString().PadLeft(padDepth, '0');
-                if (no_numbers) blockNumber = "";
-                if (blocks.Count == 1) blockNumber = "";
+                if (!numbers) blockNumber = "";
+                else if (blocks.Count == 1) blockNumber = "";
                 blocks[i].CustomName =
                     ship_name + name_delimiter
-                    + name
+                    + this_name
                     + blockNumber
-                    + retainSuffix(blocks[i].CustomName);
+                    + retainSuffix(blocks[i].CustomName, this_name);
             }
         }
 
@@ -2021,13 +2130,13 @@ namespace IngameScript
             if (on_max == 0)
             {
                 max_thrust = total_max;
-                actual_thrust = total_max;
+                actual_thrust = total_actual;
             }
             // but if some drives are on, show numbers for those drives only.
             else
             {
                 max_thrust = on_max;
-                actual_thrust = on_max;
+                actual_thrust = on_actual;
             }
 
             integrity_main_thrust = Math.Round(100 * (total_max / thrust_main_init));
@@ -2200,14 +2309,14 @@ namespace IngameScript
 
             // > recalculate the cargo_inventory list.
             // we check cargo containers first, then cockpits, then reactors.
-            List<IMyCargoContainer> cargos = new List<IMyCargoContainer>();
+            List<IMyCargoContainer> tempcargos = new List<IMyCargoContainer>();
             GridTerminalSystem.GetBlocksOfType<IMyCargoContainer>(cargos);
 
-            for (int i = 0; i < cargos.Count; i++)
+            for (int i = 0; i < tempcargos.Count; i++)
             {
-                if (cargos[i].CustomName.Contains(ship_name) && !cargos[i].CustomName.Contains(ignore_keyword))
+                if (tempcargos[i].CustomName.Contains(ship_name) && !tempcargos[i].CustomName.Contains(ignore_keyword))
                 {
-                    cargo_inventory.Add(cargos[i].GetInventory());
+                    cargo_inventory.Add(tempcargos[i].GetInventory());
                 }
             }
 
@@ -2286,8 +2395,8 @@ namespace IngameScript
             reactorsLarge.Clear();
             reactorsAll.Clear();
             h2Engines.Clear();
-            cargosSmall.Clear();
-            cargosLarge.Clear();
+            //cargosSmall.Clear();
+            cargos.Clear();
             tanksH2.Clear();
             tanksO2.Clear();
             vents.Clear();
@@ -2325,7 +2434,7 @@ namespace IngameScript
                     string blockId = allBlocks[i].BlockDefinition.ToString();
 
                     // handle spawns
-                    if (blockId.Contains("LargeMedicalRoom") || blockId.Contains("SurvivalKit"))
+                    if (blockId.Contains("MedicalRoom/") || blockId.Contains("SurvivalKit/"))
                     {
                         allBlocks[i].CustomData = sk_data;
                         if (!allBlocks[i].CustomName.Contains(ignore_keyword))
@@ -2398,6 +2507,8 @@ namespace IngameScript
                         blockId.Contains("Ares_Class_TorpedoLauncher") // lol
                         ||
                         blockId.Contains("ZeusClass_Rapid_Torpedo_Launcher")
+                        ||
+                        blockId.Contains("Artemis_Torpedo_Tube")
                         )
                         torps.Add(allBlocks[i]);
 
@@ -2494,17 +2605,13 @@ namespace IngameScript
                     // NOTE NOT CARGO
                     // MyObjectBuilder_CargoContainer/LargeBlockLockerRoom
 
-                    else if (
-                        blockId.Contains("MyObjectBuilder_CargoContainer/")
-                        &&
-                        // weird edge case: lockers and other cargo containers that actually suck.
-                        blockId.Split('/')[1].Contains("Container")
-                        )
+                    else if (blockId.Contains("MyObjectBuilder_CargoContainer/"))
                     {
-                        if (blockId.Contains("SmallContainer"))
-                            cargosSmall.Add(allBlocks[i]);
+                        string blockIdTwo = blockId.Split('/')[1];
+                        if (blockIdTwo.Contains("Container") || blockIdTwo.Contains("Cargo"))
+                            cargos.Add(allBlocks[i]);
                         else
-                            cargosLarge.Add(allBlocks[i]);
+                            everythingElse.Add(allBlocks[i]);
                     }
 
                     // Tanks
@@ -2641,7 +2748,13 @@ namespace IngameScript
                     else if (blockId.Contains("Light/"))
                     {
                         // use name to determine grouping for lights
-                        if (allBlocks[i].CustomName.ToUpper().Contains("INTERIOR"))
+                        if (
+                            allBlocks[i].CustomName.ToUpper().Contains("INTERIOR")
+                            ||
+                            blockId.Contains("Kitchen")
+                            ||
+                            blockId.Contains("Aquarium")
+                            )
                             lightsInterior.Add(allBlocks[i]);
                         else if (allBlocks[i].CustomName.ToUpper().Contains("NAV"))
                         {
@@ -2856,6 +2969,22 @@ namespace IngameScript
                                     break;
 
 
+                                case "Number these blocks at init.":
+                                    config_count++;
+                                    FORCE_ENUMERATION.Clear();
+                                    string[] FNames = value.Split(',');
+                                    foreach (string FName in FNames)
+                                    {
+                                        if (FName != "")
+                                            FORCE_ENUMERATION.Add(FName);
+                                    }
+                                    break;
+
+                                case "Add type names to weapons at init.":
+                                    config_count++;
+                                    NAME_WEAPON_TYPES = bool.Parse(value);
+                                    break;
+
 
                                 case "Show basic telemetry.":
                                     config_count++;
@@ -3047,7 +3176,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 46)
+                    if (config_count == 48)
                     {
                         parsedVars = true;
                     }
@@ -3217,6 +3346,14 @@ namespace IngameScript
                 DecelPercents += (Percent * 100).ToString();
             }
 
+            string ForcedNames = "";
+
+            foreach (string FName in FORCE_ENUMERATION)
+            {
+                if (ForcedNames != "") ForcedNames += ",";
+                ForcedNames += FName;
+            }
+
             Me.CustomData =
                 "-------------------------\n"
                 + "Reedit Ship Management" + "\n"
@@ -3236,6 +3373,8 @@ namespace IngameScript
                 + "Disable LCD Text Colour Enforcement.\n=" + disable_text_colour_enforcement + "\n"
                 + "Private spawn (don't inject faction tag into SK custom data).\n=" + spawn_private + "\n"
                 + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", friendly_tags.Split('\n'))) + "\n"
+                + "Number these blocks at init.\n=" + ForcedNames + "\n"
+                + "Add type names to weapons at init.\n=" + NAME_WEAPON_TYPES + "\n"
 
                 + "\n---- [Door Timers] ----\n"
                 + "Doors open timer (x100 ticks, default 3)\n=" + door_open_time + "\n"
