@@ -68,35 +68,85 @@ That should get you started, but to get the most out of RSM, you'll want to read
 
 # Tips and Tricks
 
-## Hudlcd
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
+[Hudlcd](#Hudlcd)
 
-If you don't already have it, I strongly recommend installing the Hudlcd plugin via the plugin loader. Basically, it allows any text LCD to display on the HUD while you're in a cockpit, and it works great with RSM.
 
-RSM will only adjust your hudlcd settings when you run the `Init:ShipName` command, and under the following conditions...
-* LCDs with names containing `.[RSM].HUD1` to `.[RSM].HUD6`.  If you change the default values, remove the `HUD1` component from the name, and RSM won't adjust it during subsequent init commands.
-* LCDs containing `[EFC]` or `[NavOS]` will be configured with by prefered default Hudlcd setting
-* LCDs containing `.[REEDAV].1` & `.[REEDAV].2`
 
-RSM also has a simple quality of life feature related to hudlcd; a simple toggle command.  Run `Hudlcd:Toggle`, `Hudlcd:On` or `Hudlcd:Off` to enable or disable all hudlcd screens on your ship.  I mostly use this to disable my hud for screenshots
 
-## Weapons Autoloading & Balancing
 
-* RSM acts as an autoloader, constantly automatically searching your cargo containers (as well as connectors & ejectors) for ammo that your weapons need, and then attempting to place that ammo into the weapons for you.
-* Once all ammo in cargo is exhausted, RSM will begin to run additional calculations to balance ammo between weapons of the same time.
-* Ammo will be balanced to within 10% across all weapons of the same type.
-* RSM will also actively remove torpedoes from a launcher if a different ammo type is selected prior to autoloading, so that there's room for the correct ammo.
-* Autoloading and balancing is enabled by default, but can be disabled in custom data if desired.
-* Autoloading functionality is also present on reactors, forcing fusion fuel up to the quantity configured in custom data.
 
-In rare cases, some players have reported a condition where RSM seems to remove all ammo from or misload a torpedo launcher after an ammo type change. This appears to be caused by a desync condition where you and the server disagree on the ammo type for the given weapon. Fix this with a `!fixship` command.
 
-## Ignore Keyword
 
-Sometimes RSM can get in the way, and you just want it to ignore one block or one category of blocks but continue to use it for other tasks.  It's easy, simply set an ignore keyword in RSM (`[I]` by default) and make sure that keyword is included in the name of the blocks you want to ignore.
 
-Ignored blocks won't be renamed, and won't be controlled in almost all cases.
 
-## Lighting Control (& LCD Text Colour Control)
+### Sections...
+
+[Weapons Management](#Weapons-Management)
+[Block Renaming](#Block-Renaming)
+[Lighting Control](#Lighting-Control)
+[Door Management & Airlocks](#Door-Management-&-Airlocks)
+[Spawn Management](#Spawn-Management)
+[Thruster Management](#Thruster-Management)
+[Weapons Autoloading & Balancing](#Weapons-Autoloading-&-Balancing)
+[Extractor Management](#Extractor-Management)
+[Inventory Management](#Inventory-Management)
+[Projector Management](#Projector-Management)
+[Auxilliary Block Management](#Auxilliary-Block-Management)
+[Ignore Keyword](#Ignore-Keyword)
+[Hudlcd](#Hudlcd)
+[Antenna Comms Management](#Antenna-Comms-Management)
+[Miscellaneous Warnings](#Miscellaneous-Warnings)
+[Debugging and Performance](#Debugging-and-Performance)
+
+**[LCD Screens](#LCD-Screens)**
+**[Commands](#Commands)**
+
+
+## Weapons Management
+
+TODO
+
+
+## Block Renaming
+
+When you run `Init:ShipName`, RSM will rename all of the blocks on your ship.  There are a few tricks to getting the most out of this process, but once you understand, you can easily retain info in names and run the `Init:ShipName` command over and over again without problems.
+
+### Block Naming Syntax
+
+	ShipName.BlockType.Retained Data
+	eg
+	RockHopper.Connector.Fwd
+
+### Block Naming Tips and Tricks
+
+* **If you want to make sure RSM retains some part of a name, make sure it occurs after two dots!**
+	* For example, suppose you rename your camera to `Camera Fwd`, then I later run `Init:RockHopper`, this will be renamed to `RockHopper.Camera`, and the `Fwd` will be lost.
+	* So do this instead... rename the camera to `..Fwd`, then later run `Init:RockHopper`, this will be corrected to `RockHopper.Camera.Fwd`.
+	* I tend to stack these with further `.`s, like `RockHopper.Camera.Connector.Fwd`.
+	* Sections of retained data that only include numbers won't be retained, so add another character if you want to keep them.  For example `RockHopper.Camera.1` will be cleaned up to `RockHopper.Camera` so use `RockHopper.Camera.#1` instead.
+* **Delimiter:** Don't like using a `.` as the delimiter in every name? You can configure this to any other char in custom data, other good options include `[space]`, `_` or `-`.
+* **Numbering:** RSM does support numbering of some blocks as well.
+	* To number blocks, add the block name to the new `Number these blocks at init` setting in custom data.
+	* For example...
+		* If you add Lights all lights will be numbered within different categories.
+		* If you add Lights.Exterior only exterior lights will be numbered. 
+	* You can add multiple blocks to this list, just separate them with a comma (eg Lights,Cargo).
+	* Blocks that do support numbering include lights, PBs, Extractors, Batteries, Beacons, Gyros, Hangar Doors, Antennas, Vents, RCS, Epstein Drives, O2 Tanks, H2 Tanks, Cargos, H2 Engines, Reactors all weapon types.
+	* Other blocks like Connectors, Merge Blocks, Doors etc do not support numbering.  This can change in the future if requested
+	
+
+## Lighting Control
 
 RSM sorts all lights on your ship into four categories...
 
@@ -126,6 +176,7 @@ And here's a few more tips related to lighting...
 	* Lighting control can be disabled completely in custom data.
 * **Don't like the LCD text colours matching the interior lights...?**
 	* You can disable LCD text colour enforcement in custom data.
+
 
 ## Door Management & Airlocks
 
@@ -163,15 +214,36 @@ Simply open either door to operate.  It should work like this...
 
 RSM turns off the opposite door in an airlock to prevent you accidentially opening it and blowing the lock, releasing all air.  In an emergency, you can blow the airlock by opening the first door, then turning on and opening the second door, or by disabling RSM before you start.  Generally this happens so quickly, you won't find yourself wanting to blow it except in extreme situations. 
 
-## Inventory Management
 
-RSM counts inventory for certain items including fuel tanks, fusion fuel canisters, jerry cans and all types of ammo.
+## Spawn Management
 
-RSM measures the counts of all of these items at `Init:ShipName`, and then constantly compares the current counts to populate the Inventory LCD.
+RSM has some features to handle spawns, such as survival kits or medical rooms.
 
-The first time you load up your ship, run `Init:ShipName` again to save all of the item counts.  You can also manually set them in custom data.
+* You may be aware that spawn custom data is a vulnerability, and players can potentially inject their Steam ID or Faction ID into custom data of survival kits or medical rooms, giving them access.
+* RSM closes this vulnerability by frequently resetting custom data on all spawn blocks.
+* In addition to removing potentially malitious ids, RSM will also inject your own faction tag into custom data during this reset. This potentially leaves your spawns open to you even after an enemy has completely stolen your ship.
+	* If you don't want RSM to inject your faction tag, such as if you want the spawn to be closed to faction members, you can set the spawn to private in custom data.
+* Sometimes you do want to open your spawns, and RSM handles this too...
+	* Add a comma seperated list of Steam IDs or Faction IDs of your friends to the relevant section of RSM custom data.
+	* Run `Spawn:Open` to open the spawn to the list of friendly IDs.
+	* Either run `Spawn:Close` or else recompile, unhangar or transition instances, and RSM will reset and remove friendly tags from all spawns until you open them again.
 
-All counts include items in connectors, ejectors and located inside weapons or reactors.
+
+## Thruster Management
+
+TODO
+
+
+## Weapons Autoloading & Balancing
+
+* RSM acts as an autoloader, constantly automatically searching your cargo containers (as well as connectors & ejectors) for ammo that your weapons need, and then attempting to place that ammo into the weapons for you.
+* Once all ammo in cargo is exhausted, RSM will begin to run additional calculations to balance ammo between weapons of the same time.
+* Ammo will be balanced to within 10% across all weapons of the same type.
+* RSM will also actively remove torpedoes from a launcher if a different ammo type is selected prior to autoloading, so that there's room for the correct ammo.
+* Autoloading and balancing is enabled by default, but can be disabled in custom data if desired.
+* Autoloading functionality is also present on reactors, forcing fusion fuel up to the quantity configured in custom data.
+
+In rare cases, some players have reported a condition where RSM seems to remove all ammo from or misload a torpedo launcher after an ammo type change. This appears to be caused by a desync condition where you and the server disagree on the ammo type for the given weapon. Fix this with a `!fixship` command.
 
 ## Extractor Management
 
@@ -189,13 +261,17 @@ RSM automatically loads your extractor, depending upong your stance...
 	* Once your ship fuel falls below 3x the capacity of one fuel tank (or Jerry Can for SG), RSM will automatically top the ship up by loading a fuel tank.
 * By default, most stances use fuel tanks to keep ship tanks full.
 
-## Antenna Comms Management
 
-RSM doesn't actually control antennas directly at all; power, broadcast status and range should all be configured manually by the player.
+## Inventory Management
 
-It does offer a handy command for quickly changing the hudtext on one or more antennas.  I use it to easily flash messages on my antennas for other players to see.
+RSM counts inventory for certain items including fuel tanks, fusion fuel canisters, jerry cans and all types of ammo.
 
-For example, turn antennas on with broadcasting on and an appropriate range set. Now approach another grid, and alternate the commands `Comms:Hello!` & `Comms:We Come In Peace`. Your antennas will flash those messages for your friend to see. Of course, also works well for taunting your enemies...
+RSM measures the counts of all of these items at `Init:ShipName`, and then constantly compares the current counts to populate the Inventory LCD.
+
+The first time you load up your ship, run `Init:ShipName` again to save all of the item counts.  You can also manually set them in custom data.
+
+All counts include items in connectors, ejectors and located inside weapons or reactors.
+
 
 ## Projector Management
 
@@ -210,72 +286,39 @@ I recommend using zero alignment projectors for even simplier usage.  To do that
 * If you have an already constructed ship, copy-paste it onto a standalone projector, also taking note of the projector's alignment.  This works best from spectator mode (F8).
 * If done correctly, your projector will work perfectly with no alignment.
 
-## Spawn Management
-
-RSM has some features to handle spawns, such as survival kits or medical rooms.
-
-* You may be aware that spawn custom data is a vulnerability, and players can potentially inject their Steam ID or Faction ID into custom data of survival kits or medical rooms, giving them access.
-* RSM closes this vulnerability by frequently resetting custom data on all spawn blocks.
-* In addition to removing potentially malitious ids, RSM will also inject your own faction tag into custom data during this reset. This potentially leaves your spawns open to you even after an enemy has completely stolen your ship.
-	* If you don't want RSM to inject your faction tag, such as if you want the spawn to be closed to faction members, you can set the spawn to private in custom data.
-* Sometimes you do want to open your spawns, and RSM handles this too...
-	* Add a comma seperated list of Steam IDs or Faction IDs of your friends to the relevant section of RSM custom data.
-	* Run `Spawn:Open` to open the spawn to the list of friendly IDs.
-	* Either run `Spawn:Close` or else recompile, unhangar or transition instances, and RSM will reset and remove friendly tags from all spawns until you open them again.
 
 ## Auxilliary Block Management
 
 TODO
 
-## Thruster Management
 
-TODO
+## Ignore Keyword
 
-## Weapons Management
+Sometimes RSM can get in the way, and you just want it to ignore one block or one category of blocks but continue to use it for other tasks.  It's easy, simply set an ignore keyword in RSM (`[I]` by default) and make sure that keyword is included in the name of the blocks you want to ignore.
 
-TODO
+Ignored blocks won't be renamed, and won't be controlled in almost all cases.
 
-## Block Renaming
 
-When you run `Init:ShipName`, RSM will rename all of the blocks on your ship.  There are a few tricks to getting the most out of this process, but once you understand, you can easily retain info in names and run the `Init:ShipName` command over and over again without problems.
+## Hudlcd
 
-### Block Naming Syntax
+If you don't already have it, I strongly recommend installing the Hudlcd plugin via the plugin loader. Basically, it allows any text LCD to display on the HUD while you're in a cockpit, and it works great with RSM.
 
-	ShipName.BlockType.Retained Data
-	eg
-	RockHopper.Connector.Fwd
+RSM will only adjust your hudlcd settings when you run the `Init:ShipName` command, and under the following conditions...
+* LCDs with names containing `.[RSM].HUD1` to `.[RSM].HUD6`.  If you change the default values, remove the `HUD1` component from the name, and RSM won't adjust it during subsequent init commands.
+* LCDs containing `[EFC]` or `[NavOS]` will be configured with by prefered default Hudlcd setting
+* LCDs containing `.[REEDAV].1` & `.[REEDAV].2`
 
-### Block Naming Tips and Tricks
+RSM also has a simple quality of life feature related to hudlcd; a simple toggle command.  Run `Hudlcd:Toggle`, `Hudlcd:On` or `Hudlcd:Off` to enable or disable all hudlcd screens on your ship.  I mostly use this to disable my hud for screenshots
 
-* **If you want to make sure RSM retains some part of a name, make sure it occurs after two dots!**
-	* For example, suppose you rename your camera to `Camera Fwd`, then I later run `Init:RockHopper`, this will be renamed to `RockHopper.Camera`, and the `Fwd` will be lost.
-	* So do this instead... rename the camera to `..Fwd`, then later run `Init:RockHopper`, this will be corrected to `RockHopper.Camera.Fwd`.
-	* I tend to stack these with further `.`s, like `RockHopper.Camera.Connector.Fwd`.
-	* Sections of retained data that only include numbers won't be retained, so add another character if you want to keep them.  For example `RockHopper.Camera.1` will be cleaned up to `RockHopper.Camera` so use `RockHopper.Camera.#1` instead.
-* **Delimiter:** Don't like using a `.` as the delimiter in every name? You can configure this to any other char in custom data, other good options include `[space]`, `_` or `-`.
-* **Numbering:** RSM does support numbering of some blocks as well.
-	* To number blocks, add the block name to the new `Number these blocks at init` setting in custom data.
-	* For example...
-		* If you add Lights all lights will be numbered within different categories.
-		* If you add Lights.Exterior only exterior lights will be numbered. 
-	* You can add multiple blocks to this list, just separate them with a comma (eg Lights,Cargo).
-	* Blocks that do support numbering include lights, PBs, Extractors, Batteries, Beacons, Gyros, Hangar Doors, Antennas, Vents, RCS, Epstein Drives, O2 Tanks, H2 Tanks, Cargos, H2 Engines, Reactors all weapon types.
-	* Other blocks like Connectors, Merge Blocks, Doors etc do not support numbering.  This can change in the future if requested
 
-## Debugging and Performance
+## Antenna Comms Management
 
-There are a few settings in custom data that can assist with debugging.
+RSM doesn't actually control antennas directly at all; power, broadcast status and range should all be configured manually by the player.
 
-* **Throttle Script**
-	* By default, RSM runs fairly slowly, once every 100 ticks.
-	* Increase this number to throttle RSM by skipping this number of 100 ticks. For example, a value of 3 will force RSM to effectively run once every 300 ticks.
-	* In general, this isn't required, but offers some extra control to prevent burn out in extreme circumstances, or to force RSM to run slowly for debugging reasons.
-* **Full Refresh Frequency**
-	* To improve performance, RSM only performs some tasks infrequently, called a Full Refresh, which includes things like getting new blocks.
-	* By default, this value is 50, or 5,000 ticks
-	* You can adjust this value up to slow RSM down further and improve performance, or adjust the value down and force RSM to refresh more frequently.
-* **Verbose script debugging**
-	* If true, RSM will flood the PB block details (in the K menu) with a range of additional logging data, which can assist in specific debugging.
+It does offer a handy command for quickly changing the hudtext on one or more antennas.  I use it to easily flash messages on my antennas for other players to see.
+
+For example, turn antennas on with broadcasting on and an appropriate range set. Now approach another grid, and alternate the commands `Comms:Hello!` & `Comms:We Come In Peace`. Your antennas will flash those messages for your friend to see. Of course, also works well for taunting your enemies...
+
 
 ## Miscellaneous Warnings
 
@@ -301,7 +344,23 @@ Here are a few miscellaneous alerts you may see pop up on the Warnings LCD...
 	* Indicates your antennas are on, and shows the broadcasting range and message.
 
 
-# Each LCD Screen, Explained...
+## Debugging and Performance
+
+There are a few settings in custom data that can assist with debugging.
+
+* **Throttle Script**
+	* By default, RSM runs fairly slowly, once every 100 ticks.
+	* Increase this number to throttle RSM by skipping this number of 100 ticks. For example, a value of 3 will force RSM to effectively run once every 300 ticks.
+	* In general, this isn't required, but offers some extra control to prevent burn out in extreme circumstances, or to force RSM to run slowly for debugging reasons.
+* **Full Refresh Frequency**
+	* To improve performance, RSM only performs some tasks infrequently, called a Full Refresh, which includes things like getting new blocks.
+	* By default, this value is 50, or 5,000 ticks
+	* You can adjust this value up to slow RSM down further and improve performance, or adjust the value down and force RSM to refresh more frequently.
+* **Verbose script debugging**
+	* If true, RSM will flood the PB block details (in the K menu) with a range of additional logging data, which can assist in specific debugging.
+
+
+# LCD Screens
 
 In this section, I'll go over each of the 6 default LCD screens, explain what each one means, and how to use it.
 
