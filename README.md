@@ -68,49 +68,43 @@ That should get you started, but to get the most out of RSM, you'll want to read
 
 # Tips and Tricks
 
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-[Hudlcd](#Hudlcd)
-
-
-
-
-
-
-
-
-
-
 ### Sections...
 
 [Weapons Management](#Weapons-Management)
+
 [Block Renaming](#Block-Renaming)
+
 [Lighting Control](#Lighting-Control)
+
 [Door Management & Airlocks](#Door-Management-&-Airlocks)
+
 [Spawn Management](#Spawn-Management)
+
 [Thruster Management](#Thruster-Management)
+
 [Weapons Autoloading & Balancing](#Weapons-Autoloading-&-Balancing)
+
 [Extractor Management](#Extractor-Management)
+
 [Inventory Management](#Inventory-Management)
+
 [Projector Management](#Projector-Management)
+
 [Auxilliary Block Management](#Auxilliary-Block-Management)
+
 [Ignore Keyword](#Ignore-Keyword)
+
 [Hudlcd](#Hudlcd)
+
 [Antenna Comms Management](#Antenna-Comms-Management)
+
 [Miscellaneous Warnings](#Miscellaneous-Warnings)
+
 [Debugging and Performance](#Debugging-and-Performance)
 
-**[LCD Screens](#LCD-Screens)**
-**[Commands](#Commands)**
+### [LCD Screens](#LCD-Screens)
+
+### [Commands](#Commands)
 
 
 ## Weapons Management
