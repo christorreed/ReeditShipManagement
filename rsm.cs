@@ -662,6 +662,7 @@ namespace IngameScript
                             torps[i].SetValue("WC_LargeGrid", true);
                             torps[i].SetValue("WC_SmallGrid", false);
                             torps[i].SetValue("WC_FocusFire", true);
+                            torps[i].SetValue("WC_SubSystems", true);
                             setBlockRepelOff(torps[i]);
                         }
                     }
@@ -712,6 +713,8 @@ namespace IngameScript
                                     //if (debug) Echo("Target SG");
                                     pdcs[i].SetValue("WC_SmallGrid", true);
 
+                                    pdcs[i].SetValue("WC_SubSystems", true);
+
                                     //if (debug) Echo("Repel mode");
                                     //setBlockRepelOn(pdcs[i]);
 
@@ -736,6 +739,7 @@ namespace IngameScript
                                     pdcs[i].SetValue("WC_SmallGrid", true);
                                     //pdcs[i].SetValue("WC_FocusFire", true);
 
+                                    pdcs[i].SetValue("WC_SubSystems", true);
 
                                     setBlockRepelOff(pdcs[i]);
                                 }
@@ -784,6 +788,7 @@ namespace IngameScript
                                 defencePdcs[i].SetValue("WC_Projectiles", true);
                                 defencePdcs[i].SetValue("WC_Biologicals", true);
 
+                                defencePdcs[i].SetValue("WC_SubSystems", true);
 
                             }
                             break;
@@ -815,6 +820,9 @@ namespace IngameScript
                             railguns[i].SetValue("WC_Grids", true);
                             railguns[i].SetValue("WC_LargeGrid", true);
                             railguns[i].SetValue("WC_SmallGrid", true);
+
+                            railguns[i].SetValue("WC_SubSystems", true);
+
                             //railguns[i].SetValue("WC_FocusFire", true);
                             if (stance_data[stance_i][2] < 2) // hold fire if less than 2
                             {
@@ -833,14 +841,28 @@ namespace IngameScript
             if (debug) Echo("Setting " + thrustersMain.Count + " Epsteins to " + stance_data[stance_i][3]);
             for (int i = 0; i < thrustersMain.Count; i++)
             {
-                if (thrustersMain[i].IsFunctional && thrustersMain[i].CustomName.Contains(ship_name))
+                if (thrustersMain[i].IsFunctional && thrustersMain[i].CustomName.Contains(ship_name) && stance_data[stance_i][3] == 9)
                 {
-                    // 3: epstein drives; 0: off, 1: on, 2: minimum on only
+                    // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
                     if (stance_data[stance_i][3] == 0
                         ||
                         (stance_data[stance_i][3] == 2 && !thrustersMain[i].CustomName.Contains(min_drives_keyword))
                         )
                         thrustersMain[i].ApplyAction("OnOff_Off");
+                    else if (stance_data[stance_i][3] == 3)
+                    {
+                        if (thrustersMain[i].BlockDefinition.ToString().Contains("Hydro"))
+                            thrustersMain[i].ApplyAction("OnOff_Off");
+                        else 
+                            thrustersMain[i].ApplyAction("OnOff_On");
+                    }
+                    else if (stance_data[stance_i][3] == 4)
+                    {
+                        if (thrustersMain[i].BlockDefinition.ToString().Contains("Hydro"))
+                            thrustersMain[i].ApplyAction("OnOff_On");
+                        else
+                            thrustersMain[i].ApplyAction("OnOff_Off");
+                    }
                     else
                         thrustersMain[i].ApplyAction("OnOff_On");
                 }
@@ -849,9 +871,9 @@ namespace IngameScript
             if (debug) Echo("Setting " + thrustersRcs.Count + " RCS to " + stance_data[stance_i][4]);
             for (int i = 0; i < thrustersRcs.Count; i++)
             {
-                if (thrustersRcs[i].IsFunctional && thrustersRcs[i].CustomName.Contains(ship_name))
+                if (thrustersRcs[i].IsFunctional && thrustersRcs[i].CustomName.Contains(ship_name) && stance_data[stance_i][4] == 9)
                 {
-                    // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                    // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                     if (stance_data[stance_i][4] == 0)
                         thrustersRcs[i].ApplyAction("OnOff_Off");
                     else if (stance_data[stance_i][4] == 1 ||
@@ -867,6 +889,20 @@ namespace IngameScript
                     else if (stance_data[stance_i][4] == 3) // all on, reverse off.
                     {
                         if ((thrustersRcs[i] as IMyThrust).GridThrustDirection == Vector3I.Forward)
+                            thrustersRcs[i].ApplyAction("OnOff_Off");
+                        else
+                            thrustersRcs[i].ApplyAction("OnOff_On");
+                    }
+                    else if (stance_data[stance_i][4] == 4) // rcs only
+                    {
+                        if (thrustersRcs[i].BlockDefinition.ToString().ToUpper().Contains("RCS"))
+                            thrustersRcs[i].ApplyAction("OnOff_On");
+                        else
+                            thrustersRcs[i].ApplyAction("OnOff_Off");
+                    }
+                    else if (stance_data[stance_i][4] == 5) // atmo only
+                    {
+                        if (thrustersRcs[i].BlockDefinition.ToString().ToUpper().Contains("RCS"))
                             thrustersRcs[i].ApplyAction("OnOff_Off");
                         else
                             thrustersRcs[i].ApplyAction("OnOff_On");
@@ -2310,7 +2346,7 @@ namespace IngameScript
             // > recalculate the cargo_inventory list.
             // we check cargo containers first, then cockpits, then reactors.
             List<IMyCargoContainer> tempcargos = new List<IMyCargoContainer>();
-            GridTerminalSystem.GetBlocksOfType<IMyCargoContainer>(cargos);
+            GridTerminalSystem.GetBlocksOfType<IMyCargoContainer>(tempcargos);
 
             for (int i = 0; i < tempcargos.Count; i++)
             {
@@ -3301,9 +3337,9 @@ namespace IngameScript
                     + stance_data[i][1] + "\n"
                     + "railguns; 0: off, 1: hold fire, 2: AI weapons free;\n="
                     + stance_data[i][2] + "\n"
-                    + "epstein drives; 0: off, 1: on, 2: minimum on only\n="
+                    + "main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change\n="
                     + stance_data[i][3] + "\n"
-                    + "rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off\n="
+                    + "maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change\n="
                     + stance_data[i][4] + "\n"
                     + "spotlights; 0: off, 1: on, 2: on max radius, 3: no change\n="
                     + stance_data[i][5] + "\n"
