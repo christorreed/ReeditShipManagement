@@ -10,116 +10,397 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 
 ### Join the discussion, request features and say hi on the [Sigma Draconis Discord](https://discord.com/channels/516135382191177728/1066185228697211030/1066185233386446980).
 
-## The broad goals of this script are to…
+## The broad goals of this script are toï¿½
 
 * Provide a range quality-of-life functionality to make ships on DX easier to use and better.
-* Output a high-density, customisable LCD display (with hudlcd support)
+* Output a high-density, customisable LCD display (with Hudlcd support)
 * Prevent configuration errors that can lead to combat failure or other mistakes.
 * Simplify ship control via fully-configurable 'stances'
-* Automate monotonous tasks like block naming so you can get a new ship up and running fast.
+* Automate monotonous tasks so you can get a new ship up and running fast.
+
 
 # Quick Start Guide
 
-RSM does a lot and can be daunting at first...
+There's quite a lot to go over...
 
-### ...so please, read the guide!
+### ...it doesn't have to be complicated to start.
 
-## Setting Up
+Let's cover the basics first, and get you up and running with RSM as quickly as possible...
 
-Before we run the init command to setup the ship, let's do a few preperation steps...
-
-* **Install HudLcd Plugin**
-	* I recommend installing the HudLcd plugin.
-	* RSM is designed to work with HudLcd and will automatically set it up for you.
-* **Prepare your LCDs:**
-	* RSM outputs a range of data that is available on LCD blocks including hudlcd support.
-	* There are lots of ways to set this up, but let's try out the default option first.  This will work better if you install the hudlcd plugin first.
-	* Place 5 LCDs and name them `..[RSM].HUD1` to `..[RSM].HUD5`.  Again, trust me, this will make sense shortly...
-	* RSM will also configure an LCD name `[EFC]` with hudlcd if you have one.
-* **Name your lights:**
-	* Simply make sure the word `interior` is contained within the name of all interior lights, and NOT for exterior lights.
-* **Prepare for mass renaming:**
-	* RSM is going to rename every block on your ship, and you might have names you wish to retain.
-	* For example, you might have a camera called `Camera Forward`.
-	* If you want the word Forward to be retained in this process, it must come after the second `.` in the name.
-	* So rename that camera to `Camera..Forward` or even just `..Forward`.  Trust me, it will make sense soon.
-* **Name your airlocks:**
-	* RSM will automatically manage all of the doors on your ship, but it can also manage airlocks to prevent both doors opening at the same time.
-	* Airlocks are configured via name. RSM will rename all our doors shortly, but we can set this up now so it's ready to go.
-	* Think of a unique name for each pair of doors. In this example, we'll configure the Forward airlock.
-	* Rename the inner door to `..Airlock.Forward.Inner` and rename the outer door to `..Airlock.Forward.Outer`.
-* **Load your Inventory**
-	* Fill your ship with ammo, fuel tanks and fusion fuel now.
-	* RSM will remember the quantity of each during the next step, and then display how many have been consumed on an LCD.
 * **Build the PB:**
-	* You will need a Programmable Block to run RSM.
-	* Build one on your ship, name it `..[RSM]` and load the latest version of [Reedit Ship Management from steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140).
-* **Disconnect from other ships:**
-	* Make sure you seperate from other ships during the next steps to ensure you don't automatically rename other, unrelated components.
+	* You will need a Programmable Block to run RSM, place one on your ship and load the latest version of [Reedit Ship Management from steam](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140).
 
-## Initialise
+* **Build some LCDs:**
+	* RSM has lots of LCDs, and all are fully configurable via custom data.
+	* For the default experience including **hudlcd plugin** config, build 6 LCDs and name them `..[RSM].HUD1` to `..[RSM].HUD6`.
 
-Now you're ready to rock. Run the RSM Programmable Block with the argument `Init:ShipName`, replacing with your actual ship name. I recommend using a short name for this step.
+* **Initialise your Ship:**
+	* Disconnect from all other ships or stations first!
+	* Be aware, **this step will rename every block on your ship!** Lots more info is provided below about how to retain info in names and get the most out of this functionality.
+	* You will need a name for your ship that will be added to block names. If your ship has a long name, I recommend using an abreviation to keep block names shorter.
+	* Run the command `Init:ShipName`
 
-RSM will now initialise your ship. All blocks will be renamed with the ship name, and your LCDs will be automatically configured and loaded for hudlcd.
+If you did everything right, and if you have the **hudlcd plugin**, you should see RSM running on your hud from any cockpit. Screens are covered in detail below, but take particlular note of the **Warnings** section which outputs an easily read, prioritised list of warnings for your attention, such as low fuel, low ammo, and many other warnings.
 
-### You run Init again anytime!
+* **Set a Stance:**
+	* RSM uses **Stances** to control your ship. Each stance is intended for a different purpose and will reconfigure many things on the ship to suit such as thrusters, weapons, interior/exterior and navigation lighting, EFC/NavOS settings and more.
+	* Use the `Stance:StanceName` command to select a ship stance.
+		* Run `Stance:Combat` to configure the ship to fight a long distance battle
+		* Run `Stance:CQB` to configure the ship to fight in close quarters battle (PDC on grid combat)
+		* Run `Stance:Cruise` to configure the ship to fly a long distance.
+		* Run `Stance:Docking` to configure the ship to dock via RCS thrusters.
+		* Run `Stance:Docked` to configure the ship to refuel and recharge.
+	* Most settings only change when a stance command is set, only a few such as power for critical blocks, are constantly enforced.  A full list stance functionality is below.
 
-* Don't be afriad to run `Init:ShipName` again.  You can run it as many times as you like.
-* Data after the second `.` in a block name will be retained during the renaming process.  For more info, see *Naming Syntax* below.
-* Init also calulates sub system integrity and inventory count for ammo, fuel tanks and fusion fuel.  If you want to run init without updating those values, you can run `InitBasic:ShipName`.
+* **Tinker:**
+	* RSM is extremely configurable.
+	* Copy paste the Custom Data from the programmable block into Notepad or your favourite IDE.
+	* Each stance has an interior/LCD colour and an exterior colour, all of which are configured to my personal tastes. Replace them to match your own requirements.
+	* You're not restricted to the default stances; you can add, delete or modify via this custom data.
+	* Each individual LCD is configurable; for example all current screens could be added to just one screen if you require.  Check LCD custom data.
 
-## Enjoy
+So, that's basically it I guess...
 
-Now that RSM is running, let's explore some features...
+### ...except that it's really not.
 
-* **Control the whole ship with Stances**
-	* Set a stance with the command `Stance:StanceName` for example `Stance:Cruise` or `Stance:Combat`
-	* Setting a stance controls a number of functions on the ship all at once such as interior and exterior lights, drives and RCS, weapons, automatic repair systems, extractor management and EFC configuration.
-	* My favourite stances include...
-		* `Stance:Combat` Configures the ship for a long-range fight
-		* `Stance:CQB` Configures the ship for a CQB fight
-		* `Stance:Cruise` Configures the ship to fly a long distance.
-		* `Stance:Docking` Configures the ship to dock (spotlights on, main drives off)
-		* `Stance:Docked` Configures the ship to refuel/recharge at dock.
-	* There are many more stances, and all are fully configurable via the custom data on the RSM PB.
-	* You can even add or remove new stances, or rename them to suit your needs.
-* **Toggle hudlcd on and off!**
-	* This plugin is awesome, but sometimes I just want to take a screenshot!
-	* `hudlcd:on`, `hudlcd:off`,  `hudlcd:toggle` now turn all hudlcds on and off.
-* **Automatically handle Extractors**
-	* On DX, you probably know fuel tank components are loaded into Extractor blocks to refill your ship tanks.
-	* RSM does all of this automatically. Configured per stance, RSM will use fuel tanks from your inventory to either keep the ships tanks topped up, or else top them up a little only when they are totally empty.
-	* This also works with jerry cans on SG ships (yes, RSM works with SG).
-* **Automatically handle Spawns**
-	* Spawns are a vulnerability, and players can inject data into custom data of survival kits or medical rooms to open up spawn access.
-	* RSM clamps down on this hard, frequently resetting the custom data to prevent mismanagement.
-	* It also uses this chance to inject the owner's faction tag into all connected SKs and MRs.  If someone steals your ship and doens't check themselves, it might let you back on.
-	* RSM can also automatically handle opening and closing of your respawn point for your friends. You can configure a list of friendly faction tags or steamIds in the RSM PB custom data, and then use the `Spawn:Open` and `Spawn:Close` command to add or remove them.
-* **Save and load the position of projectors for easy alignment.**
-	* Run `Projectors:Save` to store offset and orientation to custom data.
-	* Run `Projectors:Load` after loading your BP to recall it's offset and orientation.
-* **Automatically handle Doors**
-	* RSM acts as a basic door management script, closing open doors after a timer runs out.
-	* For airlocks, RSM also disables other doors in the same airlock for a time to prevent loss of air.
-	* You can configure the timer values in the RSM PB custom data.
-* **Manage Antennas**
-	* Send a new hud message to all antennas with the command `Comms:Antenna Message`.
-* **Output a range of data onto LCDs and your hud.**
-	* RSM's LCDs output a whole range of useful info, with each LCD configurable via custom data.
-	* The header section shows the ship name and current stance, as well as other useful messages.
-	* The inventory section shows a list of important inventory with quotas and bars.  Configure the quotas in the RSM PB custom data, or remove all together by setting to 0.
-	* The thrust section shows Decel (distance and time needed to stop), Accel (total thrust) and drive signature range. Switches from Best to Actual when a thrust override value is set.
-	* The comms section shows the current antenna hud message and range.
-	* The autorepair section shows the current status of autorepair blocks.
-	* The doors section shows a count of all doors and how many are closed.
-	* The advanced thrust section shows a range of additional thrust info including current mass, and decel at different thrust percentages.
-* **Automatically Configure Weapons**
-	* RSM sets a range of configuration options for weapons
-	* RSM can also handle a seperate group of 'Repel' PDCs always set to defend.
+That should get you started, but to get the most out of RSM, you'll want to read on and learn about some of the many other features...
+
+
+# Tips and Tricks
+
+## Hudlcd
+
+If you don't already have it, I strongly recommend installing the Hudlcd plugin via the plugin loader. Basically, it allows any text LCD to display on the HUD while you're in a cockpit, and it works great with RSM.
+
+RSM will only adjust your hudlcd settings when you run the `Init:ShipName` command, and under the following conditions...
+* LCDs with names containing `.[RSM].HUD1` to `.[RSM].HUD6`.  If you change the default values, remove the `HUD1` component from the name, and RSM won't adjust it during subsequent init commands.
+* LCDs containing `[EFC]` or `[NavOS]` will be configured with by prefered default Hudlcd setting
+* LCDs containing `.[REEDAV].1` & `.[REEDAV].2`
+
+RSM also has a simple quality of life feature related to hudlcd; a simple toggle command.  Run `Hudlcd:Toggle`, `Hudlcd:On` or `Hudlcd:Off` to enable or disable all hudlcd screens on your ship.  I mostly use this to disable my hud for screenshots
+
+## Weapons Autoloading & Balancing
+
+* RSM acts as an autoloader, constantly automatically searching your cargo containers (as well as connectors & ejectors) for ammo that your weapons need, and then attempting to place that ammo into the weapons for you.
+* Once all ammo in cargo is exhausted, RSM will begin to run additional calculations to balance ammo between weapons of the same time.
+* Ammo will be balanced to within 10% across all weapons of the same type.
+* RSM will also actively remove torpedoes from a launcher if a different ammo type is selected prior to autoloading, so that there's room for the correct ammo.
+* Autoloading and balancing is enabled by default, but can be disabled in custom data if desired.
+* Autoloading functionality is also present on reactors, forcing fusion fuel up to the quantity configured in custom data.
+
+In rare cases, some players have reported a condition where RSM seems to remove all ammo from or misload a torpedo launcher after an ammo type change. This appears to be caused by a desync condition where you and the server disagree on the ammo type for the given weapon. Fix this with a `!fixship` command.
+
+## Ignore Keyword
+
+Sometimes RSM can get in the way, and you just want it to ignore one block or one category of blocks but continue to use it for other tasks.  It's easy, simply set an ignore keyword in RSM (`[I]` by default) and make sure that keyword is included in the name of the blocks you want to ignore.
+
+Ignored blocks won't be renamed, and won't be controlled in almost all cases.
+
+## Lighting Control (& LCD Text Colour Control)
+
+RSM sorts all lights on your ship into four categories...
+
+* **Interior Lights**
+	* All lights which contain `interior` in their name will be set as interior lights.
+	* Colour is set per stance.  Interior stance colour is also used at the LCD text colour.
+* **Navigation Lights**
+	* All lights which contain `nav` in their name will be set as navigation lights.
+	* These are intended to be used as red and green navigation lights, with red on the left (port) and green on the right (starboard).
+	* Navigation lights which contain `starboard` in their name will be set to green, all others will be set to red.
+	* These lights will be switched on and coloured with each stance, unless you set your exterior lights to off.  When exterior lights are disabled for a stance, navigation lights will be set to black and will be switched off as well, in order to keep the ship dark for `Combat` or `StealthCruise` stances.
+	* Be cool like me, and configure these to flash in sequence as well!
+* **Spotlights**
+	* Spotlights are detected automatically by their type, not their name.
+	* Spotlights can be switched on/off per stance, and you can also force them to max radius when a stance is called.
+	* RSM doesn't edit spotlight colours, set that manually.
+* **Exterior Lights**
+	* All lights on the ship not in another category will be set as exterior lights.
+	* Colour is set per stance.
+	* Default stances such as `Combat` or `StealthCruise` set the lights to black, as well as switching them off.  This helps keep the ship extra dark and hard for enemies view in combat situations.
+
+And here's a few more tips related to lighting...
+
+* **Not enough categories? Want one random light to be a different colour...?**
+	* Use the ignore keyword, default (`[I]`) set in custom data, to simply ignore the light in question, then you can control it manually.
+* **Don't want RSM to mess with your lights at all...?**
+	* Lighting control can be disabled completely in custom data.
+* **Don't like the LCD text colours matching the interior lights...?**
+	* You can disable LCD text colour enforcement in custom data.
+
+## Door Management & Airlocks
+
+By default, RSM will automatically shut all doors on your ship after 3 seconds.  You can configure the time length in custom data.
+
+RSM can also be setup to automatically manage airlocks. When configured correctly, RSM controlled airlocks should never lose air, and should get you through as fast as possible with only one press.
+
+Here's how to set that up...
+
+* All airlocks need an identifier which will be added to the names of blocks
+	* I recommend something short like `Main` or `Fwd`.
+	* It must be unique for every airlock
+	* This example will use `Main`.
+* Name both doors...
+	* The Sytax should be `ShipName.Door.Airlock.Identifier.EasyName`
+	* In this example, we will use...
+		* The name of the inner door should be `ShipName.Door.Airlock.Main.Inner`
+		* The name of the inner door should be `ShipName.Door.Airlock.Main.Outer`
+* Name at least one vent...
+	* The Sytax should be `ShipName.Vent.Airlock.Identifier`
+	* In this example, we will use `ShipName.Vent.Airlock.Main`
+* Set the vents to depressurise.
+	* There are more realistic ways to setup an airlock, but vent on depressurise all the time is the most practical for Space Engineers and makes the overall experience much faster.
+
+That's it, you're done. RSM will refresh every now and then, or you can force it to detect the change by recompiling.
+
+Simply open either door to operate.  It should work like this...
+* Open either door and walk into the airlock.
+* Shortly after this, RSM will disable the opposite door, to prevent a blow out.
+* Close the door behind you after the normal door timer has expired.
+* The vent will suck all air out of the airlock into ship tanks.
+* As soon as the vent detects that all air is clear, it will re-enable and open the opposite door. Exit the airlock, it will close and reset behind you.
+	* Coming into your ship from void, this should occur as soon as the outer door closes.
+* If a depressurised condition is never reached (such as if your O2 tanks are full), RSM will wait for the door airlock timer to expire, and then open anyway (default 6 seconds).
+
+RSM turns off the opposite door in an airlock to prevent you accidentially opening it and blowing the lock, releasing all air.  In an emergency, you can blow the airlock by opening the first door, then turning on and opening the second door, or by disabling RSM before you start.  Generally this happens so quickly, you won't find yourself wanting to blow it except in extreme situations. 
+
+## Inventory Management
+
+RSM counts inventory for certain items including fuel tanks, fusion fuel canisters, jerry cans and all types of ammo.
+
+RSM measures the counts of all of these items at `Init:ShipName`, and then constantly compares the current counts to populate the Inventory LCD.
+
+The first time you load up your ship, run `Init:ShipName` again to save all of the item counts.  You can also manually set them in custom data.
+
+All counts include items in connectors, ejectors and located inside weapons or reactors.
+
+## Extractor Management
+
+RSM automatically loads your extractor, depending upong your stance...
+
+* On DX, you probably know fuel tank components are loaded into Extractor blocks to refill your ship tanks (or jerry cans for SG extractors).
+* Each stance can be configured for one of three extractor management options...
+* **Off**
+	* Extractors are switched off and ignored.
+* **Autoload Below 10%**
+	* Extractors are switched on.
+	* If your total ship fuel falls below 10%, RSM will automatically top the ship up by loading a fuel tank.
+* **Keep Ship Tanks Full**
+	* Extractors are switched on.
+	* Once your ship fuel falls below 3x the capacity of one fuel tank (or Jerry Can for SG), RSM will automatically top the ship up by loading a fuel tank.
+* By default, most stances use fuel tanks to keep ship tanks full.
+
+## Antenna Comms Management
+
+RSM doesn't actually control antennas directly at all; power, broadcast status and range should all be configured manually by the player.
+
+It does offer a handy command for quickly changing the hudtext on one or more antennas.  I use it to easily flash messages on my antennas for other players to see.
+
+For example, turn antennas on with broadcasting on and an appropriate range set. Now approach another grid, and alternate the commands `Comms:Hello!` & `Comms:We Come In Peace`. Your antennas will flash those messages for your friend to see. Of course, also works well for taunting your enemies...
+
+## Projector Management
+
+RSM has some basic functions that help you control your projector(s)' alignment.
+
+* Run `Projectors:Save` to store offset and orientation to custom data.
+* Run `Projectors:Load` after loading your BP to recall it's offset and orientation.
+
+I recommend using zero alignment projectors for even simplier usage.  To do that...
+
+* Your projector must be the first block placed on the ship.
+* If you have an already constructed ship, copy-paste it onto a standalone projector, also taking note of the projector's alignment.  This works best from spectator mode (F8).
+* If done correctly, your projector will work perfectly with no alignment.
+
+## Spawn Management
+
+RSM has some features to handle spawns, such as survival kits of medical rooms.
+
+* You may be aware that spawn custom data is a vulnerability, and players can potentially inject their Steam ID or Faction ID into custom data of survival kits or medical rooms, giving them access.
+* RSM closes this vulnerability by frequently resetting custom data on all spawn blocks.
+* In addition to removing potentially malitious ids, RSM will also inject your own faction tag into custom data during this reset. This potentially leaves your spawns open to you even after an enemy has completely stolen your ship.
+	* If you don't want RSM to inject your faction tag, such as if you want the spawn to be closed to faction members, you can set the spawn to private in custom data.
+* Sometimes you do want to open your spawns, and RSM handles this too...
+	* Add a comma seperated list of Steam IDs or Faction IDs of your friends to the relevant section of RSM custom data.
+	* Run `Spawn:Open` to open the spawn to the list of friendly IDs.
+	* Either run `Spawn:Close` or else recompile, unhangar or transition instances, and RSM will reset and remove friendly tags from all spawns until you open them again.
+
+## Auxilliary Block Management
+
+TODO
+
+## Thruster Management
+
+TODO
+
+## Weapons Management
+
+TODO
+
+## Block Renaming
+
+When you run `Init:ShipName`, RSM will rename all of the blocks on your ship.  There are a few tricks to getting the most out of this process, but once you understand, you can easily retain info in names and run the `Init:ShipName` command over and over again without problems.
+
+### Block Naming Syntax
+
+	ShipName.BlockType.Retained Data
+	eg
+	RockHopper.Connector.Fwd
+
+### Block Naming Tips and Tricks
+
+* **If you want to make sure RSM retains some part of a name, make sure it occurs after two dots!**
+	* For example, suppose you rename your camera to `Camera Fwd`, then I later run `Init:RockHopper`, this will be renamed to `RockHopper.Camera`, and the `Fwd` will be lost.
+	* So do this instead... rename the camera to `..Fwd`, then later run `Init:RockHopper`, this will be corrected to `RockHopper.Camera.Fwd`.
+	* I tend to stack these with further `.`s, like `RockHopper.Camera.Connector.Fwd`.
+	* Sections of retained data that only include numbers won't be retained, so add another character if you want to keep them.  For example `RockHopper.Camera.1` will be cleaned up to `RockHopper.Camera` so use `RockHopper.Camera.#1` instead.
+* **Delimiter:** Don't like using a `.` as the delimiter in every name? You can configure this to any other char in custom data, other good options include `[space]`, `_` or `-`.
+* **Numbering:** RSM does support numbering of some blocks as well.
+	* To number blocks, add the block name to the new `Number these blocks at init` setting in custom data.
+	* For example...
+		* If you add Lights all lights will be numbered within different categories.
+		* If you add Lights.Exterior only exterior lights will be numbered. 
+	* You can add multiple blocks to this list, just separate them with a comma (eg Lights,Cargo).
+	* Blocks that do support numbering include lights, PBs, Extractors, Batteries, Beacons, Gyros, Hangar Doors, Antennas, Vents, RCS, Epstein Drives, O2 Tanks, H2 Tanks, Cargos, H2 Engines, Reactors all weapon types.
+	* Other blocks like Connectors, Merge Blocks, Doors etc do not support numbering.  This can change in the future if requested
+
+## Debugging and Performance
+
+There are a few settings in custom data that can assist with debugging.
+
+* **Throttle Script**
+	* By default, RSM runs fairly slowly, once every 100 ticks.
+	* Increase this number to throttle RSM by skipping this number of 100 ticks. For example, a value of 3 will force RSM to effectively run once every 300 ticks.
+	* In general, this isn't required, but offers some extra control to prevent burn out in extreme circumstances, or to force RSM to run slowly for debugging reasons.
+* **Full Refresh Frequency**
+	* To improve performance, RSM only performs some tasks infrequently, called a Full Refresh, which includes things like getting new blocks.
+	* By default, this value is 50, or 5,000 ticks
+	* You can adjust this value up to slow RSM down further and improve performance, or adjust the value down and force RSM to refresh more frequently.
+* **Verbose script debugging**
+	* If true, RSM will flood the PB block details (in the K menu) with a range of additional logging data, which can assist in specific debugging.
+
+## Miscellaneous Warnings
+
+Here are a few miscellaneous alerts you may see pop up on the Warnings LCD...
+
+* **X UNOWNED BLOCKS!**
+	* RSM has detected X number of blocks on the current ship which are owned by a player in another faction!
+* **NO SUCH STANCE!**
+	* A command was ignored because the provided stance doens't exist.
+	* Stance names are case sensitive!
+* **RESET CUSTOM DATA!**
+	* Something was wrong or missing from your PB custom data, and so RSM has reset it.
+	* This may occur after an update if new config options are added.  Don't worry, RSM will retain all existing options as is.
+	* If you didn't just update RSM, 
+* **COMMAND FAILED**
+	* A command you sent recently failed.
+	* This will be accompanied by another message with more info.
+* **Init:ShipName**
+	* Init command completed successfully
+* **Loaded Fuel Tank**
+	* RSM just loaded a fuel tank or jerry can into your extractor successfully.
+* **Comms (Range): Message**
+	* Indicates your antennas are on, and shows the broadcasting range and message.
+
+
+# Each LCD Screen, Explained...
+
+In this section, I'll go over each of the 6 default LCD screens, explain what each one means, and how to use it.
+
+## HUD1: The Header Screen
+![HUD1 LCD Screen](/img/hud1.png "HUD1 LCD Screen")
+
+This screen is the "Header", like the title page of all LCD screens.
+It contains a few pieces of infomation...
+* The currently configured ship name, at the top.  Our example ship is called Nascent.
+* The currently selected stance, below the name.  Our example is in Docking stance.
+* The spinners, the alternating squares in the corner.  These simply indicate that the script is still running
+* Four widgets, each in their own box at the bottom.
+	* The widgets represent Fuel, Oxygen, Power and Weapons.
+	* Each widget represents the current status of the associated system.
+	* Depending on the severity of each, the widgets will begin to flash, alternate colours etc in order to catch your attention to these important systems.
+
+## HUD6: The Header Overlay
+
+Skipping ahead to HUD6, this screen is simply an overlay for HUD1.
+
+* This screen is not required, you can run without an overlay if you wish.
+* If you want to be very fancy, place HUD6 as a transparent or holo LCD in front of your HUD1 LCD, and use text size and padding settings to overlay them perfectly when viewed from your cockpit.
+
+## HUD2: The Warnings Screen
+![HUD2 LCD Screen](/img/hud2.png "HUD2 LCD Screen")
+
+The warnings screen shows a priotisied list of things you should be aware of.
+
+More urgent errors will be visible at the top of the screen, and will transition to caps etc based on the priority of the warning.
+
+A wide variety of info will appear on this screen, such as warnings about low fuel, fusion fuel, ammo or oxygen, feedback relating to commands you ran recently, and other types of feedback.  See the [Miscellaneous Warnings section](# Miscellaneous Warnings section) for more info.
+
+## HUD3: Power, Gas & Thrust
+![HUD3 LCD Screen](/img/hud3.png "HUD3 LCD Screen")
+
+This LCD includes two sections; Power & Gas, and the Thrust section.
+
+### Power & Gas
+
+Power & Gas contains quick information about the status of power, H2 and O2 systems on the ship.  Any bar with low values will flash in a moving pattern to catch your eye and alert you something is low.
+
+* Fuel and Oxygen simply show your H2 and O2 level for all tanks on the ship.
+* Battery shows the current battery charge overall for all batteries on the ship.
+* Capacity shows the current power output capacity of the ship. This will only drop if power sources are disabled.
+* Max power shows the same value as capacity, but displays it as a MW value to give you a quick indication of the total power of your ship.
+
+### Thrust
+
+The thrust screen gives you a quick read out of your ship's thrust.
+
+* Decel (Dampener) shows the minimum distance and time until the ship can stop, assuming optimal retrograde orientation and dampener usage.
+	* If you are currently under thrust, this will instead show as Decel (Actual), with the values showing your actual estimate distance and time until full stop.
+	* This value is based on which drives are currently on. This means in a stance such as `StealthCruise` with only some drives enabled, this will show the value for those drives only.
+* Accel (Best) shows your best possible acceleration with the current drives in Gs.
+	* If you are currently under thrust, this will instead show as Accel (Actual) and will provide a read out of the G's of your current burn.
+	* This value is based on which drives are currently on. This means in a stance such as `StealthCruise` with only some drives enabled, this will show the value for those drives only.
+* Drive Signature
+	* This shows your current beacon radius, or your Drive Signature range.
+
+## HUD4: Subsystem Integrity
+![HUD4 LCD Screen](/img/hud4.png "HUD4 LCD Screen")
+
+The Subsystem Integrity screen is a readout providing a quick indication of the health of each subsystem on your ship.
+
+Strayed into PDC range?  Rail slug just went through your ship?  Every time I take damage, I glance at the Subsystem Integrity screen to get a quick indication of how effective my ship still is, and to help me decide if to press on or disengage for repairs.
+
+RSM measures the effectiveness of your ship at `Init:ShipName`, and then constantly compares the current status of those systems to provide this percentage.  Values are based on real world effectiveness, so for example, the `Reactors` value is based on the total possible output of all reactors, accounting for reactors that are ineffective because they are off, damaged, destroyed, or out of fusion fuel. 
+
+In addition to integrity, a small amount of text is added to the right of some subsystems.  This provides a quick output of how this subsystem is configured in the current stance.  For example, Railguns can be `OFF`, `HOLD` or `FREE`, and batteries can be `AUTO`, `CHG` or `DCHG`, as determined by the currently selected stance.
+
+## HUD5: Inventory, Telemetry & Thrust
+![HUD5 LCD Screen](/img/hud5.png "HUD5 LCD Screen")
+
+This LCD includes two sections; Inventory, and Telemetry & Thrust.
+
+### Inventory
+
+The Inventory screen is a readout of your ship's critical inventory, including fuel tanks, fusion fuel canisters, jerry cans and all types of ammo.
+
+RSM measures the counts of all of these items at `Init:ShipName`, and then constantly compares the current counts to provide this percentage.  Any items you don't have on your ship at `Init:ShipName` will be given an init value of 0, and so won't appear in the list at all.
+
+The first time you load up your ship, run `Init:ShipName` again to save all of the ammo amounts.  You can also manually set them in custom data.
+
+All counts include items in connectors, ejectors and located inside weapons or reactors.
+
+### Telemetry & Thrust
+
+The Telemetry and Thrust screen is a more detailed thrust output with more specific info.
+
+* Basic telemetry such as current mass and speed are displayed. You can disable basic telemetry in custom data.
+	* All values from the thrust section are duplicated, with actual and best values displayed together.
+* Also included is a list of deceleration thrust percentages which show the distance and time until stop from the current speed at the given thrust percentage, assuming optimal retrograde orientation.
+	* Like other thrust values, this is based on which drives are currently on, and will adjust to reflect a state where only some drives are active.
+	* You can choose which percentages are displayed in custom data.
+
 
 # Commands
-Here's a list of RSM commands you can use...
+
+Here's a list of RSM commands...
 
 ## Init
 
@@ -217,24 +498,11 @@ This command is a tool for quickly changing the hud text for multiple antennas a
 
 Note that RSM doesn't currently control antenna range or power status; please control those settings manually.
 
-# Custom Data Configuration
-
-There's a whole range of settings which you can adjust in the RSM PB Server (*Programmable Block*) custom data. It's a long list, so I recommend going to the RSM PB Server and copying the *Custom Data* to notepad or an external IDE for easier editing.
-
-Some of the things you can edit include...
-
-* The ship name (set by the Init command)
-* The block name delimiter. If you would rather RSM uses - rather than . as a delimiter (or whatever), go for it.
-* The keywords used in various functions such as LCDs, defence PDCs, autorepair systems and minimum epstein drives.
-* Enable or disable automatic weapons configuration
-* Set expected counts for each inventory items (or set items to 0 to remove them from the list)
-* Adjust door open timers
-* Set friendly faction tags or steamids for the **Spawn:Open** command.
-* Set the script to verbose logging and throttle the script or adjust it's refresh rate.
 
 # Developer Promise
 
 Draconis Expanse is a PvP environment, and scripts have been used as weapons before.  I have and will do that on other scripts, but **WE DON'T DO THAT HERE**.  As long as it's me (christophuck) handling the development of the script, it won't be used as a weapon, and I guarantee malicious code won't be added.  If you experience such a thing, it's a mistake, please report it!  The full, unobfuscated script is posted here for all to review.
+
 
 # Disclaimer
 
