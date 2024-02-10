@@ -23,7 +23,7 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 
 There's quite a lot to go over...
 
-### ...it doesn't have to be complicated to start.
+### ...but it doesn't have to be complicated to start.
 
 Let's cover the basics first, and get you up and running with RSM as quickly as possible...
 
@@ -68,8 +68,6 @@ That should get you started, but to get the most out of RSM, you'll want to read
 
 # Tips and Tricks
 
-### Sections...
-
 [Weapons Management](#Weapons-Management)
 
 [Block Renaming](#Block-Renaming)
@@ -102,9 +100,9 @@ That should get you started, but to get the most out of RSM, you'll want to read
 
 [Debugging and Performance](#Debugging-and-Performance)
 
-### [LCD Screens](#LCD-Screens)
+**[LCD Screens](#LCD-Screens)**
 
-### [Commands](#Commands)
+**[Commands](#Commands)**
 
 
 ## Weapons Management
