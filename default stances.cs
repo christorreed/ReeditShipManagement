@@ -31,8 +31,8 @@ namespace IngameScript
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                1,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                2,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
@@ -54,12 +54,12 @@ namespace IngameScript
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            new int[] { // MaxCruise
+            /*new int[] { // MaxCruise
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                1,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                2,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
@@ -79,14 +79,14 @@ namespace IngameScript
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
-            },
+            },*/
 
             new int[] { // Docked
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                0,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                0,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
@@ -112,8 +112,8 @@ namespace IngameScript
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                0,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                1,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 2,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
@@ -139,8 +139,8 @@ namespace IngameScript
                 0,      // 0: torpedoes; 0: off, 1: on;
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                1,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                1,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 255,    // 7: Red - Exterior lights colour
@@ -162,12 +162,12 @@ namespace IngameScript
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            new int[] { // Coast
+            /*new int[] { // Coast
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                0,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                0,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,      // 7: Red - Exterior lights colour
@@ -187,15 +187,15 @@ namespace IngameScript
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
-            },
+            },*/
 
 
             new int[] { // Combat
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                1,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                1,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,      // 7: Red - Exterior lights colour
@@ -221,8 +221,8 @@ namespace IngameScript
                 1,      // 0: torpedoes; 0: off, 1: on;
                 3,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                1,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                1,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                1,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                1,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,      // 7: Red - Exterior lights colour
@@ -244,12 +244,12 @@ namespace IngameScript
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            new int[] { // Sleep
+            /*new int[] { // Sleep
                 0,      // 0: torpedoes; 0: off, 1: on;
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                0,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                0,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                0,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                0,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,      // 7: Red - Exterior lights colour
@@ -269,13 +269,14 @@ namespace IngameScript
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 2,      // 22: keep-alives for connectors, gyros, lcds; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
-            },
+            },*/
+
             new int[] { // StealthCruise
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                2,      // 3: epstein drives; 0: off, 1: on, 2: minimum on only
-                2,      // 4: rcs thrusters; 0: off, 1: on, 2: forward off, 3: reverse off
+                2,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                2,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                 0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
                 0,      // 6: exterior lights; 0: off, 1: on
                 0,     // 7: Red - Exterior lights colour
