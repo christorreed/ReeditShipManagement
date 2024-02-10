@@ -212,7 +212,7 @@ I recommend using zero alignment projectors for even simplier usage.  To do that
 
 ## Spawn Management
 
-RSM has some features to handle spawns, such as survival kits of medical rooms.
+RSM has some features to handle spawns, such as survival kits or medical rooms.
 
 * You may be aware that spawn custom data is a vulnerability, and players can potentially inject their Steam ID or Faction ID into custom data of survival kits or medical rooms, giving them access.
 * RSM closes this vulnerability by frequently resetting custom data on all spawn blocks.
@@ -332,7 +332,7 @@ The warnings screen shows a priotisied list of things you should be aware of.
 
 More urgent errors will be visible at the top of the screen, and will transition to caps etc based on the priority of the warning.
 
-A wide variety of info will appear on this screen, such as warnings about low fuel, fusion fuel, ammo or oxygen, feedback relating to commands you ran recently, and other types of feedback.  See the [Miscellaneous Warnings section](# Miscellaneous Warnings section) for more info.
+A wide variety of info will appear on this screen, such as warnings about low fuel, fusion fuel, ammo or oxygen, feedback relating to commands you ran recently, and other types of feedback.  See the [Miscellaneous Warnings section](#Miscellaneous-Warnings) for more info.
 
 ## HUD3: Power, Gas & Thrust
 ![HUD3 LCD Screen](/img/hud3.png "HUD3 LCD Screen")
@@ -412,7 +412,7 @@ The **Init** command prepares your ship for use with RSM. Input a ship name with
 * Renames every block on the ship to include the ship's name.
 	* Since blocks which do not have the ship's name in their block name will be ignored by RSM in most circumstances, this is mandatory.
 * Automatically configures hudlcd
-	* If you're running the hudlcd plugin, add `[RSM].HUD1` - `[RSM].HUD5` to the names of LCDs and RSM will automatically configure and position them on your hud. Also adjusts [EFC] tagged LCDs.
+	* If you're running the hudlcd plugin, add `[RSM].HUD1` - `[RSM].HUD5` to the names of LCDs and RSM will automatically configure and position them on your hud. Also adjusts `[EFC]` tagged LCDs.
 * Stores sub system integrity data to custom data so that RSM can detect the current damage level of each sub system.
 * Stores inventory data of ammo, fuel tanks and fusion fuel to custom data
 * You can also run `InitBasic:ShipName` to initialise the ship without updating inventory or subsystem values.
