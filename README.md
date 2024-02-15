@@ -37,10 +37,10 @@ Let's cover the basics first, and get you up and running with RSM as quickly as 
 * **Initialise your Ship:**
 	* Disconnect from all other ships or stations first!
 	* Be aware, **this step will rename every block on your ship!** Lots more info is provided below about how to retain info in names and get the most out of this functionality.
-	* You will need a name for your ship that will be added to block names. If your ship has a long name, I recommend using an abreviation to keep block names shorter.
+	* You will need a name for your ship that will be added to block names. If your ship has a long name, I recommend using an abbreviation to keep block names shorter.
 	* Run the command `Init:ShipName`
 
-If you did everything right, and if you have the **hudlcd plugin**, you should see RSM running on your hud from any cockpit. Screens are covered in detail below, but take particlular note of the **Warnings** section which outputs an easily read, prioritised list of warnings for your attention, such as low fuel, low ammo, and many other warnings.
+If you did everything right, and if you have the **hudlcd plugin**, you should see RSM running on your hud from any cockpit. Screens are covered in detail below, but take particular note of the **Warnings** section which outputs an easily read, prioritised list of warnings for your attention, such as low fuel, low ammo, and many other warnings.
 
 * **Set a Stance:**
 	* RSM uses **Stances** to control your ship. Each stance is intended for a different purpose and will reconfigure many things on the ship to suit such as thrusters, weapons, interior/exterior and navigation lighting, EFC/NavOS settings and more.
@@ -54,10 +54,10 @@ If you did everything right, and if you have the **hudlcd plugin**, you should s
 
 * **Tinker:**
 	* RSM is extremely configurable.
-	* Copy paste the Custom Data from the programmable block into Notepad or your favourite IDE.
+	* Copy paste the Custom Data from the programmable block into Notepad or your favorite IDE.
 	* Each stance has an interior/LCD colour and an exterior colour, all of which are configured to my personal tastes. Replace them to match your own requirements.
 	* You're not restricted to the default stances; you can add, delete or modify via this custom data.
-	* Each individual LCD is configurable; for example all current screens could be added to just one screen if you require.  Check LCD custom data.
+	* Each individual LCD is configurable; for example all default screens could be added to just one screen if you require.  Check LCD custom data.
 
 So, that's basically it I guess...
 
@@ -88,7 +88,7 @@ That should get you started, but to get the most out of RSM, you'll want to read
 
 [Projector Management](#Projector-Management)
 
-[Auxilliary Block Management](#Auxilliary-Block-Management)
+[Auxiliary Block Management](#Auxiliary-Block-Management)
 
 [Ignore Keyword](#Ignore-Keyword)
 
@@ -327,14 +327,14 @@ RSM has some basic functions that help you control your projector(s)' alignment.
 * Run `Projectors:Save` to store offset and orientation to custom data.
 * Run `Projectors:Load` after loading your BP to recall it's offset and orientation.
 
-I recommend using zero alignment projectors for even simplier usage.  To do that...
+I recommend using zero alignment projectors for even simpler usage.  To do that...
 
 * Your projector must be the first block placed on the ship.
 * If you have an already constructed ship, copy-paste it onto a standalone projector, also taking note of the projector's alignment.  This works best from spectator mode (F8).
 * If done correctly, your projector will work perfectly with no alignment.
 
 
-## Auxilliary Block Management
+## Auxiliary Block Management
 
 TODO
 
@@ -374,7 +374,7 @@ Here are a few miscellaneous alerts you may see pop up on the Warnings LCD...
 * **X UNOWNED BLOCKS!**
 	* RSM has detected X number of blocks on the current ship which are owned by a player in another faction!
 * **NO SUCH STANCE!**
-	* A command was ignored because the provided stance doens't exist.
+	* A command was ignored because the provided stance doesn't exist.
 	* Stance names are case sensitive!
 * **RESET CUSTOM DATA!**
 	* Something was wrong or missing from your PB custom data, and so RSM has reset it.
@@ -415,7 +415,7 @@ In this section, I'll go over each of the 6 default LCD screens, explain what ea
 ![HUD1 LCD Screen](/img/hud1.png "HUD1 LCD Screen")
 
 This screen is the "Header", like the title page of all LCD screens.
-It contains a few pieces of infomation...
+It contains a few pieces of information...
 * The currently configured ship name, at the top.  Our example ship is called Nascent.
 * The currently selected stance, below the name.  Our example is in Docking stance.
 * The spinners, the alternating squares in the corner.  These simply indicate that the script is still running
@@ -434,7 +434,7 @@ Skipping ahead to HUD6, this screen is simply an overlay for HUD1.
 ## HUD2: The Warnings Screen
 ![HUD2 LCD Screen](/img/hud2.png "HUD2 LCD Screen")
 
-The warnings screen shows a priotisied list of things you should be aware of.
+The warnings screen shows a prioritised list of things you should be aware of.
 
 More urgent errors will be visible at the top of the screen, and will transition to caps etc based on the priority of the warning.
 
@@ -530,7 +530,7 @@ You can run **Init** as many times as you like without overwriting existing name
 
     ShipName.BlockType.*Retained*
 
-Items after the second . in a name are retained during an init command. For example, you can rename a ship without losing  names like this...
+Items after the second . in a name are retained during an init command. For example, you can rename a ship without losing names like this...
 
 	Tachi.PDC.Forward.Starboard
 	*Init:Rocinante*
