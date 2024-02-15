@@ -128,6 +128,7 @@ DX has an awesome weapons system, but it's also unforgiving. RSM has a few trick
 	* RSM will constantly re-enable weapons if you turn them off, as per the config of the current stance.
 	* Use RSM instead. You can run `Stance:NoAttack` to quickly disable all weapons systems or `Stance:CQB` to go into fully enabled combat mode.
 	* Or else, just turn off the RSM PB; don't bother trying to fight it!
+	* Enforcement only applies to power, other settings are only changed once when you set a stance.
 * **RSM acts as a weapons autoloader, balancing your ammo amongst all weapons**
 	* Read more about that in [Weapons Autoloading & Balancing](#Weapons-Autoloading-&-Balancing).
 
