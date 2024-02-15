@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using VRage;
 using VRage.Collections;
 using VRage.Game;
@@ -705,26 +706,13 @@ namespace IngameScript
                                 try
                                 {
 
-                                    //if (debug) Echo("Focus Fire");
                                     pdcs[i].SetValue("WC_FocusFire", false);
-                                    //if (debug) Echo("Target Projectiles");
                                     pdcs[i].SetValue("WC_Projectiles", true);
-
-                                    //if (debug) Echo("Target grids");
-                                    // accounts for PMWs 
                                     pdcs[i].SetValue("WC_Grids", true);
-                                    //if (debug) Echo("Target LG");
                                     pdcs[i].SetValue("WC_LargeGrid", false);
-                                    //if (debug) Echo("Target SG");
                                     pdcs[i].SetValue("WC_SmallGrid", true);
-
                                     pdcs[i].SetValue("WC_SubSystems", true);
                                     pdcs[i].SetValue("WC_Biologicals", true);
-
-                                    
-
-                                    //if (debug) Echo("Repel mode");
-                                    //setBlockRepelOn(pdcs[i]);
 
                                     // removing default repel mode as per daniamal's recommendation
                                     // less effective now that torpedoes spread.
@@ -742,13 +730,14 @@ namespace IngameScript
                             {
                                 try
                                 {
+                                    pdcs[i].SetValue("WC_FocusFire", false);
+                                    pdcs[i].SetValue("WC_Projectiles", true);
                                     pdcs[i].SetValue("WC_Grids", true);
                                     pdcs[i].SetValue("WC_LargeGrid", true);
                                     pdcs[i].SetValue("WC_SmallGrid", true);
-                                    //pdcs[i].SetValue("WC_FocusFire", true);
-
                                     pdcs[i].SetValue("WC_SubSystems", true);
                                     pdcs[i].SetValue("WC_Biologicals", true);
+
 
                                     setBlockRepelOff(pdcs[i]);
                                 }
@@ -786,19 +775,16 @@ namespace IngameScript
                             defencePdcs[i].ApplyAction("OnOff_On");
                             if (auto_configure_pdcs)
                             {
+
+                                pdcs[i].SetValue("WC_FocusFire", false);
+                                pdcs[i].SetValue("WC_Projectiles", true);
+                                pdcs[i].SetValue("WC_Grids", true);
+                                pdcs[i].SetValue("WC_LargeGrid", false);
+                                pdcs[i].SetValue("WC_SmallGrid", true);
+                                pdcs[i].SetValue("WC_SubSystems", true);
+                                pdcs[i].SetValue("WC_Biologicals", true);
+
                                 setBlockRepelOn(defencePdcs[i]);
-
-                                // accounts for PMWs
-                                defencePdcs[i].SetValue("WC_Grids", true);
-                                defencePdcs[i].SetValue("WC_LargeGrid", false);
-                                defencePdcs[i].SetValue("WC_SmallGrid", true);
-
-                                defencePdcs[i].SetValue("WC_FocusFire", false);
-                                defencePdcs[i].SetValue("WC_Projectiles", true);
-                                defencePdcs[i].SetValue("WC_Biologicals", true);
-
-                                defencePdcs[i].SetValue("WC_SubSystems", true);
-
                             }
                             break;
                         case 4:
