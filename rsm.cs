@@ -719,6 +719,9 @@ namespace IngameScript
                                     pdcs[i].SetValue("WC_SmallGrid", true);
 
                                     pdcs[i].SetValue("WC_SubSystems", true);
+                                    pdcs[i].SetValue("WC_Biologicals", true);
+
+                                    
 
                                     //if (debug) Echo("Repel mode");
                                     //setBlockRepelOn(pdcs[i]);
@@ -745,6 +748,7 @@ namespace IngameScript
                                     //pdcs[i].SetValue("WC_FocusFire", true);
 
                                     pdcs[i].SetValue("WC_SubSystems", true);
+                                    pdcs[i].SetValue("WC_Biologicals", true);
 
                                     setBlockRepelOff(pdcs[i]);
                                 }
