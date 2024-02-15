@@ -107,7 +107,62 @@ That should get you started, but to get the most out of RSM, you'll want to read
 
 ## Weapons Management
 
-TODO
+DX has an awesome weapons system, but it's also unforgiving. RSM has a few tricks up its sleeve to get you up and started fast, and to make sure your guns are ready when you need them.
+
+### Weapons Tips & Tricks
+
+* **Use CQB stance to target another large grid with PDCs!**
+	* In order to improve defensive characteristics, in most cases, RSM configures PDCs **NOT** to target large grids.
+	* Run `Stance:CQB` if you are approaching PDC range to enable targeting of grids
+	* Dedicated defensive PDCs will not engage large grids ever.
+	* This is configurable; if you don't like it, adjust your stances configs! Set PDCs to 'offense' mode (3) for all stances and be constantly ready for CQB, if you prefer.
+* **Use Combat or CQB stances to permit railguns to open fire!**
+	* In most stances, Railguns are enabled and active, but are have shoot mode set to `key fire`. This acts as a hold-fire for railguns; in this state they will track targets, but never actually fire by themselves.
+	* Run `Stance:CQB` or `Stance:Combat` and shoot mode on railguns will be changed `ai shoot`. This acts as an open-fire for railguns, and will have you spewing slugs in no time.
+	* For the purposes of RSM, coilguns are treated the same as railguns.
+* **RSM supports dedicated defensive PDCs!**
+	* Tag PDCs with `Repel` for them to be marked by RSM as defensive PDCs
+	* You can change the tag to another value in custom data.
+	* Defensive PDCs will never target large grids, and so can help protect against CQB torpedo attacks.
+* **RSM Enforces Power Status on Weapons!**
+	* RSM will constantly re-enable weapons if you turn them off, as per the config of the current stance.
+	* Use RSM instead. You can run `Stance:NoAttack` to quickly disable all weapons systems or `Stance:CQB` to go into fully enabled combat mode.
+	* Or else, just turn off the RSM PB; don't bother trying to fight it!
+* **RSM acts as a weapons autoloader, balancing your ammo amongst all weapons**
+	* Read more about that in [Weapons Autoloading & Balancing](#Weapons-Autoloading-&-Balancing).
+
+### Automatic Configuration
+
+By default, RSM will automatically configure your weapons each time you set a stance, to suit that stance.
+
+***I'm always looking to improve the logic of automatic weapons config. If you think any of the settings should be changed, let me know!***
+
+If you wish, you can disable this functionality in custom data, and none of these values will be touched, only power on/off.
+
+For all weapons that are enabled in the current stance, the following settings are automatically configured...
+* Target Projectiles: True
+* Target Grids: True
+* Target Large Grids: True
+	* This setting is set to false for defence PDCs, and all other PDCs not in offence mode
+* Target Small Grids: True
+	* This is set to false for torpedo launchers
+* Target Sub Systems: True
+* Target Biologicals: True
+	* PDCs only
+* Focus Fire: False
+	* This is set to true for torpedo launchers
+* Repel Mode: Off
+	* Repel mode is true for defence PDCs
+* Shoot Mode
+	* Railguns only, this setting is used to toggle between open fire (ai shoot) and hold fire (key fire), as per the current stance.
+
+### Stay Away From My Guns!
+
+Some players want RSM to leave the guns alone.  If you have a complex configuration, or prefer manual control, it may be preferable to disable weapons automatic configuration.
+
+In custom data, set `Automatically configure PDCs, Railguns, Torpedoes.` to false, and none of the above settings will be adjusted.  RSM will still enforce weapon power status, but no other settings will be adjusted in any stance.
+
+If you're doing this because you think I'm configuring the weapons incorrectly, let me know, I'd love to improve the weapons logic instead.
 
 
 ## Block Renaming
