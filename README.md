@@ -10,7 +10,7 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 
 ### Join the discussion, request features and say hi on the [Sigma Draconis Discord](https://discord.com/channels/516135382191177728/1066185228697211030/1066185233386446980).
 
-## The broad goals of this script are to�
+## The broad goals of this script are to...
 
 * Provide a range quality-of-life functionality to make ships on DX easier to use and better.
 * Output a high-density, customisable LCD display (with Hudlcd support)
