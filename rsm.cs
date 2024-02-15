@@ -33,7 +33,7 @@ namespace IngameScript
         // the keyword for aux systems
         // set rotors etc later as well
         string aux_keyword = "[Autorepair]";
-        string ignore_keyword = "REEDAV";
+        string ignore_keyword = "[I]";
         // the keyword for defence PDCs (secondary PDCs group)
         string defence_pdc_keyword = "Repel";
         string min_drives_keyword = "Min";
