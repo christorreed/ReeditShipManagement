@@ -30,7 +30,6 @@ namespace IngameScript
         // the keyword for LCDs to be controlled by this script.
         string lcd_keyword = "[RSM]";
         // the keyword for aux systems
-        // will be set automatically for welders at Init
         // set rotors etc later as well
         string aux_keyword = "[Autorepair]";
         string ignore_keyword = "REEDAV";
@@ -111,6 +110,7 @@ namespace IngameScript
         double tank_o2_actual = 0;
         double tank_o2_total = 0;
         double tank_o2_init = 0;
+        double cargo_init = 0;
 
         float reactors_init = 0;
         float thrust_main_init = 0;
@@ -120,6 +120,7 @@ namespace IngameScript
         int torps_init = 0;
         int railguns_init = 0;
         int gyros_init = 0;
+        int welders_init = 0;
 
         double integrity_tanks_H2 = 0;
         double integrity_tanks_O2 = 0;
@@ -131,6 +132,8 @@ namespace IngameScript
         double integrity_rcs_thrust = 0;
         double integrity_gyros = 0;
         double integrity_reactors = 0;
+        double integrity_cargos = 0;
+        double integrity_welders = 0;
 
         int min_fuel = 10;
 
@@ -304,6 +307,8 @@ namespace IngameScript
 
                 ITEMS.Add(buildItem("Foehammr ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugMCRNMagazine", true)); //14
                 ITEMS.Add(buildItem("Farren   ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugUNNMagazine", true)); //15
+
+                ITEMS.Add(buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate")); //16
             }
             catch
             {
@@ -608,7 +613,7 @@ namespace IngameScript
             for (int i = 0; i < stance_names.Count; i++)
             {
                 //Echo("? "+ stance + " == " + stance_names[i] + "");
-                if (stance == stance_names[i])
+                if (stance.ToLower() == stance_names[i].ToLower())
                 {
                     stance_i = i;
                     found = true;
@@ -1198,10 +1203,15 @@ namespace IngameScript
                 for (int i = 0; i < thrustersRcs.Count; i++)
                     thrust_rcs_init += (thrustersRcs[i] as IMyThrust).MaxThrust;
 
+                cargo_init = 0;
+                for (int i = 0; i < cargos.Count; i++)
+                    cargo_init += (cargos[i] as IMyCargoContainer).GetInventory().MaxVolume.RawValue;
+
                 pdcs_init = pdcs.Count + defencePdcs.Count;
                 torps_init = torps.Count;
                 railguns_init = railguns.Count;
                 gyros_init = gyros.Count;
+                welders_init = welders.Count;
 
                 // now lets set current item counts as the target.
                 foreach (ITEM Item in ITEMS)
@@ -2111,6 +2121,32 @@ namespace IngameScript
                 }
             }
             integrity_gyros = Math.Round(100 * (FunctionalGyros / gyros_init));
+
+
+            if (debug) Echo("Iterating over " + cargos.Count + " cargos...");
+            double FunctionalCargos = 0;
+            for (int i = 0; i < cargos.Count; i++)
+            {
+                if (cargos[i] != null)
+                {
+                    if (cargos[i].IsFunctional && cargos[i].CustomName.Contains(ship_name))
+                        FunctionalCargos++;
+                }
+            }
+            integrity_cargos = Math.Round(100 * (FunctionalCargos / cargo_init));
+
+            if (debug) Echo("Iterating over " + welders.Count + " welders...");
+            double FunctionalWelders = 0;
+            for (int i = 0; i < welders.Count; i++)
+            {
+                if (welders[i] != null)
+                {
+                    if (welders[i].IsFunctional && welders[i].CustomName.Contains(ship_name))
+                        FunctionalWelders++;
+                }
+            }
+            integrity_welders = Math.Round(100 * (FunctionalWelders / welders_init));
+
 
             if (debug) Echo("Iterating over " + reactorsAll.Count + " reactors...");
             reactorsEmpty.Clear();
@@ -3207,12 +3243,20 @@ namespace IngameScript
                                     config_count++;
                                     gyros_init = int.Parse(value);
                                     break;
+                                case "Cargo Integrity":
+                                    config_count++;
+                                    thrust_rcs_init = float.Parse(value);
+                                    break;
+                                case "Welder Integrity":
+                                    config_count++;
+                                    gyros_init = int.Parse(value);
+                                    break;
 
                             }
                         }
                     }
 
-                    if (config_count == 48)
+                    if (config_count == 50)
                     {
                         parsedVars = true;
                     }
@@ -3438,6 +3482,8 @@ namespace IngameScript
                 + "Epstein Integrity\n=" + thrust_main_init + "\n"
                 + "RCS Integrity\n=" + thrust_rcs_init + "\n"
                 + "Gyro Integrity\n=" + gyros_init + "\n"
+                + "Cargo Integrity\n=" + cargo_init + "\n"
+                + "Welder Integrity\n=" + welders_init + "\n"
 
                 + "\n---- [Inventory Counts] ----\n"
                 + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"

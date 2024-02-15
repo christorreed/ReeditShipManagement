@@ -500,6 +500,10 @@ namespace IngameScript
 
             try
             {
+                if (thrust_main_init > 0)
+                    sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_MAINTHRUST[CurrentStance[3]] + "\n";
+                if (thrust_rcs_init > 0)
+                    sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
                 if (reactors_init > 0)
                     sec_integrity += "Reactors  [" + generateBar(integrity_reactors) + "] " + (integrity_reactors + "% ").PadLeft(5) + "    \n";
                 if (bat_init > 0)
@@ -514,12 +518,12 @@ namespace IngameScript
                     sec_integrity += "H2 Tanks  [" + generateBar(integrity_tanks_H2) + "] " + (integrity_tanks_H2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
                 if (tank_o2_init > 0)
                     sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
-                if (thrust_main_init > 0)
-                    sec_integrity += "Epstein   [" + generateBar(integrity_main_thrust) + "] " + (integrity_main_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_MAINTHRUST[CurrentStance[3]] + "\n";
-                if (thrust_rcs_init > 0)
-                    sec_integrity += "RCS       [" + generateBar(integrity_rcs_thrust) + "] " + (integrity_rcs_thrust + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
                 if (gyros_init > 0)
                     sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + "% ").PadLeft(5) + "    \n\n";
+                if (cargo_init > 0)
+                    sec_integrity += "Cargo     [" + generateBar(integrity_cargos) + "] " + (integrity_cargos + "% ").PadLeft(5) + "    \n\n";
+                if (welders_init > 0)
+                    sec_integrity += "Welders   [" + generateBar(integrity_welders) + "] " + (integrity_welders + "% ").PadLeft(5) + "    \n\n";
             }
 
             catch { }
