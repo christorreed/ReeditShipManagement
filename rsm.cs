@@ -199,7 +199,7 @@ namespace IngameScript
         List<IMyTerminalBlock> pdcs = new List<IMyTerminalBlock>(); // turn on/off at quickRefresh(); setup at stance set
         List<IMyTerminalBlock> defencePdcs = new List<IMyTerminalBlock>(); // turn on/off at quickRefresh(); setup at stance set
         List<IMyTerminalBlock> torps = new List<IMyTerminalBlock>(); // handle at quickRefresh();
-        List<IMyTerminalBlock> coilguns = new List<IMyTerminalBlock>();
+        //List<IMyTerminalBlock> coilguns = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> railguns = new List<IMyTerminalBlock>(); // handle at quickRefresh();
         List<IMyTerminalBlock> thrustersMain = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> thrustersRcs = new List<IMyTerminalBlock>(); // handle at stance set
@@ -309,7 +309,9 @@ namespace IngameScript
                 ITEMS.Add(buildItem("Foehammr ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugMCRNMagazine", true)); //14
                 ITEMS.Add(buildItem("Farren   ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugUNNMagazine", true)); //15
 
-                ITEMS.Add(buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate")); //16
+                ITEMS.Add(buildItem("Kess     ", "MyObjectBuilder_AmmoMagazine", "180mmLeadSteelSabotMagazine", true)); //16
+
+                ITEMS.Add(buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate")); //17
             }
             catch
             {
@@ -1423,7 +1425,7 @@ namespace IngameScript
             processList(pdcs, "PDC");
             processList(defencePdcs, "PDC");
             processList(railguns, "Railgun");
-            processList(coilguns, "Coilgun");
+            //processList(coilguns, "Coilgun");
             processList(antennas, "Antenna");
             processList(hangarDoors, "Hangar Door");
             processList(gyros, "Gyroscope");
@@ -1563,6 +1565,18 @@ namespace IngameScript
                         else if (blockId.Contains("Ares")) this_name += ".Ares";
                         else if (blockId.Contains("Artemis")) this_name += ".Art";
 
+                    }
+                    else if (name == "Railgun")
+                    {
+                        string blockId = blocks[i].BlockDefinition.ToString();
+                        if (blockId == "MyObjectBuilder_ConveyorSorter/Kess Hashari Cannon") this_name = "Kess";
+                        else if (blockId == "MyObjectBuilder_ConveyorSorter/UNN MA-15 Coilgun") this_name = "Coilgun";
+                        else if (blockId== "MyObjectBuilder_ConveyorSorter/V-14 Stiletto Light Railgun") this_name += ".Stiletto";
+                        else if (blockId == "MyObjectBuilder_ConveyorSorter/Dawson-Pattern Medium Railgun") this_name += ".Dawson";
+                        else if (blockId == "MyObjectBuilder_ConveyorSorter/VX-12 Foehammer Ultra-Heavy Railgun") this_name += ".Foehammer";
+                        else if (blockId == "MyObjectBuilder_ConveyorSorter/Farren-Pattern Heavy Railgun") this_name += ".Farren";
+                        else if (blockId == "MyObjectBuilder_ConveyorSorter/T-47 Roci Light Fixed Railgun") this_name += ".Roci";
+                        else if (blockId.Contains("Zakosetara") this_name += ".Zako";
                     }
                 }
 
@@ -2651,14 +2665,20 @@ namespace IngameScript
                         ITEMS[15].ARMED_IN.Add(allBlocks[i].GetInventory());
                     }
 
-                    else if (blockId.Contains("Coilgun"))
+                    else if (blockId.Contains("Kess Hashari Cannon"))
                     {
-                        // treat these as a railgun
                         railguns.Add(allBlocks[i]);
-                        // this just for init
-                        coilguns.Add(allBlocks[i]);
-                        ITEMS[13].ARMED_IN.Add(allBlocks[i].GetInventory());
+                        ITEMS[16].ARMED_IN.Add(allBlocks[i].GetInventory());
                     }
+
+                    else if (blockId.Contains("Coilgun"))
+                        {
+                            // treat these as a railgun
+                            railguns.Add(allBlocks[i]);
+                            // this just for init
+                            //coilguns.Add(allBlocks[i]);
+                            ITEMS[13].ARMED_IN.Add(allBlocks[i].GetInventory());
+                        }
 
                     // ignore blocks with the ignore keyword.
                     else if (allBlocks[i].CustomName.Contains(ignore_keyword))
@@ -3175,6 +3195,16 @@ namespace IngameScript
                                     break;
 
 
+                                case "Kess 180mm rounds count":
+                                    config_count++;
+                                    ITEMS[16].TARGET = int.Parse(value);
+                                    break;
+
+                                case "Steel plate count":
+                                    config_count++;
+                                    ITEMS[17].TARGET = int.Parse(value);
+                                    break;
+
 
                                 case "Doors open timer (x100 ticks, default 3)":
                                     config_count++;
@@ -3271,7 +3301,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 50)
+                    if (config_count == 52)
                     {
                         parsedVars = true;
                     }
@@ -3525,6 +3555,9 @@ namespace IngameScript
                 + "Foehammer 120mm MCRN rounds count\n=" + ITEMS[14].TARGET + "\n"
                 + "Farren 120mm UNN Railgun rounds count\n=" + ITEMS[15].TARGET + "\n"
 
+
+                + "Kess 180mm rounds count\n=" + ITEMS[16].TARGET + "\n"
+                + "Steel plate count\n=" + ITEMS[17].TARGET + "\n"
 
                 + "\n---- [Stances] ----\n"
                 + stance_text
