@@ -1543,6 +1543,7 @@ namespace IngameScript
             for (int i = 0; i < blocks.Count; i++)
             {
 
+                string blockId = blocks[i].BlockDefinition.ToString();
                 string this_name = name;
 
                 if (NAME_WEAPON_TYPES)
@@ -1550,7 +1551,6 @@ namespace IngameScript
                     // some special name appendments.
                     if (name == "PDC")
                     {
-                        string blockId = blocks[i].BlockDefinition.ToString();
                         if (blockId.Contains("Flak")) this_name += ".Flak";
                         else if (blockId.Contains("Voltaire")) this_name += ".Volt";
                         else if (blockId.Contains("Outer Planets Alliance")) this_name += ".OPA";
@@ -1559,7 +1559,7 @@ namespace IngameScript
                     }
                     else if (name == "Torpedo")
                     {
-                        string blockId = blocks[i].BlockDefinition.ToString();
+
                         if (blockId.Contains("Apollo")) this_name += ".Apollo";
                         else if (blockId.Contains("Tycho")) this_name += ".Tycho";
                         else if (blockId.Contains("Ares")) this_name += ".Ares";
@@ -1568,22 +1568,28 @@ namespace IngameScript
                     }
                     else if (name == "Railgun")
                     {
-                        string blockId = blocks[i].BlockDefinition.ToString();
-                        if (blockId == "MyObjectBuilder_ConveyorSorter/Kess Hashari Cannon") this_name = "Kess";
-                        else if (blockId == "MyObjectBuilder_ConveyorSorter/UNN MA-15 Coilgun") this_name = "Coilgun";
-                        else if (blockId== "MyObjectBuilder_ConveyorSorter/V-14 Stiletto Light Railgun") this_name += ".Stiletto";
+
+                        //if (blockId == "MyObjectBuilder_ConveyorSorter/Kess Hashari Cannon") this_name = "Kess";
+                        //else if (blockId == "MyObjectBuilder_ConveyorSorter/UNN MA-15 Coilgun") this_name = "Coilgun";
+                        if (blockId == "MyObjectBuilder_ConveyorSorter/V-14 Stiletto Light Railgun") this_name += ".Stiletto";
                         else if (blockId == "MyObjectBuilder_ConveyorSorter/Dawson-Pattern Medium Railgun") this_name += ".Dawson";
                         else if (blockId == "MyObjectBuilder_ConveyorSorter/VX-12 Foehammer Ultra-Heavy Railgun") this_name += ".Foehammer";
                         else if (blockId == "MyObjectBuilder_ConveyorSorter/Farren-Pattern Heavy Railgun") this_name += ".Farren";
                         else if (blockId == "MyObjectBuilder_ConveyorSorter/T-47 Roci Light Fixed Railgun") this_name += ".Roci";
-                        else if (blockId.Contains("Zakosetara") this_name += ".Zako";
+                        else if (blockId.Contains("Zakosetara")) this_name += ".Zako";
                     }
                 }
+
+
+                // do this anyway
+                // handle names for coils, kess
+                if (blockId == "MyObjectBuilder_ConveyorSorter/Kess Hashari Cannon") this_name = "Kess";
+                else if (blockId == "MyObjectBuilder_ConveyorSorter/UNN MA-15 Coilgun") this_name = "Coilgun";
 
                 // for chem thrusters.
                 if (name == "Epstein")
                 {
-                    string blockId = blocks[i].BlockDefinition.ToString();
+                    
                     if (blockId.Contains("Hydro")) this_name = "Chemical";
                 }
 
@@ -1600,7 +1606,6 @@ namespace IngameScript
 
                 else if (name == "Light" + name_delimiter + "Interior")
                 {
-                    string blockId = blocks[i].BlockDefinition.ToString();
                     if (blockId.Contains("Kitchen")) this_name += ".Kitchen";
                     else if (blockId.Contains("Aquarium")) this_name += ".Aquarium";
                 }
@@ -2537,6 +2542,7 @@ namespace IngameScript
                         || blockId.Contains("SurvivalKit/")
 
                         )
+                    { 
                         allBlocks[i].CustomData = sk_data;
                         if (!allBlocks[i].CustomName.Contains(ignore_keyword))
                             allBlocks[i].ApplyAction("OnOff_On");
@@ -2672,13 +2678,13 @@ namespace IngameScript
                     }
 
                     else if (blockId.Contains("Coilgun"))
-                        {
-                            // treat these as a railgun
-                            railguns.Add(allBlocks[i]);
-                            // this just for init
-                            //coilguns.Add(allBlocks[i]);
-                            ITEMS[13].ARMED_IN.Add(allBlocks[i].GetInventory());
-                        }
+                    {
+                        // treat these as a railgun
+                        railguns.Add(allBlocks[i]);
+                        // this just for init
+                        //coilguns.Add(allBlocks[i]);
+                        ITEMS[13].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
 
                     // ignore blocks with the ignore keyword.
                     else if (allBlocks[i].CustomName.Contains(ignore_keyword))
