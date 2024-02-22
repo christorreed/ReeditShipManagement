@@ -59,7 +59,7 @@ namespace IngameScript
         class ITEM
         {
             public string NAME = "";
-            public int TARGET = 10;
+            public int TARGET = 0;
             public int COUNT = 0;
             public MyItemType TYPE;
             public double PERCENTAGE;
