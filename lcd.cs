@@ -386,7 +386,15 @@ namespace IngameScript
                     LCDAlerts.Add(new ALERT("REACTORS NEED FUSION FUEL!", "At least one reactor needs Fusion Fuel!", 3));
                 }
 
-                if (ITEMS[0].PERCENTAGE < 5) // Fusion fuel below 5% of init quota.
+                if (ITEMS[0].TARGET == 0) // Different error if there is no target.
+                {
+                    if (ITEMS[0].COUNT > 0)
+                    {
+                        power_priority += 1;
+                        LCDAlerts.Add(new ALERT("No Spare Fusion Fuel!", "No spare fusion fuel detected in ships cargo!", 2));
+                    }
+                }
+                else if (ITEMS[0].PERCENTAGE < 5) // Fusion fuel below 5% of init quota.
                 {
                     power_priority += 2;
                     LCDAlerts.Add(new ALERT("FUSION FUEL LEVEL CRITICAL!", "Fusion fuel level is low!", 3));
