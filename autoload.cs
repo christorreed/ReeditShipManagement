@@ -34,8 +34,17 @@ namespace IngameScript
 
             foreach (IMyTerminalBlock Weapon in TO_LOAD)
             {
-                string AmmoType = WC_PB_API.GetActiveAmmo(Weapon, 0);
-                string OutputAmmoType = getOutputAmmoType(AmmoType);
+
+                string AmmoType = "FusionFuel";
+                string OutputAmmoType = "FusionFuel";
+
+                if (Weapon.BlockDefinition.ToString().Split('/')[0] != "MyObjectBuilder_Reactor")
+                {
+                    AmmoType = WC_PB_API.GetActiveAmmo(Weapon, 0);
+                    OutputAmmoType = getOutputAmmoType(AmmoType);
+                }
+
+
 
 
                 foreach (ITEM Item in ITEMS)
@@ -76,7 +85,7 @@ namespace IngameScript
                 if (Item.AMMO_LOW)
                 {
 
-                    if (debug) Echo(Item.NAME + " requires weapon balancing...");
+                    if (debug) Echo(Item.NAME + " requires inventory balancing...");
 
                     // okay for this item, we have no ammo in cargo
                     // so it's time to start attempting to balance.
@@ -197,6 +206,9 @@ namespace IngameScript
 
                 case "120mm Tungsten-Uranium Slug UNN Ammo":
                     return "120mmTungstenUraniumSlugUNNMagazine";
+
+                case "180mm Lead-Steel Sabot Ammo":
+                    return "180mmLeadSteelSabotMagazine";
 
                 default:
                     if (debug) Echo("Unknown AmmoType = " + AmmoType);

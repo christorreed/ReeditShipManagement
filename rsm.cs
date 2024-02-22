@@ -288,7 +288,7 @@ namespace IngameScript
             {
                 // this order is important, don't change it.
 
-                ITEMS.Add(buildItem("Fusion F ", "MyObjectBuilder_Ingot", "FusionFuel")); //0
+                ITEMS.Add(buildItem("Fusion F ", "MyObjectBuilder_Ingot", "FusionFuel", true)); //0
                 ITEMS.Add(buildItem("Fuel Tank", "MyObjectBuilder_Component", "Fuel_Tank")); //1
                 ITEMS.Add(buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank")); //2
 
@@ -2185,6 +2185,10 @@ namespace IngameScript
             {
                 if (reactorsAll[i].IsFunctional && reactorsAll[i].CustomName.Contains(ship_name))
                 {
+
+                    if (AUTOLOAD)
+                        if (!inventorySomewhatFull(reactorsAll[i])) TO_LOAD.Add(reactorsAll[i]);
+
                     if (inventoryEmpty(reactorsAll[i]))
                     {
                         reactorsEmpty.Add(reactorsAll[i]);
@@ -2452,10 +2456,10 @@ namespace IngameScript
             for (int i = 0; i < reactors.Count; i++)
             {
                 // block is an antenna for the comms command to control.
-                if (reactors[i].CustomName.Contains(ship_name))
+                /*if (reactors[i].CustomName.Contains(ship_name))
                 {
                     cargo_inventory.Add(reactors[i].GetInventory());
-                }
+                }*/
             }
 
             if (debug) Echo("Building projector list...");
@@ -2699,6 +2703,7 @@ namespace IngameScript
                     else if (blockId.Contains("MyObjectBuilder_Reactor/"))
                     {
                         reactorsAll.Add(allBlocks[i]);
+                        ITEMS[0].ARMED_IN.Add(allBlocks[i].GetInventory());
                         if (blockId.Contains("SmallGenerator"))
                             reactorsSmall.Add(allBlocks[i]);
                         else
