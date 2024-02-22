@@ -409,6 +409,21 @@ namespace IngameScript
                     setComms(args[1]);
                     break;
 
+                case "printblockids":
+
+                    List<IMyTerminalBlock> allBlocks = new List<IMyTerminalBlock>();
+                    GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(allBlocks);
+
+                    string Out = "";
+                    foreach (IMyTerminalBlock Block in allBlocks)
+                    {
+                        Out += Block.BlockDefinition + "\n";
+                    }
+
+                    antennas[0].CustomData = Out;
+
+                    break;
+
                 case "spawn":
                     if (args[1].ToLower() == "open")
                     {
@@ -1226,7 +1241,7 @@ namespace IngameScript
                 else if (blockId.Contains("Lidar")) defaultName = "Lidar";
                 else if (blockId.Contains("TimerBlock/")) defaultName = "Timer";
                 else if (blockId.Contains("Sorter/")) defaultName = "Sorter";
-                else if (blockId.Contains("MedicalRoom/")) defaultName = "Medical";
+                else if (blockId.Contains("MedicalRoom/") && blockId != "MyObjectBuilder_MedicalRoom/LargeRefillStation") defaultName = "Medical";
                 else if (blockId.Contains("MotorSuspension/")) defaultName = "Suspension";
                 else if (blockId.Contains("GravityGenerator")) defaultName = "Grav Gen";
                 else if (blockId.Contains("ButtonPanel")) defaultName = "Button Panel";
@@ -2502,8 +2517,12 @@ namespace IngameScript
                     string blockId = allBlocks[i].BlockDefinition.ToString();
 
                     // handle spawns
-                    if (blockId.Contains("MedicalRoom/") || blockId.Contains("SurvivalKit/"))
-                    {
+                    if (
+                        (blockId.Contains("MedicalRoom/") && blockId != "MyObjectBuilder_MedicalRoom/LargeRefillStation") 
+                        
+                        || blockId.Contains("SurvivalKit/")
+
+                        )
                         allBlocks[i].CustomData = sk_data;
                         if (!allBlocks[i].CustomName.Contains(ignore_keyword))
                             allBlocks[i].ApplyAction("OnOff_On");
