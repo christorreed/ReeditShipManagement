@@ -2189,6 +2189,14 @@ namespace IngameScript
                     if (AUTOLOAD)
                         if (!inventorySomewhatFull(reactorsAll[i])) TO_LOAD.Add(reactorsAll[i]);
 
+                    if (adjustKeepAlives)
+                    {
+                        if (adjustThemTo)
+                            reactorsAll[i].ApplyAction("OnOff_On");
+                        else
+                            reactorsAll[i].ApplyAction("OnOff_Off");
+                    }
+
                     if (inventoryEmpty(reactorsAll[i]))
                     {
                         reactorsEmpty.Add(reactorsAll[i]);
@@ -3467,7 +3475,7 @@ namespace IngameScript
                     + stance_data[i][20] + "\n"
                     + "extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.\n="
                     + stance_data[i][21] + "\n"
-                    + "keep-alives for connectors, gyros, lcds, cameras, sensors; 0: ignore, 1: force on, 2: force off\n="
+                    + "keep-alives for reactors, connectors, gyros, lcds, cameras, sensors; 0: ignore, 1: force on, 2: force off\n="
                     + stance_data[i][22] + "\n"
                     + "hangar doors; 0: closed, 1: open, 2: no change\n="
                     + stance_data[i][23] + "\n\n"

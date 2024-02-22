@@ -89,7 +89,7 @@ namespace IngameScript
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                 0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-                1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
+                1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },*/
 
@@ -116,7 +116,7 @@ namespace IngameScript
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                 0,      // 20: auxiliary blocks; 0: off, 1: on
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-                1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
+                1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
@@ -143,7 +143,7 @@ namespace IngameScript
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                 0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-                1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
+                1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
@@ -170,7 +170,7 @@ namespace IngameScript
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                 0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-                1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
+                1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
@@ -197,7 +197,7 @@ namespace IngameScript
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                 0,      // 20: auxiliary blocks; 0: off, 1: on
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-                1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
+                1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },*/
 
@@ -225,7 +225,7 @@ namespace IngameScript
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                 0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-                1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
+                1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
@@ -252,7 +252,7 @@ namespace IngameScript
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                 0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-                1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
+                1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
@@ -333,7 +333,7 @@ namespace IngameScript
                 1,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
                 0,      // 20: auxiliary blocks; 0: off, 1: on
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-                1,      // 22: keep-alives for connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
+                1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
         };
