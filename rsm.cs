@@ -1248,8 +1248,14 @@ namespace IngameScript
 
                 else if (blockId.Contains("Cockpit/")) 
                 {
-                    if (blockId.Contains("Console") || blockId.Contains("StandingCockpit")) defaultName = "Console";
-                    else defaultName = "Cockpit";
+
+                    string Id = blockId.Split('/')[1];
+
+                    if (Id.Contains("StandingCockpit") || Id.Contains("Console"))
+                        defaultName = "Console";
+                    if (Id.Contains("Cockpit"))
+                        defaultName = "Cockpit";
+
                 }
 
                 //Echo(blockId);
