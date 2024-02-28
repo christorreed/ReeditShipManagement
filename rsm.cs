@@ -37,6 +37,7 @@ namespace IngameScript
         // the keyword for defence PDCs (secondary PDCs group)
         string defence_pdc_keyword = "Repel";
         string min_drives_keyword = "Min";
+        string docking_drives_keyword = "Docking";
         bool auto_configure_pdcs = true;
         bool disable_lighting = false; // ew, why disable.  silly germ.
         bool disable_text_colour_enforcement; // ew, why disable.  silly germ.
@@ -412,17 +413,53 @@ namespace IngameScript
                     break;
 
                 case "printblockids":
+                    // prints all block defs on grid to first antenna custom data.
 
                     List<IMyTerminalBlock> allBlocks = new List<IMyTerminalBlock>();
                     GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(allBlocks);
 
-                    string Out = "";
-                    foreach (IMyTerminalBlock Block in allBlocks)
+                    string DefsOut = "";
+                    foreach (IMyTerminalBlock ThisBlock in allBlocks)
                     {
-                        Out += Block.BlockDefinition + "\n";
+                        DefsOut += ThisBlock.BlockDefinition + "\n";
+                    }
+
+                    antennas[0].CustomData = DefsOut;
+
+                    break;
+
+                case "printblockprops":
+                    // prints props and actions of the block with the given name
+                    // to that block's custom data, and to the first antenna custom data.
+
+                    IMyTerminalBlock Block = GridTerminalSystem.GetBlockWithName(args[1]);
+
+                    List<ITerminalAction> Actions = new List<ITerminalAction>();
+                    Block.GetActions(Actions);
+
+                    List<ITerminalProperty> Properties = new List<ITerminalProperty>();
+                    Block.GetProperties(Properties);
+
+                    string Out = Block.CustomName + "\n**Actions**\n\n";
+
+                    foreach (ITerminalAction Action in Actions)
+                    {
+                        Out += Action.Id + " " + Action.Name + "\n";
+                    }
+                    Out += "\n\n**Properties**\n\n";
+                    foreach (ITerminalProperty Prop in Properties)
+                    {
+                        Out += Prop.Id + " " + Prop.TypeName + "\n";
                     }
 
                     antennas[0].CustomData = Out;
+                    Block.CustomData = Out;
+
+                    break;
+
+                case "activatetool":
+                    IMyTerminalBlock Tool = GridTerminalSystem.GetBlockWithName(args[1]);
+                    setToolActivate(Tool, true);
 
                     break;
 
@@ -853,22 +890,27 @@ namespace IngameScript
             if (debug) Echo("Setting " + thrustersMain.Count + " Epsteins to " + stance_data[stance_i][3]);
             for (int i = 0; i < thrustersMain.Count; i++)
             {
-                if (thrustersMain[i].IsFunctional && thrustersMain[i].CustomName.Contains(ship_name) && stance_data[stance_i][3] == 9)
+                if (thrustersMain[i].IsFunctional && thrustersMain[i].CustomName.Contains(ship_name) && stance_data[stance_i][3] != 9)
                 {
                     // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
                     if (stance_data[stance_i][3] == 0
                         ||
                         (stance_data[stance_i][3] == 2 && !thrustersMain[i].CustomName.Contains(min_drives_keyword))
                         )
-                        thrustersMain[i].ApplyAction("OnOff_Off");
-                    else if (stance_data[stance_i][3] == 3)
+                    {
+                        if (stance_data[stance_i][4] == 1 && thrustersMain[i].CustomName.Contains(docking_drives_keyword))
+                            thrustersMain[i].ApplyAction("OnOff_On");
+                        else
+                            thrustersMain[i].ApplyAction("OnOff_Off");
+                    }
+                    else if (stance_data[stance_i][3] == 3 && !thrustersMain[i].CustomName.Contains(docking_drives_keyword))
                     {
                         if (thrustersMain[i].BlockDefinition.ToString().Contains("Hydro"))
                             thrustersMain[i].ApplyAction("OnOff_Off");
                         else 
                             thrustersMain[i].ApplyAction("OnOff_On");
                     }
-                    else if (stance_data[stance_i][3] == 4)
+                    else if (stance_data[stance_i][3] == 4 && !thrustersMain[i].CustomName.Contains(docking_drives_keyword))
                     {
                         if (thrustersMain[i].BlockDefinition.ToString().Contains("Hydro"))
                             thrustersMain[i].ApplyAction("OnOff_On");
@@ -883,7 +925,7 @@ namespace IngameScript
             if (debug) Echo("Setting " + thrustersRcs.Count + " RCS to " + stance_data[stance_i][4]);
             for (int i = 0; i < thrustersRcs.Count; i++)
             {
-                if (thrustersRcs[i].IsFunctional && thrustersRcs[i].CustomName.Contains(ship_name) && stance_data[stance_i][4] == 9)
+                if (thrustersRcs[i].IsFunctional && thrustersRcs[i].CustomName.Contains(ship_name) && stance_data[stance_i][4] != 9)
                 {
                     // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
                     if (stance_data[stance_i][4] == 0)
@@ -1645,6 +1687,14 @@ namespace IngameScript
             //Echo("Repel status=" + repelStatus);
             if (repelStatus)
                 block.ApplyAction("WC_RepelMode");
+        }
+
+        void setToolActivate(IMyTerminalBlock Block, bool Activate)
+        {
+            Block.GetActionWithName("ToolCore_Shoot_Action").Apply(Block);
+
+            (Block as IMyConveyorSorter).GetActionWithName("ToolCore_Shoot_Action").Apply(Block);
+
         }
 
         void setBlockFireModeManual(IMyTerminalBlock block)
@@ -3071,6 +3121,10 @@ namespace IngameScript
                                     config_count++;
                                     min_drives_keyword = value;
                                     break;
+                                case "Keyword used to identify docking epstein drives.":
+                                    config_count++;
+                                    docking_drives_keyword = value;
+                                    break;
                                 case "Keyword to ignore block.":
                                     config_count++;
                                     ignore_keyword = value;
@@ -3320,7 +3374,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 52)
+                    if (config_count == 53)
                     {
                         parsedVars = true;
                     }
@@ -3509,6 +3563,7 @@ namespace IngameScript
                 + "Keyword used to identify RSM LCDs.\n=" + lcd_keyword + "\n"
                 + "Keyword used to identify auxiliary blocks\n=" + aux_keyword + "\n"
                 + "Keyword used to identify minimum epstein drives.\n=" + min_drives_keyword + "\n"
+                + "Keyword used to identify docking epstein drives.\n=" + docking_drives_keyword + "\n"
                 + "Keyword used to identify defence PDCs.\n=" + defence_pdc_keyword + "\n"
                 + "Keyword to ignore block.\n=" + ignore_keyword + "\n"
                 + "Enable Weapon Autoload Functionality.\n=" + AUTOLOAD + "\n"
