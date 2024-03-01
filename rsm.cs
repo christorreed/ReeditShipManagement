@@ -1151,15 +1151,21 @@ namespace IngameScript
             }
 
             if (debug) Echo("Setting " + auxiliaries.Count + " aux block to " + stance_data[stance_i][20]);
+            aux_active = 0;
             for (int i = 0; i < auxiliaries.Count; i++)
             {
                 if (auxiliaries[i].IsFunctional && auxiliaries[i].CustomName.Contains(ship_name))
                 {
                     // 20: auxiliary blocks; 0: off, 1: on
                     if (stance_data[stance_i][20] == 0)
+                    {
                         auxiliaries[i].ApplyAction("OnOff_Off");
+                    }
                     else
+                    {
                         auxiliaries[i].ApplyAction("OnOff_On");
+                        aux_active++;
+                    }  
                 }
             }
 
@@ -2314,13 +2320,21 @@ namespace IngameScript
             }
             integrity_rcs_thrust = Math.Round(100 * (MaxRcsThrust / thrust_rcs_init));
 
+            if (controller == null)
+            {
+
+            }
+
             try
             {
                 // calculate current mass and velocity
                 velocity = controller.GetShipSpeed();
                 mass = controller.CalculateShipMass().PhysicalMass;
             }
-            catch { }
+            catch (Exception exxie) {
+                Echo("Failed to get velocity or mass!");
+                //Echo(exxie.Message);
+            }
 
             manageExtractors();
             manageAutoload();
@@ -2343,11 +2357,21 @@ namespace IngameScript
             List<IMyShipController> controllers = new List<IMyShipController>();
             GridTerminalSystem.GetBlocksOfType<IMyShipController>(controllers);
 
-            if (controllers.Count > 1)
+            try
             {
                 controller = controllers[0];
             }
+            catch
+            {
+                ALERTS.Add(new ALERT(
+                    "NO SHIP CONTROLLER!",
+                    "No ship controller was found on this grid. Some functionality will not operate correctly.",
+                    3
+                    ));
+            }
 
+            //if (debug) Echo("Getting first controller out of " + controllers.Count.ToString());
+              
 
             // we're about to rebuild these so shud clear them.
             lcd_blocks.Clear();
@@ -2593,6 +2617,11 @@ namespace IngameScript
                 if (Me.IsSameConstructAs(allBlocks[i]))
                 /*&& allBlocks[i].CustomName.Contains(ship_name)*/ // this breaks init of course lol
                 {
+
+                    if (allBlocks[i].CustomName.Contains(aux_keyword))
+                    {
+                        auxiliaries.Add(allBlocks[i]);
+                    }
 
                     // we build the general lists by parsing this little string...
                     string blockId = allBlocks[i].BlockDefinition.ToString();
