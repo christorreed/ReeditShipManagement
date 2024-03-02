@@ -779,14 +779,17 @@ namespace IngameScript
                 // force font colour
                 if (!disable_text_colour_enforcement)
                 {
+
+                    Echo("Stance = " + stance_i);
+
                     if (show_header_overlay)
                         lcd_blocks[i].FontColor = LCD_OVERLAY_COLOUR;
                     else
                         lcd_blocks[i].FontColor = new Color(
-                            stance_data[stance_i][12],
-                            stance_data[stance_i][13],
-                            stance_data[stance_i][14],
-                            stance_data[stance_i][15]);
+                            CurrentStance[12],
+                            CurrentStance[13],
+                            CurrentStance[14],
+                            CurrentStance[15]);
                 }
             }
 

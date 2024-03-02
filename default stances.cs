@@ -39,7 +39,7 @@ namespace IngameScript
 
         List<int[]> stance_data = new List<int[]>
         {
-             new int[] { // Cruise
+             new int[] { // Cruise 0
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -93,7 +93,7 @@ namespace IngameScript
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },*/
 
-            new int[] { // Docked
+            new int[] { // Docked 1
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -120,7 +120,7 @@ namespace IngameScript
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            new int[] { // Docking
+            new int[] { // Docking 2
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -147,7 +147,7 @@ namespace IngameScript
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            new int[] { // NoAttack
+            new int[] { // NoAttack 3
                 0,      // 0: torpedoes; 0: off, 1: on;
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -202,7 +202,7 @@ namespace IngameScript
             },*/
 
 
-            new int[] { // Combat
+            new int[] { // Combat 4
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -229,7 +229,7 @@ namespace IngameScript
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            new int[] { // CQB
+            new int[] { // CQB 5
                 1,      // 0: torpedoes; 0: off, 1: on;
                 3,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -283,7 +283,7 @@ namespace IngameScript
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },*/
 
-            new int[] { // StealthCruise
+            new int[] { // StealthCruise 6
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -310,7 +310,7 @@ namespace IngameScript
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            new int[] { // WeaponsHot
+            new int[] { // WeaponsHot 7
                 1,      // 0: torpedoes; 0: off, 1: on;
                 3,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 2,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
