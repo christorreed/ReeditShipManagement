@@ -3385,11 +3385,11 @@ namespace IngameScript
                                     break;
                                 case "Cargo Integrity":
                                     config_count++;
-                                    thrust_rcs_init = float.Parse(value);
+                                    cargo_init = int.Parse(value);
                                     break;
                                 case "Welder Integrity":
                                     config_count++;
-                                    gyros_init = int.Parse(value);
+                                    welders_init = int.Parse(value);
                                     break;
 
                             }
