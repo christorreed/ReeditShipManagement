@@ -418,6 +418,7 @@ namespace IngameScript
                 string[] Ammos = missing_ammo.Split('\n');
                 foreach(string Ammo in Ammos)
                 {
+                    if (Ammo == "FusionFuel") continue;
                     string output_ammo = Ammo;
                     if (Ammo.Length > 23) output_ammo = Ammo.Substring(0, 23);
                     output_ammo = output_ammo.ToUpper();
