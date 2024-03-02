@@ -359,6 +359,15 @@ namespace IngameScript
                     1));
             }
 
+            // handle aux
+            if (aux_active > 0)
+            {
+                LCDAlerts.Add(new ALERT(
+                    aux_keyword + " is active (" + aux_active + ")",
+                    aux_keyword + " is active (" + aux_active + ")",
+                    0));
+            }
+
             StatusLights.Add(new STATUS_LIGHT("OXYG", o2_priority, SPINNER_STATUS + status_light_spice));
             status_light_spice++;
 
@@ -527,11 +536,11 @@ namespace IngameScript
                 if (tank_o2_init > 0)
                     sec_integrity += "O2 Tanks  [" + generateBar(integrity_tanks_O2) + "] " + (integrity_tanks_O2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
                 if (gyros_init > 0)
-                    sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + "% ").PadLeft(5) + "    \n\n";
+                    sec_integrity += "Gyros     [" + generateBar(integrity_gyros) + "] " + (integrity_gyros + "% ").PadLeft(5) + "    \n";
                 if (cargo_init > 0)
-                    sec_integrity += "Cargo     [" + generateBar(integrity_cargos) + "] " + (integrity_cargos + "% ").PadLeft(5) + "    \n\n";
+                    sec_integrity += "Cargo     [" + generateBar(integrity_cargos) + "] " + (integrity_cargos + "% ").PadLeft(5) + "    \n";
                 if (welders_init > 0)
-                    sec_integrity += "Welders   [" + generateBar(integrity_welders) + "] " + (integrity_welders + "% ").PadLeft(5) + "    \n\n";
+                    sec_integrity += "Welders   [" + generateBar(integrity_welders) + "] " + (integrity_welders + "% ").PadLeft(5) + "    \n";
             }
 
             catch { }

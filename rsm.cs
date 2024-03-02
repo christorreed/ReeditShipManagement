@@ -3351,6 +3351,10 @@ namespace IngameScript
                                     config_count++;
                                     reactors_init = float.Parse(value);
                                     break;
+                                case "Battery Integrity":
+                                    config_count++;
+                                    bat_init = float.Parse(value);
+                                    break;
                                 case "PDC Integrity":
                                     config_count++;
                                     pdcs_init = int.Parse(value);
@@ -3385,7 +3389,7 @@ namespace IngameScript
                                     break;
                                 case "Cargo Integrity":
                                     config_count++;
-                                    cargo_init = int.Parse(value);
+                                    cargo_init = double.Parse(value);
                                     break;
                                 case "Welder Integrity":
                                     config_count++;
@@ -3396,7 +3400,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (config_count == 53)
+                    if (config_count == 54)
                     {
                         parsedVars = true;
                     }
@@ -3621,6 +3625,7 @@ namespace IngameScript
                 + "Ship name. Blocks without this name will be ignored\n=" + ship_name + "\n"
                 + "Current Stance\n=" + current_stance + "\n"
                 + "Reactor Integrity\n=" + reactors_init + "\n"
+                + "Battery Integrity\n=" + bat_init + "\n"
                 + "PDC Integrity\n=" + pdcs_init + "\n"
                 + "Torpedo Integrity\n=" + torps_init + "\n"
                 + "Railgun Integrity\n=" + railguns_init + "\n"
