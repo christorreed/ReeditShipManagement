@@ -780,8 +780,6 @@ namespace IngameScript
                 if (!disable_text_colour_enforcement)
                 {
 
-                    Echo("Stance = " + stance_i);
-
                     if (show_header_overlay)
                         lcd_blocks[i].FontColor = LCD_OVERLAY_COLOUR;
                     else

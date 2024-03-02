@@ -3345,13 +3345,6 @@ namespace IngameScript
                                 case "Current Stance":
                                     config_count++;
                                     current_stance = value;
-
-                                    // update the stance_i value as well so lights and colours aren't effected.
-                                    for (int j = 0; j < stance_names.Count; j++)
-                                    {
-                                        if (current_stance == stance_names[j]) stance_i = j;
-                                    }
-
                                     break;
 
                                 case "Reactor Integrity":
@@ -3479,6 +3472,12 @@ namespace IngameScript
                         stance_data = new_data_list;
                         parsedStances = true;
                         if (debug) Echo("Finished parsing " + stance_names.Count + " stances.");
+
+                        // update the stance_i value as well so lights and colours aren't effected.
+                        for (int j = 0; j < stance_names.Count; j++)
+                        {
+                            if (current_stance == stance_names[j]) stance_i = j;
+                        }
                     }
                     else
                     {
