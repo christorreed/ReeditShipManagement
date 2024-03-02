@@ -1151,7 +1151,6 @@ namespace IngameScript
             }
 
             if (debug) Echo("Setting " + auxiliaries.Count + " aux block to " + stance_data[stance_i][20]);
-            aux_active = 0;
             for (int i = 0; i < auxiliaries.Count; i++)
             {
                 if (auxiliaries[i].IsFunctional && auxiliaries[i].CustomName.Contains(ship_name))
@@ -1164,7 +1163,6 @@ namespace IngameScript
                     else
                     {
                         auxiliaries[i].ApplyAction("OnOff_On");
-                        aux_active++;
                     }  
                 }
             }
@@ -1835,7 +1833,6 @@ namespace IngameScript
                 }
             }
 
-
             if (adjustKeepAlives)
             {
                 // iterate over connectors
@@ -2216,7 +2213,7 @@ namespace IngameScript
                 if (cargos[i] != null)
                 {
                     if (cargos[i].IsFunctional && cargos[i].CustomName.Contains(ship_name))
-                        FunctionalCargos++;
+                        FunctionalCargos += (cargos[i] as IMyCargoContainer).GetInventory().CurrentVolume.RawValue;
                 }
             }
             integrity_cargos = Math.Round(100 * (FunctionalCargos / cargo_init));
@@ -2232,6 +2229,13 @@ namespace IngameScript
                 }
             }
             integrity_welders = Math.Round(100 * (FunctionalWelders / welders_init));
+
+            if (debug) Echo("Iterating over " + auxiliaries.Count + " auxiliary blocks...");
+            aux_active = 0;
+            for (int i = 0; i < auxiliaries.Count; i++)
+            {
+                if (auxiliaries[i].IsWorking) aux_active++;
+            }
 
 
             if (debug) Echo("Iterating over " + reactorsAll.Count + " reactors...");
@@ -2416,22 +2420,20 @@ namespace IngameScript
                     // tidy up the LCD as well.
                     lcds[i].ContentType = ContentType.TEXT_AND_IMAGE;
 
-
-
-                    /*if (!disable_text_colour_enforcement)
-                        lcds[i].FontColor = new Color(
-                                stance_data[stance_i][12],
-                                stance_data[stance_i][13],
-                                stance_data[stance_i][14],
-                                stance_data[stance_i][15]
-                                );*/
-
-
-
                     //lcds[i].FontSize = LCD_FONT_SIZE;
                     lcds[i].Font = "Monospace";
                     //lcds[i].TextPadding = 0;
                     lcds[i].Alignment = TextAlignment.CENTER;
+                }
+                else if (!disable_text_colour_enforcement && lcds[i].CustomName.Contains("[CS]"))
+                {
+  
+                    lcds[i].FontColor = new Color(
+                            stance_data[stance_i][12],
+                            stance_data[stance_i][13],
+                            stance_data[stance_i][14],
+                            stance_data[stance_i][15]
+                            );
                 }
             }
 
