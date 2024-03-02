@@ -65,7 +65,7 @@ namespace IngameScript
                             if (AmmoType.Length > 32)
                                 AmmoType = AmmoType.Substring(0, 32);
 
-                            if (!missing_ammo.Contains(AmmoType))
+                            if (!missing_ammo.Contains(AmmoType) && AmmoType != "FusionFuel")
                             {
                                 if (missing_ammo != "") missing_ammo += "\n";
                                 missing_ammo += AmmoType;
