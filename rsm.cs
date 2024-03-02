@@ -2213,7 +2213,7 @@ namespace IngameScript
                 if (cargos[i] != null)
                 {
                     if (cargos[i].IsFunctional && cargos[i].CustomName.Contains(ship_name))
-                        FunctionalCargos += (cargos[i] as IMyCargoContainer).GetInventory().CurrentVolume.RawValue;
+                        FunctionalCargos += (cargos[i] as IMyCargoContainer).GetInventory().MaxVolume.RawValue;
                 }
             }
             integrity_cargos = Math.Round(100 * (FunctionalCargos / cargo_init));
