@@ -137,6 +137,8 @@ namespace IngameScript
         double integrity_cargos = 0;
         double integrity_welders = 0;
 
+        bool lidar_working = false;
+
         int min_fuel = 10;
 
         // prevents extractor management from getting too excited.
@@ -213,6 +215,7 @@ namespace IngameScript
         List<IMyTerminalBlock> lightsExterior = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> auxiliaries = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> gyros = new List<IMyTerminalBlock>(); // handle at quickRefresh();
+        List<IMyTerminalBlock> lidars = new List<IMyTerminalBlock>(); // handle at quickRefresh();
         List<IMyTerminalBlock> extractors = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> reactorsSmall = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> reactorsLarge = new List<IMyTerminalBlock>();
@@ -403,7 +406,10 @@ namespace IngameScript
                     setStance(args[1]);
                     return;
                 case "hudlcd":
-                    setHudLcd(args[1]);
+                    string filter = "";
+                    if (args.Length > 2)
+                        filter = args[2];
+                    setHudLcd(args[1], filter);
                     return;
                 /*case "evade":
                     setEvade(args[1]);
@@ -411,6 +417,7 @@ namespace IngameScript
                 case "comms":
                     setComms(args[1]);
                     break;
+
 
                 case "printblockids":
                     // prints all block defs on grid to first antenna custom data.
@@ -1198,7 +1205,7 @@ namespace IngameScript
 
         }
 
-        void setHudLcd(string state)
+        void setHudLcd(string state, string filter)
         {
             state = state.ToLower();
             List<IMyTextPanel> all_lcds = new List<IMyTextPanel>();
@@ -1206,12 +1213,15 @@ namespace IngameScript
 
             for (int i = 0; i < all_lcds.Count; i++)
             {
-                string cd = all_lcds[i].CustomData;
-                if (cd.Contains("hudlcd") && (state == "off" || state == "toggle"))
-                    all_lcds[i].CustomData = cd.Replace("hudlcd", "hudXlcd");
+                if (filter == "" || all_lcds[i].CustomName.Contains(filter))
+                {
+                    string cd = all_lcds[i].CustomData;
+                    if (cd.Contains("hudlcd") && (state == "off" || state == "toggle"))
+                        all_lcds[i].CustomData = cd.Replace("hudlcd", "hudXlcd");
 
-                if (cd.Contains("hudXlcd") && (state == "on" || state == "toggle"))
-                    all_lcds[i].CustomData = cd.Replace("hudXlcd", "hudlcd");
+                    if (cd.Contains("hudXlcd") && (state == "on" || state == "toggle"))
+                        all_lcds[i].CustomData = cd.Replace("hudXlcd", "hudlcd");
+                }
             }
         }
 
@@ -1285,7 +1295,7 @@ namespace IngameScript
 
                 if (blockId.Contains("Door/")) defaultName = "Door";
                 else if (blockId.Contains("Solar")) defaultName = "Solar";
-                else if (blockId.Contains("Lidar")) defaultName = "Lidar";
+                //else if (blockId.Contains("Lidar")) defaultName = "Lidar";
                 else if (blockId.Contains("TimerBlock/")) defaultName = "Timer";
                 else if (blockId.Contains("Sorter/")) defaultName = "Sorter";
                 else if (blockId.Contains("MedicalRoom/") && blockId != "MyObjectBuilder_MedicalRoom/LargeRefillStation") defaultName = "Medical";
@@ -1460,7 +1470,6 @@ namespace IngameScript
             processList(reactorsSmall, "Reactor Small");
             processList(reactorsLarge, "Reactor");
             processList(h2Engines, "H2 Engine");
-            //processList(cargosSmall, "Cargo Small");
             processList(cargos, "Cargo");
             processList(tanksH2, "Hydrogen Tank");
             processList(tanksO2, "Oxygen Tank");
@@ -1470,10 +1479,10 @@ namespace IngameScript
             processList(pdcs, "PDC");
             processList(defencePdcs, "PDC");
             processList(railguns, "Railgun");
-            //processList(coilguns, "Coilgun");
             processList(antennas, "Antenna");
             processList(hangarDoors, "Hangar Door");
             processList(gyros, "Gyroscope");
+            processList(lidars, "LiDAR");
             processList(beacons, "Beacon");
             processList(torps, "Torpedo");
             processList(batteries, "Battery");
@@ -2205,6 +2214,32 @@ namespace IngameScript
             integrity_gyros = Math.Round(100 * (FunctionalGyros / gyros_init));
 
 
+            if (debug) Echo("Iterating over " + lidars.Count + " lidars...");
+            lidar_working = false;
+            for (int i = 0; i < lidars.Count; i++)
+            {
+                if (lidars[i] != null)
+                {
+                    if (lidars[i].IsFunctional && lidars[i].CustomName.Contains(ship_name))
+                    {
+                        if (lidars[i].IsWorking)
+                            lidar_working = true;
+
+                        if (adjustKeepAlives)
+                        {
+                            if (adjustThemTo)
+                                lidars[i].ApplyAction("OnOff_On");
+                            else
+                                lidars[i].ApplyAction("OnOff_Off");
+                        }
+
+
+
+                    }
+                }
+            }
+            integrity_gyros = Math.Round(100 * (FunctionalGyros / gyros_init));
+
             if (debug) Echo("Iterating over " + cargos.Count + " cargos...");
             double FunctionalCargos = 0;
             for (int i = 0; i < cargos.Count; i++)
@@ -2579,6 +2614,7 @@ namespace IngameScript
             lightsNavStarboard.Clear();
             auxiliaries.Clear();
             gyros.Clear();
+            lidars.Clear();
             extractors.Clear();
             reactorsSmall.Clear();
             reactorsLarge.Clear();
@@ -2877,6 +2913,10 @@ namespace IngameScript
 
                     else if (blockId.Contains("MyObjectBuilder_Gyro/"))
                         gyros.Add(allBlocks[i]);
+
+                    // LiDAR
+                    else if (blockId.Contains("Lidar"))
+                        lidars.Add(allBlocks[i]);
 
                     // Beacons
                     // MyObjectBuilder_Beacon/LargeBlockBeacon
@@ -3562,7 +3602,7 @@ namespace IngameScript
                     + stance_data[i][20] + "\n"
                     + "extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.\n="
                     + stance_data[i][21] + "\n"
-                    + "keep-alives for reactors, connectors, gyros, lcds, cameras, sensors; 0: ignore, 1: force on, 2: force off\n="
+                    + "keep-alives for reactors, connectors, gyros, lcds, cameras, sensors, lidars; 0: ignore, 1: force on, 2: force off\n="
                     + stance_data[i][22] + "\n"
                     + "hangar doors; 0: closed, 1: open, 2: no change\n="
                     + stance_data[i][23] + "\n\n"
