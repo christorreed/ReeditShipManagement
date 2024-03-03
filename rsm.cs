@@ -1209,6 +1209,16 @@ namespace IngameScript
                 }
             }
 
+
+            // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
+            // lock doors if we're in close combat, basically.
+            if (stance_data[stance_i][2] == 2)
+            {
+                if (debug) Echo("Setting " + door_blocks.Count + " doors to locked because rails are free-fire.");
+                setDoorsLock("locked", "");
+            }
+            
+
         }
 
         void setHudLcd(string state, string filter)
@@ -1217,16 +1227,16 @@ namespace IngameScript
             List<IMyTextPanel> all_lcds = new List<IMyTextPanel>();
             GridTerminalSystem.GetBlocksOfType<IMyTextPanel>(all_lcds);
 
-            for (int i = 0; i < all_lcds.Count; i++)
+            foreach (IMyTextPanel lcd in all_lcds)
             {
-                if (filter == "" || all_lcds[i].CustomName.Contains(filter))
+                if (filter == "" || lcd.CustomName.Contains(filter))
                 {
-                    string cd = all_lcds[i].CustomData;
+                    string cd = lcd.CustomData;
                     if (cd.Contains("hudlcd") && (state == "off" || state == "toggle"))
-                        all_lcds[i].CustomData = cd.Replace("hudlcd", "hudXlcd");
+                        lcd.CustomData = cd.Replace("hudlcd", "hudXlcd");
 
                     if (cd.Contains("hudXlcd") && (state == "on" || state == "toggle"))
-                        all_lcds[i].CustomData = cd.Replace("hudXlcd", "hudlcd");
+                        lcd.CustomData = cd.Replace("hudXlcd", "hudlcd");
                 }
             }
         }
@@ -1235,22 +1245,21 @@ namespace IngameScript
         {
             state = state.ToLower();
 
-            for (int i = 0; i < door_blocks.Count; i++)
+            foreach (IMyDoor door in door_blocks)
             {
-                if (filter == "" || door_blocks[i].CustomName.Contains(filter))
+                if (filter == "" || door.CustomName.Contains(filter))
                 {
-
-                    var action = door_blocks[i].GetActionWithName("AnyoneCanUse");
+                    var action = door.GetActionWithName("AnyoneCanUse");
                     StringBuilder status = new StringBuilder();
-                    action.WriteValue(door_blocks[i], status);
+                    action.WriteValue(door, status);
                     Echo("Door Status = " + status);
                     bool unlocked = (status.ToString() == "On");
 
                     if (unlocked && (state == "locked" || state == "toggle"))
-                        action.Apply(door_blocks[i]);
+                        action.Apply(door);
 
                     if (!unlocked && (state == "unlocked" || state == "toggle"))
-                        action.Apply(door_blocks[i]);
+                        action.Apply(door);
                 }
             }
         }
