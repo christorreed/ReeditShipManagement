@@ -161,6 +161,7 @@ namespace IngameScript
 
         int doors_count = 0;
         int doors_count_closed = 0;
+        int doors_count_unlocked = 0;
 
         int vents_sealed = 0;
 
@@ -1241,28 +1242,7 @@ namespace IngameScript
             }
         }
 
-        void setDoorsLock(string state, string filter)
-        {
-            state = state.ToLower();
 
-            foreach (IMyDoor door in door_blocks)
-            {
-                if (filter == "" || door.CustomName.Contains(filter))
-                {
-                    var action = door.GetActionWithName("AnyoneCanUse");
-                    StringBuilder status = new StringBuilder();
-                    action.WriteValue(door, status);
-                    Echo("Door Status = " + status);
-                    bool unlocked = (status.ToString() == "On");
-
-                    if (unlocked && (state == "locked" || state == "toggle"))
-                        action.Apply(door);
-
-                    if (!unlocked && (state == "unlocked" || state == "toggle"))
-                        action.Apply(door);
-                }
-            }
-        }
 
         void initShip(string ship, bool basic = false)
         {

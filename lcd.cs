@@ -364,6 +364,15 @@ namespace IngameScript
                     1));
             }
 
+            // handle doors
+            if (doors_count_unlocked > 0)
+            {
+                LCDAlerts.Add(new ALERT(
+                    doors_count_unlocked + " doors are insecure",
+                    doors_count_unlocked + " doors are insecure",
+                    0));
+            }
+
             // handle aux
             if (aux_active > 0)
             {

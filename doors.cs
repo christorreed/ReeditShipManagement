@@ -30,13 +30,16 @@ namespace IngameScript
             string marked_for_disabling = "";
             doors_count = 0;
             doors_count_closed = 0;
+            doors_count_unlocked = 0;
 
             if (debug) Echo("Interating over " + door_blocks.Count + " doors...");
 
             for (int i = 0; i < door_blocks.Count; i++)
             {
-                if (debug) Echo("Door " + i + ": " + door_blocks[i].CustomName); 
-                
+                if (debug) Echo("Door " + i + ": " + door_blocks[i].CustomName);
+
+                if (isDoorUnlocked(door_blocks[i])) doors_count_unlocked++;
+
                 // ShipName.Door.Airlock.<Airlock_ID>.Door Name
                 // 0        1    2       3            4
                 string[] name_bits = door_blocks[i].CustomName.Split('.');
@@ -239,17 +242,45 @@ namespace IngameScript
             return;
     }
 
-    string buildDoorData(int open, int disabled)
-    {
-        return 
-             "-------------------------\n" +
-             "Reedit Ship Management" + "\n"+
-             "-------------------------\n"+
-             "Timer count values, don't touch!" + "\n"+
-             "-------------------------\n"+
-             "Open Timer=" + open.ToString() + "\n"+
-             "Disabled Timer=" + disabled.ToString() + "\n"+
-             "-------------------------\n";
+        string buildDoorData(int open, int disabled)
+        {
+            return 
+                 "-------------------------\n" +
+                 "Reedit Ship Management" + "\n"+
+                 "-------------------------\n"+
+                 "Timer count values, don't touch!" + "\n"+
+                 "-------------------------\n"+
+                 "Open Timer=" + open.ToString() + "\n"+
+                 "Disabled Timer=" + disabled.ToString() + "\n"+
+                 "-------------------------\n";
+        }
+
+        void setDoorsLock(string state, string filter)
+        {
+            state = state.ToLower();
+
+            foreach (IMyDoor door in door_blocks)
+            {
+                if (filter == "" || door.CustomName.Contains(filter))
+                {
+                    bool unlocked = isDoorUnlocked(door);
+
+                    if (unlocked && (state == "locked" || state == "toggle"))
+                        door.ApplyAction("AnyoneCanUse");
+
+                    if (!unlocked && (state == "unlocked" || state == "toggle"))
+                        door.ApplyAction("AnyoneCanUse");
+                }
+            }
+        }
+
+        bool isDoorUnlocked(IMyDoor door)
+        {
+            var action = door.GetActionWithName("AnyoneCanUse");
+            StringBuilder status = new StringBuilder();
+            action.WriteValue(door, status);
+            Echo("Door anyone can use = " + status);
+            return (status.ToString() == "On");
+        }
     }
-}
 }
