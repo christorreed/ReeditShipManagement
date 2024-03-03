@@ -406,10 +406,16 @@ namespace IngameScript
                     setStance(args[1]);
                     return;
                 case "hudlcd":
-                    string filter = "";
+                    string hud_filter = "";
                     if (args.Length > 2)
-                        filter = args[2];
-                    setHudLcd(args[1], filter);
+                        hud_filter = args[2];
+                    setHudLcd(args[1], hud_filter);
+                    return;
+                case "doors":
+                    string door_filter = "";
+                    if (args.Length > 2)
+                        door_filter = args[2];
+                    setHudLcd(args[1], door_filter);
                     return;
                 /*case "evade":
                     setEvade(args[1]);
@@ -1221,6 +1227,30 @@ namespace IngameScript
 
                     if (cd.Contains("hudXlcd") && (state == "on" || state == "toggle"))
                         all_lcds[i].CustomData = cd.Replace("hudXlcd", "hudlcd");
+                }
+            }
+        }
+
+        void setDoorsLock(string state, string filter)
+        {
+            state = state.ToLower();
+
+            for (int i = 0; i < door_blocks.Count; i++)
+            {
+                if (filter == "" || door_blocks[i].CustomName.Contains(filter))
+                {
+
+                    var action = door_blocks[i].GetActionWithName("AnyoneCanUse");
+                    StringBuilder status = new StringBuilder();
+                    action.WriteValue(door_blocks[i], status);
+                    Echo("Door Status = " + status);
+                    bool unlocked = (status.ToString() == "On");
+
+                    if (unlocked && (state == "locked" || state == "toggle"))
+                        action.Apply(door_blocks[i]);
+
+                    if (!unlocked && (state == "unlocked" || state == "toggle"))
+                        action.Apply(door_blocks[i]);
                 }
             }
         }
