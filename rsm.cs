@@ -180,7 +180,7 @@ namespace IngameScript
         bool ADVANCED_THRUST_SHOW_BASICS = true;
         List<double> ADVANCED_THRUST_PERCENTS = new List<double>();
 
-        bool NAME_WEAPON_TYPES = false;
+        bool NAME_WEAPON_TYPES = true;
 
         IMyShipController controller;
 
@@ -457,11 +457,10 @@ namespace IngameScript
 
                     break;
 
-                case "activatetool":
+                /*case "activatetool":
                     IMyTerminalBlock Tool = GridTerminalSystem.GetBlockWithName(args[1]);
                     setToolActivate(Tool, true);
-
-                    break;
+                    break;*/
 
                 case "spawn":
                     if (args[1].ToLower() == "open")
@@ -2909,21 +2908,21 @@ namespace IngameScript
                     // MyObjectBuilder_Drill/LargeBlockDrill
                     // MyObjectBuilder_Drill/RamshackleDrill
 
-                    else if (blockId.Contains("MyObjectBuilder_Drill/"))
+                    else if (blockId.Contains("Drill/"))
                         drills.Add(allBlocks[i]);
 
                     // Welders
                     // MyObjectBuilder_ShipWelder/LargeRamshackleWelder
                     // MyObjectBuilder_ShipWelder/LargeShipWelder
 
-                    else if (blockId.Contains("MyObjectBuilder_ShipWelder/"))
+                    else if (blockId.Contains("Welder"))
                         welders.Add(allBlocks[i]);
 
                     // Grinders
                     // MyObjectBuilder_ShipGrinder/LargeShipGrinder
                     // MyObjectBuilder_ShipGrinder/LargeRamshackleGrinder
 
-                    else if (blockId.Contains("MyObjectBuilder_ShipGrinder/"))
+                    else if (blockId.Contains("Grinder"))
                         grinders.Add(allBlocks[i]);
 
                     // Servers
