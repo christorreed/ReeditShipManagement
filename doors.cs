@@ -279,7 +279,6 @@ namespace IngameScript
             var action = door.GetActionWithName("AnyoneCanUse");
             StringBuilder status = new StringBuilder();
             action.WriteValue(door, status);
-            Echo("Door anyone can use = " + status);
             return (status.ToString() == "On");
         }
     }
