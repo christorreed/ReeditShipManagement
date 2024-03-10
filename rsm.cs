@@ -170,9 +170,7 @@ namespace IngameScript
         int aux_active = 0;
 
         string current_stance = "N/A";
-        string current_comms = "";
-        double current_comms_range = 0;
-        bool COMMS_ON = false;
+
 
         // double current_sig_range = 0;
 
@@ -190,7 +188,7 @@ namespace IngameScript
         IMyShipController controller;
 
         // Block lists, built at fullRefresh();
-        List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
+        //List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
         List<IMyTextPanel> lcd_blocks = new List<IMyTextPanel>();
         List<IMyDoor> door_blocks = new List<IMyDoor>();
         List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
@@ -232,7 +230,7 @@ namespace IngameScript
         List<IMyTerminalBlock> tanksO2 = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> vents = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> allTanks = new List<IMyTerminalBlock>();
-        List<IMyTerminalBlock> antennas = new List<IMyTerminalBlock>();
+        List<IMyTerminalBlock> ANTENNAS = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> beacons = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> batteries = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> drills = new List<IMyTerminalBlock>();
@@ -426,7 +424,7 @@ namespace IngameScript
                     setEvade(args[1]);
                     break;*/
                 case "comms":
-                    setComms(args[1]);
+                    setAntennasComms(args[1]);
                     break;
 
 
@@ -442,7 +440,7 @@ namespace IngameScript
                         DefsOut += ThisBlock.BlockDefinition + "\n";
                     }
 
-                    antennas[0].CustomData = DefsOut;
+                    if (ANTENNAS[0] != null) ANTENNAS[0].CustomData = DefsOut;
 
                     break;
 
@@ -470,7 +468,7 @@ namespace IngameScript
                         Out += Prop.Id + " " + Prop.TypeName + "\n";
                     }
 
-                    antennas[0].CustomData = Out;
+                    if (ANTENNAS[0] != null) ANTENNAS[0].CustomData = Out;
                     Block.CustomData = Out;
 
                     break;
@@ -1520,7 +1518,7 @@ namespace IngameScript
             processList(pdcs, "PDC");
             processList(defencePdcs, "PDC");
             processList(railguns, "Railgun");
-            processList(antennas, "Antenna");
+            processList(ANTENNAS, "Antenna");
             processList(hangarDoors, "Hangar Door");
             processList(gyros, "Gyroscope");
             processList(lidars, "LiDAR");
@@ -1717,15 +1715,6 @@ namespace IngameScript
             }
         }
 
-        void setComms(string comms)
-        {
-            current_comms = comms;
-            for (int i = 0; i < antenna_blocks.Count; i++)
-            {
-                antenna_blocks[i].HudText = comms;
-            }
-        }
-
         void setBlockRepelOn(IMyTerminalBlock block)
         {
             bool repelStatus = block.GetValue<bool>("WC_Repel");
@@ -1905,25 +1894,7 @@ namespace IngameScript
                 }
             }
 
-            COMMS_ON = false;
-
-            current_comms_range = 0;
-            // iterate over antennas
-            if (debug) Echo("Iterating over " + antenna_blocks.Count + " antennas...");
-            for (int i = 0; i < antenna_blocks.Count; i++)
-            {
-                if (antenna_blocks[i] != null)
-                {
-                    if (antenna_blocks[i].IsFunctional)
-                    {
-                        float range = antenna_blocks[i].Radius;
-                        if (range > current_comms_range) current_comms_range = range;
-                        if (antenna_blocks[i].IsBroadcasting && antenna_blocks[i].Enabled)
-                            COMMS_ON = true;
-                    }
-                }
-
-            }
+            iterateAntennas();
 
             tank_h2_total = 0;
             tank_h2_actual = 0;
@@ -1962,7 +1933,7 @@ namespace IngameScript
 
 
 
-            integrity_bats = Math.Round(100 * (max_power / bat_init));
+
 
             // iterate over inventories
             if (debug) Echo("Iterating over " + cargo_inventory.Count + " inventories...");
@@ -2261,7 +2232,7 @@ namespace IngameScript
                     }
                 }
             }
-
+            integrity_bats = Math.Round(100 * (max_power / bat_init));
 
             if (debug) Echo("Iterating over " + gyros.Count + " gyros...");
             double FunctionalGyros = 0;
@@ -2487,26 +2458,10 @@ namespace IngameScript
 
             // we're about to rebuild these so shud clear them.
             lcd_blocks.Clear();
-            antenna_blocks.Clear();
             door_blocks.Clear();
             cargo_inventory.Clear();
             projector_blocks.Clear();
             cs_lcds.Clear();
-
-            if (debug) Echo("Building antenna list...");
-
-            // > recalculate the antenna_blocks list.
-            List<IMyRadioAntenna> ants = new List<IMyRadioAntenna>();
-            GridTerminalSystem.GetBlocksOfType<IMyRadioAntenna>(ants);
-
-            for (int i = 0; i < ants.Count; i++)
-            {
-                // block is an antenna for the comms command to control.
-                if (ants[i].CustomName.Contains(ship_name) && !ants[i].CustomName.Contains(ignore_keyword))
-                {
-                    antenna_blocks.Add(ants[i]);
-                }
-            }
 
             if (debug) Echo("Building LCDs list...");
 
@@ -2697,7 +2652,7 @@ namespace IngameScript
             tanksO2.Clear();
             vents.Clear();
             allTanks.Clear();
-            antennas.Clear();
+            ANTENNAS.Clear();
             beacons.Clear();
             batteries.Clear();
             drills.Clear();
@@ -2970,7 +2925,7 @@ namespace IngameScript
                     // MyObjectBuilder_RadioAntenna/AntennaCorner
 
                     else if (blockId.Contains("MyObjectBuilder_RadioAntenna/"))
-                        antennas.Add(allBlocks[i]);
+                        ANTENNAS.Add(allBlocks[i]);
 
                     // Hangar Doors
                     // MyObjectBuilder_AirtightHangarDoor/AirtightHangarDoorWarefare2A

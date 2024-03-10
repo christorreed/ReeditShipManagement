@@ -57,10 +57,11 @@
   <Import Project="MDK/MDK.paths.props" Condition="exists('MDK/MDK.paths.props')" />
   <ItemGroup>
     <Compile Include="autoload.cs" />
+    <Compile Include="antennas.cs" />
     <Compile Include="RuntimeProfiler.cs" />
     <Compile Include="default stances.cs" />
     <Compile Include="doors.cs" />
-    <Compile Include="lcd.cs" />
+    <Compile Include="lcds.cs" />
     <Compile Include="wcpbapi.cs" />
     <Compile Include="MDK\Bootstrapper.cs" />
     <AdditionalFiles Include="MDK\MDK.options.props">

@@ -458,16 +458,16 @@ namespace IngameScript
             if (COMMS_ON)
             {
 
-                string output_comms = current_comms;
-                if (antenna_blocks.Count > 0)
-                    if (antenna_blocks[0] != null)
-                        output_comms = antenna_blocks[0].HudText;
+                string output_comms = COMMS_MSG;
+                if (ANTENNAS.Count > 0)
+                    if (ANTENNAS[0] != null)
+                        output_comms = (ANTENNAS[0] as IMyRadioAntenna).HudText;
 
                 string output_range = "";
-                if (current_comms_range < 1000)
-                    output_range = Math.Round(current_comms_range) + "m";
+                if (COMMS_RANGE < 1000)
+                    output_range = Math.Round(COMMS_RANGE) + "m";
                 else
-                    output_range = Math.Round(current_comms_range / 1000) + "km";
+                    output_range = Math.Round(COMMS_RANGE / 1000) + "km";
 
                 LCDAlerts.Add(new ALERT(
                     "Comms ("+ output_range + "): " + output_comms, 
