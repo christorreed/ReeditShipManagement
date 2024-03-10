@@ -133,9 +133,9 @@ namespace IngameScript
                 255,    // 9: Blue - Exterior lights colour
                 255,    // 10: Alpha - Exterior lights colour
                 1,      // 11: interior lights lights; 0: off, 1: on
-                158,    // 12: Red - Interior lights colour
-                100,     // 13: Green - Interior lights colour
-                219,    // 14: Blue - Interior lights colour
+                212,    // 12: Red - Interior lights colour
+                170,    // 13: Green - Interior lights colour
+                83,     // 14: Blue - Interior lights colour
                 255,    // 15: Alpha - Interior lights colour
                 0,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                 0,      // 17: EFC boost; 0: off, 1: on
@@ -215,9 +215,9 @@ namespace IngameScript
                 0,      // 9: Blue - Exterior lights colour
                 255,    // 10: Alpha - Exterior lights colour
                 1,      // 11: interior lights lights; 0: off, 1: on
-                232,    // 12: Red - Interior lights colour
-                55,     // 13: Green - Interior lights colour
-                16,     // 14: Blue - Interior lights colour
+                210,    // 12: Red - Interior lights colour
+                98,     // 13: Green - Interior lights colour
+                17,     // 14: Blue - Interior lights colour
                 255,    // 15: Alpha - Interior lights colour
                 2,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                 0,      // 17: EFC boost; 0: off, 1: on
@@ -296,9 +296,9 @@ namespace IngameScript
                 0,    // 9: Blue - Exterior lights colour
                 255,    // 10: Alpha - Exterior lights colour
                 1,      // 11: interior lights lights; 0: off, 1: on
-                30,     // 12: Red - Interior lights colour
-                144,    // 13: Green - Interior lights colour
-                225,    // 14: Blue - Interior lights colour
+                23,     // 12: Red - Interior lights colour
+                73,    // 13: Green - Interior lights colour
+                186,    // 14: Blue - Interior lights colour
                 255,    // 15: Alpha - Interior lights colour
                 0,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts, 2: discharge batts
                 0,      // 17: EFC boost; 0: off, 1: on
