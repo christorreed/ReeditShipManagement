@@ -416,7 +416,7 @@ namespace IngameScript
                     string door_filter = "";
                     if (args.Length > 2)
                         door_filter = args[2];
-                    setHudLcd(args[1], door_filter);
+                    setDoorsLock(args[1], door_filter);
                     return;
                 /*case "evade":
                     setEvade(args[1]);
