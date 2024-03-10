@@ -138,7 +138,7 @@ namespace IngameScript
                             {
                                 if (Vent.CustomName.Contains(name_bits[3]))
                                 {
-                                    if (Vent.CanPressurize && Vent.GetOxygenLevel() < .01)
+                                    if (Vent.Enabled && Vent.CanPressurize && Vent.GetOxygenLevel() < .01)
                                     {
                                         // airlock is sealed and depressurised!
                                         off_timer_count = 0;
