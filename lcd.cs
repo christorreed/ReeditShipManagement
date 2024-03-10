@@ -195,7 +195,7 @@ namespace IngameScript
             // --------------------
             // Build thrust section
             // --------------------
-            string output_sig_range = (Math.Round((current_sig_range / 1000)).ToString() + " km").PadLeft(15);
+            //string output_sig_range = (Math.Round((current_sig_range / 1000)).ToString() + " km").PadLeft(15);
             double vel = Math.Round(velocity);
             string vel_msg = "Velocity:        ";
 
@@ -223,8 +223,8 @@ namespace IngameScript
             string sec_thrust =
 
                "──┤ Thrust ├─────────────────" + basic_spinner + "──\n\n" +
-                output_decel_short +
-                "\nDrive Signature: " + output_sig_range + "\n\n";
+                output_decel_short;
+                //"\nDrive Signature: " + output_sig_range + "\n\n";
 
 
             

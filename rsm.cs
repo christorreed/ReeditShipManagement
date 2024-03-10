@@ -172,7 +172,7 @@ namespace IngameScript
         double current_comms_range = 0;
         bool COMMS_ON = false;
 
-        double current_sig_range = 0;
+        // double current_sig_range = 0;
 
         double velocity;
         float mass;
@@ -1848,7 +1848,7 @@ namespace IngameScript
             }
 
             // iterate over beacons
-            if (debug) Echo("Iterating over " + beacon_blocks.Count + " beacons...");
+            /*if (debug) Echo("Iterating over " + beacon_blocks.Count + " beacons...");
             for (int i = 0; i < beacon_blocks.Count; i++)
             {
                 if (beacon_blocks[i].IsWorking == true)
@@ -1858,7 +1858,7 @@ namespace IngameScript
                     current_sig_range = beacon_blocks[i].Radius;
                     break;
                 }
-            }
+            }*/
 
             if (adjustKeepAlives)
             {
