@@ -377,7 +377,7 @@ namespace IngameScript
 
             string[] args = argument.Split(':');
 
-            if (args.Length != 2)
+            if (args.Length < 2)
             {
 
                 ALERTS.Add(new ALERT(
