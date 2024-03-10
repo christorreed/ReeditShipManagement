@@ -199,6 +199,8 @@ namespace IngameScript
         List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
         List<IMyProjector> projector_blocks = new List<IMyProjector>();
 
+        List<IMyTextPanel> cs_lcds = new List<IMyTextPanel>();
+
         // Block lists, also built at fullRefresh(); but differently
         List<IMyTerminalBlock> servers = new List<IMyTerminalBlock>(); // handle at stance set
         List<IMyTerminalBlock> serversEfc = new List<IMyTerminalBlock>(); // handle at stance set
@@ -1222,7 +1224,23 @@ namespace IngameScript
                 if (debug) Echo("Setting " + door_blocks.Count + " doors to locked because rails are free-fire.");
                 setDoorsLock("locked", "");
             }
-            
+
+
+            // colour sync for non RSM LCDs
+            if (cs_lcds.Count > 0)
+            {
+                if (debug) Echo("Setting " + cs_lcds.Count + " colour sync LCDs.");
+                for (int i = 0; i < cs_lcds.Count; i++)
+                {
+                    cs_lcds[i].FontColor = new Color(
+                        stance_data[stance_i][12],
+                        stance_data[stance_i][13],
+                        stance_data[stance_i][14],
+                        stance_data[stance_i][15]
+                        );
+                }
+            }
+
 
         }
 
@@ -2473,6 +2491,7 @@ namespace IngameScript
             door_blocks.Clear();
             cargo_inventory.Clear();
             projector_blocks.Clear();
+            cs_lcds.Clear();
 
             if (debug) Echo("Building antenna list...");
 
@@ -2517,13 +2536,9 @@ namespace IngameScript
                 }
                 else if (!disable_text_colour_enforcement && lcds[i].CustomName.Contains("[CS]"))
                 {
+                    cs_lcds.Add(lcds[i]);
   
-                    lcds[i].FontColor = new Color(
-                            stance_data[stance_i][12],
-                            stance_data[stance_i][13],
-                            stance_data[stance_i][14],
-                            stance_data[stance_i][15]
-                            );
+
                 }
             }
 
