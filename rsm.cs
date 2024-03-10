@@ -90,6 +90,8 @@ namespace IngameScript
 
        List<string> FORCE_ENUMERATION = new List<string>();
 
+        bool DISCHARGE_MGMT = true;
+
         string faction_tag;
 
         string friendly_tags = "";
@@ -1100,7 +1102,7 @@ namespace IngameScript
                         // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                         if (stance_data[stance_i][16] == 0)
                             Battery.ChargeMode = ChargeMode.Auto;
-                        else if (stance_data[stance_i][16] == 2)
+                        else if (stance_data[stance_i][16] == 2 && !DISCHARGE_MGMT) // if 2, handle in realtime based on rail targets.
                             Battery.ChargeMode = ChargeMode.Discharge;
                         else
                             Battery.ChargeMode = ChargeMode.Recharge;
@@ -1108,6 +1110,8 @@ namespace IngameScript
                 }
 
             }
+
+
 
             if (debug) Echo("Setting " + allTanks.Count + " tanks to stockpile = " + stance_data[stance_i][16]);
 
@@ -1938,32 +1942,7 @@ namespace IngameScript
                 }
             }
 
-            integrity_tanks_H2 = Math.Round(100 * (tank_h2_total / tank_h2_init));
-            integrity_tanks_O2 = Math.Round(100 * (tank_o2_total / tank_o2_init));
 
-            bat_actual = 0;
-            bat_total = 0;
-
-            max_power = 0;
-
-            // iterate over batteries
-            if (debug) Echo("Iterating over " + batteries.Count + " batteries...");
-            for (int i = 0; i < batteries.Count; i++)
-            {
-                if (batteries[i] != null)
-                {
-                    if (batteries[i].IsFunctional)
-                    {
-                        IMyBatteryBlock Battery = batteries[i] as IMyBatteryBlock;
-                        // turn on!
-                        Battery.Enabled = true;
-
-                        bat_actual += Battery.CurrentStoredPower;
-                        bat_total += Battery.MaxStoredPower;
-                        max_power += Battery.MaxOutput;
-                    }
-                }
-            }
 
             integrity_bats = Math.Round(100 * (max_power / bat_init));
 
@@ -2182,6 +2161,8 @@ namespace IngameScript
             }
             integrity_pdcs = Math.Round(100 * (FunctionalPDCs / pdcs_init));
 
+            bool NoTargets = true;
+
             if (debug) Echo("Iterating over " + railguns.Count + " railguns...");
             double FunctionalRailguns = 0;
             for (int i = 0; i < railguns.Count; i++)
@@ -2193,6 +2174,19 @@ namespace IngameScript
                         FunctionalRailguns++;
                         if (AUTOLOAD)
                             if (!inventorySomewhatFull(railguns[i])) TO_LOAD.Add(railguns[i]);
+
+                        if (NoTargets)
+                        {
+                            MyDetectedEntityInfo? RailTarget = WC_PB_API.GetWeaponTarget(railguns[i]);
+                            if (RailTarget.HasValue)
+                            {
+                                if (RailTarget.Value.Name != null && RailTarget.Value.Name != "")
+                                {
+                                    if (debug) Echo("At least one rail has a target!");
+                                    NoTargets = false;
+                                }
+                            }
+                        }
 
                         if (railguns[i].CustomName.Contains(ship_name) && !railguns[i].CustomName.Contains(ignore_keyword))
                         {
@@ -2207,6 +2201,49 @@ namespace IngameScript
                 }
             }
             integrity_railguns = Math.Round(100 * (FunctionalRailguns / railguns_init));
+
+
+            integrity_tanks_H2 = Math.Round(100 * (tank_h2_total / tank_h2_init));
+            integrity_tanks_O2 = Math.Round(100 * (tank_o2_total / tank_o2_init));
+
+            bat_actual = 0;
+            bat_total = 0;
+
+            max_power = 0;
+
+            // iterate over batteries
+            if (debug) Echo("Iterating over " + batteries.Count + " batteries...");
+            for (int i = 0; i < batteries.Count; i++)
+            {
+                if (batteries[i] != null)
+                {
+                    if (batteries[i].IsFunctional)
+                    {
+                        IMyBatteryBlock Battery = batteries[i] as IMyBatteryBlock;
+                        // turn on!
+                        Battery.Enabled = true;
+
+                        bat_actual += Battery.CurrentStoredPower;
+                        bat_total += Battery.MaxStoredPower;
+                        max_power += Battery.MaxOutput;
+
+
+                        // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
+                        if (stance_data[stance_i][16] == 2)
+                        {
+                            if (NoTargets && DISCHARGE_MGMT)
+                            {
+                                Battery.ChargeMode = ChargeMode.Auto;
+                            }
+                            else
+                            {
+                                Battery.ChargeMode = ChargeMode.Discharge;
+                            }
+                        }
+                    }
+                }
+            }
+
 
             if (debug) Echo("Iterating over " + gyros.Count + " gyros...");
             double FunctionalGyros = 0;
@@ -3254,6 +3291,11 @@ namespace IngameScript
                                     NAME_WEAPON_TYPES = bool.Parse(value);
                                     break;
 
+                                case "Only set batteries to discharge on active railgun/coilgun target.":
+                                    config_count++;
+                                    DISCHARGE_MGMT = bool.Parse(value);
+                                    break;
+
 
                                 case "Show basic telemetry.":
                                     config_count++;
@@ -3456,11 +3498,13 @@ namespace IngameScript
                                     welders_init = int.Parse(value);
                                     break;
 
+
+
                             }
                         }
                     }
 
-                    if (config_count == 54)
+                    if (config_count == 55)
                     {
                         parsedVars = true;
                     }
@@ -3666,6 +3710,7 @@ namespace IngameScript
                 + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", friendly_tags.Split('\n'))) + "\n"
                 + "Number these blocks at init.\n=" + ForcedNames + "\n"
                 + "Add type names to weapons at init.\n=" + NAME_WEAPON_TYPES + "\n"
+                + "Only set batteries to discharge on active railgun/coilgun target.\n=" + DISCHARGE_MGMT + "\n"
 
                 + "\n---- [Door Timers] ----\n"
                 + "Doors open timer (x100 ticks, default 3)\n=" + door_open_time + "\n"
