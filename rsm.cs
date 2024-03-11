@@ -191,7 +191,7 @@ namespace IngameScript
         // Block lists, built at fullRefresh();
         //List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
         //List<IMyTextPanel> lcd_blocks = new List<IMyTextPanel>();
-        List<IMyDoor> door_blocks = new List<IMyDoor>();
+        //List<IMyDoor> door_blocks = new List<IMyDoor>();
         List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
         List<string> airlock_loop_prevention = new List<string>();
         List<IMyBeacon> beacon_blocks = new List<IMyBeacon>();
@@ -201,6 +201,8 @@ namespace IngameScript
         List<IMyTextPanel> LCDs = new List<IMyTextPanel>();
         List<IMyTextPanel> RSM_LCDs = new List<IMyTextPanel>();
         List<IMyTextPanel> CS_LCDs = new List<IMyTextPanel>();
+
+        List<IMyDoor> DOORs = new List<IMyDoor>();
 
         // Block lists, also built at fullRefresh(); but differently
         List<IMyTerminalBlock> servers = new List<IMyTerminalBlock>(); // handle at stance set
@@ -1222,7 +1224,7 @@ namespace IngameScript
             // lock doors if we're in close combat, basically.
             if (stance_data[stance_i][2] == 2)
             {
-                if (debug) Echo("Setting " + door_blocks.Count + " doors to locked because rails are free-fire.");
+                if (debug) Echo("Setting " + DOORs.Count + " doors to locked because we are in cobmat (rails set to free-fire).");
                 setDoorsLock("locked", "");
             }
 
@@ -2387,7 +2389,7 @@ namespace IngameScript
                 velocity = controller.GetShipSpeed();
                 mass = controller.CalculateShipMass().PhysicalMass;
             }
-            catch (Exception exxie) {
+            catch (/*Exception exxie*/) {
                 Echo("Failed to get velocity or mass!");
                 //Echo(exxie.Message);
             }
@@ -2430,29 +2432,9 @@ namespace IngameScript
               
 
             // we're about to rebuild these so shud clear them.
-            door_blocks.Clear();
+            //door_blocks.Clear();
             cargo_inventory.Clear();
             projector_blocks.Clear();
-
-            if (debug) Echo("Building doors list...");
-
-            // recalculate Door list
-            List<IMyDoor> doors = new List<IMyDoor>();
-            GridTerminalSystem.GetBlocksOfType<IMyDoor>(doors);
-
-            for (int i = 0; i < doors.Count; i++)
-            {
-                if (
-                    doors[i].CustomName.Contains(ship_name)
-                    &&
-                    !doors[i].CustomName.Contains(ignore_keyword)
-                    &&
-                    !doors[i].BlockDefinition.ToString().Contains("MyObjectBuilder_AirtightHangarDoor/")
-                    )
-                {
-                    door_blocks.Add(doors[i]);
-                }
-            }
 
             if (debug) Echo("Building beacon list...");
 
@@ -2600,6 +2582,7 @@ namespace IngameScript
             LCDs.Clear();
             RSM_LCDs.Clear();
             CS_LCDs.Clear();
+            DOORs.Clear();
 
             everythingElse.Clear();
 
@@ -2888,6 +2871,15 @@ namespace IngameScript
 
                     else if (blockId.Contains("MyObjectBuilder_AirtightHangarDoor/"))
                         hangarDoors.Add(allBlocks[i]);
+
+                    // Doors
+                    // MyObjectBuilder_Door/SlidingHatchDoor
+
+                    else if (blockId.Contains("MyObjectBuilder_Door/"))
+                    {
+                        IMyDoor TempDoor = allBlocks[i] as IMyDoor;
+                        if (TempDoor != null) DOORs.Add(TempDoor);
+                    }
 
                     // Gyroscopes
                     // MyObjectBuilder_Gyro/LargeBlockGyro

@@ -25,24 +25,22 @@ namespace IngameScript
         void manageDoors()
         {
 
-            if (debug) Echo("Managing doors...");
-
             string marked_for_disabling = "";
             doors_count = 0;
             doors_count_closed = 0;
             doors_count_unlocked = 0;
 
-            if (debug) Echo("Interating over " + door_blocks.Count + " doors...");
+            if (debug) Echo("Interating over " + DOORs.Count + " doors...");
 
-            for (int i = 0; i < door_blocks.Count; i++)
+            for (int i = 0; i < DOORs.Count; i++)
             {
-                if (debug) Echo("Door " + i + ": " + door_blocks[i].CustomName);
+                if (debug) Echo("Door " + i + ": " + DOORs[i].CustomName);
 
-                if (isDoorUnlocked(door_blocks[i])) doors_count_unlocked++;
+                if (isDoorUnlocked(DOORs[i])) doors_count_unlocked++;
 
                 // ShipName.Door.Airlock.<Airlock_ID>.Door Name
                 // 0        1    2       3            4
-                string[] name_bits = door_blocks[i].CustomName.Split('.');
+                string[] name_bits = DOORs[i].CustomName.Split('.');
                 bool is_airlock = false;
                 string airlock_id = "";
                 try
@@ -59,7 +57,7 @@ namespace IngameScript
                 doors_count++;
                 // is the door off or open?
                 // if not we kinda don't care
-                if (!door_blocks[i].Enabled == true || door_blocks[i].OpenRatio != 0)
+                if (!DOORs[i].Enabled == true || DOORs[i].OpenRatio != 0)
                 {
                     //int open_timer_count
                     //int off_timer_count
@@ -70,7 +68,7 @@ namespace IngameScript
                     try
                     {
                         // parse custom data for timer values.
-                        string[] parse_dat = door_blocks[i].CustomData.Split('=');
+                        string[] parse_dat = DOORs[i].CustomData.Split('=');
                         for (int j = 0; j < parse_dat.Length; j++)
                         {
                             string[] cleanup = parse_dat[j].Split('\n');
@@ -81,13 +79,13 @@ namespace IngameScript
                     }
                     catch
                     {
-                        if (debug) Echo("Failed to parse custom data (" + door_blocks[i].CustomName + ").");
+                        if (debug) Echo("Failed to parse custom data (" + DOORs[i].CustomName + ").");
                     }
 
                     // if the door is open, continue the timer
                     // if the timer is door_open_time, close the door.
 
-                    if (door_blocks[i].OpenRatio != 0)
+                    if (DOORs[i].OpenRatio != 0)
                     {
                         // door is open.
                         if (open_timer_count == 0 /*&& door_blocks[i].CustomName.Contains(".Airlock.")*/)
@@ -95,7 +93,7 @@ namespace IngameScript
                             // this door only just opened, and it's an airlock door.
                             // so lets mark other doors in this airlock for disabling.
 
-                            if (debug) Echo("Door just opened... (" + door_blocks[i].CustomName + ")");
+                            if (debug) Echo("Door just opened... (" + DOORs[i].CustomName + ")");
 
 
 
@@ -111,19 +109,19 @@ namespace IngameScript
                         }
 
                         // force the door on if it's already open
-                        door_blocks[i].Enabled = true;
+                        DOORs[i].Enabled = true;
                         open_timer_count++;
                         if (open_timer_count >= door_open_time)
                         {
                             open_timer_count = 0;
-                            door_blocks[i].CloseDoor();
+                            DOORs[i].CloseDoor();
                         }
                     }
 
                     // if the door is off, continue the timer
                     // if the timer is door_airlock_time, turn on the door.
 
-                    if (!door_blocks[i].Enabled)
+                    if (!DOORs[i].Enabled)
                     {
                         //Echo("manageDoors 3");
                         // door is off.
@@ -142,7 +140,7 @@ namespace IngameScript
                                     {
                                         // airlock is sealed and depressurised!
                                         off_timer_count = 0;
-                                        door_blocks[i].Enabled = true;
+                                        DOORs[i].Enabled = true;
 
                                         // check if we just did this, to prevent looping forever.
 
@@ -160,7 +158,7 @@ namespace IngameScript
 
                                         if (!found)
                                         {
-                                            door_blocks[i].OpenDoor();
+                                            DOORs[i].OpenDoor();
                                             airlock_loop_prevention.Add(name_bits[3]);
                                         }
                                     }
@@ -177,20 +175,20 @@ namespace IngameScript
                         if (off_timer_count >= door_airlock_time)
                         {
                             off_timer_count = 0;
-                            door_blocks[i].Enabled = true;
+                            DOORs[i].Enabled = true;
                         }
 
                     }
 
-                    door_blocks[i].CustomData = buildDoorData(open_timer_count, off_timer_count);
+                    DOORs[i].CustomData = buildDoorData(open_timer_count, off_timer_count);
 
                 }
                 else
                 {
                     // it's not open or off so nothing to do really.
                     // will reset custom data.
-                    door_blocks[i].CustomData = buildDoorData(0, 0);
-                    if (door_blocks[i].OpenRatio == 0) doors_count_closed++;
+                    DOORs[i].CustomData = buildDoorData(0, 0);
+                    if (DOORs[i].OpenRatio == 0) doors_count_closed++;
 
                 }
 
@@ -207,7 +205,7 @@ namespace IngameScript
                 string[] to_disable = marked_for_disabling.Split(',');
 
                 // now we run through them again, dealing with those marked for disabling...
-                for (int i = 0; i < door_blocks.Count; i++)
+                for (int i = 0; i < DOORs.Count; i++)
                 {
                     //Echo("manageDoors 4");
                     bool disable = false;
@@ -219,20 +217,20 @@ namespace IngameScript
                             to_disable[j] != ""
                             &&
                             // + it's a marked door.
-                            door_blocks[i].CustomName.Contains(to_disable[j])
+                            DOORs[i].CustomName.Contains(to_disable[j])
                             &&
                             // + it's on
-                            door_blocks[i].Enabled == true
+                            DOORs[i].Enabled == true
                             &&
                             // + its closed
-                            door_blocks[i].OpenRatio == 0
+                            DOORs[i].OpenRatio == 0
                             )
                             disable = true;
                     }
                     if (disable == true)
                     {
-                        door_blocks[i].Enabled = false;
-                        if (debug) Echo("Disabled door + (" + door_blocks[i].CustomName + ")");
+                        DOORs[i].Enabled = false;
+                        if (debug) Echo("Disabled door + (" + DOORs[i].CustomName + ")");
                     }
                 }
             }
@@ -259,7 +257,7 @@ namespace IngameScript
         {
             state = state.ToLower();
 
-            foreach (IMyDoor door in door_blocks)
+            foreach (IMyDoor door in DOORs)
             {
                 if (filter == "" || door.CustomName.Contains(filter))
                 {
