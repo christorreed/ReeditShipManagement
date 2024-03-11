@@ -647,9 +647,9 @@ namespace IngameScript
                 sec_thrust_advanced += "\n\n";
             }
 
-            if (debug) Echo("Interating over "+ lcd_blocks.Count + " LCDs");
+            if (debug) Echo("Interating over "+ RSM_LCDs.Count + " LCDs");
 
-            for (int i = 0; i < lcd_blocks.Count; i++)
+            for (int i = 0; i < RSM_LCDs.Count; i++)
             {
                 bool show_header = true;
                 bool show_header_overlay = false;
@@ -665,7 +665,7 @@ namespace IngameScript
                 try
                 {
                     // Parse LCD Panel Data
-                    string[] LcdConfigs = lcd_blocks[i].CustomData.Split('\n');
+                    string[] LcdConfigs = RSM_LCDs[i].CustomData.Split('\n');
 
 
                     int config_count = 0;
@@ -756,7 +756,7 @@ namespace IngameScript
                 catch { }
 
                 if (!AllGood)
-                    setLcdCustomData(lcd_blocks[i],
+                    setLcdCustomData(RSM_LCDs[i],
                         new bool[] {
                          show_header,
                          show_header_overlay,
@@ -795,7 +795,7 @@ namespace IngameScript
                 //if (!show_header_overlay) output_text += LCD_DIVIDER;
 
                 //Echo("Wrote to " + lcd_blocks[i].CustomName);
-                lcd_blocks[i].WriteText(output_text, false);
+                RSM_LCDs[i].WriteText(output_text, false);
 
 
                 // force font colour
@@ -803,9 +803,9 @@ namespace IngameScript
                 {
 
                     if (show_header_overlay)
-                        lcd_blocks[i].FontColor = LCD_OVERLAY_COLOUR;
+                        RSM_LCDs[i].FontColor = LCD_OVERLAY_COLOUR;
                     else
-                        lcd_blocks[i].FontColor = new Color(
+                        RSM_LCDs[i].FontColor = new Color(
                             CurrentStance[12],
                             CurrentStance[13],
                             CurrentStance[14],
@@ -813,7 +813,7 @@ namespace IngameScript
                 }
             }
 
-            if (debug) Echo("Finished updating " + lcd_blocks.Count.ToString() + " LCDs...");
+            if (debug) Echo("Finished updating " + RSM_LCDs.Count.ToString() + " LCDs...");
 
 
             // write to PB details.
@@ -821,6 +821,46 @@ namespace IngameScript
             // TODO write something to Echo!
 
             return;
+        }
+
+        // colour sync for non RSM LCDs
+        void syncLcdColours()
+        {
+
+            if (CS_LCDs.Count > 0)
+            {
+                if (debug) Echo("Setting " + CS_LCDs.Count + " colour sync LCDs.");
+
+                foreach (IMyTextPanel LCD in CS_LCDs)
+                {
+                    LCD.FontColor = new Color(
+                        stance_data[stance_i][12],
+                        stance_data[stance_i][13],
+                        stance_data[stance_i][14],
+                        stance_data[stance_i][15]
+                        );
+                }
+            }
+        }
+
+        void setHudLcd(string State, string Filter)
+        {
+            State = State.ToLower();
+            List<IMyTextPanel> AllLCDs = new List<IMyTextPanel>();
+            GridTerminalSystem.GetBlocksOfType<IMyTextPanel>(LCDs);
+
+            foreach (IMyTextPanel lcd in LCDs)
+            {
+                if (Filter == "" || lcd.CustomName.Contains(Filter))
+                {
+                    string cd = lcd.CustomData;
+                    if (cd.Contains("hudlcd") && (State == "off" || State == "toggle"))
+                        lcd.CustomData = cd.Replace("hudlcd", "hudXlcd");
+
+                    if (cd.Contains("hudXlcd") && (State == "on" || State == "toggle"))
+                        lcd.CustomData = cd.Replace("hudXlcd", "hudlcd");
+                }
+            }
         }
 
 

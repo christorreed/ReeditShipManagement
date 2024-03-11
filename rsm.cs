@@ -29,7 +29,8 @@ namespace IngameScript
         // name is also set by init.
         string ship_name = "Untitled Ship";
         // the keyword for LCDs to be controlled by this script.
-        string lcd_keyword = "[RSM]";
+        string KEYWORD_LCD = "[RSM]";
+        string KEYWORD_COLOUR_SYNC = "[CS]";
         // the keyword for aux systems
         // set rotors etc later as well
         string aux_keyword = "[Autorepair]";
@@ -189,7 +190,7 @@ namespace IngameScript
 
         // Block lists, built at fullRefresh();
         //List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
-        List<IMyTextPanel> lcd_blocks = new List<IMyTextPanel>();
+        //List<IMyTextPanel> lcd_blocks = new List<IMyTextPanel>();
         List<IMyDoor> door_blocks = new List<IMyDoor>();
         List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
         List<string> airlock_loop_prevention = new List<string>();
@@ -197,7 +198,9 @@ namespace IngameScript
         List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
         List<IMyProjector> projector_blocks = new List<IMyProjector>();
 
-        List<IMyTextPanel> cs_lcds = new List<IMyTextPanel>();
+        List<IMyTextPanel> LCDs = new List<IMyTextPanel>();
+        List<IMyTextPanel> RSM_LCDs = new List<IMyTextPanel>();
+        List<IMyTextPanel> CS_LCDs = new List<IMyTextPanel>();
 
         // Block lists, also built at fullRefresh(); but differently
         List<IMyTerminalBlock> servers = new List<IMyTerminalBlock>(); // handle at stance set
@@ -1223,44 +1226,14 @@ namespace IngameScript
                 setDoorsLock("locked", "");
             }
 
-
             // colour sync for non RSM LCDs
-            if (cs_lcds.Count > 0)
-            {
-                if (debug) Echo("Setting " + cs_lcds.Count + " colour sync LCDs.");
-                for (int i = 0; i < cs_lcds.Count; i++)
-                {
-                    cs_lcds[i].FontColor = new Color(
-                        stance_data[stance_i][12],
-                        stance_data[stance_i][13],
-                        stance_data[stance_i][14],
-                        stance_data[stance_i][15]
-                        );
-                }
-            }
+            syncLcdColours();
 
 
+            if (debug) Echo("Finished setting stance.");
         }
 
-        void setHudLcd(string state, string filter)
-        {
-            state = state.ToLower();
-            List<IMyTextPanel> all_lcds = new List<IMyTextPanel>();
-            GridTerminalSystem.GetBlocksOfType<IMyTextPanel>(all_lcds);
 
-            foreach (IMyTextPanel lcd in all_lcds)
-            {
-                if (filter == "" || lcd.CustomName.Contains(filter))
-                {
-                    string cd = lcd.CustomData;
-                    if (cd.Contains("hudlcd") && (state == "off" || state == "toggle"))
-                        lcd.CustomData = cd.Replace("hudlcd", "hudXlcd");
-
-                    if (cd.Contains("hudXlcd") && (state == "on" || state == "toggle"))
-                        lcd.CustomData = cd.Replace("hudXlcd", "hudlcd");
-                }
-            }
-        }
 
 
 
@@ -2457,45 +2430,9 @@ namespace IngameScript
               
 
             // we're about to rebuild these so shud clear them.
-            lcd_blocks.Clear();
             door_blocks.Clear();
             cargo_inventory.Clear();
             projector_blocks.Clear();
-            cs_lcds.Clear();
-
-            if (debug) Echo("Building LCDs list...");
-
-            // recalculate LCD list
-            List<IMyTextPanel> lcds = new List<IMyTextPanel>();
-            GridTerminalSystem.GetBlocksOfType<IMyTextPanel>(lcds);
-
-            for (int i = 0; i < lcds.Count; i++)
-            {
-                // block is an LCD we're going to write our data too.
-                if (
-                    lcds[i].CustomName.Contains(lcd_keyword)
-                    &&
-                    lcds[i].CustomName.Contains(ship_name)
-                    &&
-                    !lcds[i].CustomName.Contains(ignore_keyword))
-                {
-                    lcd_blocks.Add(lcds[i]);
-
-                    // tidy up the LCD as well.
-                    lcds[i].ContentType = ContentType.TEXT_AND_IMAGE;
-
-                    //lcds[i].FontSize = LCD_FONT_SIZE;
-                    lcds[i].Font = "Monospace";
-                    //lcds[i].TextPadding = 0;
-                    lcds[i].Alignment = TextAlignment.CENTER;
-                }
-                else if (!disable_text_colour_enforcement && lcds[i].CustomName.Contains("[CS]"))
-                {
-                    cs_lcds.Add(lcds[i]);
-  
-
-                }
-            }
 
             if (debug) Echo("Building doors list...");
 
@@ -2660,6 +2597,9 @@ namespace IngameScript
             grinders.Clear();
             hangarDoors.Clear();
             camerasAndSensorsAndLCDs.Clear();
+            LCDs.Clear();
+            RSM_LCDs.Clear();
+            CS_LCDs.Clear();
 
             everythingElse.Clear();
 
@@ -2838,6 +2778,21 @@ namespace IngameScript
                         // this just for init
                         //coilguns.Add(allBlocks[i]);
                         ITEMS[13].ARMED_IN.Add(allBlocks[i].GetInventory());
+                    }
+
+                    else if (blockId.Contains("MyObjectBuilder_TextPanel/"))
+                    {
+                        IMyTextPanel TempLCD = allBlocks[i] as IMyTextPanel;
+                        if (TempLCD != null)
+                        {
+                            LCDs.Add(TempLCD);
+
+                            if (TempLCD.CustomName.Contains(KEYWORD_LCD))
+                                RSM_LCDs.Add(TempLCD);
+                            else if (!disable_text_colour_enforcement && TempLCD.CustomName.Contains(KEYWORD_COLOUR_SYNC))
+                                CS_LCDs.Add(TempLCD);
+                        }
+                        
                     }
 
                     // ignore blocks with the ignore keyword.
@@ -3050,8 +3005,9 @@ namespace IngameScript
                     // MyObjectBuilder_TextPanel/ATL_SlopedArmorBlockLCD_LG
                     else if (
                         blockId.Contains("MyObjectBuilder_CameraBlock/")
-                        ||
-                        blockId.Contains("MyObjectBuilder_TextPanel/")
+                        // removed. TODO update this variable name.
+                        //||
+                        //blockId.Contains("MyObjectBuilder_TextPanel/")
                         ||
                         blockId.Contains("MyObjectBuilder_SensorBlock/")
                         )
@@ -3199,7 +3155,7 @@ namespace IngameScript
                                     break;
                                 case "Keyword used to identify RSM LCDs.":
                                     config_count++;
-                                    lcd_keyword = value;
+                                    KEYWORD_LCD = value;
 
                                     break;
                                 case "Keyword used to identify autorepair systems":
@@ -3666,7 +3622,7 @@ namespace IngameScript
 
                 + "\n---- [General Settings] ----\n"
                 + "Block name delimiter, used by init. One character only!\n=" + name_delimiter + "\n"
-                + "Keyword used to identify RSM LCDs.\n=" + lcd_keyword + "\n"
+                + "Keyword used to identify RSM LCDs.\n=" + KEYWORD_LCD + "\n"
                 + "Keyword used to identify auxiliary blocks\n=" + aux_keyword + "\n"
                 + "Keyword used to identify minimum epstein drives.\n=" + min_drives_keyword + "\n"
                 + "Keyword used to identify docking epstein drives.\n=" + docking_drives_keyword + "\n"
