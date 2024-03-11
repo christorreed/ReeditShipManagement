@@ -194,7 +194,7 @@ namespace IngameScript
         //List<IMyDoor> door_blocks = new List<IMyDoor>();
         List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
         List<string> airlock_loop_prevention = new List<string>();
-        List<IMyBeacon> beacon_blocks = new List<IMyBeacon>();
+        //List<IMyBeacon> beacon_blocks = new List<IMyBeacon>();
         List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
         List<IMyProjector> projector_blocks = new List<IMyProjector>();
 
@@ -2380,18 +2380,17 @@ namespace IngameScript
 
             if (controller == null)
             {
-
-            }
-
-            try
-            {
-                // calculate current mass and velocity
-                velocity = controller.GetShipSpeed();
-                mass = controller.CalculateShipMass().PhysicalMass;
-            }
-            catch (/*Exception exxie*/) {
-                Echo("Failed to get velocity or mass!");
-                //Echo(exxie.Message);
+                try
+                {
+                    // calculate current mass and velocity
+                    velocity = controller.GetShipSpeed();
+                    mass = controller.CalculateShipMass().PhysicalMass;
+                }
+                catch (Exception exxie)
+                {
+                    Echo("Failed to get velocity or mass!");
+                    Echo(exxie.Message);
+                }
             }
 
             manageExtractors();
@@ -2435,20 +2434,6 @@ namespace IngameScript
             //door_blocks.Clear();
             cargo_inventory.Clear();
             projector_blocks.Clear();
-
-            if (debug) Echo("Building beacon list...");
-
-            // recalculate Beacon list
-            List<IMyBeacon> beaconz = new List<IMyBeacon>();
-            GridTerminalSystem.GetBlocksOfType<IMyBeacon>(beaconz);
-
-            for (int i = 0; i < beaconz.Count; i++)
-            {
-                if (beaconz[i].CustomName.Contains(ship_name) && !beaconz[i].CustomName.Contains(ignore_keyword))
-                {
-                    beacon_blocks.Add(beaconz[i]);
-                }
-            }
 
             if (debug) Echo("Building connector and collector lists...");
 
