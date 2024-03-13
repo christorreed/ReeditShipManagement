@@ -139,5 +139,47 @@ namespace IngameScript
                 Item.TARGET = Item.COUNT;
             }
         }
+
+        bool inventorySomewhatFull(IMyTerminalBlock Block) // is a block's inventory > 95% full.
+        {
+            if (Block == null) return false;
+            IMyInventory thisInventory = Block.GetInventory();
+            return thisInventory.CurrentVolume.RawValue > (thisInventory.MaxVolume.RawValue * 0.95);
+        }
+
+        bool inventoryEmpty(IMyTerminalBlock Block) // is a block's inventory totally empty
+        {
+            IMyInventory thisInventory = Block.GetInventory();
+            return thisInventory.VolumeFillFactor == 0;
+        }
+
+        void loadInventory(IMyTerminalBlock ToLoad, List<IMyInventory> SourceInventories, string ItemType, int ItemCount)
+        {
+
+            if (D) Echo("Loading block " + ToLoad.CustomName + " with item type " + ItemType + " from " + SourceInventories.Count + " sources.");
+
+            IMyInventory ToLoadInventory = ToLoad.GetInventory();
+
+            foreach (IMyInventory Source in SourceInventories)
+            {
+                try
+                {
+                    List<MyInventoryItem> Items = new List<MyInventoryItem>();
+                    Source.GetItems(Items);
+
+                    foreach (MyInventoryItem Item in Items)
+                    {
+                        if (Item.ToString().Contains(ItemType))
+                        {
+                            bool success = ToLoadInventory.TransferItemFrom(Source, Item, ItemCount);
+                            if (success) return;
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            if (D) Echo("Loading failed.");
+        }
     }
 }

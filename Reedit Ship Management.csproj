@@ -61,6 +61,9 @@
     <Compile Include="block lists.cs" />
     <Compile Include="cargos.cs" />
     <Compile Include="auxiliaries.cs" />
+    <Compile Include="block utils.cs" />
+    <Compile Include="stance.cs" />
+    <Compile Include="init.cs" />
     <Compile Include="welders.cs" />
     <Compile Include="projectors.cs" />
     <Compile Include="extractors.cs" />
