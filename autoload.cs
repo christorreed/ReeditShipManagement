@@ -23,12 +23,15 @@ namespace IngameScript
 {
     partial class Program
     {
+        List<IMyTerminalBlock> TO_LOAD = new List<IMyTerminalBlock>();
+        List<IMyTerminalBlock> TO_BALANCE_LOAD = new List<IMyTerminalBlock>();
+
         void manageAutoload()
         {
 
             if (!AUTOLOAD) return;
 
-            if (debug) Echo("Managing Autoload, " + TO_LOAD.Count + " weapons to be loaded...");
+            if (D) Echo("Managing Autoload, " + TO_LOAD.Count + " weapons to be loaded...");
 
             missing_ammo = "";
 
@@ -49,7 +52,7 @@ namespace IngameScript
 
                 foreach (ITEM Item in ITEMS)
                 {
-                    //if (debug) Echo("Checking " + Item.TYPE.SubtypeId);
+                    //if (D) Echo("Checking " + Item.TYPE.SubtypeId);
 
                     if (Item.TYPE.SubtypeId == OutputAmmoType) // this is the correct item for this ammo type.
                     {
@@ -85,7 +88,7 @@ namespace IngameScript
                 if (Item.AMMO_LOW)
                 {
 
-                    if (debug) Echo(Item.NAME + " requires inventory balancing...");
+                    if (D) Echo(Item.NAME + " requires inventory balancing...");
 
                     // okay for this item, we have no ammo in cargo
                     // so it's time to start attempting to balance.
@@ -148,7 +151,7 @@ namespace IngameScript
                             // don't load more than the LoadFrom has spare.
                             if (NumberToLoad > ToShare) NumberToLoad = ToShare;
 
-                            if (debug) Echo(
+                            if (D) Echo(
                                 Item.NAME + 
                                 "\n - LoadCount:" + LoadCount + 
                                 "\n - LoadFromCount:" + LoadFromCount + 
@@ -211,7 +214,7 @@ namespace IngameScript
                     return "180mmLeadSteelSabotMagazine";
 
                 default:
-                    if (debug) Echo("Unknown AmmoType = " + AmmoType);
+                    if (D) Echo("Unknown AmmoType = " + AmmoType);
                     return "";
 
             }

@@ -22,6 +22,15 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+
+        List<string> AIRLOCK_LOOP_PREVENTION = new List<string>();
+
+        // todo
+        // manageDoors() is a cluster fuck
+        // fix it
+        // - remove reliance on door custom data, clear this shit out
+        // - make airlocks easier to configure, more fool proof. Autodetecting?
+
         void manageDoors()
         {
 
@@ -30,11 +39,11 @@ namespace IngameScript
             doors_count_closed = 0;
             doors_count_unlocked = 0;
 
-            if (debug) Echo("Interating over " + DOORs.Count + " doors...");
+            if (D) Echo("Interating over " + DOORs.Count + " doors...");
 
             for (int i = 0; i < DOORs.Count; i++)
             {
-                if (debug) Echo("Door " + i + ": " + DOORs[i].CustomName);
+                if (D) Echo("Door " + i + ": " + DOORs[i].CustomName);
 
                 if (isDoorUnlocked(DOORs[i])) doors_count_unlocked++;
 
@@ -79,11 +88,11 @@ namespace IngameScript
                     }
                     catch
                     {
-                        if (debug) Echo("Failed to parse custom data (" + DOORs[i].CustomName + ").");
+                        if (D) Echo("Failed to parse custom data (" + DOORs[i].CustomName + ").");
                     }
 
                     // if the door is open, continue the timer
-                    // if the timer is door_open_time, close the door.
+                    // if the timer is DOOR_OPEN_TIME, close the door.
 
                     if (DOORs[i].OpenRatio != 0)
                     {
@@ -93,7 +102,7 @@ namespace IngameScript
                             // this door only just opened, and it's an airlock door.
                             // so lets mark other doors in this airlock for disabling.
 
-                            if (debug) Echo("Door just opened... (" + DOORs[i].CustomName + ")");
+                            if (D) Echo("Door just opened... (" + DOORs[i].CustomName + ")");
 
 
 
@@ -111,7 +120,7 @@ namespace IngameScript
                         // force the door on if it's already open
                         DOORs[i].Enabled = true;
                         open_timer_count++;
-                        if (open_timer_count >= door_open_time)
+                        if (open_timer_count >= DOOR_OPEN_TIME)
                         {
                             open_timer_count = 0;
                             DOORs[i].CloseDoor();
@@ -119,14 +128,14 @@ namespace IngameScript
                     }
 
                     // if the door is off, continue the timer
-                    // if the timer is door_airlock_time, turn on the door.
+                    // if the timer is DOOR_AIRLOCK_TIME, turn on the door.
 
                     if (!DOORs[i].Enabled)
                     {
                         //Echo("manageDoors 3");
                         // door is off.
 
-                        foreach (IMyAirVent Vent in airlock_vents)
+                        foreach (IMyAirVent Vent in VENTs_AIRLOCKS)
                         {
 
                             // ShipName.Door.Airlock.<Airlock_ID>.Door Name
@@ -146,11 +155,11 @@ namespace IngameScript
 
                                         bool found = false;
 
-                                        for (int j = 0; j < airlock_loop_prevention.Count; j++)
+                                        for (int j = 0; j < AIRLOCK_LOOP_PREVENTION.Count; j++)
                                         {
-                                            if (airlock_loop_prevention[j] == airlock_id)
+                                            if (AIRLOCK_LOOP_PREVENTION[j] == airlock_id)
                                             {
-                                                airlock_loop_prevention.RemoveAt(j);
+                                                AIRLOCK_LOOP_PREVENTION.RemoveAt(j);
                                                 found = true;
                                                 break;
                                             }
@@ -159,7 +168,7 @@ namespace IngameScript
                                         if (!found)
                                         {
                                             DOORs[i].OpenDoor();
-                                            airlock_loop_prevention.Add(name_bits[3]);
+                                            AIRLOCK_LOOP_PREVENTION.Add(name_bits[3]);
                                         }
                                     }
 
@@ -172,7 +181,7 @@ namespace IngameScript
 
 
                         off_timer_count++;
-                        if (off_timer_count >= door_airlock_time)
+                        if (off_timer_count >= DOOR_AIRLOCK_TIME)
                         {
                             off_timer_count = 0;
                             DOORs[i].Enabled = true;
@@ -194,12 +203,12 @@ namespace IngameScript
 
             }
 
-            if (debug) Echo("Done, now disabling doors...");
+            if (D) Echo("Done, now disabling doors...");
 
             if (marked_for_disabling != "")
             {
 
-                if (debug) Echo("Disabling doors...");
+                if (D) Echo("Disabling doors...");
 
                 //Echo("Starting 2nd door loop");
                 string[] to_disable = marked_for_disabling.Split(',');
@@ -230,16 +239,40 @@ namespace IngameScript
                     if (disable == true)
                     {
                         DOORs[i].Enabled = false;
-                        if (debug) Echo("Disabled door + (" + DOORs[i].CustomName + ")");
+                        if (D) Echo("Disabled door + (" + DOORs[i].CustomName + ")");
                     }
                 }
             }
 
-            if (debug) Echo("Done mangaging doors.");
+            if (D) Echo("Done mangaging doors.");
 
             return;
-    }
+        }
 
+
+        // Hangar Doors -----------------------------------------------------------------
+
+        void setHangarDoors(int state)
+        {
+            // 23: hangar doors; 0: closed, 1: open, 2: no change
+
+            if (state == 2) return; // no change
+
+            foreach (IMyAirtightHangarDoor Hangar in DOORs_HANGAR)
+            {
+                if (Hangar == null)
+                    continue;
+
+                if (state == 0)
+                    Hangar.CloseDoor();
+                else
+                    Hangar.OpenDoor();
+            }
+        }
+
+        // todo
+        // kill this, with fire.
+        // just save it in RAM bro!
         string buildDoorData(int open, int disabled)
         {
             return 

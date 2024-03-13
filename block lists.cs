@@ -47,6 +47,7 @@ namespace IngameScript
         private List<IMyGasTank> TANKs_O2 = new List<IMyGasTank>();
         private List<IMyAirVent> VENTs = new List<IMyAirVent>();
         private List<IMyAirVent> VENTs_AIRLOCKS = new List<IMyAirVent>();
+        private List<IMyTerminalBlock> WELDERs = new List<IMyTerminalBlock>();
 
         // Weapons Lists
         private List<IMyConveyorSorter> LIDARs = new List<IMyConveyorSorter>();
@@ -78,7 +79,7 @@ namespace IngameScript
         private List<IMyReflectorLight> LIGHTs_SPOT = new List<IMyReflectorLight>();
 
         // Aux List
-        private List<IMyTerminalBlock> AUXILIARIES = new List<IMyTerminalBlock>();
+        private List<IMyTerminalBlock> AUXILIARIEs = new List<IMyTerminalBlock>();
 
         // Cargo Inventories
         private List<IMyInventory> INVENTORIEs = new List<IMyInventory>();
@@ -136,7 +137,7 @@ namespace IngameScript
 
             // grab aux blocks
             if (b.CustomName.Contains(KEYWORD_AUX))
-                AUXILIARIES.Add(b);
+                AUXILIARIEs.Add(b);
 
             string blockId = b.BlockDefinition.ToString();
 
@@ -370,7 +371,7 @@ namespace IngameScript
                     )
                 {
                     LIGHTs_INTERIOR.Add(TempLight);
-                    if (I) INIT_NAMEs.Add(b, "Light" + name_delimiter + "Interior");
+                    if (I) INIT_NAMEs.Add(b, "Light" + NAME_DELIMITER + "Interior");
                 }
 
                 // nav lights
@@ -379,12 +380,12 @@ namespace IngameScript
                     if (b.CustomName.ToUpper().Contains("STARBOARD"))
                     {
                         LIGHTs_NAV_STARBOARD.Add(TempLight);
-                        if (I) INIT_NAMEs.Add(b, "Light" + name_delimiter + "Nav" + name_delimiter + "Starboard");
+                        if (I) INIT_NAMEs.Add(b, "Light" + NAME_DELIMITER + "Nav" + NAME_DELIMITER + "Starboard");
                     }
                     else
                     {
                         LIGHTs_NAV_PORT.Add(TempLight);
-                        if (I) INIT_NAMEs.Add(b, "Light" + name_delimiter + "Nav" + name_delimiter + "Port");
+                        if (I) INIT_NAMEs.Add(b, "Light" + NAME_DELIMITER + "Nav" + NAME_DELIMITER + "Port");
                     }    
                 }
 
@@ -392,7 +393,7 @@ namespace IngameScript
                 else
                 {
                     LIGHTs_EXTERIOR.Add(TempLight);
-                    if (I) INIT_NAMEs.Add(b, "Light" + name_delimiter + "Exterior");
+                    if (I) INIT_NAMEs.Add(b, "Light" + NAME_DELIMITER + "Exterior");
                 }
 
                 return false;
@@ -431,7 +432,7 @@ namespace IngameScript
                     else if (blockId.Contains("MCRN"))
                         AppendReactor = "MCRN";
 
-                    INIT_NAMEs.Add(b, "Reactor" + name_delimiter + AppendReactor);
+                    INIT_NAMEs.Add(b, "Reactor" + NAME_DELIMITER + AppendReactor);
                 }
                 return false;
             }
@@ -496,7 +497,7 @@ namespace IngameScript
                 if (I) 
                 {
                     if (blockId.Contains("Passageway"))
-                        ConnectorAppend = name_delimiter + "Passageway";
+                        ConnectorAppend = NAME_DELIMITER + "Passageway";
                     INIT_NAMEs.Add(b, "Connector" + ConnectorAppend);
                 }
                 return false;
@@ -585,6 +586,15 @@ namespace IngameScript
                 return false;
             }
 
+            // Welders -----------------------------------------------------------------
+
+            if (blockId.Contains("Welder"))
+            {
+                WELDERs.Add(b);
+                INIT_NAMEs.Add(b, "Welder");
+                return false;
+            }
+
             // INIT CHECKS ONLY -----------------------------------------------------------------
             // blocks which are not iterated over later
             // only need to be processed at init.
@@ -600,12 +610,6 @@ namespace IngameScript
                 }
 
                 if (blockId.Contains("Drill"))
-                {
-                    INIT_NAMEs.Add(b, "Drill");
-                    return false;
-                }
-
-                if (blockId.Contains("Welder"))
                 {
                     INIT_NAMEs.Add(b, "Drill");
                     return false;
@@ -670,6 +674,9 @@ namespace IngameScript
                     INIT_NAMEs.Add(b, "Beacon");
                     return false;
                 }
+
+                // catch all for blocks types without overrides.
+                INIT_NAMEs.Add(b, b.DefinitionDisplayNameText);
             }
 
             // and we're done
@@ -725,7 +732,7 @@ namespace IngameScript
             LIGHTs_SPOT.Clear();
 
             // Aux List
-            AUXILIARIES.Clear();
+            AUXILIARIEs.Clear();
 
             // Cargo Inventories
             INVENTORIEs.Clear();
@@ -752,7 +759,7 @@ namespace IngameScript
             if (I)
             {
                 string Append = "";
-                if (NAME_WEAPON_TYPES) Append = name_delimiter + init;
+                if (NAME_WEAPON_TYPES) Append = NAME_DELIMITER + init;
                 INIT_NAMEs.Add(b, "PDC" + Append);
             }
 
@@ -770,7 +777,7 @@ namespace IngameScript
             if (I)
             {
                 string Append = "";
-                if (NAME_WEAPON_TYPES) Append = name_delimiter + init;
+                if (NAME_WEAPON_TYPES) Append = NAME_DELIMITER + init;
                 INIT_NAMEs.Add(b, "Torpedo" + Append);
             }
 
@@ -791,7 +798,7 @@ namespace IngameScript
             if (I)
             {
                 string Append = "";
-                if (NAME_WEAPON_TYPES) Append = name_delimiter + init;
+                if (NAME_WEAPON_TYPES) Append = NAME_DELIMITER + init;
                 INIT_NAMEs.Add(b, "Railgun" + Append);
             }
 

@@ -32,31 +32,26 @@ namespace IngameScript
             COMMS_ON = false;
 
             COMMS_RANGE = 0;
-            // iterate over antennas
-            if (debug) Echo("Iterating over " + ANTENNAS.Count + " antennas...");
-            foreach (IMyTerminalBlock Block in ANTENNAS)
+            
+            foreach (IMyRadioAntenna Antenna in ANTENNAs)
             {
-                if (Block != null)
+                if (Antenna != null)
                 {
-                    IMyRadioAntenna Antenna = Block as IMyRadioAntenna;
-                    if (Antenna != null)
+                    if (Antenna.IsFunctional)
                     {
-                        if (Antenna.IsFunctional)
-                        {
-                            float range = Antenna.Radius;
-                            if (range > COMMS_RANGE) COMMS_RANGE = range;
-                            if (Antenna.IsBroadcasting && Antenna.Enabled) COMMS_ON = true;
-                        }
+                        float range = Antenna.Radius;
+                        if (range > COMMS_RANGE) COMMS_RANGE = range;
+                        if (Antenna.IsBroadcasting && Antenna.Enabled) COMMS_ON = true;
                     }
                 }
             }
         }
 
-        void setAntennasComms(string Comms)
+        void setAntennaComms(string Comms)
         {
             COMMS_MSG = Comms;
 
-            foreach (IMyTerminalBlock Block in ANTENNAS)
+            foreach (IMyTerminalBlock Block in ANTENNAs)
             {
                 IMyRadioAntenna Antenna = Block as IMyRadioAntenna;
                 if (Antenna != null) Antenna.HudText = Comms;
