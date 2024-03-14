@@ -32,22 +32,28 @@ namespace IngameScript
             // tidy it up more.
             // add more options, like without naming?
 
-            if (D) Echo("Initialising a ship as '" + ship + "'.");
+            if (D) Echo("Initialising a ship as '" + ship + "'...");
+
+            // set init mode on
+            I = true;
 
             // this rebuilds general that we need here lists.
             fullRefresh();
+
+            I = false;
 
             // i now christen this ship, the RSG whatever the fuck
             // it's now public variable official.
             SHIP_NAME = ship;
 
+            if (D) Echo("Initialising lcds...");
             // setup LCDs.
             initLcds();
 
             if (!basic)
             {
                 // now I calculate subsystem total capacities in order to check for damage later.
-
+                if (D) Echo("Initialising subsystem values...");
                 initMainThrusters();
                 initRcsThrusters();
                 initBatteries();
@@ -62,12 +68,15 @@ namespace IngameScript
                 INIT_GYROs = GYROs.Count;
                 INIT_WELDERs = WELDERs.Count;
 
+                if (D) Echo("Initialising item values...");
                 initItems();
             }
 
             updateCustomData(true);
 
+            if (D) Echo("Initialising block names.");
             initBlockNames();
+
 
             ALERTS.Add(new ALERT(
                 "Init:" + ship,
@@ -95,6 +104,7 @@ namespace IngameScript
                 // lets build our dictionary
                 foreach (string Name in FORCE_ENUMERATION)
                 {
+                    if (D) Echo("Numbering " + Name);
                     NamesWithNumbers.Add(Name, new NamingCategory());
                 }
 

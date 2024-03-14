@@ -150,7 +150,7 @@ namespace IngameScript
         private void initReactors()
         {
             INIT_REACTORs = 0;
-            foreach (IMyBatteryBlock Reactor in REACTORs)
+            foreach (IMyReactor Reactor in REACTORs)
             {
                 INIT_REACTORs += Reactor.MaxOutput;
             }

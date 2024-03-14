@@ -353,49 +353,49 @@ namespace IngameScript
             }
 
             // iterate blocks
-            if (D) Echo("Checking " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
+            if (D) Echo("Iterating " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
             iteratePowerBlocks(STANCES[S][16]);
 
-            if (D) Echo("Checking " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
+            if (D) Echo("Iterating " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
             iteratePDCs();
 
-            if (D) Echo("Checking " + TORPs.Count + " torpedo launchers...");
+            if (D) Echo("Iterating " + TORPs.Count + " torpedo launchers...");
             iterateTorpedoes();
 
-            if (D) Echo("Checking " + RAILs.Count + " railguns...");
+            if (D) Echo("Iterating " + RAILs.Count + " railguns...");
             iterateRailguns();
 
-            if (D) Echo("Checking " + THRUSTERs_EPSTEIN.Count + " cargos...");
+            if (D) Echo("Iterating " + THRUSTERs_EPSTEIN.Count + " epsteins...");
             iterateMainThrusters();
 
-            if (D) Echo("Checking " + THRUSTERs_RCS.Count + " cargos...");
+            if (D) Echo("Iterating " + THRUSTERs_RCS.Count + " rcs...");
             iterateRcsThrusters();
 
-            if (D) Echo("Checking " + TANKs_H2.Count + " H2 tanks...");
+            if (D) Echo("Iterating " + TANKs_H2.Count + " H2 tanks...");
             iterateH2Tanks();
 
-            if (D) Echo("Checking " + TANKs_O2.Count + " O2 tanks...");
+            if (D) Echo("Iterating " + TANKs_O2.Count + " O2 tanks...");
             iterateO2Tanks();
 
-            if (D) Echo("Checking " + ANTENNAs.Count + " antennas...");
+            if (D) Echo("Iterating " + ANTENNAs.Count + " antennas...");
             iterateAntennas();
 
-            if (D) Echo("Checking " + CARGOs.Count + " cargos...");
+            if (D) Echo("Iterating " + CARGOs.Count + " cargos...");
             iterateCargos();
 
-            if (D) Echo("Checking " + LIDARs.Count + " lidars...");
+            if (D) Echo("Iterating " + LIDARs.Count + " lidars...");
             iterateLidars(adjustThemTo, adjustKeepAlives);
 
-            if (D) Echo("Checking " + GYROs.Count + " gyros...");
+            if (D) Echo("Iterating " + GYROs.Count + " gyros...");
             iterateGyros(adjustThemTo, adjustKeepAlives);
 
-            if (D) Echo("Checking " + VENTs.Count + " vents...");
+            if (D) Echo("Iterating " + VENTs.Count + " vents...");
             iterateVents(adjustThemTo, adjustKeepAlives);
 
-            if (D) Echo("Iterating over " + AUXILIARIEs.Count + " auxiliary blocks...");
+            if (D) Echo("Iterating " + AUXILIARIEs.Count + " auxiliary blocks...");
             iterateAuxiliaries();
 
-            if (D) Echo("Iterating over " + WELDERs.Count + " welders...");
+            if (D) Echo("Iterating " + WELDERs.Count + " welders...");
             iterateWelders();
 
             // these ones are only keep alives

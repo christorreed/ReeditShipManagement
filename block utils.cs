@@ -49,7 +49,10 @@ namespace IngameScript
                 DefsOut += ThisBlock.BlockDefinition + "\n";
             }
 
-            if (ANTENNAs.Count > 1 && ANTENNAs[0] != null) ANTENNAs[0].CustomData = DefsOut;
+            if (ANTENNAs.Count > 0 && ANTENNAs[0] != null)
+            {
+                ANTENNAs[0].CustomData = DefsOut;
+            }
         }
 
         void printBlockProps(string name)
@@ -77,7 +80,7 @@ namespace IngameScript
                 Out += Prop.Id + " " + Prop.TypeName + "\n";
             }
 
-            if (ANTENNAs.Count > 1 && ANTENNAs[0] != null) ANTENNAs[0].CustomData = Out;
+            if (ANTENNAs.Count > 0 && ANTENNAs[0] != null) ANTENNAs[0].CustomData = Out;
             Block.CustomData = Out;
         }
 
