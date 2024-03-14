@@ -432,6 +432,7 @@ namespace IngameScript
                 if (TempReactor != null)
                 {
                     REACTORs.Add(TempReactor);
+                    INVENTORIEs.Add(TempReactor.GetInventory());
                     ITEMS[0].ARMED_IN.Add(b.GetInventory());
                     if (I)
                     {
@@ -528,7 +529,7 @@ namespace IngameScript
                 }
 
                 // LiDAR -----------------------------------------------------------------
-                if (b.CustomName.Contains("Lidar"))
+                if (blockId.Contains("Lidar"))
                 {
                     var TempLidar = b as IMyConveyorSorter;
                     if (TempLidar != null)
@@ -732,6 +733,7 @@ namespace IngameScript
             TANKs_O2.Clear();
             VENTs.Clear();
             VENTs_AIRLOCKS.Clear();
+            WELDERs.Clear();
 
             // Weapons Lists
             LIDARs.Clear();
@@ -745,6 +747,10 @@ namespace IngameScript
             THRUSTERs_RCS.Clear();
             THRUSTERs_CHEM.Clear();
             THRUSTERs_ATMO.Clear();
+
+            // PB Lists
+            PBs_EFC.Clear();
+            PBs_NAVOS.Clear();
 
             // LCD Lists
             LCDs.Clear();

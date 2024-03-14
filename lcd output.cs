@@ -293,7 +293,11 @@ namespace IngameScript
             // handle lidar
             if (!LIDAR_WORKING)
             {
-                LCDAlerts.Add(new ALERT("NO LiDAR!", "No LiDARs are currently working. Ship is blind to enemy contacts at long range.", 2));
+                LCDAlerts.Add(new ALERT(
+                    "NO LiDAR!", 
+                    "No LiDARs are currently working. Ship is blind to enemy contacts at long range.", 
+                    2
+                    ));
             }
 
             // handle fuel

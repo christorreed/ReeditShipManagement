@@ -485,6 +485,7 @@ namespace IngameScript
 
 debugs
 
+- inventory counting, zeroing bugs.
 x issues with fuel level
 x issues with capacity?
 x issues with Reactor subsystem
