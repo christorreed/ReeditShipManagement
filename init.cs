@@ -74,7 +74,7 @@ namespace IngameScript
 
             updateCustomData(true);
 
-            if (D) Echo("Initialising block names.");
+            if (D) Echo("Initialising block names...");
             initBlockNames();
 
 
@@ -126,34 +126,33 @@ namespace IngameScript
                     else if (Catty.Value.Total > 99) Catty.Value.PadDepth = 3;
                     else Catty.Value.PadDepth = 2;
                 }
-
-                // finally, we're ready to iterate.
-                foreach (var BlockName in INIT_NAMEs)
+            }
+            // finally, we're ready to iterate.
+            foreach (var BlockName in INIT_NAMEs)
+            {
+                string BlockNumber = "";
+                string ThisName = BlockName.Value;
+                NamingCategory Category;
+                if (NamesWithNumbers.TryGetValue(BlockName.Value, out Category))
                 {
-                    string BlockNumber = "";
-                    string ThisName = BlockName.Value;
-                    NamingCategory Category;
-                    if (NamesWithNumbers.TryGetValue(BlockName.Value, out Category))
+                    // number this block.
+
+                    // so long as there is more than one block in the category...
+                    if (Category.Total > 1)
                     {
-                        // number this block.
+                        // increment and stringify block number
+                        Category.Count++;
+                        BlockNumber = NAME_DELIMITER + Category.Count.ToString().PadLeft(Category.PadDepth, '0');
 
-                        // so long as there is more than one block in the category...
-                        if (Category.Total > 1)
-                        {
-                            // increment and stringify block number
-                            Category.Count++;
-                            BlockNumber = NAME_DELIMITER + Category.Count.ToString().PadLeft(Category.PadDepth, '0');
-
-                        }
                     }
-
-                    BlockName.Key.CustomName =
-                        SHIP_NAME + NAME_DELIMITER
-                        + ThisName
-                        + BlockNumber
-                        + retainSuffix(BlockName.Key.CustomName, ThisName);
-
                 }
+
+                BlockName.Key.CustomName =
+                    SHIP_NAME + NAME_DELIMITER
+                    + ThisName
+                    + BlockNumber
+                    + retainSuffix(BlockName.Key.CustomName, ThisName);
+
             }
         }
 

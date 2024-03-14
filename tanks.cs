@@ -31,6 +31,7 @@ namespace IngameScript
         private void iterateH2Tanks()
         {
             ACTUAL_H2 = 0;
+            TOTAL_H2 = 0;
 
             foreach (IMyGasTank Tank in TANKs_H2)
             {
@@ -82,7 +83,9 @@ namespace IngameScript
         private double INTEGRITY_O2 = 0;
         private void iterateO2Tanks()
         {
-            ACTUAL_H2 = 0;
+            ACTUAL_O2 = 0;
+            TOTAL_O2 = 0;
+
             foreach (IMyGasTank Tank in TANKs_O2)
             {
                 if (Tank.IsFunctional)

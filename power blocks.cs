@@ -42,8 +42,8 @@ namespace IngameScript
 
         private void iterateBatteries(int state)
         {
-            ACTUAL_BATTERIEs = 0;
             TOTAL_BATTERIEs = 0;
+            ACTUAL_BATTERIEs = 0;
 
             foreach (IMyBatteryBlock Battery in BATTERIEs)
             {
@@ -71,7 +71,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_BATTERIEs = Math.Round(100 * (ACTUAL_BATTERIEs / INIT_BATTERIEs));
+            INTEGRITY_BATTERIEs = Math.Round(100 * (MAX_POWER / INIT_BATTERIEs));
         }
         private void initBatteries()
         {

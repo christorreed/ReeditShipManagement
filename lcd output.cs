@@ -37,7 +37,6 @@ namespace IngameScript
         string[] STANCE_DATA_OUT_TANKS = new string[] { "AUTO", "STOC", " AUTO" };
         string[] STANCE_DATA_OUT_BATTS = new string[] { " AUTO", "CHG", " DCHG" };
 
-
         // general LCD vars
         const int LCD_WIDTH = 32;
         const float LCD_FONT_SIZE = 0.8f;
@@ -143,14 +142,11 @@ namespace IngameScript
                     }
                     */
                 }
-
             }
         }
 
         string[] ALERT_PRIORITIES = new string[] { "- ", "= ", "x ", "! " };
         List<ALERT> ALERTS = new List<ALERT>();
-
-
 
         // todo
         // review and improve this
@@ -177,8 +173,6 @@ namespace IngameScript
             string sec_inventory_counts =
                 "──┤ Inventory ├──────────────" + basic_spinner + "──\n\n";
 
-
-            
 
             foreach (ITEM Item in ITEMS)
             {
@@ -234,6 +228,12 @@ namespace IngameScript
             // Build Tanks & Batteries
             // -----------------------
 
+
+            if (D)
+            {
+                Echo("Actual H2:" + ACTUAL_H2 + "\nTotal H2: " + TOTAL_H2);
+
+            }
 
             FUEL_PERCENTAGES = Math.Round(100 * (ACTUAL_H2 / TOTAL_H2));
             double oxygen_percentage = Math.Round(100 * (ACTUAL_O2 / TOTAL_O2));
@@ -537,7 +537,7 @@ namespace IngameScript
                 if (INIT_THRUSTERs_RCS > 0)
                     sec_integrity += "RCS       [" + generateBar(INTEGRITY_THRUSTERs_RCS) + "] " + (INTEGRITY_THRUSTERs_RCS + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
                 if (INIT_REACTORs > 0)
-                    sec_integrity += "REACTORs  [" + generateBar(INTEGRITY_REACTORs) + "] " + (INTEGRITY_REACTORs + "% ").PadLeft(5) + "    \n";
+                    sec_integrity += "Reactors  [" + generateBar(INTEGRITY_REACTORs) + "] " + (INTEGRITY_REACTORs + "% ").PadLeft(5) + "    \n";
                 if (INIT_BATTERIEs > 0)
                     sec_integrity += "Batteries [" + generateBar(INTEGRITY_BATTERIEs) + "] " + (INTEGRITY_BATTERIEs + "% ").PadLeft(5) + STANCE_DATA_OUT_BATTS[CurrentStance[16]] + "\n";
                 if (INIT_PDCs > 0)

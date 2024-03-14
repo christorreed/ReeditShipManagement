@@ -355,6 +355,8 @@ namespace IngameScript
             // iterate blocks
             if (D) Echo("Iterating " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
             iteratePowerBlocks(STANCES[S][16]);
+            if (D) Echo("Battery Total: " + TOTAL_BATTERIEs + "\nBattery Init: " + INIT_BATTERIEs);
+
 
             if (D) Echo("Iterating " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
             iteratePDCs();
@@ -480,6 +482,17 @@ namespace IngameScript
 }
 
 /******************************************************************************************
+
+debugs
+
+x issues with fuel level
+x issues with capacity?
+x issues with Reactor subsystem
+x reactors subsystem caps
+x Batteries subsys
+x tanks 3000% subsys
+x railguns count is zero even tho i have some
+x "An item with the same key has already been added" during 
  
 todos
 
