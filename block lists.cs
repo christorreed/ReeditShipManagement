@@ -128,7 +128,7 @@ namespace IngameScript
 
             // test for unowned blocks...
             string Tag = b.GetOwnerFactionTag();
-            if (Tag != FACTION_TAG)
+            if (Tag != FACTION_TAG && Tag != "")
             {
                 Echo("!" + Tag + ": " + b.CustomName);
                 UNOWNED_BLOCKS++;
