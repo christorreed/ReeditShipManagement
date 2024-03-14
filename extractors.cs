@@ -24,6 +24,15 @@ namespace IngameScript
     {
         // Extractors -----------------------------------------------------------------
 
+        // counter used to prevent refuel from looping.
+        int REFUEL_FAILURE_COUNT = 0;
+        int REFUEL_FAILURE_THRESH = 25;
+
+        // this value multiplies the capacity by
+        // the KEEP_FULL_MULTIPLIER depending on
+        // if this is SG or LG
+        double EXTACTOR_KEEP_FULL_THRESH;
+
         void setExtractors(int state)
         {
             // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
@@ -47,15 +56,23 @@ namespace IngameScript
             }
         }
 
-        // todo
-        // review this method
-        void manageExtractors()
+        void setKeepFullThresh()
         {
-            if (D) Echo("manageExtractors();");
+            // set fuel tank/jerry can for extractor management = 3
+            if (EXTRACTORs.Count < 1 && EXTRACTORs_SMALL.Count > 1)
+                EXTACTOR_KEEP_FULL_THRESH = (KEEP_FULL_MULTIPLIER * CAPACITY_JERRY_CAN);
+            else
+                EXTACTOR_KEEP_FULL_THRESH = (KEEP_FULL_MULTIPLIER * CAPACITY_FUEL_TANK);
+        }
 
-            if (stance_data[stance_i][21] < 2)
+        void checkRefuelStatus()
+        {
+            // this method basically determines, based on the current stance
+            // if we NEED_FUEL...
+
+            if (STANCES[S][21] < 2)
             {
-                if (D) Echo("Management disabled.");
+                if (D) Echo("Extractor management disabled.");
             }
             else if (EXTRACTOR_WAIT > 0)
             {
@@ -66,13 +83,13 @@ namespace IngameScript
             {
                 if (D) Echo("No tanks!");
             }
-            else if (stance_data[stance_i][21] == 2 && fuel_percentage < TOP_UP_PERCENTAGE)
+            else if (STANCES[S][21] == 2 && FUEL_PERCENTAGES < TOP_UP_PERCENTAGE)
             // refuel at 10%
             {
-                if (D) Echo("Fuel low! (" + fuel_percentage + "% / " + TOP_UP_PERCENTAGE + "%)");
+                if (D) Echo("Fuel low! (" + FUEL_PERCENTAGES + "% / " + TOP_UP_PERCENTAGE + "%)");
                 NEED_FUEL = true;
             }
-            else if (stance_data[stance_i][21] == 3 && ACTUAL_H2 < (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH))
+            else if (STANCES[S][21] == 3 && ACTUAL_H2 < (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH))
             // refuel to keep tanks full.
             {
                 if (D) Echo("Fuel ready for top up (" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
@@ -80,15 +97,13 @@ namespace IngameScript
             }
             else if (D)
             {
-                Echo("Fuel level OK (" + fuel_percentage + "%).");
+                Echo("Fuel level OK (" + FUEL_PERCENTAGES + "%).");
 
-                if (stance_data[stance_i][21] == 3)
+                if (STANCES[S][21] == 3)
                     Echo("Keeping tanks full\n(" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
             }
         }
 
-        // todo
-        // review this method
         void fillExtractors()
         {
 
@@ -121,7 +136,7 @@ namespace IngameScript
 
             if (thisInventory == null)
             {
-                refuel_failure_count = 1;
+                REFUEL_FAILURE_COUNT = 1;
                 NO_EXTRACTOR = true;
                 return;
             }
@@ -184,7 +199,7 @@ namespace IngameScript
                 }
             }
             // no spare tanks...
-            refuel_failure_count = 1;
+            REFUEL_FAILURE_COUNT = 1;
             NO_SPARE_TANKS = true;
         }
     }

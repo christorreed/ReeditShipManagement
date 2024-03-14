@@ -152,9 +152,10 @@ namespace IngameScript
 
 
 
-
+        // todo
+        // review and improve this
         // updates all LCDs on the ship to display our data.
-        void updateLcd()
+        void updateLcds()
         {
             if (D) Echo("Updating LCDs...");
 
@@ -196,7 +197,7 @@ namespace IngameScript
             // Build thrust section
             // --------------------
             //string output_sig_range = (Math.Round((current_sig_range / 1000)).ToString() + " km").PadLeft(15);
-            double vel = Math.Round(velocity);
+            double vel = Math.Round(VELOCITY);
             string vel_msg = "Velocity:        ";
 
             if (vel < 1) // if velocity is close to zero, use 500m/s instead.
@@ -205,8 +206,8 @@ namespace IngameScript
                 vel_msg = "Velocity (Max):  ";
             }
 
-            double AccelMax = Math.Round((THRUST_MAX / mass / 9.81), 2);
-            double AccelActual = Math.Round((THRUST_ACTUAL / mass / 9.81), 2);
+            double AccelMax = Math.Round((THRUST_MAX / MASS / 9.81), 2);
+            double AccelActual = Math.Round((THRUST_ACTUAL / MASS / 9.81), 2);
 
             string output_decel_short;
             if (THRUST_ACTUAL > 0)
@@ -234,7 +235,7 @@ namespace IngameScript
             // -----------------------
 
 
-            fuel_percentage = Math.Round(100 * (ACTUAL_H2 / TOTAL_H2));
+            FUEL_PERCENTAGES = Math.Round(100 * (ACTUAL_H2 / TOTAL_H2));
             double oxygen_percentage = Math.Round(100 * (ACTUAL_O2 / TOTAL_O2));
             double battery_percentage = Math.Round(100 * (ACTUAL_BATTERIEs / TOTAL_BATTERIEs));
 
@@ -244,7 +245,7 @@ namespace IngameScript
 
             string sec_tanks_and_batts =
                "──┤ Power & Gas ├────────────" + basic_spinner + "──\n\n" +
-                "Fuel      [" + generateBar(fuel_percentage) + "] " + (fuel_percentage + " %").PadLeft(9) + "\n" +
+                "Fuel      [" + generateBar(FUEL_PERCENTAGES) + "] " + (FUEL_PERCENTAGES + " %").PadLeft(9) + "\n" +
                 "Oxygen    [" + generateBar(oxygen_percentage) + "] " + (oxygen_percentage + " %").PadLeft(9) + "\n" +
                 "Battery   [" + generateBar(battery_percentage) + "] " + (battery_percentage + " %").PadLeft(9) + "\n" +
                 "Capacity  [" + generateBar(capacity_percentage) + "] " + (capacity_percentage + " %").PadLeft(9) + "\n" +
@@ -297,18 +298,18 @@ namespace IngameScript
 
             // handle fuel
             int h2_priority = 0;
-            if (fuel_percentage < 5)
+            if (FUEL_PERCENTAGES < 5)
             {
                 LCDAlerts.Add(new ALERT("FUEL CRITICAL!", "FUEL CRITICAL!\nFuel Level < 5%!", 3));
                 h2_priority = 3;
             }
-            else if (fuel_percentage < 25)
+            else if (FUEL_PERCENTAGES < 25)
             {
                 LCDAlerts.Add(new ALERT("FUEL LOW!", "FUEL LOW!\nFuel Level < 10%!", 2));
                 h2_priority = 2;
             }
      
-            if (stance_data[stance_i][21] > 1)
+            if (STANCES[S][21] > 1)
             {
                 if (NO_SPARE_TANKS)
                 {
@@ -436,9 +437,9 @@ namespace IngameScript
 
             int weap_priority = 0;
 
-            if (missing_ammo != "") 
+            if (MISSING_AMMO != "") 
             {
-                string[] Ammos = missing_ammo.Split('\n');
+                string[] Ammos = MISSING_AMMO.Split('\n');
                 foreach(string Ammo in Ammos)
                 {
                     string output_ammo = Ammo;
@@ -477,7 +478,7 @@ namespace IngameScript
             // handle unowned
             if (UNOWNED_BLOCKS > 0)
             {
-                ALERTS.Add(new ALERT(
+                LCDAlerts.Add(new ALERT(
                 UNOWNED_BLOCKS + " UNOWNED BLOCKS!",
                 "RSM detected " + UNOWNED_BLOCKS + " terminal blocks on this grid owned by a player with a different faction tag."
                 , 3
@@ -523,7 +524,7 @@ namespace IngameScript
             // Build Subsystem Integrity
             // -------------------------
 
-            int[] CurrentStance = stance_data[stance_i];
+            int[] CurrentStance = STANCES[S];
 
             string sec_integrity =
 
@@ -582,18 +583,18 @@ namespace IngameScript
             /*string sec_header =
                 LCD_DIVIDER + "\n" +
                 centreText(spinner + " " + SHIP_NAME.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
-                centreText(current_stance, LCD_WIDTH) + "\n" +
+                centreText(STANCE, LCD_WIDTH) + "\n" +
                 LCD_DIVIDER + "\n" +
                 status_lts + "\n";*/
 
             string sec_header =
 
                  centreText(SHIP_NAME.ToUpper(), LCD_WIDTH) + "\n" +
-                 "  " + spinner + " " + centreText(current_stance, LCD_WIDTH - 10) + " " + spinner + "  \n" +
+                 "  " + spinner + " " + centreText(STANCE, LCD_WIDTH - 10) + " " + spinner + "  \n" +
 
 
                 //centreText(spinner + " " + SHIP_NAME.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
-                //centreText(current_stance, LCD_WIDTH) + "\n" +
+                //centreText(STANCE, LCD_WIDTH) + "\n" +
                 //LCD_DIVIDER + "\n" +
 
                 //"┌" + new String('─', LCD_WIDTH - 2) + "┐\n" +
@@ -624,7 +625,7 @@ namespace IngameScript
                 if (ADVANCED_THRUST_SHOW_BASICS)
                 {
                     Basics =
-                        "\nMass:            " + (Math.Round((mass / 1000000), 2) + " Mkg").PadLeft(15) +
+                        "\nMass:            " + (Math.Round((MASS / 1000000), 2) + " Mkg").PadLeft(15) +
                         "\n" + vel_msg + (vel + " ms").PadLeft(15) +
                         "\nMax Accel:       " + (AccelMax + " Gs").PadLeft(15) +
                         "\nActual Accel:    " + (AccelActual + " Gs").PadLeft(15);
@@ -815,11 +816,6 @@ namespace IngameScript
 
             if (D) Echo("Finished updating " + LCDs_RSM.Count.ToString() + " LCDs...");
 
-
-            // write to PB details.
-            //Echo(sec_header + debug_text);
-            // TODO write something to Echo!
-
             return;
         }
 
@@ -834,10 +830,10 @@ namespace IngameScript
                 foreach (IMyTextPanel LCD in LCDs_CS)
                 {
                     LCD.FontColor = new Color(
-                        stance_data[stance_i][12],
-                        stance_data[stance_i][13],
-                        stance_data[stance_i][14],
-                        stance_data[stance_i][15]
+                        STANCES[S][12],
+                        STANCES[S][13],
+                        STANCES[S][14],
+                        STANCES[S][15]
                         );
                 }
             }
@@ -916,7 +912,7 @@ namespace IngameScript
                 case "H2":
                     percentage = Math.Round(100 * (ACTUAL_H2 / INIT_H2));
                     val = percentage.ToString() + " %";
-                    fuel_percentage = percentage;
+                    FUEL_PERCENTAGES = percentage;
                     break;
                 case "O2":
                     percentage = Math.Round(100 * (ACTUAL_O2 / INIT_O2));
@@ -952,10 +948,10 @@ namespace IngameScript
             if (dampeners) thrust = thrust * 1.5;
 
             //s = 1/2 * v ^ 2 * (m / F)
-            double result = 0.5 * (Math.Pow(speed, 2) * (mass / thrust));
+            double result = 0.5 * (Math.Pow(speed, 2) * (MASS / thrust));
 
             //t = v / (F / mass)
-            double time = speed / (thrust / mass);
+            double time = speed / (thrust / MASS);
             string unit = "m";
             if (result > 1000)
             {

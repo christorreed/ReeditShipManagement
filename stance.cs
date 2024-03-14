@@ -28,12 +28,12 @@ namespace IngameScript
             // review this method
 
             bool found = false;
-            for (int i = 0; i < stance_names.Count; i++)
+            for (int i = 0; i < STANCE_NAMES.Count; i++)
             {
-                //Echo("? "+ stance + " == " + stance_names[i] + "");
-                if (stance.ToLower() == stance_names[i].ToLower())
+                //Echo("? "+ stance + " == " + STANCE_NAMES[i] + "");
+                if (stance.ToLower() == STANCE_NAMES[i].ToLower())
                 {
-                    stance_i = i;
+                    S = i;
                     found = true;
                     break;
                 }
@@ -50,45 +50,45 @@ namespace IngameScript
 
             if (D) Echo("Setting stance '" + stance + "'.");
 
-            current_stance = stance;
+            STANCE = stance;
 
             updateCustomData(true);
 
             // set rails
-            if (D) Echo("Setting " + RAILs.Count + " railguns to " + stance_data[stance_i][2]);
-            setRails(stance_data[stance_i][2]);
+            if (D) Echo("Setting " + RAILs.Count + " railguns to " + STANCES[S][2]);
+            setRails(STANCES[S][2]);
 
             // set torps
-            if (D) Echo("Setting " + TORPs.Count + " torpedoes to " + stance_data[stance_i][0]);
-            setTorpedoes(stance_data[stance_i][0]);
+            if (D) Echo("Setting " + TORPs.Count + " torpedoes to " + STANCES[S][0]);
+            setTorpedoes(STANCES[S][0]);
 
             // set pdcs
-            if (D) Echo("Setting " + PDCs.Count + " PDCs, " + PDCs_DEF.Count + " defence PDCs to " + stance_data[stance_i][1]);
-            setPdcs(stance_data[stance_i][1]);
+            if (D) Echo("Setting " + PDCs.Count + " PDCs, " + PDCs_DEF.Count + " defence PDCs to " + STANCES[S][1]);
+            setPdcs(STANCES[S][1]);
 
             // set main drives
             if (D) Echo(
                 "Setting "
                 + THRUSTERs_EPSTEIN.Count + " epsteins, "
-                + THRUSTERs_CHEM.Count + " chems" + " to " + stance_data[stance_i][3]);
-            setMainThrusters(stance_data[stance_i][3], stance_data[stance_i][4]);
+                + THRUSTERs_CHEM.Count + " chems" + " to " + STANCES[S][3]);
+            setMainThrusters(STANCES[S][3], STANCES[S][4]);
 
             // set RCS
             if (D) Echo(
                 "Setting "
                 + THRUSTERs_RCS.Count + " rcs, "
-                + THRUSTERs_ATMO.Count + " atmos" + " to " + stance_data[stance_i][11]);
-            setRcsThrusters(stance_data[stance_i][11]);
+                + THRUSTERs_ATMO.Count + " atmos" + " to " + STANCES[S][11]);
+            setRcsThrusters(STANCES[S][11]);
 
             // set batteries
-            if (D) Echo("Setting " + BATTERIEs.Count + " batteries to = " + stance_data[stance_i][16]);
-            setBatteries(stance_data[stance_i][16]);
+            if (D) Echo("Setting " + BATTERIEs.Count + " batteries to = " + STANCES[S][16]);
+            setBatteries(STANCES[S][16]);
 
-            if (D) Echo("Setting " + TANKs_H2.Count + " H2 tanks to stockpile = " + stance_data[stance_i][16]);
-            setH2Tanks(stance_data[stance_i][16]);
+            if (D) Echo("Setting " + TANKs_H2.Count + " H2 tanks to stockpile = " + STANCES[S][16]);
+            setH2Tanks(STANCES[S][16]);
 
-            if (D) Echo("Setting " + TANKs_O2.Count + " O2 tanks to stockpile = " + stance_data[stance_i][16]);
-            setO2Tanks(stance_data[stance_i][16]);
+            if (D) Echo("Setting " + TANKs_O2.Count + " O2 tanks to stockpile = " + STANCES[S][16]);
+            setO2Tanks(STANCES[S][16]);
 
             // set lighting
             if (DISABLE_LIGHTING)
@@ -98,51 +98,51 @@ namespace IngameScript
             else
             {
                 // set spotlights
-                if (D) Echo("Setting " + LIGHTs_SPOT.Count + " spotlights to " + stance_data[stance_i][5]);
-                setSpotlights(stance_data[stance_i][5]);
+                if (D) Echo("Setting " + LIGHTs_SPOT.Count + " spotlights to " + STANCES[S][5]);
+                setSpotlights(STANCES[S][5]);
 
                 // set exterior lights
-                if (D) Echo("Setting " + LIGHTs_EXTERIOR.Count + " exterior lights to " + stance_data[stance_i][6]);
+                if (D) Echo("Setting " + LIGHTs_EXTERIOR.Count + " exterior lights to " + STANCES[S][6]);
                 Color ColourExterior = new Color(
-                    stance_data[stance_i][7],
-                    stance_data[stance_i][8],
-                    stance_data[stance_i][9],
-                    stance_data[stance_i][10]
+                    STANCES[S][7],
+                    STANCES[S][8],
+                    STANCES[S][9],
+                    STANCES[S][10]
                     );
-                setExteriorLights(stance_data[stance_i][6], ColourExterior);
+                setExteriorLights(STANCES[S][6], ColourExterior);
 
                 // set nav lights
-                if (D) Echo("Setting " + LIGHTs_INTERIOR.Count + " exterior lights to " + stance_data[stance_i][11]);
+                if (D) Echo("Setting " + LIGHTs_INTERIOR.Count + " exterior lights to " + STANCES[S][11]);
                 Color ColourInterior = new Color(
-                    stance_data[stance_i][12],
-                    stance_data[stance_i][13],
-                    stance_data[stance_i][14],
-                    stance_data[stance_i][15]
+                    STANCES[S][12],
+                    STANCES[S][13],
+                    STANCES[S][14],
+                    STANCES[S][15]
                     );
-                setInteriorLights(stance_data[stance_i][11], ColourInterior);
+                setInteriorLights(STANCES[S][11], ColourInterior);
 
                 if (D) Echo(
                     "Setting "
                     + LIGHTs_NAV_PORT.Count + " port nav lights, "
-                    + LIGHTs_NAV_STARBOARD.Count + " starboard nav lights to " + stance_data[stance_i][6]);
-                setNavLights(stance_data[stance_i][6]);
+                    + LIGHTs_NAV_STARBOARD.Count + " starboard nav lights to " + STANCES[S][6]);
+                setNavLights(STANCES[S][6]);
 
             }
 
-            if (D) Echo("Setting " + AUXILIARIEs.Count + " aux block to " + stance_data[stance_i][20]);
-            setAuxiliaries(stance_data[stance_i][20]);
+            if (D) Echo("Setting " + AUXILIARIEs.Count + " aux block to " + STANCES[S][20]);
+            setAuxiliaries(STANCES[S][20]);
 
 
-            if (D) Echo("Setting " + EXTRACTORs.Count + " extrators to " + stance_data[stance_i][21]);
-            setExtractors(stance_data[stance_i][21]);
+            if (D) Echo("Setting " + EXTRACTORs.Count + " extrators to " + STANCES[S][21]);
+            setExtractors(STANCES[S][21]);
 
 
-            if (D) Echo("Setting " + DOORs_HANGAR.Count + " hangar doors units to " + stance_data[stance_i][23]);
-            setHangarDoors(stance_data[stance_i][23]);
+            if (D) Echo("Setting " + DOORs_HANGAR.Count + " hangar doors units to " + STANCES[S][23]);
+            setHangarDoors(STANCES[S][23]);
 
             // lock doors if we're in close combat
             // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-            if (stance_data[stance_i][2] == 2)
+            if (STANCES[S][2] == 2)
             {
                 if (D) Echo("Setting " + DOORs.Count + " doors to locked because we are in combat (rails set to free-fire).");
                 setDoorsLock("locked", "");
@@ -159,7 +159,7 @@ namespace IngameScript
             // also build NavOS integration
 
             /*
-            if (D) Echo("Setting " + serversEfc.Count + " [EFC] servers to boost = " + stance_data[stance_i][17]
+            if (D) Echo("Setting " + serversEfc.Count + " [EFC] servers to boost = " + STANCES[S][17]
                 );
             for (int i = 0; i < serversEfc.Count; i++)
             {
@@ -167,20 +167,20 @@ namespace IngameScript
                 {
 
                     // 17: EFC boost; 0: off, 1: on
-                    if (stance_data[stance_i][17] == 1)
+                    if (STANCES[S][17] == 1)
                         runProgramable(serversEfc[i], "Boost On");
                     else
                         runProgramable(serversEfc[i], "Boost Off");
 
                     // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
-                    if (stance_data[stance_i][18] > 0)
+                    if (STANCES[S][18] > 0)
                     {
-                        runProgramable(serversEfc[i], "Set Burn " + BURN_PERCENTAGES[stance_data[stance_i][18]]);
+                        runProgramable(serversEfc[i], "Set Burn " + BURN_PERCENTAGES[STANCES[S][18]]);
                     }
 
 
                     // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                    if (stance_data[stance_i][19] == 1)
+                    if (STANCES[S][19] == 1)
                         runProgramable(serversEfc[i], "Off");
                 }
             }

@@ -39,7 +39,7 @@ namespace IngameScript
                     ACTUAL_TORPs++;
 
                     // turn torps on for 1+ on [0]
-                    (Torp as IMyConveyorSorter).Enabled = stance_data[stance_i][0] > 0;
+                    (Torp as IMyConveyorSorter).Enabled = STANCES[S][0] > 0;
 
                     // autoloading is complex for torpedoes.
                     if (AUTOLOAD)

@@ -25,6 +25,10 @@ namespace IngameScript
 
         List<string> AIRLOCK_LOOP_PREVENTION = new List<string>();
 
+        int doors_count = 0;
+        int doors_count_closed = 0;
+        int doors_count_unlocked = 0;
+
         // todo
         // manageDoors() is a cluster fuck
         // fix it

@@ -36,6 +36,53 @@ namespace IngameScript
 
         }
 
+        void printBlockIds()
+        {
+            // prints all block defs on grid to first antenna custom data.
+
+            List<IMyTerminalBlock> allBlocks = new List<IMyTerminalBlock>();
+            GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(allBlocks);
+
+            string DefsOut = "";
+            foreach (IMyTerminalBlock ThisBlock in allBlocks)
+            {
+                DefsOut += ThisBlock.BlockDefinition + "\n";
+            }
+
+            if (ANTENNAs.Count > 1 && ANTENNAs[0] != null) ANTENNAs[0].CustomData = DefsOut;
+        }
+
+        void printBlockProps(string name)
+        {
+            // prints props and actions of the block with the given name
+            // to that block's custom data, and to the first antenna custom data.
+
+            IMyTerminalBlock Block = GridTerminalSystem.GetBlockWithName(name);
+
+            List<ITerminalAction> Actions = new List<ITerminalAction>();
+            Block.GetActions(Actions);
+
+            List<ITerminalProperty> Properties = new List<ITerminalProperty>();
+            Block.GetProperties(Properties);
+
+            string Out = Block.CustomName + "\n**Actions**\n\n";
+
+            foreach (ITerminalAction Action in Actions)
+            {
+                Out += Action.Id + " " + Action.Name + "\n";
+            }
+            Out += "\n\n**Properties**\n\n";
+            foreach (ITerminalProperty Prop in Properties)
+            {
+                Out += Prop.Id + " " + Prop.TypeName + "\n";
+            }
+
+            if (ANTENNAs.Count > 1 && ANTENNAs[0] != null) ANTENNAs[0].CustomData = Out;
+            Block.CustomData = Out;
+        }
+
+
+
         void setBlockRepelOn(IMyTerminalBlock block)
         {
             bool repelStatus = block.GetValue<bool>("WC_Repel");

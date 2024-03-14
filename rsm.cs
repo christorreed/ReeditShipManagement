@@ -28,8 +28,8 @@ namespace IngameScript
 
         // Loop Counters -----------------------------------------------------------------
 
-        int loop_step;
-        int wait_step;
+        int LOOP_STEP;
+        int WAIT_STEP;
 
         // dampening for extractor management
         int EXTRACTOR_WAIT = 0;
@@ -58,7 +58,7 @@ namespace IngameScript
         // EFC/NavOS set burn percentages
         int[] BURN_PERCENTAGES = new int[] { 0, 5, 25, 50, 75, 100 };
 
-        // Warnings -----------------------------------------------------------------
+        // Warning Variables -----------------------------------------------------------------
 
         bool NEED_FUEL = false;
         bool SPAWN_OPEN = false;
@@ -69,110 +69,41 @@ namespace IngameScript
 
         // Misc Globals -----------------------------------------------------------------
 
+        // the current stance index
+        // of the STANCES & STANCE_NAMES lists
+        int S = 0;
+
+        // the name of the current stance.
+        string STANCE = "N/A";
+
+        // the current ship calculated fuel percentage.
+        // starts at 100 so we don't refuel before we check.
+        double FUEL_PERCENTAGES = 100;
+
+        // ship telemetry values
+        double VELOCITY;
+        float MASS;
+
+        // the faction tag of the PB owner
         string FACTION_TAG;
+        
+        // this is the SK custom data string
+        // we will build it and force it into SK custom data
         string SK_DATA;
 
         // this reduces the LCD output build overhead
         // if you are not using an advanced thrust LCD
         bool BUILD_ADVANCED_THRUST = false;
 
-        // this value multiplies the capacity by
-        // the KEEP_FULL_MULTIPLIER depending on
-        // if this is SG or LG
-        double EXTACTOR_KEEP_FULL_THRESH = 0;
-
-
-
-
-        //int welders_init = 0;
-        //double integrity_welders = 0;
-
-
-        
-
-        int doors_count = 0;
-        int doors_count_closed = 0;
-        int doors_count_unlocked = 0;
-
-
-
-
-
-        string current_stance = "N/A";
-
-
-
-
-        double velocity;
-        float mass;
-
-
-
-
-
-
-
-
-        //IMyShipController controller;
-
-        // Block lists, built at fullRefresh();
-        //List<IMyRadioAntenna> antenna_blocks = new List<IMyRadioAntenna>();
-        //List<IMyTextPanel> lcd_blocks = new List<IMyTextPanel>();
-        //List<IMyDoor> door_blocks = new List<IMyDoor>();
-        //List<IMyAirVent> airlock_vents = new List<IMyAirVent>();
-        //List<string> AIRLOCK_LOOP_PREVENTION = new List<string>();
-        //List<IMyBeacon> beacon_blocks = new List<IMyBeacon>();
-
-        //List<IMyShipConnector> connector_blocks = new List<IMyShipConnector>();
-        List<IMyProjector> projector_blocks = new List<IMyProjector>();
-
-
-
-
-        // empty REACTORs to be loaded with fusion fuel
-        //List<IMyTerminalBlock> reactorsEmpty = new List<IMyTerminalBlock>();
-
-        //List<MyInventoryItem?> fuel_tank_items = new List<MyInventoryItem?>();
-
-        // counter used to prevent refuel from looping.
-        int refuel_failure_count = 0;
-        int refuel_failure_threshold = 25;
-
-
-        string missing_ammo = "";
-        //int ammo_warning_count = 0;
-
-
-
-        // Inventory and item lists.
-        //List<IMyInventory> cargo_inventory = new List<IMyInventory>();
-        //List<MyItemType> components = new List<MyItemType>();
-        //List<int> component_counts = new List<int>();
-
-        double fuel_percentage = 100;
-        //List<IMyInventory> fuel_tank_inventory = new List<IMyInventory>();
-        //List<IMyInventory> sg_fuel_tank_inventory = new List<IMyInventory>();
-
-        // Stance data
-        int stance_i = 0;
-
-
-
+        // instructions count
+        int INSTRUCTIONS = 0;
+        // highest instruction count since recompile
+        int INSTRUCTIONS_MAX = 0;
 
         public Program()
         {
-            // The constructor, called only once every session and
-            // always before any other method is called. Use it to
-            // initialize your script. 
-            //     
-            // The constructor is optional and can be removed if not
-            // needed.
-            // 
-            // It's recommended to set Runtime.UpdateFrequency 
-            // here, which will allow your script to run itself without a 
-            // timer block.
-            loop_step = REFRESH_FREQ;
-            wait_step = 0;
+            LOOP_STEP = REFRESH_FREQ;
+            WAIT_STEP = 0;
 
             FACTION_TAG = Me.GetOwnerFactionTag();
 
@@ -190,32 +121,26 @@ namespace IngameScript
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
         }
 
-        int INSTRUCTIONS = 0;
-        int INSTRUCTIONS_MAX = 0;
+
 
         public void Main(string argument, UpdateType updateSource)
         {
-
             if (updateSource == UpdateType.Update100)
-            {
-                isThereAnEchoInHere();
-
                 mainLoop();
+            else
+                processCommand(argument);
+        }
 
-                INSTRUCTIONS = Runtime.CurrentInstructionCount;
-                if (INSTRUCTIONS > INSTRUCTIONS_MAX)
-                    INSTRUCTIONS_MAX = Runtime.CurrentInstructionCount;
-
-                return;
-            }
+        void processCommand(string argument)
+        {
+            if (D) Echo("Processing command '" + argument + "'...");
 
             if (argument == "")
             {
-
                 ALERTS.Add(new ALERT(
-                    "COMMAND FAILED: Arg Required!", 
-                    "A command was ignored because the argument was blank." 
-                    ,3
+                    "COMMAND FAILED: Arg Required!",
+                    "A command was ignored because the argument was blank."
+                    , 3
                     ));
                 return;
             }
@@ -230,7 +155,6 @@ namespace IngameScript
                     "A command was ignored because it wasn't recognised."
                     , 3
                     ));
-
                 return;
             }
 
@@ -238,88 +162,45 @@ namespace IngameScript
             if (args[0].ToLower() != "comms")
                 args[1] = args[1].Replace(" ", string.Empty);
 
-            if (D) Echo("Running " + args[0] + ":" + args[1]);
-
             switch (args[0].ToLower())
             {
                 case "init":
                     initShip(args[1]);
                     return;
+
                 case "initbasic":
                     initShip(args[1], true);
                     return;
+
                 case "stance":
                     setStance(args[1]);
                     return;
+
                 case "hudlcd":
                     string hud_filter = "";
                     if (args.Length > 2)
                         hud_filter = args[2];
                     setHudLcd(args[1], hud_filter);
                     return;
+
                 case "doors":
                     string door_filter = "";
                     if (args.Length > 2)
                         door_filter = args[2];
                     setDoorsLock(args[1], door_filter);
                     return;
-                /*case "evade":
-                    setEvade(args[1]);
-                    break;*/
+
                 case "comms":
                     setAntennaComms(args[1]);
                     break;
 
-
                 case "printblockids":
-                    // prints all block defs on grid to first antenna custom data.
-
-                    List<IMyTerminalBlock> allBlocks = new List<IMyTerminalBlock>();
-                    GridTerminalSystem.GetBlocksOfType<IMyTerminalBlock>(allBlocks);
-
-                    string DefsOut = "";
-                    foreach (IMyTerminalBlock ThisBlock in allBlocks)
-                    {
-                        DefsOut += ThisBlock.BlockDefinition + "\n";
-                    }
-
-                    if (ANTENNAs[0] != null) ANTENNAs[0].CustomData = DefsOut;
-
+                    printBlockIds();
                     break;
 
                 case "printblockprops":
-                    // prints props and actions of the block with the given name
-                    // to that block's custom data, and to the first antenna custom data.
-
-                    IMyTerminalBlock Block = GridTerminalSystem.GetBlockWithName(args[1]);
-
-                    List<ITerminalAction> Actions = new List<ITerminalAction>();
-                    Block.GetActions(Actions);
-
-                    List<ITerminalProperty> Properties = new List<ITerminalProperty>();
-                    Block.GetProperties(Properties);
-
-                    string Out = Block.CustomName + "\n**Actions**\n\n";
-
-                    foreach (ITerminalAction Action in Actions)
-                    {
-                        Out += Action.Id + " " + Action.Name + "\n";
-                    }
-                    Out += "\n\n**Properties**\n\n";
-                    foreach (ITerminalProperty Prop in Properties)
-                    {
-                        Out += Prop.Id + " " + Prop.TypeName + "\n";
-                    }
-
-                    if (ANTENNAs[0] != null) ANTENNAs[0].CustomData = Out;
-                    Block.CustomData = Out;
-
+                    printBlockProps(args[1]);
                     break;
-
-                /*case "activatetool":
-                    IMyTerminalBlock Tool = GridTerminalSystem.GetBlockWithName(args[1]);
-                    setToolActivate(Tool, true);
-                    break;*/
 
                 case "spawn":
                     if (args[1].ToLower() == "open")
@@ -349,7 +230,7 @@ namespace IngameScript
                 case "projectors":
                     if (args[1].ToLower() == "save")
                     {
-                        foreach (IMyProjector Projector in projector_blocks)
+                        foreach (IMyProjector Projector in PROJECTORs)
                             saveProjectorPosition(Projector);
 
                         ALERTS.Add(new ALERT(
@@ -359,9 +240,9 @@ namespace IngameScript
                             ));
                         return;
                     }
-                    else 
+                    else
                     {
-                        foreach (IMyProjector Projector in projector_blocks)
+                        foreach (IMyProjector Projector in PROJECTORs)
                             loadProjectorPosition(Projector);
 
                         ALERTS.Add(new ALERT(
@@ -387,6 +268,10 @@ namespace IngameScript
             // todo
             // review and improve the main loop
 
+            isThereAnEchoInHere();
+            INSTRUCTIONS = Runtime.CurrentInstructionCount;
+            if (INSTRUCTIONS > INSTRUCTIONS_MAX)
+                INSTRUCTIONS_MAX = Runtime.CurrentInstructionCount;
 
             try
             {
@@ -400,20 +285,19 @@ namespace IngameScript
                 return;
             }
             
-
             // do we need to wait before we loop?
-            if (wait_step < WAIT_COUNT)
+            if (WAIT_STEP < WAIT_COUNT)
             {
-                wait_step++;
+                WAIT_STEP++;
                 return;
             }
-            wait_step = 0;
+            WAIT_STEP = 0;
 
             // okay so we're looping
             // what kind of loop are we going to do?
-            if (loop_step >= REFRESH_FREQ)
+            if (LOOP_STEP >= REFRESH_FREQ)
             {
-                loop_step = 0;
+                LOOP_STEP = 0;
                 fullRefresh();
                 return;
             }
@@ -421,20 +305,20 @@ namespace IngameScript
             if (NEED_FUEL)
             {
 
-                if (refuel_failure_count > 0)
+                if (REFUEL_FAILURE_COUNT > 0)
                 {
-                    refuel_failure_count++;
-                    if (refuel_failure_count > refuel_failure_threshold) refuel_failure_count = 0;
+                    REFUEL_FAILURE_COUNT++;
+                    if (REFUEL_FAILURE_COUNT > REFUEL_FAILURE_THRESH) REFUEL_FAILURE_COUNT = 0;
                     //return;
                 }
                 else
                 {
-                    //loop_step = 0;
+                    //LOOP_STEP = 0;
                     fillExtractors();
                     return;
                 }
             }
-            loop_step++;
+            LOOP_STEP++;
             quickRefresh();
             return;
 
@@ -452,25 +336,25 @@ namespace IngameScript
             if (D)
             {
                 Echo("quickRefresh();");
-                Echo("\nstance = " + stance_names[stance_i] + "(" + stance_i + ")");
+                Echo("\nstance = " + STANCE_NAMES[S] + "(" + S + ")");
             }
 
             // prep keep alives
             bool adjustKeepAlives = false;
             bool adjustThemTo = false;
-            if (stance_data[stance_i][22] == 1)
+            if (STANCES[S][22] == 1)
             {
                 adjustKeepAlives = true;
                 adjustThemTo = true;
             }
-            else if (stance_data[stance_i][22] == 2)
+            else if (STANCES[S][22] == 2)
             {
                 adjustKeepAlives = true;
             }
 
             // iterate blocks
             if (D) Echo("Checking " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
-            iteratePowerBlocks(stance_data[stance_i][16]);
+            iteratePowerBlocks(STANCES[S][16]);
 
             if (D) Echo("Checking " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
             iteratePDCs();
@@ -528,15 +412,17 @@ namespace IngameScript
                 iterateSensors(adjustThemTo);
             }
 
-
+            // do we NEED_FUEL?
+            if (D) Echo("Checking refuel status...");
+            checkRefuelStatus();
 
             if (CONTROLLER != null)
             {
                 try
                 {
                     // calculate current mass and velocity
-                    velocity = CONTROLLER.GetShipSpeed();
-                    mass = CONTROLLER.CalculateShipMass().PhysicalMass;
+                    VELOCITY = CONTROLLER.GetShipSpeed();
+                    MASS = CONTROLLER.CalculateShipMass().PhysicalMass;
                 }
                 catch (Exception exxie)
                 {
@@ -545,11 +431,11 @@ namespace IngameScript
                 }
             }
 
-            manageExtractors();
             manageAutoload();
             manageDoors();
-            updateLcd();
-            return;
+            updateLcds();
+
+            if (D) Echo("Finished quickRefresh");
         }
 
         void fullRefresh()
@@ -561,24 +447,9 @@ namespace IngameScript
             // update all of the block lists.
             updateBlockLists();
 
-            int ignoreCount = 0;
-            UNOWNED_BLOCKS = 0;
+            setKeepFullThresh();
 
-            // todo
-            // make this bit better,
-            // move into extractors.cs
-
-            // set fuel tank/jerry can for extractor management = 3
-            /*bool sg_extractors = true;
-            if (sg_extractors)
-                EXTACTOR_KEEP_FULL_THRESH = (KEEP_FULL_MULTIPLIER * CAPACITY_JERRY_CAN);
-            else
-                EXTACTOR_KEEP_FULL_THRESH = (KEEP_FULL_MULTIPLIER * CAPACITY_FUEL_TANK);*/
-
-
-            if (D) Echo("Finished full refresh.\nIgnored " + ignoreCount + " blocks.");
-
-
+            if (D) Echo("Finished full refresh.");
         }
 
         // todo
@@ -599,7 +470,7 @@ namespace IngameScript
             PROFILER.Run();
             Echo("REEDIT SHIP MANAGEMENT \n" +
    
-                "\n|- Refresh: " + loop_step + "/" + REFRESH_FREQ +
+                "\n|- Refresh: " + LOOP_STEP + "/" + REFRESH_FREQ +
                 "\n|- Runtime Av/Tick: " + (Math.Round(PROFILER.RunningAverageMs,2) / 100) + " ms" +
                 "\n|- Runtime Max: " + Math.Round(PROFILER.MaxRuntimeMs,4) + " ms" +
                 "\n|- Instructions: " + INSTRUCTIONS + " (" + INSTRUCTIONS_MAX + ")");
@@ -608,5 +479,22 @@ namespace IngameScript
     }
 }
 
+/******************************************************************************************
+ 
+todos
 
+- review and improve the main loop
+- review and improve quickRefresh
+- fix runProgramable, make it run commands over sperate ticks
+- add toolcore welder control (setToolActivate, iterateWelders)
+- review and improve manageDoors
+- experiment with ini, use for config (updateCustomData)
+- confirm if to also check for blocks for ship names
+- review and improve updateLcds 
+- review and improve setStance
+
+X review and fix extractor management
+X finalise init naming initBlockNames
+
+******************************************************************************************/
 

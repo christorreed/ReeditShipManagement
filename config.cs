@@ -366,7 +366,7 @@ namespace IngameScript
 
                                 case "Current Stance":
                                     config_count++;
-                                    current_stance = value;
+                                    STANCE = value;
                                     break;
 
                                 case "Reactor Integrity":
@@ -470,7 +470,7 @@ namespace IngameScript
 
                     if (D) Echo("Parsing " + (stances.Length - 1) + " stances");
 
-                    int data_length = stance_data[0].Length;
+                    int data_length = STANCES[0].Length;
 
                     List<string> new_name_list = new List<string>();
                     List<int[]> new_data_list = new List<int[]>();
@@ -496,15 +496,15 @@ namespace IngameScript
                     if (new_name_list.Count >= 1 && new_name_list.Count == new_data_list.Count)
                     {
                         // we did it.
-                        stance_names = new_name_list;
-                        stance_data = new_data_list;
+                        STANCE_NAMES = new_name_list;
+                        STANCES = new_data_list;
                         parsedStances = true;
-                        if (D) Echo("Finished parsing " + stance_names.Count + " stances.");
+                        if (D) Echo("Finished parsing " + STANCE_NAMES.Count + " stances.");
 
-                        // update the stance_i value as well so lights and colours aren't effected.
-                        for (int j = 0; j < stance_names.Count; j++)
+                        // update the S value as well so lights and colours aren't effected.
+                        for (int j = 0; j < STANCE_NAMES.Count; j++)
                         {
-                            if (current_stance == stance_names[j]) stance_i = j;
+                            if (STANCE == STANCE_NAMES[j]) S = j;
                         }
                     }
                     else
@@ -529,9 +529,9 @@ namespace IngameScript
 
             string stance_text = "";
 
-            if (stance_names.Count != stance_data.Count) Echo("Um, so...\nstance_names.Count != stance_data.Count");
+            if (STANCE_NAMES.Count != STANCES.Count) Echo("Um, so...\nstance_names.Count != STANCES.Count");
 
-            if (stance_names.Count < 1 && D)
+            if (STANCE_NAMES.Count < 1 && D)
             {
                 Echo("No stances!");
             }
@@ -546,49 +546,49 @@ namespace IngameScript
             else
                 Echo("Saved custom data.");
 
-            for (int i = 0; i < stance_names.Count; i++)
+            for (int i = 0; i < STANCE_NAMES.Count; i++)
             {
-                stance_text += " - Stance:" + stance_names[i] + " - \n"
+                stance_text += " - Stance:" + STANCE_NAMES[i] + " - \n"
                     + "torpedoes; 0: off, 1: on;\n="
-                    + stance_data[i][0] + "\n"
+                    + STANCES[i][0] + "\n"
                     + "pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only\n="
-                    + stance_data[i][1] + "\n"
+                    + STANCES[i][1] + "\n"
                     + "railguns; 0: off, 1: hold fire, 2: AI weapons free;\n="
-                    + stance_data[i][2] + "\n"
+                    + STANCES[i][2] + "\n"
                     + "main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change\n="
-                    + stance_data[i][3] + "\n"
+                    + STANCES[i][3] + "\n"
                     + "maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change\n="
-                    + stance_data[i][4] + "\n"
+                    + STANCES[i][4] + "\n"
                     + "spotlights; 0: off, 1: on, 2: on max radius, 3: no change\n="
-                    + stance_data[i][5] + "\n"
+                    + STANCES[i][5] + "\n"
 
                     + "exterior lights; 0: off, 1: on, 3: no change\n="
-                    + stance_data[i][6]
-                    + "\nred=" + stance_data[i][7] + "\ngreen=" + stance_data[i][8]
-                    + "\nblue=" + stance_data[i][9] + "\nalpha=" + stance_data[i][10] + "\n"
+                    + STANCES[i][6]
+                    + "\nred=" + STANCES[i][7] + "\ngreen=" + STANCES[i][8]
+                    + "\nblue=" + STANCES[i][9] + "\nalpha=" + STANCES[i][10] + "\n"
 
                     + "interior lights lights; 0: off, 1: on, 3: no change\n="
-                    + stance_data[i][11]
-                    + "\nred=" + stance_data[i][12] + "\ngreen=" + stance_data[i][13]
-                    + "\nblue=" + stance_data[i][14] + "\nalpha=" + stance_data[i][15] + "\n"
+                    + STANCES[i][11]
+                    + "\nred=" + STANCES[i][12] + "\ngreen=" + STANCES[i][13]
+                    + "\nblue=" + STANCES[i][14] + "\nalpha=" + STANCES[i][15] + "\n"
 
                     // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                     + "stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts\n="
-                    + stance_data[i][16] + "\n"
+                    + STANCES[i][16] + "\n"
                     + "EFC boost; 0: off, 1: on\n="
-                    + stance_data[i][17] + "\n"
+                    + STANCES[i][17] + "\n"
                     + "EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%\n="
-                    + stance_data[i][18] + "\n"
+                    + STANCES[i][18] + "\n"
                     + "EFC kill; 0: no change, 1: run 'Off' on EFC.\n="
-                    + stance_data[i][19] + "\n"
+                    + STANCES[i][19] + "\n"
                     + "auxiliary blocks; 0: off, 1: on\n="
-                    + stance_data[i][20] + "\n"
+                    + STANCES[i][20] + "\n"
                     + "extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.\n="
-                    + stance_data[i][21] + "\n"
+                    + STANCES[i][21] + "\n"
                     + "keep-alives for REACTORs, connectors, gyros, lcds, cameras, sensors, lidars; 0: ignore, 1: force on, 2: force off\n="
-                    + stance_data[i][22] + "\n"
+                    + STANCES[i][22] + "\n"
                     + "hangar doors; 0: closed, 1: open, 2: no change\n="
-                    + stance_data[i][23] + "\n\n"
+                    + STANCES[i][23] + "\n\n"
                     ;
             }
 
@@ -648,7 +648,7 @@ namespace IngameScript
                 + "\n---- [System] ----\n"
                 + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"
                 + "Ship name. Blocks without this name will be ignored\n=" + SHIP_NAME + "\n"
-                + "Current Stance\n=" + current_stance + "\n"
+                + "Current Stance\n=" + STANCE + "\n"
                 + "Reactor Integrity\n=" + INIT_REACTORs + "\n"
                 + "Battery Integrity\n=" + INIT_BATTERIEs + "\n"
                 + "PDC Integrity\n=" + INIT_PDCs + "\n"

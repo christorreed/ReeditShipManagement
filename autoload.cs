@@ -26,6 +26,8 @@ namespace IngameScript
         List<IMyTerminalBlock> TO_LOAD = new List<IMyTerminalBlock>();
         List<IMyTerminalBlock> TO_BALANCE_LOAD = new List<IMyTerminalBlock>();
 
+        string MISSING_AMMO = "";
+
         void manageAutoload()
         {
 
@@ -33,7 +35,7 @@ namespace IngameScript
 
             if (D) Echo("Managing Autoload, " + TO_LOAD.Count + " weapons to be loaded...");
 
-            missing_ammo = "";
+            MISSING_AMMO = "";
 
             foreach (IMyTerminalBlock Weapon in TO_LOAD)
             {
@@ -68,10 +70,10 @@ namespace IngameScript
                             if (AmmoType.Length > 32)
                                 AmmoType = AmmoType.Substring(0, 32);
 
-                            if (!missing_ammo.Contains(AmmoType) && AmmoType != "FusionFuel")
+                            if (!MISSING_AMMO.Contains(AmmoType) && AmmoType != "FusionFuel")
                             {
-                                if (missing_ammo != "") missing_ammo += "\n";
-                                missing_ammo += AmmoType;
+                                if (MISSING_AMMO != "") MISSING_AMMO += "\n";
+                                MISSING_AMMO += AmmoType;
                             }
 
                             if (Item.ARMED_IN.Count > 0)

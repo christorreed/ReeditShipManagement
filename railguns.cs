@@ -47,7 +47,7 @@ namespace IngameScript
                         TO_LOAD.Add(Rail);
 
                     // turn railguns on for 1+ on [2]
-                    (Rail as IMyConveyorSorter).Enabled = stance_data[stance_i][2] > 0;
+                    (Rail as IMyConveyorSorter).Enabled = STANCES[S][2] > 0;
 
                     if (!RAILs_HAVE_TARGET)
                     {

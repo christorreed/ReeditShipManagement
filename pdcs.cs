@@ -35,13 +35,13 @@ namespace IngameScript
             foreach (IMyTerminalBlock Pdc in PDCs)
             {
                 // turn pdcs on for 2+ on [1]
-                processPdc(Pdc, stance_data[stance_i][1] > 1);
+                processPdc(Pdc, STANCES[S][1] > 1);
             }
 
             foreach (IMyTerminalBlock Pdc in PDCs_DEF)
             {
                 // turn defensive pdcs on for 1+ on [1]
-                processPdc(Pdc, stance_data[stance_i][1] > 0);
+                processPdc(Pdc, STANCES[S][1] > 0);
             }
 
             INTEGRITY_PDCs = Math.Round(100 * (ACTUAL_PDCs / INIT_PDCs));

@@ -1,4 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
+﻿using EmptyKeys.UserInterface.Generated.StoreBlockView_Bindings;
+using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -18,6 +19,7 @@ using VRage.Game.ModAPI.Ingame.Utilities;
 using VRage.Game.ObjectBuilders.Definitions;
 using VRageMath;
 
+
 namespace IngameScript
 {
     partial class Program
@@ -28,6 +30,7 @@ namespace IngameScript
             // todo
             // review this method
             // tidy it up more.
+            // add more options, like without naming?
 
             if (D) Echo("Initialising a ship as '" + ship + "'.");
 
@@ -74,117 +77,73 @@ namespace IngameScript
         }
 
 
-
+        class NamingCategory
+        {
+            public int Count = 0;
+            public int Total = 0;
+            public int PadDepth = 0;
+        }
 
         void initBlockNames()
         {
-            // todo
-            // adapt and tidy up the old method below
-            // and rebuild it here.
-            // iterating over the dictionary INIT_NAMEs
-        }
+            // this dictionary will store our block counts for each matching name.
+            Dictionary<string, NamingCategory> NamesWithNumbers = new Dictionary<string, NamingCategory>();
 
-        void processList(List<IMyTerminalBlock> blocks, string name, bool numbers = false)
-        {
+            // if we're numbering stuff, more to do.
             if (FORCE_ENUMERATION.Count > 0)
             {
-                foreach (string NumName in FORCE_ENUMERATION)
+                // lets build our dictionary
+                foreach (string Name in FORCE_ENUMERATION)
                 {
-                    if (name.Contains(NumName))
-                    {
-                        if (D) Echo("Forcing enumeration '" + NumName + "' on " + name);
-                        numbers = true;
-                        break;
-                    }
+                    NamesWithNumbers.Add(Name, new NamingCategory());
                 }
-            }
 
-
-
-
-            int count = 0;
-            int padDepth = 2;
-            if (blocks.Count < 10) padDepth = 1;
-            if (blocks.Count > 99) padDepth = 3;
-            for (int i = 0; i < blocks.Count; i++)
-            {
-
-                string blockId = blocks[i].BlockDefinition.ToString();
-                string this_name = name;
-
-                if (NAME_WEAPON_TYPES)
+                // now lets count up totals for each category
+                // this is needed so we know how to pad our numbering.
+                foreach (var BlockName in INIT_NAMEs)
                 {
-                    // some special name appendments.
-                    if (name == "PDC")
+                    NamingCategory Cat;
+                    if (NamesWithNumbers.TryGetValue(BlockName.Value, out Cat))
                     {
-                        if (blockId.Contains("Flak")) this_name += ".Flak";
-                        else if (blockId.Contains("Voltaire")) this_name += ".Volt";
-                        else if (blockId.Contains("Outer Planets Alliance")) this_name += ".OPA";
-                        else if (blockId.Contains("Nariman")) this_name += ".Nari";
-                        else if (blockId.Contains("Redfields")) this_name += ".Red";
-                    }
-                    else if (name == "Torpedo")
-                    {
-
-                        if (blockId.Contains("Apollo")) this_name += ".Apollo";
-                        else if (blockId.Contains("Tycho")) this_name += ".Tycho";
-                        else if (blockId.Contains("Ares")) this_name += ".Ares";
-                        else if (blockId.Contains("Artemis")) this_name += ".Art";
-
-                    }
-                    else if (name == "Railgun")
-                    {
-
-                        //if (blockId == "MyObjectBuilder_ConveyorSorter/Kess Hashari Cannon") this_name = "Kess";
-                        //else if (blockId == "MyObjectBuilder_ConveyorSorter/UNN MA-15 Coilgun") this_name = "Coilgun";
-                        if (blockId == "MyObjectBuilder_ConveyorSorter/V-14 Stiletto Light Railgun") this_name += ".Stiletto";
-                        else if (blockId == "MyObjectBuilder_ConveyorSorter/Dawson-Pattern Medium Railgun") this_name += ".Dawson";
-                        else if (blockId == "MyObjectBuilder_ConveyorSorter/VX-12 Foehammer Ultra-Heavy Railgun") this_name += ".Foehammer";
-                        else if (blockId == "MyObjectBuilder_ConveyorSorter/Farren-Pattern Heavy Railgun") this_name += ".Farren";
-                        else if (blockId == "MyObjectBuilder_ConveyorSorter/T-47 Roci Light Fixed Railgun") this_name += ".Roci";
-                        else if (blockId.Contains("Zakosetara")) this_name += ".Zako";
+                        NamesWithNumbers[BlockName.Value].Total++;
                     }
                 }
 
-
-                // do this anyway
-                // handle names for coils, kess
-                if (blockId == "MyObjectBuilder_ConveyorSorter/Kess Hashari Cannon") this_name = "Kess";
-                else if (blockId == "MyObjectBuilder_ConveyorSorter/UNN MA-15 Coilgun") this_name = "Coilgun";
-
-                // for chem thrusters.
-                if (name == "Epstein")
+                // now set pad values for each
+                foreach (var Catty in NamesWithNumbers)
                 {
-
-                    if (blockId.Contains("Hydro")) this_name = "Chemical";
+                    if (Catty.Value.Total < 10) Catty.Value.PadDepth = 1;
+                    else if (Catty.Value.Total > 99) Catty.Value.PadDepth = 3;
+                    else Catty.Value.PadDepth = 2;
                 }
 
-                // for cargos
-                else if (name == "Cargo")
+                // finally, we're ready to iterate.
+                foreach (var BlockName in INIT_NAMEs)
                 {
+                    string BlockNumber = "";
+                    string ThisName = BlockName.Value;
+                    NamingCategory Category;
+                    if (NamesWithNumbers.TryGetValue(BlockName.Value, out Category))
+                    {
+                        // number this block.
 
-                    double Max = blocks[i].GetInventory().MaxVolume.RawValue;
-                    double VolumeFactor = Math.Round(Max / 1265625024, 1);
-                    if (VolumeFactor == 0) VolumeFactor = 0.1;
+                        // so long as there is more than one block in the category...
+                        if (Category.Total > 1)
+                        {
+                            // increment and stringify block number
+                            Category.Count++;
+                            BlockNumber = NAME_DELIMITER + Category.Count.ToString().PadLeft(Category.PadDepth, '0');
 
-                    this_name += " [" + VolumeFactor + "]";
+                        }
+                    }
+
+                    BlockName.Key.CustomName =
+                        SHIP_NAME + NAME_DELIMITER
+                        + ThisName
+                        + BlockNumber
+                        + retainSuffix(BlockName.Key.CustomName, ThisName);
+
                 }
-
-                else if (name == "Light" + NAME_DELIMITER + "Interior")
-                {
-                    if (blockId.Contains("Kitchen")) this_name += ".Kitchen";
-                    else if (blockId.Contains("Aquarium")) this_name += ".Aquarium";
-                }
-
-                count++;
-                string blockNumber = NAME_DELIMITER + count.ToString().PadLeft(padDepth, '0');
-                if (!numbers) blockNumber = "";
-                else if (blocks.Count == 1) blockNumber = "";
-                blocks[i].CustomName =
-                    SHIP_NAME + NAME_DELIMITER
-                    + this_name
-                    + blockNumber
-                    + retainSuffix(blocks[i].CustomName, this_name);
             }
         }
 

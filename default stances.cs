@@ -23,7 +23,7 @@ namespace IngameScript
     partial class Program
     {
         // these are default values that will be over written by updateCustomData();
-        List<string> stance_names = new List<string>(new string[] { 
+        List<string> STANCE_NAMES = new List<string>(new string[] { 
             "Cruise", 
             //"MaxCruise", 
             "Docked", 
@@ -37,7 +37,7 @@ namespace IngameScript
             "WeaponsHot"
         });
 
-        List<int[]> stance_data = new List<int[]>
+        List<int[]> STANCES = new List<int[]>
         {
              new int[] { // Cruise 0
                 1,      // 0: torpedoes; 0: off, 1: on;
