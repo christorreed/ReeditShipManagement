@@ -414,6 +414,9 @@ namespace IngameScript
                 iterateSensors(adjustThemTo);
             }
 
+            if (D) Echo("Iterating items...");
+            iterateItems();
+
             // do we NEED_FUEL?
             if (D) Echo("Checking refuel status...");
             checkRefuelStatus();
@@ -480,35 +483,3 @@ namespace IngameScript
         }
     }
 }
-
-/******************************************************************************************
-
-debugs
-
-- inventory counting, zeroing bugs.
-x issues with fuel level
-x issues with capacity?
-x issues with Reactor subsystem
-x reactors subsystem caps
-x Batteries subsys
-x tanks 3000% subsys
-x railguns count is zero even tho i have some
-x "An item with the same key has already been added" during 
- 
-todos
-
-- review and improve the main loop
-- review and improve quickRefresh
-- fix runProgramable, make it run commands over sperate ticks
-- add toolcore welder control (setToolActivate, iterateWelders)
-- review and improve manageDoors
-- experiment with ini, use for config (updateCustomData)
-- confirm if to also check for blocks for ship names
-- review and improve updateLcds 
-- review and improve setStance
-
-X review and fix extractor management
-X finalise init naming initBlockNames
-
-******************************************************************************************/
-

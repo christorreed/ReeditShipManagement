@@ -787,6 +787,8 @@ namespace IngameScript
             // build the item lists for auto loader
             ITEMS[ammo].ARMED_IN.Add(b.GetInventory());
 
+            INVENTORIEs.Add(b.GetInventory());
+
             // if we're running init
             // setup the block naming...
             if (I)
@@ -804,6 +806,8 @@ namespace IngameScript
         {
             // add to the main list.
             TORPs.Add(b);
+
+            INVENTORIEs.Add(b.GetInventory());
 
             // if we're running init
             // setup the block naming...
@@ -824,6 +828,8 @@ namespace IngameScript
 
             // build the item lists for auto loader
             ITEMS[ammo].ARMED_IN.Add(b.GetInventory());
+
+            INVENTORIEs.Add(b.GetInventory());
 
             // if we're running init
             // setup the block naming...
