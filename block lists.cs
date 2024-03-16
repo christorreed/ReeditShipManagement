@@ -83,7 +83,7 @@ namespace IngameScript
         private List<IMyTerminalBlock> AUXILIARIEs = new List<IMyTerminalBlock>();
 
         // Cargo Inventories
-        private List<IMyInventory> INVENTORIEs = new List<IMyInventory>();
+        // private List<IMyInventory> INVENTORIEs = new List<IMyInventory>();
 
         // INIT
         private bool I = false;
@@ -325,7 +325,7 @@ namespace IngameScript
                     if (blockIdTwo.Contains("Container") || blockIdTwo.Contains("Cargo"))
                     {
                         CARGOs.Add(TempCargo);
-                        INVENTORIEs.Add(TempCargo.GetInventory());
+                        addInventory(b); // check this block for stored items
 
                         if (I)
                         {
@@ -432,8 +432,8 @@ namespace IngameScript
                 if (TempReactor != null)
                 {
                     REACTORs.Add(TempReactor);
-                    INVENTORIEs.Add(TempReactor.GetInventory());
-                    ITEMS[0].ARMED_IN.Add(b.GetInventory());
+                    addInventory(b, 0);
+
                     if (I)
                     {
                         string AppendReactor = "Large";
@@ -457,7 +457,7 @@ namespace IngameScript
                         CONTROLLER = TempController;
 
                     if (TempController.HasInventory)
-                        INVENTORIEs.Add(TempController.GetInventory());
+                        addInventory(b);
 
                     if (I && blockId.Contains("Cockpit/"))
                     {
@@ -507,11 +507,11 @@ namespace IngameScript
                 if (TempConnector != null)
                 {
                     CONNECTORs.Add(TempConnector);
-                    INVENTORIEs.Add(TempConnector.GetInventory());
-                    string ConnectorAppend = "";
+                    addInventory(b);
 
                     if (I)
                     {
+                        string ConnectorAppend = "";
                         if (blockId.Contains("Passageway"))
                             ConnectorAppend = NAME_DELIMITER + "Passageway";
                         INIT_NAMEs.Add(b, "Connector" + ConnectorAppend);
@@ -597,7 +597,7 @@ namespace IngameScript
                 var TempCollectors = b as IMyCollector;
                 if (TempCollectors != null)
                 {
-                    INVENTORIEs.Add(TempCollectors.GetInventory());
+                    addInventory(b);
                     if (I) INIT_NAMEs.Add(b, "Collector");
                     return false;
                 }
@@ -768,7 +768,9 @@ namespace IngameScript
             AUXILIARIEs.Clear();
 
             // Cargo Inventories
-            INVENTORIEs.Clear();
+            foreach (var Item in ITEMS)
+                Item.Inventories.Clear();
+            
 
             // Init Names List
             if (I) INIT_NAMEs.Clear();
@@ -784,10 +786,7 @@ namespace IngameScript
             else
                 PDCs.Add(b);
 
-            // build the item lists for auto loader
-            ITEMS[ammo].ARMED_IN.Add(b.GetInventory());
-
-            INVENTORIEs.Add(b.GetInventory());
+            addInventory(b, ammo);
 
             // if we're running init
             // setup the block naming...
@@ -807,7 +806,8 @@ namespace IngameScript
             // add to the main list.
             TORPs.Add(b);
 
-            INVENTORIEs.Add(b.GetInventory());
+            // we add torps to inventory as we iterate them later
+            // because ammo types can change.
 
             // if we're running init
             // setup the block naming...
@@ -826,10 +826,7 @@ namespace IngameScript
 
             RAILs.Add(b);
 
-            // build the item lists for auto loader
-            ITEMS[ammo].ARMED_IN.Add(b.GetInventory());
-
-            INVENTORIEs.Add(b.GetInventory());
+            addInventory(b, ammo);
 
             // if we're running init
             // setup the block naming...
@@ -843,5 +840,7 @@ namespace IngameScript
             return false;
         }
 
+
+        
     }
 }

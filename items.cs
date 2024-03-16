@@ -1,4 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
+﻿using Sandbox.Game;
+using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -16,13 +17,80 @@ using VRage.Game.GUI.TextPanel;
 using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRage.Game.ObjectBuilders.Definitions;
+using VRage.Network;
 using VRageMath;
 
 namespace IngameScript
 {
     partial class Program
     {
+
+        class INVENTORY
+        {
+            // the block in question
+            public IMyTerminalBlock Block { get; set; }
+
+            // the block's inventory
+            public IMyInventory Inv { get; set; }
+
+            // how many of this item are in this block
+            public int Qty = 0;
+
+            // does this block require autoloading?
+            public bool AutoLoad = false;
+
+            // if so, does it require it, like... now?
+            //public bool LowAmmo = false;
+
+            // if it does, how full is it?
+            public float FillFactor;
+        }
+
         class ITEM
+        {
+            // the total number of this item we have on the ship
+            public int ActualQty = 0;
+
+            // the target value, set at init.
+            public int InitQty = 0;
+
+            // qty of items that are stored in cargo containers, not autoloaded blocks.
+            public int SpareQty = 0;
+
+            // The percentage of this item we have on board compared to init.
+            public double Percentage;
+
+            // list of inventories where this item might be found.
+            public List<INVENTORY> Inventories = new List<INVENTORY>();
+
+            // list of temp inventories where this item might be found.
+            // for example, torp launchers
+            // will be in different places depending on selected ammo type.
+            // so need to be rebuilt more frequently.
+            public List<INVENTORY> TempInventories = new List<INVENTORY>();
+
+            // the type of item
+            public MyItemType Type;
+
+            // does this a torpedo?
+            public bool IsTorp = false;
+
+            // does this a ammo other than a torpedo
+            public bool IsAmmo = false;
+
+            // name as it appears on the LCD
+            public string LcdName;
+
+        }
+
+        // the items list.
+        private List<ITEM> ITEMS = new List<ITEM>();
+
+        // key: LcdName
+        // value: ITEM
+        //Dictionary<string, ITEM> ITEMS = new Dictionary<string, ITEM>();
+
+        /*class ITEM
         {
             public string NAME = "";
             public int TARGET = 0;
@@ -30,7 +98,6 @@ namespace IngameScript
             public MyItemType TYPE;
             public double PERCENTAGE;
             public List<IMyInventory> STORED_IN = new List<IMyInventory>();
-
             public bool AMMO = false;
             public bool IS_TORP = false;
             public bool AMMO_LOW = false;
@@ -44,9 +111,71 @@ namespace IngameScript
             NewItem.TYPE = new MyItemType(SubTypeID, TypeID);
             NewItem.IS_TORP = Torp;
             return NewItem;
+        }*/
+
+        //private List<ITEM> ITEMS = new List<ITEM>();
+
+        void buildItem(
+            string LcdName, 
+            string SubTypeID,
+            string TypeID, 
+            bool AutoLoad = false, 
+            bool IsTorp = false
+            )
+        {
+            ITEM Item  = new ITEM();
+            Item.Type = new MyItemType(SubTypeID, TypeID);
+            //Item.AutoLoad = AutoLoad;
+            Item.IsTorp = IsTorp;
+            Item.LcdName = LcdName;
+            ITEMS.Add(Item);
         }
 
-        private List<ITEM> ITEMS = new List<ITEM>();
+        void addInventory(IMyTerminalBlock b, int item = 99)
+        {
+            INVENTORY Inv = new INVENTORY();
+
+            Inv.Block = b;
+            Inv.Inv = b.GetInventory();
+
+            // item 99 is a container, could be storing anything...
+            if (item == 99)
+            {
+                // so add it to aaallll the lists...
+                foreach (var Item in ITEMS)
+                {
+                    Item.Inventories.Add(Inv);
+                }
+            }
+
+            // otherwise it's storing this thing in particular...
+            else
+            {
+                // that means we want to autoload it
+                // i mean, if we are autoloading in general.
+                Inv.AutoLoad = AUTOLOAD;
+
+                // and add it to that item's list only
+                ITEMS[item].Inventories.Add(Inv);
+            }
+        }
+
+        void addTempInventory(IMyTerminalBlock b, int item)
+        {
+            INVENTORY Inv = new INVENTORY();
+
+            Inv.Block = b;
+            Inv.Inv = b.GetInventory();
+
+            // this is a torp
+            // we want to autoload it
+            // i mean, if we are autoloading in general.
+            Inv.AutoLoad = AUTOLOAD;
+
+            // and add it to that item's list only
+            ITEMS[item].TempInventories.Add(Inv);
+        }
+
 
         private void buildItemsList()
         {
@@ -54,30 +183,30 @@ namespace IngameScript
             {
                 // this order is important, don't change it.
 
-                ITEMS.Add(buildItem("Fusion F ", "MyObjectBuilder_Ingot", "FusionFuel", true)); //0
-                ITEMS.Add(buildItem("Fuel Tank", "MyObjectBuilder_Component", "Fuel_Tank")); //1
-                ITEMS.Add(buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank")); //2
+                buildItem("Fusion F ", "MyObjectBuilder_Ingot", "FusionFuel", true); //0
+                buildItem("Fuel Tank", "MyObjectBuilder_Component", "Fuel_Tank"); //1
+                buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank"); //2
 
-                ITEMS.Add(buildItem("PDC      ", "MyObjectBuilder_AmmoMagazine", "40mmLeadSteelPDCBoxMagazine", true)); //3
-                ITEMS.Add(buildItem("PDC Tefl ", "MyObjectBuilder_AmmoMagazine", "40mmTungstenTeflonPDCBoxMagazine", true)); //4
+                buildItem("PDC      ", "MyObjectBuilder_AmmoMagazine", "40mmLeadSteelPDCBoxMagazine", true); //3
+                buildItem("PDC Tefl ", "MyObjectBuilder_AmmoMagazine", "40mmTungstenTeflonPDCBoxMagazine", true); //4
 
-                ITEMS.Add(buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine", true, true)); //5
-                ITEMS.Add(buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine", true, true)); //6
-                ITEMS.Add(buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmUNNTorpedoMagazine", true, true)); //7
-                ITEMS.Add(buildItem("RS Torp  ", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine", true, true)); //8
-                ITEMS.Add(buildItem("LRS Torp ", "MyObjectBuilder_AmmoMagazine", "LargeRamshackleTorpedoMagazine", true, true)); //9
+                buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine", true, true); //5
+                buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine", true, true); //6
+                buildItem("220 UNN  ", "MyObjectBuilder_AmmoMagazine", "220mmUNNTorpedoMagazine", true, true); //7
+                buildItem("RS Torp  ", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine", true, true); //8
+                buildItem("LRS Torp ", "MyObjectBuilder_AmmoMagazine", "LargeRamshackleTorpedoMagazine", true, true); //9
 
-                ITEMS.Add(buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine", true)); //10
-                ITEMS.Add(buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine", true)); //11
-                ITEMS.Add(buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine", true)); //12
-                ITEMS.Add(buildItem("80mm     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine", true)); //13
+                buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine", true); //10
+                buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine", true); //11
+                buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine", true); //12
+                buildItem("80mm     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine", true); //13
 
-                ITEMS.Add(buildItem("Foehammr ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugMCRNMagazine", true)); //14
-                ITEMS.Add(buildItem("Farren   ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugUNNMagazine", true)); //15
+                buildItem("Foehammr ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugMCRNMagazine", true); //14
+                buildItem("Farren   ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugUNNMagazine", true); //15
 
-                ITEMS.Add(buildItem("Kess     ", "MyObjectBuilder_AmmoMagazine", "180mmLeadSteelSabotMagazine", true)); //16
+                buildItem("Kess     ", "MyObjectBuilder_AmmoMagazine", "180mmLeadSteelSabotMagazine", true); //16
 
-                ITEMS.Add(buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate")); //17
+                buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate"); //17
             }
             catch (Exception ex)
             {
@@ -87,45 +216,50 @@ namespace IngameScript
             }
         }
 
+        void clearTempInventories()
+        {
+            foreach (var Item in ITEMS)
+            {
+                Item.TempInventories.Clear();
+            }
+        }
+
         private void iterateItems()
         {
-            // first we have to clear the old component counts
-            foreach (ITEM Item in ITEMS)
+          
+            foreach (var Item in ITEMS)
             {
-                Item.COUNT = 0;
-                Item.STORED_IN.Clear();
+                // clear item qty values
+                Item.ActualQty = 0;
+                Item.SpareQty = 0;
 
-                // torps are harder because they can change ammo type.
-                if (Item.IS_TORP)
-                    Item.ARMED_IN.Clear();
+                // include temp inventories as well
+                // like torps which change ammo type
+                List<INVENTORY> CombinedInventories = Item.Inventories.Concat(Item.TempInventories).ToList();
 
-                // count PDCs, Railgun inventories for ammo.
-                if (Item.AMMO && !Item.IS_TORP)
+                // check them all.
+                foreach (INVENTORY Inv in CombinedInventories)
                 {
-                    foreach (IMyInventory WeapInv in Item.ARMED_IN)
-                    {
-                        Item.COUNT += WeapInv.GetItemAmount(Item.TYPE).ToIntSafe();
-                    }
-                }
+                    Inv.Qty =  Inv.Inv.GetItemAmount(Item.Type).ToIntSafe();
+                    Item.ActualQty += Inv.Qty;
 
-                foreach (IMyInventory Inventory in INVENTORIEs)
-                {
-                    try
+                    if (Inv.AutoLoad)
                     {
-                        int Count = Inventory.GetItemAmount(Item.TYPE).ToIntSafe();
-                        if (Count > 0)
-                        {
-                            Item.STORED_IN.Add(Inventory);
-                            Item.COUNT += Count;
-                        }
+                        // this inventory needs to be loaded (ie is a weapon or a reactor)
+                        // and autoload in general is also on.
+
+                        // if it's less than 95% full
+                        // we are ammo low...
+                        //if (Inv.Inv.CurrentVolume.RawValue < (Inv.Inv.MaxVolume.RawValue * 0.95))
+                        //Inv.LowAmmo = true;
+
+                        Inv.FillFactor = Inv.Inv.VolumeFillFactor;
+                        Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        if (D)
-                        {
-                            Echo("Failed to check an inventory!");
-                            Echo(ex.Message);
-                        }
+                        // this inventory is a cargo container
+                        Item.SpareQty += Inv.Qty;
                     }
                 }
             }
@@ -136,7 +270,60 @@ namespace IngameScript
             // set current item counts as the target.
             foreach (ITEM Item in ITEMS)
             {
-                Item.TARGET = Item.COUNT;
+                Item.InitQty = Item.ActualQty;
+            }
+        }
+
+        int sortAmmoType(string AmmoType)
+        {
+            switch (AmmoType)
+            {
+                case "220mm Explosive Torpedo":
+                    return 5;
+
+
+                case "MCRN Torpedo High Spread":
+                case "MCRN Torpedo Low Spread":
+                    return 6;
+
+                case "UNN Torpedo High Spread":
+                case "UNN Torpedo Low Spread":
+                    return 7;
+
+                case "40mm Tungsten-Teflon Ammo":
+                    return 4;
+
+                case "40mm Lead-Steel PDC Box Ammo":
+                    return 4;
+
+                case "Ramshackle Torpedo Magazine":
+                    return 8;
+
+                case "120mm Lead-Steel Slug Ammo":
+                    return 10;
+
+                case "100mm Tungsten-Uranium Slug UNN Ammo":
+                    return 7;
+
+                case "100mm Tungsten-Uranium Slug MCRN Ammo":
+                    return 6;
+
+                case "80mm Tungsten-Uranium Sabot Ammo":
+                    return 13;
+
+                case "120mm Tungsten-Uranium Slug MCRN Ammo":
+                    return 14;
+
+                case "120mm Tungsten-Uranium Slug UNN Ammo":
+                    return 15;
+
+                case "180mm Lead-Steel Sabot Ammo":
+                    return 16;
+
+                default:
+                    if (D) Echo("Unknown AmmoType = " + AmmoType);
+                    return 99;
+
             }
         }
 

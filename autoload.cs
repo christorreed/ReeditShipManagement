@@ -28,14 +28,99 @@ namespace IngameScript
 
         string MISSING_AMMO = "";
 
-        void manageAutoload()
+        void runAutoLoad()
         {
 
             if (!AUTOLOAD) return;
 
-            if (D) Echo("Managing Autoload, " + TO_LOAD.Count + " weapons to be loaded...");
+            if (D) Echo("Running autoload...");
 
-            MISSING_AMMO = "";
+            foreach (var Item in ITEMS)
+            {
+                // include temp inventories as well
+                // like torps which change ammo type
+                List<INVENTORY> CombinedInventories = Item.Inventories.Concat(Item.TempInventories).ToList();
+
+
+                List<INVENTORY> LoadFrom = new List<INVENTORY>();
+                List<INVENTORY> LoadTo = new List<INVENTORY>();
+
+                float AverageFillFactor = 0;
+                int AutoloadCount = 0;
+
+                foreach (INVENTORY Inv in CombinedInventories)
+                {
+                    if (Inv == null) continue;
+
+                    if (Inv.AutoLoad)
+                    {
+                        // this block needs loading
+                        if (D) Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
+
+                        AutoloadCount++;
+                        AverageFillFactor += Inv.FillFactor;
+
+
+                        if (Inv.FillFactor < 0.95)
+                        {
+                            LoadTo.Add(Inv);
+                        }
+                    }
+                    else
+                    {
+                        // this block is a container
+                        if (Inv.Qty > 0)
+                        {
+                            LoadFrom.Add(Inv);
+                        }
+                    }
+                }
+
+                // calculate average weapon fill factor.
+                AverageFillFactor = AverageFillFactor / AutoloadCount;
+
+                if (LoadTo.Count > 0)
+                {
+                    // at least some blocks require autoloading.
+
+                    // this should order the list
+                    // emptest first, fullest last.
+                    LoadTo = LoadTo.OrderBy(a => a.FillFactor).ToList();
+
+                    if (Item.SpareQty > 1)
+                    {
+                        if (D) Echo("Loading " + Item.Type.SubtypeId + "...");
+
+                        // we have some ammo in storage at least,
+                        // so lets load from cargo.
+
+                        // this should order the list backwards
+                        // fullest first, emptest last, 
+                        LoadTo = LoadTo.OrderByDescending(a => a.FillFactor).ToList();
+
+
+
+                    }
+                    else
+                    {
+                        // we have no spare ammo at all,
+                        // so we need to balance what we have between weapons
+
+                        if (D) Echo("Balancing " + Item.Type.SubtypeId + "...");
+
+                        LoadFrom = new List<INVENTORY>(LoadTo);
+                        LoadFrom.Reverse();
+
+                    }
+                }
+                else
+                {
+                    if (D) Echo("No loading required " + Item.Type.SubtypeId + "...");
+                }
+
+            }
+
+            /*MISSING_AMMO = "";
 
             foreach (IMyTerminalBlock Weapon in TO_LOAD)
             {
@@ -128,7 +213,9 @@ namespace IngameScript
 
                     // sort the LoadFromMe list
                     // so we pull from the full ones first.
-                    Item.ARMED_IN = Item.ARMED_IN.OrderBy(a => a.VolumeFillFactor).ToList();
+                    LoadFromMe = LoadFromMe.OrderBy(a => a.VolumeFillFactor).ToList();
+                    LoadFromMe.Reverse();
+                    //Item.ARMED_IN = Item.ARMED_IN.OrderBy(a => a.VolumeFillFactor).ToList();
 
                     // load me like one of your french girls
                     foreach (IMyInventory Load in LoadMe)
@@ -166,7 +253,7 @@ namespace IngameScript
                 }
             }
 
-            TO_LOAD.Clear();
+            TO_LOAD.Clear();*/
         }
 
         string getOutputAmmoType(string AmmoType)

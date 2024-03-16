@@ -50,13 +50,16 @@ namespace IngameScript
 
                         // get active ammo.
                         string AmmoType = WC_PB_API.GetActiveAmmo(Torp, 0);
-                        string OutputAmmoType = getOutputAmmoType(AmmoType);
-                        IMyInventory WeapInv = Torp.GetInventory();
+                        //string OutputAmmoType = getOutputAmmoType(AmmoType);
+                        int Ammo = sortAmmoType(AmmoType);
+                        //IMyInventory WeapInv = Torp.GetInventory();
 
-                        if (D) Echo("Launcher " + Torp.CustomName + " needs " + OutputAmmoType);
+                        if (D) Echo("Launcher " + Torp.CustomName + " needs " + AmmoType + "(" + Ammo + ")");
+
+                        addTempInventory(Torp, Ammo);
 
                         // iterate all ITEMS
-                        foreach (ITEM Item in ITEMS)
+                        /*foreach (ITEM Item in ITEMS)
                         {
                             if (Item.IS_TORP)
                             {
@@ -100,6 +103,8 @@ namespace IngameScript
                                 }
                             }
                         }
+                        */
+
                     }
                 }
             }
