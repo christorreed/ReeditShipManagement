@@ -33,6 +33,9 @@ namespace IngameScript
             // the block's inventory
             public IMyInventory Inv { get; set; }
 
+            // the result of GetItems.
+            List <MyInventoryItem> Items = new List<MyInventoryItem>();
+
             // how many of this item are in this block
             public int Qty = 0;
 
@@ -44,6 +47,7 @@ namespace IngameScript
 
             // if it does, how full is it?
             public float FillFactor;
+
         }
 
         class ITEM
@@ -115,35 +119,21 @@ namespace IngameScript
 
         //private List<ITEM> ITEMS = new List<ITEM>();
 
-        void buildItem(
-            string LcdName, 
-            string SubTypeID,
-            string TypeID, 
-            bool AutoLoad = false, 
-            bool IsTorp = false
-            )
-        {
-            ITEM Item  = new ITEM();
-            Item.Type = new MyItemType(SubTypeID, TypeID);
-            //Item.AutoLoad = AutoLoad;
-            Item.IsTorp = IsTorp;
-            Item.LcdName = LcdName;
-            ITEMS.Add(Item);
-        }
+
 
         void addInventory(IMyTerminalBlock b, int item = 99)
         {
-            INVENTORY Inv = new INVENTORY();
-
-            Inv.Block = b;
-            Inv.Inv = b.GetInventory();
-
             // item 99 is a container, could be storing anything...
             if (item == 99)
             {
                 // so add it to aaallll the lists...
                 foreach (var Item in ITEMS)
                 {
+                    INVENTORY Inv = new INVENTORY();
+
+                    Inv.Block = b;
+                    Inv.Inv = b.GetInventory();
+
                     Item.Inventories.Add(Inv);
                 }
             }
@@ -151,6 +141,11 @@ namespace IngameScript
             // otherwise it's storing this thing in particular...
             else
             {
+                INVENTORY Inv = new INVENTORY();
+
+                Inv.Block = b;
+                Inv.Inv = b.GetInventory();
+
                 // that means we want to autoload it
                 // i mean, if we are autoloading in general.
                 Inv.AutoLoad = AUTOLOAD;
@@ -176,6 +171,21 @@ namespace IngameScript
             ITEMS[item].TempInventories.Add(Inv);
         }
 
+        void buildItem(
+        string LcdName,
+        string SubTypeID,
+        string TypeID,
+        bool  IsAmmo = false,
+        bool IsTorp = false
+        )
+        {
+            ITEM Item = new ITEM();
+            Item.Type = new MyItemType(SubTypeID, TypeID);
+            Item.IsAmmo = IsAmmo;
+            Item.IsTorp = IsTorp;
+            Item.LcdName = LcdName;
+            ITEMS.Add(Item);
+        }
 
         private void buildItemsList()
         {
@@ -237,24 +247,23 @@ namespace IngameScript
                 // like torps which change ammo type
                 List<INVENTORY> CombinedInventories = Item.Inventories.Concat(Item.TempInventories).ToList();
 
+                //if (D) Echo("Checking " + Item.LcdName);
+
                 // check them all.
                 foreach (INVENTORY Inv in CombinedInventories)
                 {
-                    Inv.Qty =  Inv.Inv.GetItemAmount(Item.Type).ToIntSafe();
+                    Inv.Qty = Inv.Inv.GetItemAmount(Item.Type).ToIntSafe();
                     Item.ActualQty += Inv.Qty;
+
+                    //if (D && Inv.Qty > 0) Echo(Inv.Block.CustomName + " contains " + Inv.Qty);
 
                     if (Inv.AutoLoad)
                     {
                         // this inventory needs to be loaded (ie is a weapon or a reactor)
                         // and autoload in general is also on.
 
-                        // if it's less than 95% full
-                        // we are ammo low...
-                        //if (Inv.Inv.CurrentVolume.RawValue < (Inv.Inv.MaxVolume.RawValue * 0.95))
-                        //Inv.LowAmmo = true;
-
                         Inv.FillFactor = Inv.Inv.VolumeFillFactor;
-                        Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
+                        //if (D) Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
                     }
                     else
                     {
