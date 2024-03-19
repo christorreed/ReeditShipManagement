@@ -235,98 +235,98 @@ namespace IngameScript
 
                                 case "Fusion Fuel count":
                                     config_count++;
-                                    ITEMS[0].TARGET = int.Parse(value);
+                                    ITEMS[0].InitQty = int.Parse(value);
                                     break;
 
                                 case "Fuel tank count":
                                     config_count++;
-                                    ITEMS[1].TARGET = int.Parse(value);
+                                    ITEMS[1].InitQty = int.Parse(value);
                                     break;
 
                                 case "Jerry can count":
                                     config_count++;
-                                    ITEMS[2].TARGET = int.Parse(value);
+                                    ITEMS[2].InitQty = int.Parse(value);
                                     break;
 
                                 case "40mm PDC Magazine count":
                                     config_count++;
-                                    ITEMS[3].TARGET = int.Parse(value);
+                                    ITEMS[3].InitQty = int.Parse(value);
                                     break;
                                 case "40mm Teflon Tungsten PDC Magazine count":
                                     config_count++;
-                                    ITEMS[4].TARGET = int.Parse(value);
+                                    ITEMS[4].InitQty = int.Parse(value);
                                     break;
 
                                 case "220mm Torpedo count":
                                 // was like this in versions prior to 0.5.0
                                 case "Torpedo count":
                                     config_count++;
-                                    ITEMS[5].TARGET = int.Parse(value);
+                                    ITEMS[5].InitQty = int.Parse(value);
                                     break;
 
                                 case "220mm MCRN torpedo count":
                                     config_count++;
-                                    ITEMS[6].TARGET = int.Parse(value);
+                                    ITEMS[6].InitQty = int.Parse(value);
                                     break;
 
                                 case "220mm UNN torpedo count":
                                     config_count++;
-                                    ITEMS[7].TARGET = int.Parse(value);
+                                    ITEMS[7].InitQty = int.Parse(value);
                                     break;
 
                                 case "Ramshackle torpedo count":
                                 // was like this in versions prior to 0.4.0
                                 case "Ramshackle torpedo Count":
                                     config_count++;
-                                    ITEMS[8].TARGET = int.Parse(value);
+                                    ITEMS[8].InitQty = int.Parse(value);
                                     break;
 
                                 case "Large ramshacke torpedo count":
                                     config_count++;
-                                    ITEMS[9].TARGET = int.Parse(value);
+                                    ITEMS[9].InitQty = int.Parse(value);
                                     break;
 
                                 case "Zako 120mm Railgun rounds count":
                                 // was like this in versions prior to 0.5.0
                                 case "Railgun rounds count":
                                     config_count++;
-                                    ITEMS[10].TARGET = int.Parse(value);
+                                    ITEMS[10].InitQty = int.Parse(value);
                                     break;
 
                                 case "Dawson 100mm UNN Railgun rounds count":
                                     config_count++;
-                                    ITEMS[11].TARGET = int.Parse(value);
+                                    ITEMS[11].InitQty = int.Parse(value);
                                     break;
 
                                 case "Stiletto 100mm MCRN Railgun rounds count":
                                     config_count++;
-                                    ITEMS[12].TARGET = int.Parse(value);
+                                    ITEMS[12].InitQty = int.Parse(value);
                                     break;
 
                                 case "T-47 80mm Railgun rounds count":
                                     config_count++;
-                                    ITEMS[13].TARGET = int.Parse(value);
+                                    ITEMS[13].InitQty = int.Parse(value);
                                     break;
 
                                 case "Foehammer 120mm MCRN rounds count":
                                     config_count++;
-                                    ITEMS[14].TARGET = int.Parse(value);
+                                    ITEMS[14].InitQty = int.Parse(value);
                                     break;
 
                                 case "Farren 120mm UNN Railgun rounds count":
                                     config_count++;
-                                    ITEMS[15].TARGET = int.Parse(value);
+                                    ITEMS[15].InitQty = int.Parse(value);
                                     break;
 
 
                                 case "Kess 180mm rounds count":
                                     config_count++;
-                                    ITEMS[16].TARGET = int.Parse(value);
+                                    ITEMS[16].InitQty = int.Parse(value);
                                     break;
 
                                 case "Steel plate count":
                                     config_count++;
-                                    ITEMS[17].TARGET = int.Parse(value);
+                                    ITEMS[17].InitQty = int.Parse(value);
                                     break;
 
 
@@ -664,32 +664,32 @@ namespace IngameScript
 
                 + "\n---- [Inventory Counts] ----\n"
                 + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"
-                + "Fusion Fuel count\n=" + ITEMS[0].TARGET + "\n"
+                + "Fusion Fuel count\n=" + ITEMS[0].InitQty + "\n"
 
-                + "Fuel tank count\n=" + ITEMS[1].TARGET + "\n"
-                + "Jerry can count\n=" + ITEMS[2].TARGET + "\n"
+                + "Fuel tank count\n=" + ITEMS[1].InitQty + "\n"
+                + "Jerry can count\n=" + ITEMS[2].InitQty + "\n"
 
-                + "40mm PDC Magazine count\n=" + ITEMS[3].TARGET + "\n"
-                + "40mm Teflon Tungsten PDC Magazine count\n=" + ITEMS[4].TARGET + "\n"
+                + "40mm PDC Magazine count\n=" + ITEMS[3].InitQty + "\n"
+                + "40mm Teflon Tungsten PDC Magazine count\n=" + ITEMS[4].InitQty + "\n"
 
-                + "220mm Torpedo count\n=" + ITEMS[5].TARGET + "\n"
-                + "220mm MCRN torpedo count\n=" + ITEMS[6].TARGET + "\n"
-                + "220mm UNN torpedo count\n=" + ITEMS[7].TARGET + "\n"
+                + "220mm Torpedo count\n=" + ITEMS[5].InitQty + "\n"
+                + "220mm MCRN torpedo count\n=" + ITEMS[6].InitQty + "\n"
+                + "220mm UNN torpedo count\n=" + ITEMS[7].InitQty + "\n"
 
-                + "Ramshackle torpedo count\n=" + ITEMS[8].TARGET + "\n"
-                + "Large ramshacke torpedo count\n=" + ITEMS[9].TARGET + "\n"
+                + "Ramshackle torpedo count\n=" + ITEMS[8].InitQty + "\n"
+                + "Large ramshacke torpedo count\n=" + ITEMS[9].InitQty + "\n"
 
-                + "Zako 120mm Railgun rounds count\n=" + ITEMS[10].TARGET + "\n"
-                + "Dawson 100mm UNN Railgun rounds count\n=" + ITEMS[11].TARGET + "\n"
-                + "Stiletto 100mm MCRN Railgun rounds count\n=" + ITEMS[12].TARGET + "\n"
-                + "T-47 80mm Railgun rounds count\n=" + ITEMS[13].TARGET + "\n"
+                + "Zako 120mm Railgun rounds count\n=" + ITEMS[10].InitQty + "\n"
+                + "Dawson 100mm UNN Railgun rounds count\n=" + ITEMS[11].InitQty + "\n"
+                + "Stiletto 100mm MCRN Railgun rounds count\n=" + ITEMS[12].InitQty + "\n"
+                + "T-47 80mm Railgun rounds count\n=" + ITEMS[13].InitQty + "\n"
 
-                + "Foehammer 120mm MCRN rounds count\n=" + ITEMS[14].TARGET + "\n"
-                + "Farren 120mm UNN Railgun rounds count\n=" + ITEMS[15].TARGET + "\n"
+                + "Foehammer 120mm MCRN rounds count\n=" + ITEMS[14].InitQty + "\n"
+                + "Farren 120mm UNN Railgun rounds count\n=" + ITEMS[15].InitQty + "\n"
 
 
-                + "Kess 180mm rounds count\n=" + ITEMS[16].TARGET + "\n"
-                + "Steel plate count\n=" + ITEMS[17].TARGET + "\n"
+                + "Kess 180mm rounds count\n=" + ITEMS[16].InitQty + "\n"
+                + "Steel plate count\n=" + ITEMS[17].InitQty + "\n"
 
                 + "\n---- [Stances] ----\n"
                 + stance_text

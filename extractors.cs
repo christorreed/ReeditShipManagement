@@ -106,7 +106,9 @@ namespace IngameScript
 
         void fillExtractors()
         {
+            return;
 
+            /*
             if (D)
                 Echo("Fuel low, filling extractors...");
 
@@ -144,7 +146,7 @@ namespace IngameScript
 
 
             List<IMyInventory> ToSearch;
-            if (TankType == "Fuel_Tank") ToSearch = ITEMS[1].STORED_IN;
+            if (TankType == "Fuel_Tank") ToSearch = ITEMS[1].Inventories.STORED_IN;
             else ToSearch = ITEMS[2].STORED_IN;
 
 
@@ -158,7 +160,7 @@ namespace IngameScript
             //for (int j = 0; j < 3; j++)
             {
                 List<MyInventoryItem> inventoryItems = new List<MyInventoryItem>();
-                ToSearch[j].GetItems(inventoryItems/* ,a => a.ToString() == "Fuel_Tank"*/);
+                ToSearch[j].GetItems(inventoryItems);
 
                 if (D)
                     Echo(inventoryItems.Count + " fuel tanks in inventory " + j);
@@ -201,6 +203,8 @@ namespace IngameScript
             // no spare tanks...
             REFUEL_FAILURE_COUNT = 1;
             NO_SPARE_TANKS = true;
+
+            */
         }
     }
 }

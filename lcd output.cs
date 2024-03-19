@@ -176,12 +176,12 @@ namespace IngameScript
 
             foreach (ITEM Item in ITEMS)
             {
-                if (Item.TARGET != 0)
+                if (Item.InitQty != 0)
                 {
-                    Item.PERCENTAGE = (100 * ((double)Item.COUNT / (double)Item.TARGET));
-                    string val = (Item.COUNT + "/" + Item.TARGET).PadLeft(9);
+                    Item.Percentage = (100 * ((double)Item.ActualQty / (double)Item.InitQty));
+                    string val = (Item.ActualQty + "/" + Item.InitQty).PadLeft(9);
                     if (val.Length > 9) val = val.Substring(0, 9);
-                    sec_inventory_counts += Item.NAME + " [" + generateBar(Item.PERCENTAGE) + "] " + val + "\n";
+                    sec_inventory_counts += Item.LcdName + " [" + generateBar(Item.Percentage) + "] " + val + "\n";
                 }
             }
             sec_inventory_counts += "\n";
@@ -414,20 +414,20 @@ namespace IngameScript
                     LCDAlerts.Add(new ALERT(EMPTY_REACTORs + " REACTORS NEED FUS. FUEL!", "At least one reactor needs Fusion Fuel!", 3));
                 }
 
-                if (ITEMS[0].TARGET == 0) // Different error if there is no target.
+                if (ITEMS[0].InitQty == 0) // Different error if there is no target.
                 {
-                    if (ITEMS[0].COUNT > 0)
+                    if (ITEMS[0].ActualQty > 0)
                     {
                         power_priority += 1;
                         LCDAlerts.Add(new ALERT("No Spare Fusion Fuel!", "No spare fusion fuel detected in ships cargo!", 2));
                     }
                 }
-                else if (ITEMS[0].PERCENTAGE < 5) // Fusion fuel below 5% of init quota.
+                else if (ITEMS[0].Percentage < 5) // Fusion fuel below 5% of init quota.
                 {
                     power_priority += 2;
                     LCDAlerts.Add(new ALERT("FUSION FUEL LEVEL CRITICAL!", "Fusion fuel level is low!", 3));
                 }
-                else if (ITEMS[0].PERCENTAGE < 10) // Fusion fuel below 10% of init quota.
+                else if (ITEMS[0].Percentage < 10) // Fusion fuel below 10% of init quota.
                 {
                     power_priority += 1;
                     LCDAlerts.Add(new ALERT("Fusion Fuel Level Low!", "Fusion fuel level is low!", 2));

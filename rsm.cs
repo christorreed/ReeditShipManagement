@@ -355,8 +355,12 @@ namespace IngameScript
             // iterate blocks
             if (D) Echo("Iterating " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
             iteratePowerBlocks(STANCES[S][16]);
-            if (D) Echo("Battery Total: " + TOTAL_BATTERIEs + "\nBattery Init: " + INIT_BATTERIEs);
+            //if (D) Echo("Battery Total: " + TOTAL_BATTERIEs + "\nBattery Init: " + INIT_BATTERIEs);
 
+            // before we check weapons
+            // clear temp inventories...
+            if (D) Echo("Clearing temp inventories...");
+            clearTempInventories();
 
             if (D) Echo("Iterating " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
             iteratePDCs();
@@ -436,7 +440,7 @@ namespace IngameScript
                 }
             }
 
-            manageAutoload();
+            runAutoLoad();
             manageDoors();
             updateLcds();
 
