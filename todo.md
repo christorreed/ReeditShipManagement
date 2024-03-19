@@ -1,10 +1,11 @@
 # debugs
 
-- less .GetItemAmount(Item) calls
-- - store item counts as you go
-- - fix balancing
 - first init, get zero value
-- figure out how to view all kinds of files in VS.
+
+x less .GetItemAmount(Item) calls
+x - store item counts as you go
+x - fix balancing
+x figure out how to view all kinds of files in VS.
 x not counting ammo from weapons
 x inventory counting, zeroing bugs.
 x issues with fuel level
@@ -31,3 +32,6 @@ x "An item with the same key has already been added" during
 X review and fix extractor management
 X finalise init naming initBlockNames
 
+# wishlist
+
+- add detailed ini block overrides: https://discord.com/channels/348745744846422016/1205752120280743987/1219246089136246826
