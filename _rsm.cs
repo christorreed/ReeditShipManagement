@@ -24,9 +24,12 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+        // decided to put this here cause it gives me a bit better control of the format,
+        // and I get to add the version string in without minification.
+
         #region mdk preserve
         #region mdk macros
-        string VERSION = "1.99.1 ($MDK_TIME$, $MDK_DATE$)";
+        string V = "1.99.2 $MDK_DATE$";
         #endregion
         #endregion
 
@@ -662,7 +665,7 @@ namespace IngameScript
         {
             
             string Output = 
-                "REEDIT SHIP MANAGEMENT \n\n|- Version: " + VERSION +
+                "REEDIT SHIP MANAGEMENT \n\n|- Version: " + V +
                 "\n|- Stance: " + STANCE_NAMES[S] + "(" + S + ")" +
                 "\n|- Step: " + OCCASIONAL_STEP + ", " + INFREQUENT_STEP + ", " + RARE_STEP + "/" + REFRESH_FREQ;
 
