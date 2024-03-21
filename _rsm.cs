@@ -378,7 +378,7 @@ namespace IngameScript
             switch (BOOT_STEP)
             {
                 case 0:
-                    if (D) Echo("Iterating " + RAILs.Count + " railguns...");
+                    if (D) Echo("Refreshing " + RAILs.Count + " railguns...");
                     refreshRailguns();
                     // checks integrity, sets power, gets target status for discharge mgmt
 
@@ -388,7 +388,7 @@ namespace IngameScript
                     else goto case 1;
 
                 case 1:
-                    if (D) Echo("Iterating " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
+                    if (D) Echo("Refreshing " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
                     refreshPowerBlocks(STANCES[S][16]);
                     // checks integrity, sets power on,
                     // calcs power, batt discharge mgmt
@@ -399,7 +399,7 @@ namespace IngameScript
                     else goto case 2;
 
                 case 2:
-                    if (D) Echo("Iterating " + THRUSTERs_EPSTEIN.Count + " epsteins...");
+                    if (D) Echo("Refreshing " + THRUSTERs_EPSTEIN.Count + " epsteins...");
                     refreshMainThrusters();
                     // checks integrity, thrust
 
@@ -409,7 +409,7 @@ namespace IngameScript
                     else goto case 3;
 
                 case 3:
-                    if (D) Echo("Iterating " + LIDARs.Count + " lidars...");
+                    if (D) Echo("Refreshing " + LIDARs.Count + " lidars...");
                     refreshLidars(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
                     // checks integrity
 
@@ -449,13 +449,13 @@ namespace IngameScript
 
                     if (D_PROFILE) Echo("Took " + msSinceLast());
 
-                    if (D) Echo("Iterating " + TORPs.Count + " torpedo launchers...");
+                    if (D) Echo("Refreshing " + TORPs.Count + " torpedo launchers...");
                     refreshTorpedoes();
                     // checks integrity, sets power, gets torpedo inventories
 
                     if (D_PROFILE) Echo("Took " + msSinceLast());
 
-                    if (D) Echo("Iterating items...");
+                    if (D) Echo("Refreshing items...");
                     refreshItems();
                     // count each of the checked items in each inventory
 
@@ -471,14 +471,14 @@ namespace IngameScript
                     break;
 
                 case 2:
-                    if (D) Echo("Iterating " + TANKs_H2.Count + " H2 tanks...");
+                    if (D) Echo("Refreshing " + TANKs_H2.Count + " H2 tanks...");
                     refreshH2Tanks();
                     // > priority low
                     // checks integrity, filled ratio
 
                     if (D_PROFILE) Echo("Took " + msSinceLast());
 
-                    if (D) Echo("Checking refuel status...");
+                    if (D) Echo("Refreshing refuel status...");
                     refreshRefuelStatus();
                     // checks if we NEED_FUEL?
 
@@ -514,15 +514,15 @@ namespace IngameScript
             {
                 case 0:
 
-                    if (D) Echo("Iterating " + THRUSTERs_RCS.Count + " rcs...");
+                    if (D) Echo("Refreshing " + THRUSTERs_RCS.Count + " rcs...");
                     refreshRcsThrusters();
                     // checks integrity
 
-                    if (D) Echo("Iterating " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
+                    if (D) Echo("Refreshing " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
                     refreshPDCs();
                     // checks integrity, sets power on
 
-                    if (D) Echo("Iterating " + GYROs.Count + " gyros...");
+                    if (D) Echo("Refreshing " + GYROs.Count + " gyros...");
                     refreshGyros(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
                     // checks integrity, sets power
 
@@ -530,15 +530,15 @@ namespace IngameScript
 
                 case 1:
 
-                    if (D) Echo("Iterating " + TANKs_O2.Count + " O2 tanks...");
+                    if (D) Echo("Refreshing " + TANKs_O2.Count + " O2 tanks...");
                     refreshO2Tanks();
                     // checks integrity, filled ratio
 
-                    if (D) Echo("Iterating " + ANTENNAs.Count + " antennas...");
+                    if (D) Echo("Refreshing " + ANTENNAs.Count + " antennas...");
                     refreshAntennas();
                     // checks msg, range
 
-                    if (D) Echo("Iterating " + CARGOs.Count + " cargos...");
+                    if (D) Echo("Refreshing " + CARGOs.Count + " cargos...");
                     refreshCargos();
                     // checks integrity
 
@@ -546,15 +546,15 @@ namespace IngameScript
 
                 case 2:
 
-                    if (D) Echo("Iterating " + VENTs.Count + " vents...");
+                    if (D) Echo("Refreshing " + VENTs.Count + " vents...");
                     refreshVents(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
                     // checks integrity, sets power
 
-                    if (D) Echo("Iterating " + AUXILIARIEs.Count + " auxiliary blocks...");
+                    if (D) Echo("Refreshing " + AUXILIARIEs.Count + " auxiliary blocks...");
                     iterateAuxiliaries();
                     // checks integrity, sets power
 
-                    if (D) Echo("Iterating " + WELDERs.Count + " welders...");
+                    if (D) Echo("Refreshing " + WELDERs.Count + " welders...");
                     iterateWelders();
                     // checks integrity, sets power
 
@@ -565,17 +565,17 @@ namespace IngameScript
                     // and so only need to happen if we are adjusting those.
                     if (ADJUST_KEEP_ALIVES)
                     {
-                        if (D) Echo("Checking " + CONNECTORs.Count + " connectors...");
+                        if (D) Echo("Refreshing " + CONNECTORs.Count + " connectors...");
                         refreshConnectors(ADJUST_KEEP_ALIVES_TO);
                         // > priority low
                         // checks integrity, sets power
 
-                        if (D) Echo("Checking " + CAMERAs.Count + " cameras...");
+                        if (D) Echo("Refreshing " + CAMERAs.Count + " cameras...");
                         refreshCameras(ADJUST_KEEP_ALIVES_TO);
                         // > priority low
                         // sets power
 
-                        if (D) Echo("Checking " + SENSORs.Count + " sensors...");
+                        if (D) Echo("Refreshing " + SENSORs.Count + " sensors...");
                         refreshSensors(ADJUST_KEEP_ALIVES_TO);
                         // > priority low
                         // sets power
@@ -599,7 +599,7 @@ namespace IngameScript
 
             if (D_PROFILE) Echo("Took " + msSinceLast());
 
-            if (D) Echo("Updating block lists...");
+            if (D) Echo("Refreshing block lists...");
             GridTerminalSystem.GetBlocksOfType((List<IMyTerminalBlock>)null, sortBlockLists);
 
             if (D_PROFILE) Echo("Took " + msSinceLast());
