@@ -24,9 +24,6 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // decided to put this here cause it gives me a bit better control of the format,
-        // and I get to add the version string in without minification.
-
         #region mdk preserve
         #region mdk macros
         string V = "1.99.2 $MDK_DATE$";
