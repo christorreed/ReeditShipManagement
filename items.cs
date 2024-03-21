@@ -234,7 +234,7 @@ namespace IngameScript
             }
         }
 
-        private void iterateItems()
+        private void refreshItems()
         {
           
             foreach (var Item in ITEMS)
@@ -289,7 +289,6 @@ namespace IngameScript
             {
                 case "220mm Explosive Torpedo":
                     return 5;
-
 
                 case "MCRN Torpedo High Spread":
                 case "MCRN Torpedo Low Spread":

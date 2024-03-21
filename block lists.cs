@@ -82,9 +82,6 @@ namespace IngameScript
         // Aux List
         private List<IMyTerminalBlock> AUXILIARIEs = new List<IMyTerminalBlock>();
 
-        // Cargo Inventories
-        // private List<IMyInventory> INVENTORIEs = new List<IMyInventory>();
-
         // INIT
         private bool I = false;
         // set to true during an init.
@@ -92,32 +89,6 @@ namespace IngameScript
         // Init Names List
         private Dictionary<IMyTerminalBlock, string> INIT_NAMEs = new Dictionary<IMyTerminalBlock, string>();
         // built if I = true
-
-        private void updateBlockLists()
-        {
-            if (D) Echo("Clearing block lists...");
-            clearBlockLists();
-            if (D) Echo("Updating block lists...");
-            GridTerminalSystem.GetBlocksOfType((List<IMyTerminalBlock>) null, sortBlockLists);
-            if (D)
-            {
-                Echo("Finished updating block lists.");
-                if (I) Echo("Total blocks to rename: " + INIT_NAMEs.Count);
-            }
-
-            if (CONTROLLER == null)
-            {
-                if (CONTROLLERs.Count > 0)
-                    CONTROLLER = CONTROLLERs[0];
-
-                else
-                    ALERTS.Add(new ALERT(
-                        "NO SHIP CONTROLLER!",
-                        "No ship controller was found on this grid. Some functionality will not operate correctly.",
-                        3
-                        ));
-            }
-        }
 
         private bool sortBlockLists(IMyTerminalBlock b) 
         {

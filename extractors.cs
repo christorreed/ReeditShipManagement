@@ -60,12 +60,15 @@ namespace IngameScript
         {
             // set fuel tank/jerry can for extractor management = 3
             if (EXTRACTORs.Count < 1 && EXTRACTORs_SMALL.Count > 1)
+                // we have no large extractors and at least one small one
+                // so base the keep full thresh off a jerry can's capacity
                 EXTACTOR_KEEP_FULL_THRESH = (KEEP_FULL_MULTIPLIER * CAPACITY_JERRY_CAN);
             else
+                // otherwise, use a normal fuel tank's capacity.
                 EXTACTOR_KEEP_FULL_THRESH = (KEEP_FULL_MULTIPLIER * CAPACITY_FUEL_TANK);
         }
 
-        void checkRefuelStatus()
+        void refreshRefuelStatus()
         {
             // this method basically determines, based on the current stance
             // if we NEED_FUEL...
@@ -104,7 +107,7 @@ namespace IngameScript
             }
         }
 
-        void fillExtractors()
+        void loadExtractors()
         {
             return;
 

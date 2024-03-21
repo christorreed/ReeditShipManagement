@@ -38,12 +38,16 @@ namespace IngameScript
             I = true;
 
             // this rebuilds general that we need here lists.
-            fullRefresh();
+            doThisStuffRarely();
+
+            // also set our step to 0,
+            // reset counter for next rare stuff run
+            RARE_STEP = 0;
 
             I = false;
 
             // i now christen this ship, the RSG whatever the fuck
-            // it's now public variable official.
+            // it's now variable official.
             SHIP_NAME = ship;
 
             if (D) Echo("Initialising lcds...");

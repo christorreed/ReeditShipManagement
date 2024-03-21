@@ -27,7 +27,7 @@ namespace IngameScript
         double COMMS_RANGE = 0; 
        
 
-        void iterateAntennas()
+        void refreshAntennas()
         {
             COMMS_ON = false;
 

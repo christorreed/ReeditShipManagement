@@ -28,7 +28,7 @@ namespace IngameScript
         private double ACTUAL_CARGOs = 0;
         private double INTEGRITY_CARGOs = 0;
 
-        private void iterateCargos()
+        private void refreshCargos()
         {
             ACTUAL_CARGOs = 0;
 

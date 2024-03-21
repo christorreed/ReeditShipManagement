@@ -25,12 +25,12 @@ namespace IngameScript
     {
         private double MAX_POWER;
 
-        private void iteratePowerBlocks(int state)
+        private void refreshPowerBlocks(int state)
         {
             MAX_POWER = 0;
 
-            iterateBatteries(state);
-            iterateReactors();
+            refreshBatteries(state);
+            refreshReactors();
         }
 
         // Batteries -----------------------------------------------------------------
@@ -40,7 +40,7 @@ namespace IngameScript
         private double ACTUAL_BATTERIEs = 0;
         private double INTEGRITY_BATTERIEs = 0;
 
-        private void iterateBatteries(int state)
+        private void refreshBatteries(int state)
         {
             TOTAL_BATTERIEs = 0;
             ACTUAL_BATTERIEs = 0;
@@ -117,7 +117,7 @@ namespace IngameScript
 
         private int EMPTY_REACTORs = 0;
 
-        private void iterateReactors()
+        private void refreshReactors()
         {
             ACTUAL_REACTORs = 0;
             EMPTY_REACTORs = 0;
@@ -129,17 +129,12 @@ namespace IngameScript
                     // always turn reactors on
                     Reactor.Enabled = true;
 
-                    if (AUTOLOAD)
-                        if (!inventorySomewhatFull(Reactor)) TO_LOAD.Add(Reactor);
-
                     if (inventoryEmpty(Reactor))
-                    {
                         EMPTY_REACTORs++;
-                    }
+                    
                     else
-                    {
                         ACTUAL_REACTORs += Reactor.MaxOutput;
-                    }
+                    
                 }
             }
             INTEGRITY_REACTORs = Math.Round(100 * (ACTUAL_REACTORs / INIT_REACTORs));

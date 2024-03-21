@@ -52,24 +52,25 @@ namespace IngameScript
         // Lists -----------------------------------------------------------------
 
         // list of friendly faction ids, steamids, that can be used to open spawns.
-        private string FRIENDLY_TAGS = ""; 
+        string FRIENDLY_TAGS = ""; 
 
         // blocks which will be enumerated at init.
-        private List<string> FORCE_ENUMERATION = new List<string>(); 
+        List<string> FORCE_ENUMERATION = new List<string>(); 
 
         // thrust percentages to show on the Advanced Thrust LCD
-        private List<double> ADVANCED_THRUST_PERCENTS = new List<double>();
+        List<double> ADVANCED_THRUST_PERCENTS = new List<double>();
 
         // Doors -----------------------------------------------------------------
 
-        private int DOOR_OPEN_TIME = 3; // Doors open timer (x100 ticks, default 3)
-        private int DOOR_AIRLOCK_TIME = 6; // Airlock doors disabled timer (x100 ticks, default 6)
+        int DOOR_OPEN_TIME = 3; // Doors open timer (x100 ticks, default 3)
+        int DOOR_AIRLOCK_TIME = 6; // Airlock doors disabled timer (x100 ticks, default 6)
 
         // Performance & Debugging -----------------------------------------------------------------
 
-        private int WAIT_COUNT = 0; // for throttling CPU usage
-        private int REFRESH_FREQ = 50; // number of loops between complete refreshes.
-        private bool D = false; // verbose debugging enabled
+        int WAIT_COUNT = 0; // for throttling CPU usage
+        int REFRESH_FREQ = 50; // number of loops between complete refreshes.
+        bool D = false; // verbose debugging enabled
+        bool D_PROFILE = true; // profile performance 
 
         // System -----------------------------------------------------------------
 

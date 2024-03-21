@@ -25,7 +25,7 @@ namespace IngameScript
         // Vents -----------------------------------------------------------------
 
         private int ACTUAL_VENTS_SEALED = 0;
-        private void iterateVents(bool power_state, bool set_power_state)
+        private void refreshVents(bool power_state, bool set_power_state)
         {
             ACTUAL_VENTS_SEALED = 0;
 
@@ -43,7 +43,7 @@ namespace IngameScript
         }
 
         // Connectors -----------------------------------------------------------------
-        private void iterateConnectors(bool power_state)
+        private void refreshConnectors(bool power_state)
         {
             foreach (IMyShipConnector Conenctor in CONNECTORs)
             {
@@ -53,7 +53,7 @@ namespace IngameScript
         }
 
         // Cameras -----------------------------------------------------------------
-        private void iterateCameras(bool power_state)
+        private void refreshCameras(bool power_state)
         {
             foreach (IMyCameraBlock Camera in CAMERAs)
             {
@@ -63,7 +63,7 @@ namespace IngameScript
         }
 
         // Sensors -----------------------------------------------------------------
-        private void iterateSensors(bool power_state)
+        private void refreshSensors(bool power_state)
         {
             foreach (IMySensorBlock Sensor in SENSORs)
             {

@@ -28,7 +28,7 @@ namespace IngameScript
         private int INIT_PDCs = 0;
         private double INTEGRITY_PDCs = 0;
 
-        private void iteratePDCs()
+        private void refreshPDCs()
         {
             ACTUAL_PDCs = 0;
 
@@ -56,9 +56,6 @@ namespace IngameScript
                 // IsFull doesn't work because volume of a full inner PDC is...
                 // 1000000 / 1000002
                 // so instead now I just confirm that it's > 95% full.
-
-                if (AUTOLOAD && !inventorySomewhatFull(pdc))
-                    TO_LOAD.Add(pdc);
 
                 (pdc as IMyConveyorSorter).Enabled = power_state;
 

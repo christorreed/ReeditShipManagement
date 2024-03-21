@@ -30,7 +30,7 @@ namespace IngameScript
 
         private bool RAILs_HAVE_TARGET = false;
 
-        private void iterateRailguns()
+        private void refreshRailguns()
         {
             // will be used to control battery mode.
             RAILs_HAVE_TARGET = false;
@@ -42,9 +42,6 @@ namespace IngameScript
                 if (Rail != null && Rail.IsFunctional)
                 {
                     ACTUAL_RAILs++;
-
-                    if (AUTOLOAD && !inventorySomewhatFull(Rail))
-                        TO_LOAD.Add(Rail);
 
                     // turn railguns on for 1+ on [2]
                     (Rail as IMyConveyorSorter).Enabled = STANCES[S][2] > 0;

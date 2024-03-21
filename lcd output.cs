@@ -151,9 +151,11 @@ namespace IngameScript
         // todo
         // review and improve this
         // updates all LCDs on the ship to display our data.
-        void updateLcds()
+        void refreshLcds()
         {
             if (D) Echo("Updating LCDs...");
+
+            updateTelemetry();
 
             SPINNER_STATUS++;
             if (SPINNER_STATUS >= SPINNER_BITS.Length) SPINNER_STATUS = 0;
@@ -964,6 +966,24 @@ namespace IngameScript
             }
 
             return (Math.Round(result) + unit + " " + Math.Round(time) + "s").PadLeft(15);
+        }
+
+        void updateTelemetry()
+        {
+            if (CONTROLLER != null)
+            {
+                try
+                {
+                    // calculate current mass and velocity
+                    VELOCITY = CONTROLLER.GetShipSpeed();
+                    MASS = CONTROLLER.CalculateShipMass().PhysicalMass;
+                }
+                catch (Exception exxie)
+                {
+                    Echo("Failed to get velocity or mass!");
+                    Echo(exxie.Message);
+                }
+            }
         }
 
 

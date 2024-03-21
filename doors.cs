@@ -35,7 +35,7 @@ namespace IngameScript
         // - remove reliance on door custom data, clear this shit out
         // - make airlocks easier to configure, more fool proof. Autodetecting?
 
-        void manageDoors()
+        void refreshDoors()
         {
 
             string marked_for_disabling = "";

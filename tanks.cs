@@ -28,7 +28,7 @@ namespace IngameScript
         private double ACTUAL_H2 = 0;
         private double INIT_H2 = 0;
         private double INTEGRITY_H2 = 0;
-        private void iterateH2Tanks()
+        private void refreshH2Tanks()
         {
             ACTUAL_H2 = 0;
             TOTAL_H2 = 0;
@@ -81,7 +81,7 @@ namespace IngameScript
         private double ACTUAL_O2 = 0;
         private double INIT_O2 = 0;
         private double INTEGRITY_O2 = 0;
-        private void iterateO2Tanks()
+        private void refreshO2Tanks()
         {
             ACTUAL_O2 = 0;
             TOTAL_O2 = 0;

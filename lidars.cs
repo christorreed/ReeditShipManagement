@@ -25,7 +25,7 @@ namespace IngameScript
         // LiDARs -----------------------------------------------------------------
         private bool LIDAR_WORKING;
         
-        private void iterateLidars(bool power_state, bool set_power_state)
+        private void refreshLidars(bool power_state, bool set_power_state)
         {
             LIDAR_WORKING = false;
 

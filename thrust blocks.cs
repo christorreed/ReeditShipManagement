@@ -31,7 +31,7 @@ namespace IngameScript
         private float INIT_THRUSTERs_MAIN;
         private double INTEGRITY_THRUSTERs_MAIN;
 
-        private void iterateMainThrusters()
+        private void refreshMainThrusters()
         {
             float MaxTotal = 0;
             float MaxOn = 0;
@@ -147,7 +147,7 @@ namespace IngameScript
         private float INIT_THRUSTERs_RCS;
         private double INTEGRITY_THRUSTERs_RCS;
 
-        private void iterateRcsThrusters()
+        private void refreshRcsThrusters()
         {
             ACTUAL_THRUSTERs_RCS = 0;
 

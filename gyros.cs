@@ -28,7 +28,7 @@ namespace IngameScript
         private int ACTUAL_GYROs = 0;
         private double INTEGRITY_GYROs = 0;
 
-        private void iterateGyros(bool power_state, bool set_power_state)
+        private void refreshGyros(bool power_state, bool set_power_state)
         {
             ACTUAL_GYROs = 0;
 
