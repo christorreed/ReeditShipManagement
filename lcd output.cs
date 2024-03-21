@@ -50,7 +50,8 @@ namespace IngameScript
         {
             public string MESSAGE;
             public string LONG_MESSAGE;
-            public int PRIORITY;
+
+            public int PRIORITY; // 
             public int LIFETIME;
 
             public ALERT(string Message, string LongMessage, int Priority = 0, int Lifetime = 20)
@@ -333,7 +334,7 @@ namespace IngameScript
 
                     LCDAlerts.Add(new ALERT(
                         "No Extractor",
-                        "Cannot refuel!\nNo spare fuel tanks or failed to load fuel tanks.",
+                        "Cannot refuel!\nNo functional extractor!",
                         h2_priority));
                 }
             }

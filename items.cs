@@ -348,6 +348,89 @@ namespace IngameScript
             return thisInventory.VolumeFillFactor == 0;
         }
 
+        void loadInventories(List<INVENTORY> LoadFrom, List<INVENTORY> LoadTo, MyItemType Type, int Average = -1)
+        {
+            if (D) Echo("Loading " + LoadTo.Count + " inventories from " + LoadFrom.Count + " sources.");
+
+            foreach (INVENTORY ToInv in LoadTo)
+            {
+                // how many from inventories to try for this to.
+                int Retries = 3;
+
+                //if (D) Echo("Loading " + ToInv.Block.CustomName);
+
+                foreach (INVENTORY FromInv in LoadFrom)
+                {
+                    //if (D) Echo("Checking  " + FromInv.Block.CustomName + "\nRetries = " + Retries);
+
+                    // we're done with this 
+                    if (Retries < 0) break;
+
+                    // if an average value is provided
+                    // and this inventory already has at least that much
+                    // skip this 
+                    // note the .95 modifier, which adds 5% wiggle room
+                    // so we don't loop forever.
+                    if (Average != -1 && ToInv.Qty >= (Average * .95)) break;
+
+                    // if there is no terminal connection, move onto the next source.
+                    if (!ToInv.Inv.IsConnectedTo(FromInv.Inv)) continue;
+
+                    // get the items
+                    List<MyInventoryItem> InvItems = new List<MyInventoryItem>();
+                    FromInv.Inv.GetItems(InvItems);
+
+                    // iterate the items
+                    foreach (MyInventoryItem InvItem in InvItems)
+                    {
+                        //if (D) Echo("This is " + InvItem.Type.SubtypeId);
+
+                        // make sure it's the right item, and there's some in there.
+                        if (InvItem.Type == Type)
+                        {
+                            //if (D) Echo("Found ammo type " + Type.SubtypeId);
+                            // if there's no average provided,
+                            // try sending them all, let limits figure it out
+                            int Qty = InvItem.Amount.ToIntSafe();
+
+                            // bail if we're to is empty.
+                            if (Qty == 0) break;
+
+                            // throttle this a little so we don't go nuts trying everything.
+                            Retries--;
+
+                            // if we have an average value provided
+                            // it means we want to balance Tos and Froms to target the average value.
+                            if (Average != -1)
+                            {
+                                // if our from has less than the average, bail.
+                                if (Qty <= Average)
+                                {
+                                    break;
+                                }
+
+                                // set the transfer amount to the average
+                                // less whatever we already have in to.
+                                Qty = Average - ToInv.Qty;
+                            }
+
+                            // load the item.
+                            bool Success = ToInv.Inv.TransferItemFrom
+                                (FromInv.Inv, InvItem, Qty);
+
+                            // if this worked, don't attempt to load this block again.
+                            if (Success) Retries = -1;
+
+                            if (D) Echo("Loading success = " + Success);
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
         void loadInventory(IMyTerminalBlock ToLoad, List<IMyInventory> SourceInventories, string ItemType, int ItemCount)
         {
 
@@ -376,5 +459,6 @@ namespace IngameScript
 
             if (D) Echo("Loading failed.");
         }
+        */
     }
 }

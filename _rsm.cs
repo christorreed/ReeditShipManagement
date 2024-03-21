@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string VERSION = "1.99.0 ($MDK_TIME$, $MDK_DATE$)";
+        string VERSION = "1.99.1 ($MDK_TIME$, $MDK_DATE$)";
         #endregion
         #endregion
 
@@ -46,7 +46,6 @@ namespace IngameScript
 
         bool ADJUST_KEEP_ALIVES = false;
         bool ADJUST_KEEP_ALIVES_TO = false;
-
 
         // dampening for extractor management
         int EXTRACTOR_WAIT = 0;

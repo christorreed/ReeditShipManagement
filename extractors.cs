@@ -3,6 +3,7 @@ using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -24,10 +25,6 @@ namespace IngameScript
     {
         // Extractors -----------------------------------------------------------------
 
-        // counter used to prevent refuel from looping.
-        int REFUEL_FAILURE_COUNT = 0;
-        int REFUEL_FAILURE_THRESH = 25;
-
         // this value multiplies the capacity by
         // the KEEP_FULL_MULTIPLIER depending on
         // if this is SG or LG
@@ -44,15 +41,8 @@ namespace IngameScript
                 if (state == 0)
                     Extractor.ApplyAction("OnOff_Off");
                 else
-                {
                     Extractor.ApplyAction("OnOff_On");
-
-                    // do I really need to do this here?
-                    // can't we just wait for the next tick?
-                    // removing, for now
-                    //if (state > 1)
-                        //manageExtractors();
-                }
+                
             }
         }
 
@@ -109,105 +99,78 @@ namespace IngameScript
 
         void loadExtractors()
         {
-            return;
-
-            /*
-            if (D)
-                Echo("Fuel low, filling extractors...");
-
             // don't want to get stuck in a loop trying this.
             NEED_FUEL = false;
 
-            IMyInventory thisInventory = null;
-            string TankType = "Fuel_Tank";
+            // choose the extractor to load
+            IMyTerminalBlock TheChosenOne = null;
 
-            NO_EXTRACTOR = false;
-            NO_SPARE_TANKS = false;
+            // the item to load
+            int Item = 1;
 
+            // check for an LG extractor first...
             foreach (IMyTerminalBlock Extractor in EXTRACTORs)
             {
-                if (Extractor != null)
+                if (Extractor.IsFunctional)
                 {
-                    thisInventory = Extractor.GetInventory();
-                    //Echo("Extractor mass = " + Extractor.Mass);
-                    if (Extractor.Mass < 2500)
-                    {
-                        TankType = "SG_Fuel_Tank";
-                        if (D) Echo("SG Extractor!");
-                    }
+                    TheChosenOne = Extractor;
                     break;
                 }
             }
-
-            if (thisInventory == null)
+            if (TheChosenOne == null)
             {
-                REFUEL_FAILURE_COUNT = 1;
-                NO_EXTRACTOR = true;
+                // no LG extractor, check for SG one.
+                foreach (IMyTerminalBlock Extractor in EXTRACTORs_SMALL)
+                {
+                    if (Extractor.IsFunctional)
+                    {
+                        TheChosenOne = Extractor;
+                        Item = 2;
+                        break;
+                    }
+                }
+                if (TheChosenOne == null)
+                {
+                    // no sg extractor either...
+                    if (D) Echo("No functional extractor to load!");
+                    NO_EXTRACTOR = true;
+                    return;
+                }
+            }
+
+            // we have an extractor
+            NO_EXTRACTOR = false;
+
+            // do we have fuel tanks to load?
+            if (ITEMS[Item].ActualQty < 1)
+            {
+                NO_SPARE_TANKS = true;
+                if (D) Echo("No spare " + ITEMS[Item].Type.SubtypeId + " to load!" );
                 return;
             }
 
+            // alright, we're doing this, lets prep for it...
 
+            // set the wait threshold
+            // so we don't keep trying to do this over and over again.
+            EXTRACTOR_WAIT = EXTRACTOR_WAIT_THRESH;
 
-            List<IMyInventory> ToSearch;
-            if (TankType == "Fuel_Tank") ToSearch = ITEMS[1].Inventories.STORED_IN;
-            else ToSearch = ITEMS[2].STORED_IN;
+            // build an INVENTORY for the loadInventories method
+            INVENTORY Inv = new INVENTORY();
+            Inv.Block = TheChosenOne;
+            Inv.Inv = TheChosenOne.GetInventory();
 
+            // make sure it is on
+            TheChosenOne.ApplyAction("OnOff_On");
 
+            // build a list of inventories for the loadInventories method
+            // only one extractor in there at a time tho.
+            List<INVENTORY> Invs = new List<INVENTORY>();
+            Invs.Add(Inv);
 
-            if (D)
-                Echo(ToSearch.Count + " possible fuel tank inventories.");
+            if (D) Echo("Attempting to load extractor " + TheChosenOne.CustomName);
+            loadInventories(ITEMS[Item].Inventories, Invs, ITEMS[Item].Type);
 
-
-            for (int j = 0; j < ToSearch.Count; j++)
-            // check max of 3.
-            //for (int j = 0; j < 3; j++)
-            {
-                List<MyInventoryItem> inventoryItems = new List<MyInventoryItem>();
-                ToSearch[j].GetItems(inventoryItems);
-
-                if (D)
-                    Echo(inventoryItems.Count + " fuel tanks in inventory " + j);
-
-                for (int k = 0; k < inventoryItems.Count; k++)
-                {
-                    if (
-                        (inventoryItems[k].ToString().Contains(TankType))
-
-                        )
-                    {
-                        if (D)
-                            Echo(inventoryItems[k].ToString());
-
-                        //if (inventoryItems[k].ToString().Contains("Fuel_Tank"))
-                        //{
-                        bool success = thisInventory.TransferItemFrom(
-                            ToSearch[j],
-                            inventoryItems[k],
-                            1
-                        );
-
-                        if (success)
-                        {
-
-                            ALERTS.Add(new ALERT(
-                                "Loaded Fuel Tank",
-                                "Fuel levels are low, and management is active. Successfully loaded a fuel tank into an extractor."
-                                , 1, 10
-                                ));
-
-                            // dampens extractor filling from going nuts.
-                            EXTRACTOR_WAIT = EXTRACTOR_WAIT_THRESH;
-
-                            return;
-                        }
-                    }
-                }
-            }
-            // no spare tanks...
-            REFUEL_FAILURE_COUNT = 1;
-            NO_SPARE_TANKS = true;
-
-            */
         }
     }
 }
