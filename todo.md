@@ -1,8 +1,8 @@
 # debugs
 
 - first init, get zero value
-- make stuff faster
-- fuel tank loading freq might need to go up
+x make stuff faster
+x fuel tank loading freq might need to go up
 
 x check camera keep-alives
 x less .GetItemAmount(Item) calls

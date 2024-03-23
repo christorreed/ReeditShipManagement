@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.4 $MDK_DATE$";
+        string Version = "1.99.5 $MDK_DATE$";
         #endregion
         #endregion
 
@@ -39,7 +39,7 @@ namespace IngameScript
         int BOOT_STEP = 0;
         int WAIT_STEP = 0;
         int OCCASIONAL_STEP = 0;
-        int INFREQUENT_STEP = 0;
+        //int INFREQUENT_STEP = 0;
         int RARE_STEP;
 
         bool BOOTING = true;
@@ -517,83 +517,93 @@ namespace IngameScript
         void doThisStuffInfrequently()
         {
 
-            switch (INFREQUENT_STEP)
+            if (D) Echo("Refreshing " + THRUSTERs_RCS.Count + " rcs...");
+            refreshRcsThrusters();
+            // checks integrity
+
+            if (D) Echo("Refreshing " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
+            refreshPDCs();
+            // checks integrity, sets power on
+
+            if (D) Echo("Refreshing " + GYROs.Count + " gyros...");
+            refreshGyros(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
+            // checks integrity, sets power
+
+            if (D) Echo("Refreshing " + TANKs_O2.Count + " O2 tanks...");
+            refreshO2Tanks();
+            // checks integrity, filled ratio
+
+            if (D) Echo("Refreshing " + ANTENNAs.Count + " antennas...");
+            refreshAntennas();
+            // checks msg, range
+
+            if (D) Echo("Refreshing " + CARGOs.Count + " cargos...");
+            refreshCargos();
+            // checks integrity
+
+            if (D) Echo("Refreshing " + VENTs.Count + " vents...");
+            refreshVents(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
+            // checks integrity, sets power
+
+            if (D) Echo("Refreshing " + AUXILIARIEs.Count + " auxiliary blocks...");
+            iterateAuxiliaries();
+            // checks integrity, sets power
+
+            if (D) Echo("Refreshing " + WELDERs.Count + " welders...");
+            iterateWelders();
+            // checks integrity, sets power
+
+            // these ones are only keep alives
+            // and so only need to happen if we are adjusting those.
+            if (ADJUST_KEEP_ALIVES)
             {
-                case 0:
+                if (D) Echo("Refreshing " + CONNECTORs.Count + " connectors...");
+                refreshConnectors(ADJUST_KEEP_ALIVES_TO);
+                // > priority low
+                // checks integrity, sets power
 
-                    if (D) Echo("Refreshing " + THRUSTERs_RCS.Count + " rcs...");
-                    refreshRcsThrusters();
-                    // checks integrity
+                if (D) Echo("Refreshing " + CAMERAs.Count + " cameras...");
+                refreshCameras(ADJUST_KEEP_ALIVES_TO);
+                // > priority low
+                // sets power
 
-                    if (D) Echo("Refreshing " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
-                    refreshPDCs();
-                    // checks integrity, sets power on
-
-                    if (D) Echo("Refreshing " + GYROs.Count + " gyros...");
-                    refreshGyros(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
-                    // checks integrity, sets power
-
-                    break;
-
-                case 1:
-
-                    if (D) Echo("Refreshing " + TANKs_O2.Count + " O2 tanks...");
-                    refreshO2Tanks();
-                    // checks integrity, filled ratio
-
-                    if (D) Echo("Refreshing " + ANTENNAs.Count + " antennas...");
-                    refreshAntennas();
-                    // checks msg, range
-
-                    if (D) Echo("Refreshing " + CARGOs.Count + " cargos...");
-                    refreshCargos();
-                    // checks integrity
-
-                    break;
-
-                case 2:
-
-                    if (D) Echo("Refreshing " + VENTs.Count + " vents...");
-                    refreshVents(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
-                    // checks integrity, sets power
-
-                    if (D) Echo("Refreshing " + AUXILIARIEs.Count + " auxiliary blocks...");
-                    iterateAuxiliaries();
-                    // checks integrity, sets power
-
-                    if (D) Echo("Refreshing " + WELDERs.Count + " welders...");
-                    iterateWelders();
-                    // checks integrity, sets power
-
-                    break;
-
-                case 3:
-                    // these ones are only keep alives
-                    // and so only need to happen if we are adjusting those.
-                    if (ADJUST_KEEP_ALIVES)
-                    {
-                        if (D) Echo("Refreshing " + CONNECTORs.Count + " connectors...");
-                        refreshConnectors(ADJUST_KEEP_ALIVES_TO);
-                        // > priority low
-                        // checks integrity, sets power
-
-                        if (D) Echo("Refreshing " + CAMERAs.Count + " cameras...");
-                        refreshCameras(ADJUST_KEEP_ALIVES_TO);
-                        // > priority low
-                        // sets power
-
-                        if (D) Echo("Refreshing " + SENSORs.Count + " sensors...");
-                        refreshSensors(ADJUST_KEEP_ALIVES_TO);
-                        // > priority low
-                        // sets power
-                    }
-
-                    INFREQUENT_STEP = 0;
-                    return;
+                if (D) Echo("Refreshing " + SENSORs.Count + " sensors...");
+                refreshSensors(ADJUST_KEEP_ALIVES_TO);
+                // > priority low
+                // sets power
             }
 
-            INFREQUENT_STEP++;
+
+            /*
+                        switch (INFREQUENT_STEP)
+                        {
+                            case 0:
+
+
+
+                                break;
+
+                            case 1:
+
+
+
+                                break;
+
+                            case 2:
+
+
+
+                                break;
+
+                            case 3:
+                                INFREQUENT_STEP = 0;
+                                return;
+                        }
+
+                        INFREQUENT_STEP++;
+            */
         }
+
 
         void doThisStuffRarely()
         {
@@ -678,7 +688,7 @@ namespace IngameScript
                 Output += "\n|- Booting " + BOOT_STEP;
 
             else
-                Output += "\n|- Step: " + RARE_STEP + "/" + REFRESH_FREQ + " (" + OCCASIONAL_STEP + ", " + INFREQUENT_STEP + ")";
+                Output += "\n|- Step: " + RARE_STEP + "/" + REFRESH_FREQ + " (" + OCCASIONAL_STEP + ")";
                 
 
             if (D_PROFILE)
