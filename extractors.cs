@@ -63,7 +63,7 @@ namespace IngameScript
             // this method basically determines, based on the current stance
             // if we NEED_FUEL...
 
-            if (STANCES[S][21] < 2)
+            if (_stances[S][21] < 2)
             {
                 if (_d) Echo("Extractor management disabled.");
             }
@@ -76,13 +76,13 @@ namespace IngameScript
             {
                 if (_d) Echo("No tanks!");
             }
-            else if (STANCES[S][21] == 2 && FUEL_PERCENTAGES < TOP_UP_PERCENTAGE)
+            else if (_stances[S][21] == 2 && FUEL_PERCENTAGES < TOP_UP_PERCENTAGE)
             // refuel at 10%
             {
                 if (_d) Echo("Fuel low! (" + FUEL_PERCENTAGES + "% / " + TOP_UP_PERCENTAGE + "%)");
                 NEED_FUEL = true;
             }
-            else if (STANCES[S][21] == 3 && ACTUAL_H2 < (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH))
+            else if (_stances[S][21] == 3 && ACTUAL_H2 < (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH))
             // refuel to keep tanks full.
             {
                 if (_d) Echo("Fuel ready for top up (" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
@@ -92,7 +92,7 @@ namespace IngameScript
             {
                 Echo("Fuel level OK (" + FUEL_PERCENTAGES + "%).");
 
-                if (STANCES[S][21] == 3)
+                if (_stances[S][21] == 3)
                     Echo("Keeping tanks full\n(" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
             }
         }

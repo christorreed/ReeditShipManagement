@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.7 $MDK_DATE$";
+        string Version = "1.99.8 $MDK_DATE$";
         #endregion
         #endregion
 
@@ -86,11 +86,11 @@ namespace IngameScript
         // Misc Globals -----------------------------------------------------------------
 
         // the current stance index
-        // of the STANCES & STANCE_NAMES lists
+        // of the _stances & _stanceNames lists
         int S = 0;
 
         // the name of the current stance.
-        string STANCE = "N/A";
+        string _currentStance = "N/A";
 
         // the current ship calculated fuel percentage.
         // starts at 100 so we don't refuel before we check.
@@ -316,12 +316,12 @@ namespace IngameScript
             // lots of block refreshes use this
             // to determine if to enforce power status on those blocks
             // 22: keep-alives; 0: ignore, 1: force on, 2: force off
-            if (STANCES[S][22] == 1)
+            if (_stances[S][22] == 1)
             {
                 ADJUST_KEEP_ALIVES = true;
                 ADJUST_KEEP_ALIVES_TO = true;
             }
-            else if (STANCES[S][22] == 2)
+            else if (_stances[S][22] == 2)
             {
                 ADJUST_KEEP_ALIVES = true;
             }
@@ -394,7 +394,7 @@ namespace IngameScript
 
                 case 1:
                     if (_d) Echo("Refreshing " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
-                    refreshPowerBlocks(STANCES[S][16]);
+                    refreshPowerBlocks(_stances[S][16]);
                     // checks integrity, sets power on,
                     // calcs power, batt discharge mgmt
 
@@ -682,7 +682,7 @@ namespace IngameScript
             
             string Output = 
                 "REEDIT SHIP MANAGEMENT \n\n|- Version: " + Version +
-                "\n|- Stance: " + STANCE_NAMES[S] + "(" + S + ")";
+                "\n|- Stance: " + _stanceNames[S] + "(" + S + ")";
 
             if (BOOTING)
                 Output += "\n|- Booting " + BOOT_STEP;

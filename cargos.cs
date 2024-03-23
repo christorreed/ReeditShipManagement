@@ -24,7 +24,7 @@ namespace IngameScript
     {
         // Cargos -----------------------------------------------------------------
 
-        private double INIT_CARGOs = 0;
+        private double _initCargos = 0;
         private double ACTUAL_CARGOs = 0;
         private double INTEGRITY_CARGOs = 0;
 
@@ -40,16 +40,16 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_CARGOs = Math.Round(100 * (ACTUAL_CARGOs / INIT_CARGOs));
+            INTEGRITY_CARGOs = Math.Round(100 * (ACTUAL_CARGOs / _initCargos));
         }
 
         private void initCargos()
         {
-            INIT_CARGOs = 0;
+            _initCargos = 0;
             foreach (IMyCargoContainer Cargo in CARGOs)
             {
                 if (Cargo != null)
-                    INIT_CARGOs += Cargo.GetInventory().MaxVolume.RawValue;
+                    _initCargos += Cargo.GetInventory().MaxVolume.RawValue;
             }
         }
     }

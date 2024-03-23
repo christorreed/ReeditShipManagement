@@ -25,7 +25,7 @@ namespace IngameScript
         // Railguns -----------------------------------------------------------------
 
         private double ACTUAL_RAILs = 0;
-        private int INIT_RAILs = 0;
+        private int _initKinetics = 0;
         private double INTEGRITY_RAILs = 0;
 
         private bool RAILs_HAVE_TARGET = false;
@@ -44,7 +44,7 @@ namespace IngameScript
                     ACTUAL_RAILs++;
 
                     // turn railguns on for 1+ on [2]
-                    (Rail as IMyConveyorSorter).Enabled = STANCES[S][2] > 0;
+                    (Rail as IMyConveyorSorter).Enabled = _stances[S][2] > 0;
 
                     if (!RAILs_HAVE_TARGET)
                     {
@@ -62,7 +62,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_RAILs = Math.Round(100 * (ACTUAL_RAILs / INIT_RAILs));
+            INTEGRITY_RAILs = Math.Round(100 * (ACTUAL_RAILs / _initKinetics));
         }
 
         private void setRails(int state)

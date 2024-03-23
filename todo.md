@@ -37,6 +37,7 @@ x review and improve quickRefresh
 - - fuel tank loading command
 - handle fixed weapons better
 - _appendDriveTypes
+- make stance a class ffs
 
 X review and fix extractor management
 X finalise init naming initBlockNames

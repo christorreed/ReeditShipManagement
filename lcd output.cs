@@ -242,7 +242,7 @@ namespace IngameScript
             double oxygen_percentage = Math.Round(100 * (ACTUAL_O2 / TOTAL_O2));
             double battery_percentage = Math.Round(100 * (ACTUAL_BATTERIEs / TOTAL_BATTERIEs));
 
-            double init_power = Math.Round(INIT_REACTORs + INIT_BATTERIEs, 1);
+            double init_power = Math.Round(_initReactors + _initBatteries, 1);
             double nice_max_power = Math.Round(MAX_POWER, 1);
             double capacity_percentage = Math.Round(100 * (nice_max_power/init_power));
 
@@ -316,7 +316,7 @@ namespace IngameScript
                 h2_priority = 2;
             }
      
-            if (STANCES[S][21] > 1)
+            if (_stances[S][21] > 1)
             {
                 if (NO_SPARE_TANKS)
                 {
@@ -531,7 +531,7 @@ namespace IngameScript
             // Build Subsystem Integrity
             // -------------------------
 
-            int[] CurrentStance = STANCES[S];
+            int[] CurrentStance = _stances[S];
 
             string sec_integrity =
 
@@ -539,29 +539,29 @@ namespace IngameScript
 
             try
             {
-                if (INIT_THRUSTERs_MAIN > 0)
+                if (_initThrustMain > 0)
                     sec_integrity += "Epstein   [" + generateBar(INTEGRITY_THRUSTERs_MAIN) + "] " + (INTEGRITY_THRUSTERs_MAIN + "% ").PadLeft(5) + STANCE_DATA_OUT_MAINTHRUST[CurrentStance[3]] + "\n";
-                if (INIT_THRUSTERs_RCS > 0)
+                if (_initThrustRCS > 0)
                     sec_integrity += "RCS       [" + generateBar(INTEGRITY_THRUSTERs_RCS) + "] " + (INTEGRITY_THRUSTERs_RCS + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
-                if (INIT_REACTORs > 0)
+                if (_initReactors > 0)
                     sec_integrity += "Reactors  [" + generateBar(INTEGRITY_REACTORs) + "] " + (INTEGRITY_REACTORs + "% ").PadLeft(5) + "    \n";
-                if (INIT_BATTERIEs > 0)
+                if (_initBatteries > 0)
                     sec_integrity += "Batteries [" + generateBar(INTEGRITY_BATTERIEs) + "] " + (INTEGRITY_BATTERIEs + "% ").PadLeft(5) + STANCE_DATA_OUT_BATTS[CurrentStance[16]] + "\n";
-                if (INIT_PDCs > 0)
+                if (_initPdcs > 0)
                     sec_integrity += "PDCs      [" + generateBar(INTEGRITY_PDCs) + "] " + (INTEGRITY_PDCs + "% ").PadLeft(5) + STANCE_DATA_OUT_PDCS[CurrentStance[1]] + "\n";
-                if (INIT_TORPs > 0)
+                if (_initTorpLaunchers > 0)
                     sec_integrity += "Torpedoes [" + generateBar(INTEGRITY_TORPs) + "] " + (INTEGRITY_TORPs + "% ").PadLeft(5) + STANCE_DATA_OUT_TOGGLE[CurrentStance[0]] + "\n";
-                if (INIT_RAILs > 0)
+                if (_initKinetics > 0)
                     sec_integrity += "Railguns  [" + generateBar(INTEGRITY_RAILs) + "] " + (INTEGRITY_RAILs + "% ").PadLeft(5) + STANCE_DATA_OUT_RAILS[CurrentStance[2]] + "\n";
-                if (INIT_H2 > 0)
+                if (_initH2 > 0)
                     sec_integrity += "H2 Tanks  [" + generateBar(INTEGRITY_H2) + "] " + (INTEGRITY_H2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
-                if (INIT_O2 > 0)
+                if (_initO2 > 0)
                     sec_integrity += "O2 Tanks  [" + generateBar(INTEGRITY_O2) + "] " + (INTEGRITY_O2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
-                if (INIT_GYROs > 0)
+                if (_initGyros > 0)
                     sec_integrity += "Gyros     [" + generateBar(INTEGRITY_GYROs) + "] " + (INTEGRITY_GYROs + "% ").PadLeft(5) + "    \n";
-                if (INIT_CARGOs > 0)
+                if (_initCargos > 0)
                     sec_integrity += "Cargo     [" + generateBar(INTEGRITY_CARGOs) + "] " + (INTEGRITY_CARGOs + "% ").PadLeft(5) + "    \n";
-                if (INIT_WELDERs > 0)
+                if (_initWelders > 0)
                     sec_integrity += "Welders   [" + generateBar(INTEGRITY_WELDERs) + "] " + (INTEGRITY_WELDERs + "% ").PadLeft(5) + "    \n";
             }
 
@@ -597,7 +597,7 @@ namespace IngameScript
             string sec_header =
 
                  centreText(_shipName.ToUpper(), LCD_WIDTH) + "\n" +
-                 "  " + spinner + " " + centreText(STANCE, LCD_WIDTH - 10) + " " + spinner + "  \n" +
+                 "  " + spinner + " " + centreText(_currentStance, LCD_WIDTH - 10) + " " + spinner + "  \n" +
 
 
                 //centreText(spinner + " " + _shipName.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
@@ -837,10 +837,10 @@ namespace IngameScript
                 foreach (IMyTextPanel LCD in LCDs_CS)
                 {
                     LCD.FontColor = new Color(
-                        STANCES[S][12],
-                        STANCES[S][13],
-                        STANCES[S][14],
-                        STANCES[S][15]
+                        _stances[S][12],
+                        _stances[S][13],
+                        _stances[S][14],
+                        _stances[S][15]
                         );
                 }
             }
@@ -917,12 +917,12 @@ namespace IngameScript
             switch (bar_type)
             {
                 case "H2":
-                    percentage = Math.Round(100 * (ACTUAL_H2 / INIT_H2));
+                    percentage = Math.Round(100 * (ACTUAL_H2 / _initH2));
                     val = percentage.ToString() + " %";
                     FUEL_PERCENTAGES = percentage;
                     break;
                 case "O2":
-                    percentage = Math.Round(100 * (ACTUAL_O2 / INIT_O2));
+                    percentage = Math.Round(100 * (ACTUAL_O2 / _initO2));
                     val = percentage.ToString() + " %";
                     break;
                 case "Battery":

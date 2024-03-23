@@ -25,7 +25,7 @@ namespace IngameScript
         // Torpedo Launchers -----------------------------------------------------------------
 
         private double ACTUAL_TORPs = 0;
-        private int INIT_TORPs = 0;
+        private int _initTorpLaunchers = 0;
         private double INTEGRITY_TORPs = 0;
 
         private void refreshTorpedoes()
@@ -39,7 +39,7 @@ namespace IngameScript
                     ACTUAL_TORPs++;
 
                     // turn torps on for 1+ on [0]
-                    (Torp as IMyConveyorSorter).Enabled = STANCES[S][0] > 0;
+                    (Torp as IMyConveyorSorter).Enabled = _stances[S][0] > 0;
 
                     // autoloading is complex for torpedoes.
                     if (_autoLoad)
@@ -59,7 +59,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_TORPs = Math.Round(100 * (ACTUAL_TORPs / INIT_TORPs));
+            INTEGRITY_TORPs = Math.Round(100 * (ACTUAL_TORPs / _initTorpLaunchers));
         }
 
         private void setTorpedoes(int state)

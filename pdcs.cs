@@ -25,7 +25,7 @@ namespace IngameScript
         // PDCs -----------------------------------------------------------------
 
         private double ACTUAL_PDCs = 0;
-        private int INIT_PDCs = 0;
+        private int _initPdcs = 0;
         private double INTEGRITY_PDCs = 0;
 
         private void refreshPDCs()
@@ -35,16 +35,16 @@ namespace IngameScript
             foreach (IMyTerminalBlock Pdc in PDCs)
             {
                 // turn pdcs on for 2+ on [1]
-                processPdc(Pdc, STANCES[S][1] > 1);
+                processPdc(Pdc, _stances[S][1] > 1);
             }
 
             foreach (IMyTerminalBlock Pdc in PDCs_DEF)
             {
                 // turn defensive pdcs on for 1+ on [1]
-                processPdc(Pdc, STANCES[S][1] > 0);
+                processPdc(Pdc, _stances[S][1] > 0);
             }
 
-            INTEGRITY_PDCs = Math.Round(100 * (ACTUAL_PDCs / INIT_PDCs));
+            INTEGRITY_PDCs = Math.Round(100 * (ACTUAL_PDCs / _initPdcs));
         }
 
         private void processPdc(IMyTerminalBlock pdc, bool power_state)

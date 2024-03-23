@@ -23,7 +23,7 @@ namespace IngameScript
     partial class Program
     {
         // these are default values that will be over written by updateCustomData();
-        List<string> STANCE_NAMES = new List<string>(new string[] { 
+        List<string> _stanceNames = new List<string>(new string[] { 
             "Cruise", 
             //"MaxCruise", 
             "Docked", 
@@ -37,7 +37,7 @@ namespace IngameScript
             "WeaponsHot"
         });
 
-        List<int[]> STANCES = new List<int[]>
+        List<int[]> _stances = new List<int[]>
         {
              new int[] { // Cruise 0
                 1,      // 0: torpedoes; 0: off, 1: on;
@@ -45,7 +45,7 @@ namespace IngameScript
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
                 1,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
                 2,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
-                0,      // 5:  spotlights; 0: off, 1: on, 2: on max radius
+                0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
                 1,      // 6: exterior lights; 0: off, 1: on
                 30,     // 7: Red - Exterior lights colour
                 144,    // 8: Green - Exterior lights colour
@@ -56,7 +56,7 @@ namespace IngameScript
                 144,    // 13: Green - Interior lights colour
                 225,    // 14: Blue - Interior lights colour
                 255,    // 15: Alpha - Interior lights colour
-                0,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts, 2: discharge batts
+                0,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                 0,      // 17: EFC boost; 0: off, 1: on
                 2,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
                 0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC

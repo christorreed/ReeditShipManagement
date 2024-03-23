@@ -24,7 +24,7 @@ namespace IngameScript
     {
         // Gyroscopes -----------------------------------------------------------------
 
-        private double INIT_GYROs = 0;
+        private double _initGyros = 0;
         private int ACTUAL_GYROs = 0;
         private double INTEGRITY_GYROs = 0;
 
@@ -44,7 +44,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_GYROs = Math.Round(100 * (ACTUAL_GYROs / INIT_GYROs));
+            INTEGRITY_GYROs = Math.Round(100 * (ACTUAL_GYROs / _initGyros));
         }
     }
 }

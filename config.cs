@@ -178,6 +178,7 @@ namespace IngameScript
         void setCustomData()
         {
             //_config.Clear();
+
             string sec, name;
 
             // Main -----------------------------------------------------------------
@@ -209,10 +210,16 @@ namespace IngameScript
             _config.SetComment(sec, name, "set batteries to discharge on active railgun/coilgun target");
 
             // Header -----------------------------------------------------------------
+            
+            string div = " -------------------------\n";
+
             // this is the bit at the top of the custom data
-
-            _config.SetSectionComment(sec, " -------------------------\n Reedit Ship Management\n -------------------------\n\n Config.ini\n Recompile to apply changes!\n\n");
-
+            _config.SetSectionComment(sec, 
+                div + 
+                " Reedit Ship Management\n" + 
+                div + 
+                " Config.ini\n Recompile to apply changes!\n" + div );
+            
             // Spawns -----------------------------------------------------------------
 
             sec = "Spawns";
@@ -221,7 +228,7 @@ namespace IngameScript
             _config.Set(sec, name, _privateSpawns);
             _config.SetComment(sec, name, "don't inject faction tag into spawn custom data");
 
-            name = "Friendly Tags";
+            name = "FriendlyTags";
             _config.Set(sec, name, _friendlyTags);
             _config.SetComment(sec, name, "Comma seperated friendly factions or steam ids");
 
@@ -357,13 +364,80 @@ namespace IngameScript
             _config.Set(sec, name, _loopStallCount);
             _config.SetComment(sec, name, "ticks x100 to stall between runs");
 
+            // Stances -----------------------------------------------------------------
+
+            sec = "Stance";
+
+            name = "CurrentStance";
+            _config.Set(sec, name, _currentStance);
+
+            _config.SetSectionComment(sec, div + " Stances\n Add or remove as required\n" + div);
+
+            for (int i = 0; i < _stanceNames.Count; i++)
+            {
+                sec = "Stance." + _stanceNames[i];
+
+                _config.Set(sec, "Torps",                   _stances[i][0]);
+                _config.Set(sec, "Pdcs",                    _stances[i][1]);
+                _config.Set(sec, "Kinetics",                _stances[i][2]);
+                _config.Set(sec, "MainThrust",              _stances[i][3]);
+                _config.Set(sec, "ManeuveringThrust",       _stances[i][4]);
+                _config.Set(sec, "Spotlights",              _stances[i][5]);
+                _config.Set(sec, "ExteriorLights",          _stances[i][6]);
+                _config.Set(sec, "ExteriorColour",          _stances[i][7] + "," + 
+                                                            _stances[i][8] + "," + 
+                                                            _stances[i][9] + "," + 
+                                                            _stances[i][10]);
+                _config.Set(sec, "InteriorLights",          _stances[i][11]);
+                _config.Set(sec, "InteriorAndLcdColour",    _stances[i][12] + "," + 
+                                                            _stances[i][13] + "," +
+                                                            _stances[i][14] + "," + 
+                                                            _stances[i][15]);
+                _config.Set(sec, "StockpileAndRecharge",    _stances[i][16]);
+                _config.Set(sec, "EfcBoost",                _stances[i][17]);
+                _config.Set(sec, "NavOsBurnPercent",        _stances[i][18]);
+                _config.Set(sec, "NavOsAbort",              _stances[i][19]);
+                _config.Set(sec, "AuxiliaryBlocks",         _stances[i][20]);
+                _config.Set(sec, "Extractor",               _stances[i][21]);
+                _config.Set(sec, "KeepAlives",              _stances[i][20]);
+                _config.Set(sec, "HangarDoors",             _stances[i][21]);
+
+                // comment the first stance only.
+                if (i == 0)
+                {
+                    _config.SetComment(sec, "Torps",                    "torpedoes; 0: off, 1: on;");
+                    _config.SetComment(sec, "Pdcs",                     "pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only");
+                    _config.SetComment(sec, "Kinetics",                 "railguns etc; 0: off, 1: hold fire, 2: AI weapons free;");
+                    _config.SetComment(sec, "MainThrust",               "main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change");
+                    _config.SetComment(sec, "ManeuveringThrust",        "maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change");
+                    _config.SetComment(sec, "Spotlights",               "spotlights; 0: off, 1: on, 2: on max radius");
+                    _config.SetComment(sec, "ExteriorLights",           "exterior lights; 0: off, 1: on");
+                    _config.SetComment(sec, "ExteriorColour",           "colour for exterior lights");
+                    _config.SetComment(sec, "InteriorLights",           "interior lights lights; 0: off, 1: on");
+                    _config.SetComment(sec, "InteriorAndLcdColour",     "colour for interior lights, LCD text");
+                    _config.SetComment(sec, "StockpileAndRecharge",     "stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts");
+                    _config.SetComment(sec, "EfcBoost",                 "EFC boost; 0: off, 1: on");
+                    _config.SetComment(sec, "NavOsBurnPercent",         "EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%");
+                    _config.SetComment(sec, "NavOsAbort",               "EFC kill; 0: no change, 1: run 'Off' on EFC");
+                    _config.SetComment(sec, "AuxiliaryBlocks",          "auxiliary blocks; 0: off, 1: on");
+                    _config.SetComment(sec, "Extractor",                "extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.");
+                    _config.SetComment(sec, "KeepAlives",               "keep-alives for connectors, tanks, batteries, gyros, lcds, reactors; 0: ignore, 1: force on, 2: force off");
+                    _config.SetComment(sec, "HangarDoors",              "hangar doors; 0: closed, 1: open, 2: no change");
+                }
+            }
+
             // System -----------------------------------------------------------------
 
             sec = "System";
 
-            name = "VerboseDebugging";
-            _config.Set(sec, name, _d);
-            _config.SetComment(sec, name, "prints more logging info to PB details");
+            name = "ShipName";
+            _config.Set(sec, name, _shipName);
+
+            _config.SetSectionComment(sec, div + " System\n All items below this point are\n set automatically when running init\n" + div);
+
+            // InitItems -----------------------------------------------------------------
+
+            sec = "InitItems";
 
             foreach (ITEM item in ITEMS)
             {
@@ -371,7 +445,26 @@ namespace IngameScript
                 _config.Set(sec, name, item.InitQty);
             }
 
-            _config.SetSectionComment(sec, "set automatically at init.");
+            //_config.SetSectionComment(sec, "set automatically at init.");
+
+            // InitSubSystems -----------------------------------------------------------------
+
+            sec = "InitSubSystems";
+
+            _config.Set(sec, "Reactors", _initReactors);
+            _config.Set(sec, "Batteries", _initReactors);
+            _config.Set(sec, "PDCs", _initPdcs);
+            _config.Set(sec, "TorpLaunchers", _initTorpLaunchers);
+            _config.Set(sec, "KineticWeapons", _initKinetics);
+            _config.Set(sec, "H2Storage", _initH2);
+            _config.Set(sec, "O2Storage", _initO2);
+            _config.Set(sec, "MainThrust", _initThrustMain);
+            _config.Set(sec, "RCSThrust", _initThrustRCS);
+            _config.Set(sec, "Gyros", _initGyros);
+            _config.Set(sec, "CargoStorage", _initCargos);
+            _config.Set(sec, "Welders", _initWelders);
+
+            //_config.SetSectionComment(sec, "set automatically at init.");
 
             // Save it -----------------------------------------------------------------
 
@@ -392,251 +485,332 @@ namespace IngameScript
             string[] legacyVars = sections[0].Split('\n');
             string legacyStances = sections[1];
 
-            for (int i = 1; i < legacyVars.Length; i++)
+            try
             {
-                if (legacyVars[i].Contains("="))
+                for (int i = 1; i < legacyVars.Length; i++)
                 {
-                    //string[] cleanup = parse_dat[i].Split('=');
-                    string value = legacyVars[i].Substring(1);
-
-                    // so if we contain an =, the item prior is my setting name.
-                    switch (legacyVars[(i - 1)])
+                    if (legacyVars[i].Contains("="))
                     {
-                        case "Ship name. Blocks without this name will be ignored":
-                            _shipName = value;
-                            break;
+                        //string[] cleanup = parse_dat[i].Split('=');
+                        string value = legacyVars[i].Substring(1);
 
-                        case "Block name delimiter, used by init. One character only!":
-                            _nameDelimiter = char.Parse(value.Substring(0, 1));
-                            break;
+                        // so if we contain an =, the item prior is my setting name.
+                        switch (legacyVars[(i - 1)])
+                        {
+                            case "Ship name. Blocks without this name will be ignored":
+                                _shipName = value;
+                                break;
 
-                        case "Keyword used to identify RSM LCDs.":
-                            _keywordRsmLcds = value;
-                            break;
+                            case "Block name delimiter, used by init. One character only!":
+                                _nameDelimiter = char.Parse(value.Substring(0, 1));
+                                break;
 
-                        case "Keyword used to identify autorepair systems":
-                        case "Keyword used to identify auxiliary blocks":
-                            _keywordAuxBlocks = value;
-                            break;
+                            case "Keyword used to identify RSM LCDs.":
+                                _keywordRsmLcds = value;
+                                break;
 
-                        case "Keyword used to identify defence PDCs.":
-                            _keywordDefPdcs = value;
-                            break;
+                            case "Keyword used to identify autorepair systems":
+                            case "Keyword used to identify auxiliary blocks":
+                                _keywordAuxBlocks = value;
+                                break;
 
-                        case "Keyword used to identify minimum epstein drives.":
-                            _keywordThrustersMinimum = value;
-                            break;
+                            case "Keyword used to identify defence PDCs.":
+                                _keywordDefPdcs = value;
+                                break;
 
-                        case "Keyword used to identify docking epstein drives.":
-                            _keywordThrustersDocking = value;
-                            break;
+                            case "Keyword used to identify minimum epstein drives.":
+                                _keywordThrustersMinimum = value;
+                                break;
 
-                        case "Keyword to ignore block.":
-                            _keywordIgnore = value;
-                            break;
+                            case "Keyword used to identify docking epstein drives.":
+                                _keywordThrustersDocking = value;
+                                break;
 
-                        case "Automatically configure PDCs, Railguns, Torpedoes.":
-                            _autoConfigWeapons = bool.Parse(value);
-                            break;
+                            case "Keyword to ignore block.":
+                                _keywordIgnore = value;
+                                break;
 
-                        case "Disable lighting all control.":
-                            _disableLightingControl = bool.Parse(value);
-                            break;
-                        case "Disable LCD Text Colour Enforcement.":
-                            _disableLcdColourControl = bool.Parse(value);
-                            break;
+                            case "Automatically configure PDCs, Railguns, Torpedoes.":
+                                _autoConfigWeapons = bool.Parse(value);
+                                break;
 
-                        case "Enable Weapon Autoload Functionality.":
-                            _autoLoad = bool.Parse(value);
-                            break;
+                            case "Disable lighting all control.":
+                                _disableLightingControl = bool.Parse(value);
+                                break;
+                            case "Disable LCD Text Colour Enforcement.":
+                                _disableLcdColourControl = bool.Parse(value);
+                                break;
 
-
-                        case "Number these blocks at init.":
-                            _enumerateTheseBlocks.Clear();
-                            string[] FNames = value.Split(',');
-                            foreach (string FName in FNames)
-                            {
-                                if (FName != "")
-                                    _enumerateTheseBlocks.Add(FName);
-                            }
-                            break;
-
-                        case "Add type names to weapons at init.":
-                            _appendWeaponTypes = bool.Parse(value);
-                            break;
-
-                        case "Only set batteries to discharge on active railgun/coilgun target.":
-                            _manageBatteryDischarge = bool.Parse(value);
-                            break;
+                            case "Enable Weapon Autoload Functionality.":
+                                _autoLoad = bool.Parse(value);
+                                break;
 
 
-                        case "Show basic telemetry.":
-                            _showBasicTelemetry = bool.Parse(value);
-                            break;
-                        case "Show Decel Percentages (comma seperated).":
-                            _decelPercentages.Clear();
-                            string[] Percents = value.Split(',');
-                            foreach (string Percent in Percents)
-                            {
-                                _decelPercentages.Add(double.Parse(Percent) / 100);
-                            }
-                            break;
+                            case "Number these blocks at init.":
+                                _enumerateTheseBlocks.Clear();
+                                string[] FNames = value.Split(',');
+                                foreach (string FName in FNames)
+                                {
+                                    if (FName != "")
+                                        _enumerateTheseBlocks.Add(FName);
+                                }
+                                break;
+
+                            case "Add type names to weapons at init.":
+                                _appendWeaponTypes = bool.Parse(value);
+                                break;
+
+                            case "Only set batteries to discharge on active railgun/coilgun target.":
+                                _manageBatteryDischarge = bool.Parse(value);
+                                break;
+
+
+                            case "Show basic telemetry.":
+                                _showBasicTelemetry = bool.Parse(value);
+                                break;
+                            case "Show Decel Percentages (comma seperated).":
+                                _decelPercentages.Clear();
+                                string[] Percents = value.Split(',');
+                                foreach (string Percent in Percents)
+                                {
+                                    _decelPercentages.Add(double.Parse(Percent) / 100);
+                                }
+                                break;
 
 
 
-                        case "Fusion Fuel count":
-                            ITEMS[0].InitQty = int.Parse(value);
-                            break;
+                            case "Fusion Fuel count":
+                                ITEMS[0].InitQty = int.Parse(value);
+                                break;
 
-                        case "Fuel tank count":
-                            ITEMS[1].InitQty = int.Parse(value);
-                            break;
+                            case "Fuel tank count":
+                                ITEMS[1].InitQty = int.Parse(value);
+                                break;
 
-                        case "Jerry can count":
-                            ITEMS[2].InitQty = int.Parse(value);
-                            break;
+                            case "Jerry can count":
+                                ITEMS[2].InitQty = int.Parse(value);
+                                break;
 
-                        case "40mm PDC Magazine count":
-                            ITEMS[3].InitQty = int.Parse(value);
-                            break;
-                        case "40mm Teflon Tungsten PDC Magazine count":
-                            ITEMS[4].InitQty = int.Parse(value);
-                            break;
+                            case "40mm PDC Magazine count":
+                                ITEMS[3].InitQty = int.Parse(value);
+                                break;
+                            case "40mm Teflon Tungsten PDC Magazine count":
+                                ITEMS[4].InitQty = int.Parse(value);
+                                break;
 
-                        case "220mm Torpedo count":
-                        case "Torpedo count":
-                            ITEMS[5].InitQty = int.Parse(value);
-                            break;
+                            case "220mm Torpedo count":
+                            case "Torpedo count":
+                                ITEMS[5].InitQty = int.Parse(value);
+                                break;
 
-                        case "220mm MCRN torpedo count":
-                            ITEMS[6].InitQty = int.Parse(value);
-                            break;
+                            case "220mm MCRN torpedo count":
+                                ITEMS[6].InitQty = int.Parse(value);
+                                break;
 
-                        case "220mm UNN torpedo count":
-                            ITEMS[7].InitQty = int.Parse(value);
-                            break;
+                            case "220mm UNN torpedo count":
+                                ITEMS[7].InitQty = int.Parse(value);
+                                break;
 
-                        case "Ramshackle torpedo count":
-                        case "Ramshackle torpedo Count":
-                            ITEMS[8].InitQty = int.Parse(value);
-                            break;
+                            case "Ramshackle torpedo count":
+                            case "Ramshackle torpedo Count":
+                                ITEMS[8].InitQty = int.Parse(value);
+                                break;
 
-                        case "Large ramshacke torpedo count":
-                            ITEMS[9].InitQty = int.Parse(value);
-                            break;
+                            case "Large ramshacke torpedo count":
+                                ITEMS[9].InitQty = int.Parse(value);
+                                break;
 
-                        case "Zako 120mm Railgun rounds count":
-                        case "Railgun rounds count":
-                            ITEMS[10].InitQty = int.Parse(value);
-                            break;
+                            case "Zako 120mm Railgun rounds count":
+                            case "Railgun rounds count":
+                                ITEMS[10].InitQty = int.Parse(value);
+                                break;
 
-                        case "Dawson 100mm UNN Railgun rounds count":
-                            ITEMS[11].InitQty = int.Parse(value);
-                            break;
+                            case "Dawson 100mm UNN Railgun rounds count":
+                                ITEMS[11].InitQty = int.Parse(value);
+                                break;
 
-                        case "Stiletto 100mm MCRN Railgun rounds count":
-                            ITEMS[12].InitQty = int.Parse(value);
-                            break;
+                            case "Stiletto 100mm MCRN Railgun rounds count":
+                                ITEMS[12].InitQty = int.Parse(value);
+                                break;
 
-                        case "T-47 80mm Railgun rounds count":
-                            ITEMS[13].InitQty = int.Parse(value);
-                            break;
+                            case "T-47 80mm Railgun rounds count":
+                                ITEMS[13].InitQty = int.Parse(value);
+                                break;
 
-                        case "Foehammer 120mm MCRN rounds count":
-                            ITEMS[14].InitQty = int.Parse(value);
-                            break;
+                            case "Foehammer 120mm MCRN rounds count":
+                                ITEMS[14].InitQty = int.Parse(value);
+                                break;
 
-                        case "Farren 120mm UNN Railgun rounds count":
-                            ITEMS[15].InitQty = int.Parse(value);
-                            break;
+                            case "Farren 120mm UNN Railgun rounds count":
+                                ITEMS[15].InitQty = int.Parse(value);
+                                break;
 
-                        case "Kess 180mm rounds count":
-                            ITEMS[16].InitQty = int.Parse(value);
-                            break;
+                            case "Kess 180mm rounds count":
+                                ITEMS[16].InitQty = int.Parse(value);
+                                break;
 
-                        case "Steel plate count":
-                            ITEMS[17].InitQty = int.Parse(value);
-                            break;
+                            case "Steel plate count":
+                                ITEMS[17].InitQty = int.Parse(value);
+                                break;
 
-                        case "Doors open timer (x100 ticks, default 3)":
-                            _doorCloseTimer = int.Parse(value);
-                            break;
+                            case "Doors open timer (x100 ticks, default 3)":
+                                _doorCloseTimer = int.Parse(value);
+                                break;
 
-                        case "Airlock doors disabled timer (x100 ticks, default 6)":
-                            _airlockDoorDisableTimer = int.Parse(value);
-                            break;
+                            case "Airlock doors disabled timer (x100 ticks, default 6)":
+                                _airlockDoorDisableTimer = int.Parse(value);
+                                break;
 
-                        case "Throttle script (x100 ticks pause between loops, default 0)":
-                            _loopStallCount = int.Parse(value);
-                            break;
+                            case "Throttle script (x100 ticks pause between loops, default 0)":
+                                _loopStallCount = int.Parse(value);
+                                break;
 
-                        case "Full refresh frequency (x100 ticks, default 50)":
-                            _blockRefreshFreq = int.Parse(value);
-                            break;
+                            case "Full refresh frequency (x100 ticks, default 50)":
+                                _blockRefreshFreq = int.Parse(value);
+                                break;
 
-                        case "Verbose script debugging. Prints more logging info to PB details.":
-                            _d = bool.Parse(value);
-                            break;
+                            case "Verbose script debugging. Prints more logging info to PB details.":
+                                _d = bool.Parse(value);
+                                break;
 
-                        case "Private spawn (don't inject faction tag into SK custom data).":
-                            _privateSpawns = bool.Parse(value);
-                            break;
+                            case "Private spawn (don't inject faction tag into SK custom data).":
+                                _privateSpawns = bool.Parse(value);
+                                break;
 
-                        case "Comma seperated friendly factions or steam ids for survival kits.":
-                            _friendlyTags = string.Join("\n", value.Split(','));
-                            break;
+                            case "Comma seperated friendly factions or steam ids for survival kits.":
+                                _friendlyTags = string.Join("\n", value.Split(','));
+                                break;
 
-                        case "Current Stance":
-                            STANCE = value;
-                            break;
+                            case "Current Stance":
+                                _currentStance = value;
+                                break;
 
-                        case "Reactor Integrity":
-                            INIT_REACTORs = float.Parse(value);
-                            break;
-                        case "Battery Integrity":
-                            INIT_BATTERIEs = float.Parse(value);
-                            break;
-                        case "PDC Integrity":
-                            INIT_PDCs = int.Parse(value);
-                            break;
-                        case "Torpedo Integrity":
-                            INIT_TORPs = int.Parse(value);
-                            break;
-                        case "Railgun Integrity":
-                            INIT_RAILs = int.Parse(value);
-                            break;
-                        case "H2 Tank Integrity":
-                            INIT_H2 = double.Parse(value);
-                            break;
-                        case "O2 Tank Integrity":
-                            INIT_O2 = double.Parse(value);
-                            break;
-                        case "Epstein Integrity":
-                            INIT_THRUSTERs_MAIN = float.Parse(value);
-                            break;
-                        case "RCS Integrity":
-                            INIT_THRUSTERs_RCS = float.Parse(value);
-                            break;
-                        case "Gyro Integrity":
-                            INIT_GYROs = int.Parse(value);
-                            break;
-                        case "Cargo Integrity":
-                            INIT_CARGOs = double.Parse(value);
-                            break;
-                        case "Welder Integrity":
-                            INIT_WELDERs = int.Parse(value);
-                            break;
+                            case "Reactor Integrity":
+                                _initReactors = float.Parse(value);
+                                break;
+                            case "Battery Integrity":
+                                _initBatteries = float.Parse(value);
+                                break;
+                            case "PDC Integrity":
+                                _initPdcs = int.Parse(value);
+                                break;
+                            case "Torpedo Integrity":
+                                _initTorpLaunchers = int.Parse(value);
+                                break;
+                            case "Railgun Integrity":
+                                _initKinetics = int.Parse(value);
+                                break;
+                            case "H2 Tank Integrity":
+                                _initH2 = double.Parse(value);
+                                break;
+                            case "O2 Tank Integrity":
+                                _initO2 = double.Parse(value);
+                                break;
+                            case "Epstein Integrity":
+                                _initThrustMain = float.Parse(value);
+                                break;
+                            case "RCS Integrity":
+                                _initThrustRCS = float.Parse(value);
+                                break;
+                            case "Gyro Integrity":
+                                _initGyros = int.Parse(value);
+                                break;
+                            case "Cargo Integrity":
+                                _initCargos = double.Parse(value);
+                                break;
+                            case "Welder Integrity":
+                                _initWelders = int.Parse(value);
+                                break;
 
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Echo("Custom Data Error (vars)\n" + ex.Message);
+            }
+
+            // alright so now we try to parse stance data
+            try
+            {
+                string[] stances = legacyStances.Split(new string[] { "Stance:" }, StringSplitOptions.None);
+
+                if (_d) Echo("Parsing " + (stances.Length - 1) + " stances");
+
+                int data_length = _stances[0].Length;
+
+                List<string> new_name_list = new List<string>();
+                List<int[]> new_data_list = new List<int[]>();
+
+                for (int i = 1; i < stances.Length; i++)
+                {
+                    string[] stance_vars = stances[i].Split('=');
+
+                    string new_name = "";
+                    int[] new_data = new int[data_length];
+
+                    new_name = stance_vars[0].Split(' ')[0];
+                    if (_d) Echo("Parsing '" + new_name + "'");
+                    for (int j = 0; j < new_data.Length; j++)
+                    {
+                        string[] cleanup = stance_vars[(j + 1)].Split('\n');
+                        new_data[j] = int.Parse(cleanup[0]);
+                        //if (_d) Echo(new_data[j].ToString());
+                    }
+                    new_name_list.Add(new_name);
+                    new_data_list.Add(new_data);
+                }
+                if (new_name_list.Count >= 1 && new_name_list.Count == new_data_list.Count)
+                {
+                    // we did it.
+                    _stanceNames = new_name_list;
+                    _stances = new_data_list;
+                    //parsedStances = true;
+                    if (_d) Echo("Finished parsing " + _stanceNames.Count + " stances.");
+
+                    // update the S value as well so lights and colours aren't effected.
+                    for (int j = 0; j < _stanceNames.Count; j++)
+                    {
+                        if (_currentStance == _stanceNames[j]) S = j;
+                    }
+                }
+                else
+                {
+                    Echo("Didn't find any stances!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Echo("Custom Data Error (stances)\n" + ex.Message);
             }
         }
 
         void updateCustomData(bool dontParse)
         {
 
-            parseCustomData();
-            setCustomData();
+            bool success = parseCustomData();
+            if (!success) setCustomData();
+
+            if (_privateSpawns)
+            {
+                if (SPAWN_OPEN)
+                    SK_DATA = _friendlyTags;
+                else
+                    SK_DATA = "";
+
+            }
+            else
+            {
+                SK_DATA = "                                                                                                                                 " +
+                    FACTION_TAG;
+
+                if (SPAWN_OPEN)
+                    SK_DATA += "\n" + _friendlyTags;
+
+                SK_DATA += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+                     FACTION_TAG;
+            }
 
             return;
 
@@ -923,56 +1097,56 @@ namespace IngameScript
 
                                 case "Current Stance":
                                     config_count++;
-                                    STANCE = value;
+                                    _currentStance= value;
                                     break;
 
                                 case "Reactor Integrity":
                                     config_count++;
-                                    INIT_REACTORs = float.Parse(value);
+                                    _initReactors = float.Parse(value);
                                     break;
                                 case "Battery Integrity":
                                     config_count++;
-                                    INIT_BATTERIEs = float.Parse(value);
+                                    _initBatteries = float.Parse(value);
                                     break;
                                 case "PDC Integrity":
                                     config_count++;
-                                    INIT_PDCs = int.Parse(value);
+                                    _initPdcs = int.Parse(value);
                                     break;
                                 case "Torpedo Integrity":
                                     config_count++;
-                                    INIT_TORPs = int.Parse(value);
+                                    _initTorpLaunchers = int.Parse(value);
                                     break;
                                 case "Railgun Integrity":
                                     config_count++;
-                                    INIT_RAILs = int.Parse(value);
+                                    _initKinetics = int.Parse(value);
                                     break;
                                 case "H2 Tank Integrity":
                                     config_count++;
-                                    INIT_H2 = double.Parse(value);
+                                    _initH2 = double.Parse(value);
                                     break;
                                 case "O2 Tank Integrity":
                                     config_count++;
-                                    INIT_O2 = double.Parse(value);
+                                    _initO2 = double.Parse(value);
                                     break;
                                 case "Epstein Integrity":
                                     config_count++;
-                                    INIT_THRUSTERs_MAIN = float.Parse(value);
+                                    _initThrustMain = float.Parse(value);
                                     break;
                                 case "RCS Integrity":
                                     config_count++;
-                                    INIT_THRUSTERs_RCS = float.Parse(value);
+                                    _initThrustRCS = float.Parse(value);
                                     break;
                                 case "Gyro Integrity":
                                     config_count++;
-                                    INIT_GYROs = int.Parse(value);
+                                    _initGyros = int.Parse(value);
                                     break;
                                 case "Cargo Integrity":
                                     config_count++;
-                                    INIT_CARGOs = double.Parse(value);
+                                    _initCargos = double.Parse(value);
                                     break;
                                 case "Welder Integrity":
                                     config_count++;
-                                    INIT_WELDERs = int.Parse(value);
+                                    _initWelders = int.Parse(value);
                                     break;
 
 
@@ -1027,7 +1201,7 @@ namespace IngameScript
 
                     if (_d) Echo("Parsing " + (stances.Length - 1) + " stances");
 
-                    int data_length = STANCES[0].Length;
+                    int data_length = _stances[0].Length;
 
                     List<string> new_name_list = new List<string>();
                     List<int[]> new_data_list = new List<int[]>();
@@ -1053,15 +1227,15 @@ namespace IngameScript
                     if (new_name_list.Count >= 1 && new_name_list.Count == new_data_list.Count)
                     {
                         // we did it.
-                        STANCE_NAMES = new_name_list;
-                        STANCES = new_data_list;
+                        _stanceNames = new_name_list;
+                        _stances = new_data_list;
                         parsedStances = true;
-                        if (_d) Echo("Finished parsing " + STANCE_NAMES.Count + " stances.");
+                        if (_d) Echo("Finished parsing " + _stanceNames.Count + " stances.");
 
                         // update the S value as well so lights and colours aren't effected.
-                        for (int j = 0; j < STANCE_NAMES.Count; j++)
+                        for (int j = 0; j < _stanceNames.Count; j++)
                         {
-                            if (STANCE == STANCE_NAMES[j]) S = j;
+                            if (_currentStance == _stanceNames[j]) S = j;
                         }
                     }
                     else
@@ -1086,9 +1260,9 @@ namespace IngameScript
 
             string stance_text = "";
 
-            if (STANCE_NAMES.Count != STANCES.Count) Echo("Um, so...\nstance_names.Count != STANCES.Count");
+            if (_stanceNames.Count != _stances.Count) Echo("Um, so...\nstance_names.Count != _stances.Count");
 
-            if (STANCE_NAMES.Count < 1 && _d)
+            if (_stanceNames.Count < 1 && _d)
             {
                 Echo("No stances!");
             }
@@ -1103,49 +1277,49 @@ namespace IngameScript
             else
                 Echo("Saved custom data.");
 
-            for (int i = 0; i < STANCE_NAMES.Count; i++)
+            for (int i = 0; i < _stanceNames.Count; i++)
             {
-                stance_text += " - Stance:" + STANCE_NAMES[i] + " - \n"
+                stance_text += " - Stance:" + _stanceNames[i] + " - \n"
                     + "torpedoes; 0: off, 1: on;\n="
-                    + STANCES[i][0] + "\n"
+                    + _stances[i][0] + "\n"
                     + "pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only\n="
-                    + STANCES[i][1] + "\n"
+                    + _stances[i][1] + "\n"
                     + "railguns; 0: off, 1: hold fire, 2: AI weapons free;\n="
-                    + STANCES[i][2] + "\n"
+                    + _stances[i][2] + "\n"
                     + "main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change\n="
-                    + STANCES[i][3] + "\n"
+                    + _stances[i][3] + "\n"
                     + "maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change\n="
-                    + STANCES[i][4] + "\n"
+                    + _stances[i][4] + "\n"
                     + "spotlights; 0: off, 1: on, 2: on max radius, 3: no change\n="
-                    + STANCES[i][5] + "\n"
+                    + _stances[i][5] + "\n"
 
                     + "exterior lights; 0: off, 1: on, 3: no change\n="
-                    + STANCES[i][6]
-                    + "\nred=" + STANCES[i][7] + "\ngreen=" + STANCES[i][8]
-                    + "\nblue=" + STANCES[i][9] + "\nalpha=" + STANCES[i][10] + "\n"
+                    + _stances[i][6]
+                    + "\nred=" + _stances[i][7] + "\ngreen=" + _stances[i][8]
+                    + "\nblue=" + _stances[i][9] + "\nalpha=" + _stances[i][10] + "\n"
 
                     + "interior lights lights; 0: off, 1: on, 3: no change\n="
-                    + STANCES[i][11]
-                    + "\nred=" + STANCES[i][12] + "\ngreen=" + STANCES[i][13]
-                    + "\nblue=" + STANCES[i][14] + "\nalpha=" + STANCES[i][15] + "\n"
+                    + _stances[i][11]
+                    + "\nred=" + _stances[i][12] + "\ngreen=" + _stances[i][13]
+                    + "\nblue=" + _stances[i][14] + "\nalpha=" + _stances[i][15] + "\n"
 
                     // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
                     + "stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts\n="
-                    + STANCES[i][16] + "\n"
+                    + _stances[i][16] + "\n"
                     + "EFC boost; 0: off, 1: on\n="
-                    + STANCES[i][17] + "\n"
+                    + _stances[i][17] + "\n"
                     + "EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%\n="
-                    + STANCES[i][18] + "\n"
+                    + _stances[i][18] + "\n"
                     + "EFC kill; 0: no change, 1: run 'Off' on EFC.\n="
-                    + STANCES[i][19] + "\n"
+                    + _stances[i][19] + "\n"
                     + "auxiliary blocks; 0: off, 1: on\n="
-                    + STANCES[i][20] + "\n"
+                    + _stances[i][20] + "\n"
                     + "extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.\n="
-                    + STANCES[i][21] + "\n"
+                    + _stances[i][21] + "\n"
                     + "keep-alives for REACTORs, connectors, gyros, lcds, cameras, sensors, lidars; 0: ignore, 1: force on, 2: force off\n="
-                    + STANCES[i][22] + "\n"
+                    + _stances[i][22] + "\n"
                     + "hangar doors; 0: closed, 1: open, 2: no change\n="
-                    + STANCES[i][23] + "\n\n"
+                    + _stances[i][23] + "\n\n"
                     ;
             }
 
@@ -1205,19 +1379,19 @@ namespace IngameScript
                 + "\n---- [System] ----\n"
                 + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"
                 + "Ship name. Blocks without this name will be ignored\n=" + _shipName + "\n"
-                + "Current Stance\n=" + STANCE + "\n"
-                + "Reactor Integrity\n=" + INIT_REACTORs + "\n"
-                + "Battery Integrity\n=" + INIT_BATTERIEs + "\n"
-                + "PDC Integrity\n=" + INIT_PDCs + "\n"
-                + "Torpedo Integrity\n=" + INIT_TORPs + "\n"
-                + "Railgun Integrity\n=" + INIT_RAILs + "\n"
-                + "H2 Tank Integrity\n=" + INIT_H2 + "\n"
-                + "O2 Tank Integrity\n=" + INIT_O2 + "\n"
-                + "Epstein Integrity\n=" + INIT_THRUSTERs_MAIN + "\n"
-                + "RCS Integrity\n=" + INIT_THRUSTERs_RCS + "\n"
-                + "Gyro Integrity\n=" + INIT_GYROs + "\n"
-                + "Cargo Integrity\n=" + INIT_CARGOs + "\n"
-                + "Welder Integrity\n=" + INIT_WELDERs + "\n"
+                + "Current Stance\n=" + _currentStance + "\n"
+                + "Reactor Integrity\n=" + _initReactors + "\n"
+                + "Battery Integrity\n=" + _initBatteries + "\n"
+                + "PDC Integrity\n=" + _initPdcs + "\n"
+                + "Torpedo Integrity\n=" + _initTorpLaunchers + "\n"
+                + "Railgun Integrity\n=" + _initKinetics + "\n"
+                + "H2 Tank Integrity\n=" + _initH2 + "\n"
+                + "O2 Tank Integrity\n=" + _initO2 + "\n"
+                + "Epstein Integrity\n=" + _initThrustMain + "\n"
+                + "RCS Integrity\n=" + _initThrustRCS + "\n"
+                + "Gyro Integrity\n=" + _initGyros + "\n"
+                + "Cargo Integrity\n=" + _initCargos + "\n"
+                + "Welder Integrity\n=" + _initWelders + "\n"
 
                 + "\n---- [Inventory Counts] ----\n"
                 + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"

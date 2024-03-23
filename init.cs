@@ -66,11 +66,11 @@ namespace IngameScript
                 initO2Tanks();
                 initCargos();
 
-                INIT_PDCs = PDCs.Count + PDCs_DEF.Count;
-                INIT_TORPs = TORPs.Count;
-                INIT_RAILs = RAILs.Count;
-                INIT_GYROs = GYROs.Count;
-                INIT_WELDERs = WELDERs.Count;
+                _initPdcs = PDCs.Count + PDCs_DEF.Count;
+                _initTorpLaunchers = TORPs.Count;
+                _initKinetics = RAILs.Count;
+                _initGyros = GYROs.Count;
+                _initWelders = WELDERs.Count;
 
                 if (_d) Echo("Initialising item values...");
                 initItems();
