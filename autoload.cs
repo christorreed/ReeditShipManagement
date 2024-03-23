@@ -33,14 +33,14 @@ namespace IngameScript
 
             if (!AUTOLOAD) return;
 
-            if (D) Echo("Running autoload...");
+            if (_d) Echo("Running autoload...");
 
             foreach (var Item in ITEMS)
             {
                 // if this item isn't ammo, we don't need to do anything.
                 if (!Item.IsTorp && !Item.IsAmmo) continue;
 
-                if (D) Echo("Checking " + Item.LcdName);
+                if (_d) Echo("Checking " + Item.LcdName);
 
                 // include temp inventories as well
                 // like torps which change ammo type
@@ -62,7 +62,7 @@ namespace IngameScript
                     if (Inv.AutoLoad)
                     {
                         // this block needs loading
-                        //if (D) Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
+                        //if (_d) Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
 
                         AutoloadCount++;
                         AverageQty += Inv.Qty;
@@ -87,7 +87,7 @@ namespace IngameScript
                         // this block is a container
                         if (Inv.Qty > 0)
                         {
-                            // if (D) Echo("Adding " + Inv.Block.CustomName + " as a source.");
+                            // if (_d) Echo("Adding " + Inv.Block.CustomName + " as a source.");
                             LoadFrom.Add(Inv);
                         }
                     }
@@ -98,7 +98,7 @@ namespace IngameScript
                     // calculate average qty
                     int IntQty = (int)(AverageQty / AutoloadCount);
 
-                    /*if (D) Echo("Average qty = " + IntQty +
+                    /*if (_d) Echo("Average qty = " + IntQty +
                         "\nNeed loading count = " + LoadTo.Count +
                         "\nSpare qty = " + Item.SpareQty);*/
 
@@ -110,7 +110,7 @@ namespace IngameScript
 
                     if (Item.SpareQty > 0)
                     {
-                        if (D) Echo("Loading " + Item.Type.SubtypeId + "...");
+                        if (_d) Echo("Loading " + Item.Type.SubtypeId + "...");
 
                         // we have some ammo in storage at least,
                         // so lets load from cargo.
@@ -127,7 +127,7 @@ namespace IngameScript
                         // we have no spare ammo at all,
                         // so we need to balance what we have between weapons
 
-                        if (D) Echo("Balancing " + Item.Type.SubtypeId + "...");
+                        if (_d) Echo("Balancing " + Item.Type.SubtypeId + "...");
 
                         // this should order the list
                         // fullest first, emptiest last.
@@ -139,7 +139,7 @@ namespace IngameScript
                 }
                 else
                 {
-                    if (D) Echo("No loading required " + Item.Type.SubtypeId + "...");
+                    if (_d) Echo("No loading required " + Item.Type.SubtypeId + "...");
                 }
             }
         }

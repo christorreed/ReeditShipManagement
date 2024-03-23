@@ -24,6 +24,7 @@ x "An item with the same key has already been added" during
 
 x review and improve the main loop
 x review and improve quickRefresh
+- booting display on lcd.
 - fix runProgramable, make it run commands over sperate ticks
 - add toolcore welder control (setToolActivate, iterateWelders)
 - review and improve manageDoors

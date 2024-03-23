@@ -65,30 +65,30 @@ namespace IngameScript
 
             if (STANCES[S][21] < 2)
             {
-                if (D) Echo("Extractor management disabled.");
+                if (_d) Echo("Extractor management disabled.");
             }
             else if (EXTRACTOR_WAIT > 0)
             {
                 EXTRACTOR_WAIT--;
-                if (D) Echo("waiting (" + EXTRACTOR_WAIT + ")...");
+                if (_d) Echo("waiting (" + EXTRACTOR_WAIT + ")...");
             }
             else if (TANKs_H2.Count < 1)
             {
-                if (D) Echo("No tanks!");
+                if (_d) Echo("No tanks!");
             }
             else if (STANCES[S][21] == 2 && FUEL_PERCENTAGES < TOP_UP_PERCENTAGE)
             // refuel at 10%
             {
-                if (D) Echo("Fuel low! (" + FUEL_PERCENTAGES + "% / " + TOP_UP_PERCENTAGE + "%)");
+                if (_d) Echo("Fuel low! (" + FUEL_PERCENTAGES + "% / " + TOP_UP_PERCENTAGE + "%)");
                 NEED_FUEL = true;
             }
             else if (STANCES[S][21] == 3 && ACTUAL_H2 < (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH))
             // refuel to keep tanks full.
             {
-                if (D) Echo("Fuel ready for top up (" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
+                if (_d) Echo("Fuel ready for top up (" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
                 NEED_FUEL = true;
             }
-            else if (D)
+            else if (_d)
             {
                 Echo("Fuel level OK (" + FUEL_PERCENTAGES + "%).");
 
@@ -132,7 +132,7 @@ namespace IngameScript
                 if (TheChosenOne == null)
                 {
                     // no sg extractor either...
-                    if (D) Echo("No functional extractor to load!");
+                    if (_d) Echo("No functional extractor to load!");
                     NO_EXTRACTOR = true;
                     return;
                 }
@@ -145,7 +145,7 @@ namespace IngameScript
             if (ITEMS[Item].ActualQty < 1)
             {
                 NO_SPARE_TANKS = true;
-                if (D) Echo("No spare " + ITEMS[Item].Type.SubtypeId + " to load!" );
+                if (_d) Echo("No spare " + ITEMS[Item].Type.SubtypeId + " to load!" );
                 return;
             }
 
@@ -168,7 +168,7 @@ namespace IngameScript
             List<INVENTORY> Invs = new List<INVENTORY>();
             Invs.Add(Inv);
 
-            if (D) Echo("Attempting to load extractor " + TheChosenOne.CustomName);
+            if (_d) Echo("Attempting to load extractor " + TheChosenOne.CustomName);
             loadInventories(ITEMS[Item].Inventories, Invs, ITEMS[Item].Type);
 
         }

@@ -54,7 +54,7 @@ namespace IngameScript
                             string Name = RailTarget.Value.Name;
                             if (Name != null && Name != "")
                             {
-                                if (D) Echo("At least one rail has a target!");
+                                if (_d) Echo("At least one rail has a target!");
                                 RAILs_HAVE_TARGET = true;
                             }
                         }

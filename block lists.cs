@@ -117,7 +117,7 @@ namespace IngameScript
                 if (b.CustomName.Contains(KEYWORD_AUX))
                     AUXILIARIEs.Add(b);
 
-                //if (D) Echo("Sorting " + b.CustomName);
+                //if (_d) Echo("Sorting " + b.CustomName);
 
                 string blockId = b.BlockDefinition.ToString();
 
@@ -577,7 +577,7 @@ namespace IngameScript
 
                 if (blockId.Contains("Welder"))
                 {
-                    //if (D) Echo(b.CustomName);
+                    //if (_d) Echo(b.CustomName);
                     WELDERs.Add(b);
                     if (I) INIT_NAMEs.Add(b, "Welder");
                     return false;
@@ -672,7 +672,7 @@ namespace IngameScript
             }
             catch (Exception Ex)
             {
-                if (D)
+                if (_d)
                 {
                     Echo("Failed to sort " + b.CustomName + "\nAdded " + INIT_NAMEs.Count + " so far.");
                     Echo(Ex.Message);

@@ -51,7 +51,7 @@ namespace IngameScript
                         int Ammo = sortAmmoType(AmmoType);
                         //IMyInventory WeapInv = Torp.GetInventory();
 
-                        if (D) Echo("Launcher " + Torp.CustomName + " needs " + AmmoType + "(" + Ammo + ")");
+                        if (_d) Echo("Launcher " + Torp.CustomName + " needs " + AmmoType + "(" + Ammo + ")");
 
                         addTempInventory(Torp, Ammo);
 

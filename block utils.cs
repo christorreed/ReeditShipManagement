@@ -107,7 +107,7 @@ namespace IngameScript
             try
             {
                 block.SetValue<Int64>("WC_Shoot Mode", 3);
-                if (D) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
+                if (_d) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
             }
             catch
             {
@@ -120,7 +120,7 @@ namespace IngameScript
             try
             {
                 block.SetValue<Int64>("WC_Shoot Mode", 0);
-                if (D) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
+                if (_d) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
             }
             catch
             {

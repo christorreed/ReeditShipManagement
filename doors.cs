@@ -43,11 +43,11 @@ namespace IngameScript
             doors_count_closed = 0;
             doors_count_unlocked = 0;
 
-            if (D) Echo("Interating over " + DOORs.Count + " doors...");
+            if (_d) Echo("Interating over " + DOORs.Count + " doors...");
 
             for (int i = 0; i < DOORs.Count; i++)
             {
-                if (D) Echo("Door " + i + ": " + DOORs[i].CustomName);
+                if (_d) Echo("Door " + i + ": " + DOORs[i].CustomName);
 
                 if (isDoorUnlocked(DOORs[i])) doors_count_unlocked++;
 
@@ -92,7 +92,7 @@ namespace IngameScript
                     }
                     catch
                     {
-                        if (D) Echo("Failed to parse custom data (" + DOORs[i].CustomName + ").");
+                        if (_d) Echo("Failed to parse custom data (" + DOORs[i].CustomName + ").");
                     }
 
                     // if the door is open, continue the timer
@@ -106,7 +106,7 @@ namespace IngameScript
                             // this door only just opened, and it's an airlock door.
                             // so lets mark other doors in this airlock for disabling.
 
-                            if (D) Echo("Door just opened... (" + DOORs[i].CustomName + ")");
+                            if (_d) Echo("Door just opened... (" + DOORs[i].CustomName + ")");
 
 
 
@@ -207,12 +207,12 @@ namespace IngameScript
 
             }
 
-            if (D) Echo("Done, now disabling doors...");
+            if (_d) Echo("Done, now disabling doors...");
 
             if (marked_for_disabling != "")
             {
 
-                if (D) Echo("Disabling doors...");
+                if (_d) Echo("Disabling doors...");
 
                 //Echo("Starting 2nd door loop");
                 string[] to_disable = marked_for_disabling.Split(',');
@@ -243,12 +243,12 @@ namespace IngameScript
                     if (disable == true)
                     {
                         DOORs[i].Enabled = false;
-                        if (D) Echo("Disabled door + (" + DOORs[i].CustomName + ")");
+                        if (_d) Echo("Disabled door + (" + DOORs[i].CustomName + ")");
                     }
                 }
             }
 
-            if (D) Echo("Done mangaging doors.");
+            if (_d) Echo("Done mangaging doors.");
 
             return;
         }

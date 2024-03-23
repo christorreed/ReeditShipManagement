@@ -247,7 +247,7 @@ namespace IngameScript
                 // like torps which change ammo type
                 List<INVENTORY> CombinedInventories = Item.Inventories.Concat(Item.TempInventories).ToList();
 
-                //if (D) Echo("Checking " + Item.LcdName);
+                //if (_d) Echo("Checking " + Item.LcdName);
 
                 // check them all.
                 foreach (INVENTORY Inv in CombinedInventories)
@@ -263,7 +263,7 @@ namespace IngameScript
                         // and autoload in general is also on.
 
                         Inv.FillFactor = Inv.Inv.VolumeFillFactor;
-                        //if (D) Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
+                        //if (_d) Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
                     }
                     else
                     {
@@ -329,7 +329,7 @@ namespace IngameScript
                     return 16;
 
                 default:
-                    if (D) Echo("Unknown AmmoType = " + AmmoType);
+                    if (_d) Echo("Unknown AmmoType = " + AmmoType);
                     return 99;
 
             }
@@ -350,18 +350,18 @@ namespace IngameScript
 
         void loadInventories(List<INVENTORY> LoadFrom, List<INVENTORY> LoadTo, MyItemType Type, int Average = -1)
         {
-            if (D) Echo("Loading " + LoadTo.Count + " inventories from " + LoadFrom.Count + " sources.");
+            if (_d) Echo("Loading " + LoadTo.Count + " inventories from " + LoadFrom.Count + " sources.");
 
             foreach (INVENTORY ToInv in LoadTo)
             {
                 // how many from inventories to try for this to.
                 int Retries = 3;
 
-                //if (D) Echo("Loading " + ToInv.Block.CustomName);
+                //if (_d) Echo("Loading " + ToInv.Block.CustomName);
 
                 foreach (INVENTORY FromInv in LoadFrom)
                 {
-                    //if (D) Echo("Checking  " + FromInv.Block.CustomName + "\nRetries = " + Retries);
+                    //if (_d) Echo("Checking  " + FromInv.Block.CustomName + "\nRetries = " + Retries);
 
                     // we're done with this 
                     if (Retries < 0) break;
@@ -383,12 +383,12 @@ namespace IngameScript
                     // iterate the items
                     foreach (MyInventoryItem InvItem in InvItems)
                     {
-                        //if (D) Echo("This is " + InvItem.Type.SubtypeId);
+                        //if (_d) Echo("This is " + InvItem.Type.SubtypeId);
 
                         // make sure it's the right item, and there's some in there.
                         if (InvItem.Type == Type)
                         {
-                            //if (D) Echo("Found ammo type " + Type.SubtypeId);
+                            //if (_d) Echo("Found ammo type " + Type.SubtypeId);
                             // if there's no average provided,
                             // try sending them all, let limits figure it out
                             int Qty = InvItem.Amount.ToIntSafe();
@@ -421,7 +421,7 @@ namespace IngameScript
                             // if this worked, don't attempt to load this block again.
                             if (Success) Retries = -1;
 
-                            if (D) Echo("Loading success = " + Success);
+                            if (_d) Echo("Loading success = " + Success);
 
                             break;
                         }
@@ -434,7 +434,7 @@ namespace IngameScript
         void loadInventory(IMyTerminalBlock ToLoad, List<IMyInventory> SourceInventories, string ItemType, int ItemCount)
         {
 
-            if (D) Echo("Loading block " + ToLoad.CustomName + " with item type " + ItemType + " from " + SourceInventories.Count + " sources.");
+            if (_d) Echo("Loading block " + ToLoad.CustomName + " with item type " + ItemType + " from " + SourceInventories.Count + " sources.");
 
             IMyInventory ToLoadInventory = ToLoad.GetInventory();
 
@@ -457,7 +457,7 @@ namespace IngameScript
                 catch { }
             }
 
-            if (D) Echo("Loading failed.");
+            if (_d) Echo("Loading failed.");
         }
         */
     }

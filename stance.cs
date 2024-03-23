@@ -48,61 +48,61 @@ namespace IngameScript
                 return;
             }
 
-            if (D) Echo("Setting stance '" + stance + "'.");
+            if (_d) Echo("Setting stance '" + stance + "'.");
 
             STANCE = stance;
 
             updateCustomData(true);
 
             // set rails
-            if (D) Echo("Setting " + RAILs.Count + " railguns to " + STANCES[S][2]);
+            if (_d) Echo("Setting " + RAILs.Count + " railguns to " + STANCES[S][2]);
             setRails(STANCES[S][2]);
 
             // set torps
-            if (D) Echo("Setting " + TORPs.Count + " torpedoes to " + STANCES[S][0]);
+            if (_d) Echo("Setting " + TORPs.Count + " torpedoes to " + STANCES[S][0]);
             setTorpedoes(STANCES[S][0]);
 
             // set pdcs
-            if (D) Echo("Setting " + PDCs.Count + " PDCs, " + PDCs_DEF.Count + " defence PDCs to " + STANCES[S][1]);
+            if (_d) Echo("Setting " + PDCs.Count + " PDCs, " + PDCs_DEF.Count + " defence PDCs to " + STANCES[S][1]);
             setPdcs(STANCES[S][1]);
 
             // set main drives
-            if (D) Echo(
+            if (_d) Echo(
                 "Setting "
                 + THRUSTERs_EPSTEIN.Count + " epsteins, "
                 + THRUSTERs_CHEM.Count + " chems" + " to " + STANCES[S][3]);
             setMainThrusters(STANCES[S][3], STANCES[S][4]);
 
             // set RCS
-            if (D) Echo(
+            if (_d) Echo(
                 "Setting "
                 + THRUSTERs_RCS.Count + " rcs, "
                 + THRUSTERs_ATMO.Count + " atmos" + " to " + STANCES[S][11]);
             setRcsThrusters(STANCES[S][11]);
 
             // set batteries
-            if (D) Echo("Setting " + BATTERIEs.Count + " batteries to = " + STANCES[S][16]);
+            if (_d) Echo("Setting " + BATTERIEs.Count + " batteries to = " + STANCES[S][16]);
             setBatteries(STANCES[S][16]);
 
-            if (D) Echo("Setting " + TANKs_H2.Count + " H2 tanks to stockpile = " + STANCES[S][16]);
+            if (_d) Echo("Setting " + TANKs_H2.Count + " H2 tanks to stockpile = " + STANCES[S][16]);
             setH2Tanks(STANCES[S][16]);
 
-            if (D) Echo("Setting " + TANKs_O2.Count + " O2 tanks to stockpile = " + STANCES[S][16]);
+            if (_d) Echo("Setting " + TANKs_O2.Count + " O2 tanks to stockpile = " + STANCES[S][16]);
             setO2Tanks(STANCES[S][16]);
 
             // set lighting
             if (DISABLE_LIGHTING)
             {
-                if (D) Echo("No lighting was set because lighting control is disabled.");
+                if (_d) Echo("No lighting was set because lighting control is disabled.");
             }
             else
             {
                 // set spotlights
-                if (D) Echo("Setting " + LIGHTs_SPOT.Count + " spotlights to " + STANCES[S][5]);
+                if (_d) Echo("Setting " + LIGHTs_SPOT.Count + " spotlights to " + STANCES[S][5]);
                 setSpotlights(STANCES[S][5]);
 
                 // set exterior lights
-                if (D) Echo("Setting " + LIGHTs_EXTERIOR.Count + " exterior lights to " + STANCES[S][6]);
+                if (_d) Echo("Setting " + LIGHTs_EXTERIOR.Count + " exterior lights to " + STANCES[S][6]);
                 Color ColourExterior = new Color(
                     STANCES[S][7],
                     STANCES[S][8],
@@ -112,7 +112,7 @@ namespace IngameScript
                 setExteriorLights(STANCES[S][6], ColourExterior);
 
                 // set nav lights
-                if (D) Echo("Setting " + LIGHTs_INTERIOR.Count + " exterior lights to " + STANCES[S][11]);
+                if (_d) Echo("Setting " + LIGHTs_INTERIOR.Count + " exterior lights to " + STANCES[S][11]);
                 Color ColourInterior = new Color(
                     STANCES[S][12],
                     STANCES[S][13],
@@ -121,7 +121,7 @@ namespace IngameScript
                     );
                 setInteriorLights(STANCES[S][11], ColourInterior);
 
-                if (D) Echo(
+                if (_d) Echo(
                     "Setting "
                     + LIGHTs_NAV_PORT.Count + " port nav lights, "
                     + LIGHTs_NAV_STARBOARD.Count + " starboard nav lights to " + STANCES[S][6]);
@@ -129,22 +129,22 @@ namespace IngameScript
 
             }
 
-            if (D) Echo("Setting " + AUXILIARIEs.Count + " aux block to " + STANCES[S][20]);
+            if (_d) Echo("Setting " + AUXILIARIEs.Count + " aux block to " + STANCES[S][20]);
             setAuxiliaries(STANCES[S][20]);
 
 
-            if (D) Echo("Setting " + EXTRACTORs.Count + " extrators to " + STANCES[S][21]);
+            if (_d) Echo("Setting " + EXTRACTORs.Count + " extrators to " + STANCES[S][21]);
             setExtractors(STANCES[S][21]);
 
 
-            if (D) Echo("Setting " + DOORs_HANGAR.Count + " hangar doors units to " + STANCES[S][23]);
+            if (_d) Echo("Setting " + DOORs_HANGAR.Count + " hangar doors units to " + STANCES[S][23]);
             setHangarDoors(STANCES[S][23]);
 
             // lock doors if we're in close combat
             // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
             if (STANCES[S][2] == 2)
             {
-                if (D) Echo("Setting " + DOORs.Count + " doors to locked because we are in combat (rails set to free-fire).");
+                if (_d) Echo("Setting " + DOORs.Count + " doors to locked because we are in combat (rails set to free-fire).");
                 setDoorsLock("locked", "");
             }
 
@@ -159,7 +159,7 @@ namespace IngameScript
             // also build NavOS integration
 
             /*
-            if (D) Echo("Setting " + serversEfc.Count + " [EFC] servers to boost = " + STANCES[S][17]
+            if (_d) Echo("Setting " + serversEfc.Count + " [EFC] servers to boost = " + STANCES[S][17]
                 );
             for (int i = 0; i < serversEfc.Count; i++)
             {
@@ -186,7 +186,7 @@ namespace IngameScript
             }
             */
 
-            if (D) Echo("Finished setting stance.");
+            if (_d) Echo("Finished setting stance.");
         }
 
     }

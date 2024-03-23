@@ -154,7 +154,7 @@ namespace IngameScript
         // updates all LCDs on the ship to display our data.
         void refreshLcds()
         {
-            if (D) Echo("Updating LCDs...");
+            if (_d) Echo("Updating LCDs...");
 
             updateTelemetry();
 
@@ -232,7 +232,7 @@ namespace IngameScript
             // -----------------------
 
 
-            if (D)
+            if (_d)
             {
                 Echo("Actual H2:" + ACTUAL_H2 + "\nTotal H2: " + TOTAL_H2);
 
@@ -572,7 +572,7 @@ namespace IngameScript
                 sec_integrity = LCD_DIVIDER + "\n\n"
                     + "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
 
-            if (D) Echo("Building header...");
+            if (_d) Echo("Building header...");
 
             // ------------------------
             // Build header and overlay
@@ -626,7 +626,7 @@ namespace IngameScript
             if (BUILD_ADVANCED_THRUST)
             {
 
-                if (D) Echo("Building advanced thrust...");
+                if (_d) Echo("Building advanced thrust...");
 
                 string Basics = "";
                 if (ADVANCED_THRUST_SHOW_BASICS)
@@ -655,7 +655,7 @@ namespace IngameScript
                 sec_thrust_advanced += "\n\n";
             }
 
-            if (D) Echo("Interating over "+ LCDs_RSM.Count + " LCDs");
+            if (_d) Echo("Interating over "+ LCDs_RSM.Count + " LCDs");
 
             for (int i = 0; i < LCDs_RSM.Count; i++)
             {
@@ -821,7 +821,7 @@ namespace IngameScript
                 }
             }
 
-            if (D) Echo("Finished updating " + LCDs_RSM.Count.ToString() + " LCDs...");
+            if (_d) Echo("Finished updating " + LCDs_RSM.Count.ToString() + " LCDs...");
 
             return;
         }
@@ -832,7 +832,7 @@ namespace IngameScript
 
             if (LCDs_CS.Count > 0)
             {
-                if (D) Echo("Setting " + LCDs_CS.Count + " colour sync LCDs.");
+                if (_d) Echo("Setting " + LCDs_CS.Count + " colour sync LCDs.");
 
                 foreach (IMyTextPanel LCD in LCDs_CS)
                 {
