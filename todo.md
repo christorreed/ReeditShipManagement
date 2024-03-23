@@ -25,14 +25,18 @@ x "An item with the same key has already been added" during
 x review and improve the main loop
 x review and improve quickRefresh
 - booting display on lcd.
+- detect PBs better, without using keywords.
 - fix runProgramable, make it run commands over sperate ticks
 - add toolcore welder control (setToolActivate, iterateWelders)
 - review and improve manageDoors
 - experiment with ini, use for config (updateCustomData)
 - confirm if to also check for blocks for ship names
+- ^^ _ignoreShipName
 - review and improve updateLcds 
 - review and improve setStance
 - - fuel tank loading command
+- handle fixed weapons better
+- _appendDriveTypes
 
 X review and fix extractor management
 X finalise init naming initBlockNames

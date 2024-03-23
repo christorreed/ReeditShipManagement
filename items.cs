@@ -148,7 +148,11 @@ namespace IngameScript
 
                 // that means we want to autoload it
                 // i mean, if we are autoloading in general.
-                Inv.AutoLoad = AUTOLOAD;
+                Inv.AutoLoad = _autoLoad;
+
+                // if this is a reactor, check that we are doing that...
+                if (item == 0 && !_autoLoadReactors)
+                    Inv.AutoLoad = false;
 
                 // and add it to that item's list only
                 ITEMS[item].Inventories.Add(Inv);
@@ -165,7 +169,7 @@ namespace IngameScript
             // this is a torp
             // we want to autoload it
             // i mean, if we are autoloading in general.
-            Inv.AutoLoad = AUTOLOAD;
+            Inv.AutoLoad = _autoLoad;
 
             // and add it to that item's list only
             ITEMS[item].TempInventories.Add(Inv);

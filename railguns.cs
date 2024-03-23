@@ -81,7 +81,7 @@ namespace IngameScript
                     {
                         (Rail as IMyConveyorSorter).Enabled = true;
 
-                        if (AUTO_CONFIG_WEAPs)
+                        if (_autoConfigWeapons)
                         {
                             Rail.SetValue("WC_Grids", true);
                             Rail.SetValue("WC_LargeGrid", true);
@@ -89,7 +89,10 @@ namespace IngameScript
 
                             Rail.SetValue("WC_SubSystems", true);
                             setBlockRepelOff(Rail);
+                        }
 
+                        if (_setTurretFireMode)
+                        {
                             if (state < 2) // hold fire if less than 2
                             {
                                 setBlockFireModeManual(Rail);

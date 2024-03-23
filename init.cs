@@ -48,7 +48,7 @@ namespace IngameScript
 
             // i now christen this ship, the RSG whatever the fuck
             // it's now variable official.
-            SHIP_NAME = ship;
+            _shipName = ship;
 
             if (_d) Echo("Initialising lcds...");
             // setup LCDs.
@@ -103,10 +103,10 @@ namespace IngameScript
             Dictionary<string, NamingCategory> NamesWithNumbers = new Dictionary<string, NamingCategory>();
 
             // if we're numbering stuff, more to do.
-            if (FORCE_ENUMERATION.Count > 0)
+            if (_enumerateTheseBlocks.Count > 0)
             {
                 // lets build our dictionary
-                foreach (string Name in FORCE_ENUMERATION)
+                foreach (string Name in _enumerateTheseBlocks)
                 {
                     if (_d) Echo("Numbering " + Name);
                     NamesWithNumbers.Add(Name, new NamingCategory());
@@ -146,13 +146,13 @@ namespace IngameScript
                     {
                         // increment and stringify block number
                         Category.Count++;
-                        BlockNumber = NAME_DELIMITER + Category.Count.ToString().PadLeft(Category.PadDepth, '0');
+                        BlockNumber = _nameDelimiter + Category.Count.ToString().PadLeft(Category.PadDepth, '0');
 
                     }
                 }
 
                 BlockName.Key.CustomName =
-                    SHIP_NAME + NAME_DELIMITER
+                    _shipName + _nameDelimiter
                     + ThisName
                     + BlockNumber
                     + retainSuffix(BlockName.Key.CustomName, ThisName);
@@ -178,9 +178,9 @@ namespace IngameScript
 
             try
             {
-                string[] parsed = name.Split(NAME_DELIMITER);
+                string[] parsed = name.Split(_nameDelimiter);
 
-                string[] new_name_bits = new_name.Split(NAME_DELIMITER);
+                string[] new_name_bits = new_name.Split(_nameDelimiter);
 
                 string result = "";
                 if (parsed.Length < 3) return "";
@@ -209,7 +209,7 @@ namespace IngameScript
 
 
                     if (parsed[i] != "")
-                        result += NAME_DELIMITER + parsed[i];
+                        result += _nameDelimiter + parsed[i];
                 }
                 return result;
             }

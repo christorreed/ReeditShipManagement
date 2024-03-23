@@ -95,7 +95,7 @@ namespace IngameScript
 
         private void setMainThruster(IMyThrust Thruster, int state, int state_rcs, bool chem = false)
         {
-            bool DockingThruster = Thruster.CustomName.Contains(KEYWORD_THRUST_DOCKING);
+            bool DockingThruster = Thruster.CustomName.Contains(_keywordThrustersDocking);
 
             // docking thrusters follow state_rcs.
             // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
@@ -118,7 +118,7 @@ namespace IngameScript
             }
             else // ...and we def doing something to it...
             {
-                bool MinThruster = Thruster.CustomName.Contains(KEYWORD_THRUST_MIN);
+                bool MinThruster = Thruster.CustomName.Contains(_keywordThrustersMinimum);
 
                 // lets decide what that is...
                 if (

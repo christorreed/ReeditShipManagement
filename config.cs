@@ -1,4 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
+﻿using Sandbox.Engine.Utils;
+using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -23,63 +24,113 @@ namespace IngameScript
 {
     partial class Program
     {
-        //
+        // the config ini object itself
         MyIni _config = new MyIni();
 
-        // Keywords -----------------------------------------------------------------
+        // Main -----------------------------------------------------------------
 
-        char NAME_DELIMITER = '.';
+        // if true, RSM will operate on all blocks even if they don't have the ship name in them.
+        bool _requireShipName = true;
 
-        string KEYWORD_LCD = "[RSM]"; // for RSM LCDs
-        string KEYWORD_AUX = "[Autorepair]"; // for auxiliary blocks
-        string KEYWORD_IGNORE = "[I]"; // for blocks to be ignored
-        string KEYWORD_DEF_PDC = "Repel"; // for PDCs marked for permanent defence
-        string KEYWORD_THRUST_MIN = "Min"; // for epsteins enabled at min
-        string KEYWORD_THRUST_DOCKING = "Docking"; // for epsteins enabled with RCS
-        string KEYWORD_COLOUR_SYNC = "[CS]"; // for LCD colour sync
-        string KEYWORD_AIRLOCK = "Airlock"; // for airlocks
-        string KEYWORD_PB_EFC = "[EFC]"; // for EFC PBs/LCDs
-        string KEYWORD_PB_NAVOS = "[NavOS]"; // for NavOS PBs/LCDs
-        string KEYWORD_LIGHT_NAV = "NAV"; // for Nav lights
+        // Enable Autoload Functionality.
+        bool _autoLoad = true;
 
-        // Toggles -----------------------------------------------------------------
+        // Enable autoload functionality for reactors.
+        bool _autoLoadReactors = true; 
 
-        bool AUTOLOAD = true; // Enable Weapon Autoload Functionality.
-        bool AUTO_CONFIG_WEAPs = true; // Automatically configure PDCs, Railguns, Torpedoes.
-        bool DISABLE_LIGHTING = false; // Disable lighting all control.
-        bool DISABLE_LCD_COLOURS = false; // Disable LCD Text Colour Enforcement.
-        bool SPAWN_PRIVATE = false; // Private spawn (don't inject faction tag into SK custom data).
-        bool DISCHARGE_MGMT = true; // Only set batteries to discharge on active railgun/coilgun target.
-        bool ADVANCED_THRUST_SHOW_BASICS = true; // show basic telemetry data on advanced thrust LCD
-        bool NAME_WEAPON_TYPES = true; // append type names to all weapons during init.
+        // Automatically configure PDCs, Railguns, Torpedoes.
+        bool _autoConfigWeapons = true;
 
-        // Lists -----------------------------------------------------------------
+        // set turret fire mode based on stance
+        bool _setTurretFireMode = true;
 
-        // list of friendly faction ids, steamids, that can be used to open spawns.
-        string FRIENDLY_TAGS = ""; 
+        // Only set batteries to discharge on active railgun/coilgun target.
+        bool _manageBatteryDischarge = true; 
 
-        // blocks which will be enumerated at init.
-        List<string> FORCE_ENUMERATION = new List<string>(); 
+        // Spawns -----------------------------------------------------------------
 
-        // thrust percentages to show on the Advanced Thrust LCD
-        List<double> ADVANCED_THRUST_PERCENTS = new List<double>();
+        // Private spawn (don't inject faction tag into SK custom data).
+        bool _privateSpawns = false; 
+
+        // list of friendly faction ids, steamids,
+        // that can be used to open spawns.
+        string _friendlyTags = "";
 
         // Doors -----------------------------------------------------------------
 
-        int DOOR_OPEN_TIME = 3; // Doors open timer (x100 ticks, default 3)
-        int DOOR_AIRLOCK_TIME = 6; // Airlock doors disabled timer (x100 ticks, default 6)
+        // enable door management functionality
+        bool _manageDoors = true;
+
+        // door open timer (x100 ticks)
+        int _doorCloseTimer = 3;
+
+        // airlock door disable timer (x100 ticks)
+        int _airlockDoorDisableTimer = 6; 
+
+        // Keywords -----------------------------------------------------------------
+        
+        string _keywordIgnore = "[I]"; // for blocks to be ignored
+        string _keywordRsmLcds = "[RSM]"; // for RSM LCDs
+        string _keywordColourSyncLcds = "[CS]"; // for LCD colour sync
+        string _keywordAuxBlocks = "Autorepair"; // for auxiliary blocks
+        string _keywordDefPdcs = "Repel"; // for PDCs marked for permanent defence
+        string _keywordThrustersMinimum = "Min"; // for epsteins enabled at min
+        string _keywordThrustersDocking = "Docking"; // for epsteins enabled with RCS
+        string _keywordLightNavigation = "Nav"; // for Nav lights
+        string _keywordAirlock = "Airlock"; // for airlocks
+
+        // todo
+        // remove these, check the custom data or something isntead.
+        string KEYWORD_PB_EFC = "[EFC]"; // for EFC PBs/LCDs
+        string KEYWORD_PB_NAVOS = "[NavOS]"; // for NavOS PBs/LCDs
+
+        // Init & Block Naming -----------------------------------------------------------------
+
+        // single char delimiter for names
+        char _nameDelimiter = '.';
+
+        // append type names to all weapons during init.
+        bool _appendWeaponTypes = true;
+
+        // todo
+        // implement!!
+        // append type names to all drives during init.
+        bool _appendDriveTypes = true;
+
+        // blocks which will be enumerated at init.
+        List<string> _enumerateTheseBlocks = new List<string>();
+
+        // Misc -----------------------------------------------------------------
+
+        // disable lighting all control.
+        bool _disableLightingControl = false;
+
+        // disable text colour control for all LCDs 
+        bool _disableLcdColourControl = false;
+
+        // show basic telemetry data on advanced thrust LCD
+        bool _showBasicTelemetry = true;
+
+        // thrust percentages to show on the Advanced Thrust LCD
+        List<double> _decelPercentages = new List<double>();
 
         // Performance & Debugging -----------------------------------------------------------------
 
+        // verbose debugging enabled
+        bool _d = false;
 
-        bool _d = false; // verbose debugging enabled
-        bool _p = true; // profile performance 
-        int _loopStallCount = 0; // for throttling CPU usage
-        int _blockRefreshFreq = 50; // number of loops between complete refreshes.
+        // performance profiling enabled
+        bool _p = true;
+
+        // ticks x100 to stall between runs
+        int _loopStallCount = 0;
+
+        //ticks x100 between block refreshes
+        int _blockRefreshFreq = 100;
 
         // System -----------------------------------------------------------------
 
-        string SHIP_NAME = "Untitled Ship";
+        string _shipName = "Untitled Ship";
 
         // Parse -----------------------------------------------------------------
         bool parseCustomData()
@@ -126,15 +177,203 @@ namespace IngameScript
 
         void setCustomData()
         {
+            //_config.Clear();
+            string sec, name;
+
+            // Main -----------------------------------------------------------------
+
+            sec = "Main";
+
+            name = "RequireShipName";
+            _config.Set(sec, name, _requireShipName);
+            _config.SetComment(sec, name, "limit to blocks with the ship name in their name");
+
+            name = "EnableAutoload";
+            _config.Set(sec, name, _autoLoad);
+            _config.SetComment(sec, name, "enable RSM loading & balancing functionality for weapons");
+
+            name = "AutoloadReactors";
+            _config.Set(sec, name, _autoLoadReactors);
+            _config.SetComment(sec, name, "enable loading and balancing for reactors");
+
+            name = "AutoConfigWeapons";
+            _config.Set(sec, name, _autoConfigWeapons);
+            _config.SetComment(sec, name, "automatically configure weapon on stance set");
+
+            name = "SetTurretFireMode";
+            _config.Set(sec, name, _setTurretFireMode);
+            _config.SetComment(sec, name, "set turret fire mode based on stance");
+
+            name = "ManageBatteryDischarge";
+            _config.Set(sec, name, _manageBatteryDischarge);
+            _config.SetComment(sec, name, "set batteries to discharge on active railgun/coilgun target");
+
+            // Header -----------------------------------------------------------------
+            // this is the bit at the top of the custom data
+
+            _config.SetSectionComment(sec, " -------------------------\n Reedit Ship Management\n -------------------------\n\n Config.ini\n Recompile to apply changes!\n\n");
+
+            // Spawns -----------------------------------------------------------------
+
+            sec = "Spawns";
+
+            name = "PrivateSpawns";
+            _config.Set(sec, name, _privateSpawns);
+            _config.SetComment(sec, name, "don't inject faction tag into spawn custom data");
+
+            name = "Friendly Tags";
+            _config.Set(sec, name, _friendlyTags);
+            _config.SetComment(sec, name, "Comma seperated friendly factions or steam ids");
+
+            // Doors -----------------------------------------------------------------
+
+            sec = "Doors";
+
+            name = "EnableDoorManagement";
+            _config.Set(sec, name, _manageDoors);
+            _config.SetComment(sec, name, "enable door management functionality");
+
+            name = "DoorCloseTimer";
+            _config.Set(sec, name, _doorCloseTimer);
+            _config.SetComment(sec, name, "enable door management functionality");
+
+            name = "AirlockDoorDisableTimer";
+            _config.Set(sec, name, _airlockDoorDisableTimer);
+            _config.SetComment(sec, name, "airlock door disable timer (x100 ticks)");
+
+            // Keywords -----------------------------------------------------------------
+
+            sec = "Keywords";
+
+            name = "Ignore";
+            _config.Set(sec, name, _keywordIgnore);
+            _config.SetComment(sec, name, "to identify blocks which RSM should ignore");
+
+            name = "RsmLcds";
+            _config.Set(sec, name, _keywordRsmLcds);
+            _config.SetComment(sec, name, "to identify RSM LCDs");
+
+            name = "ColourSyncLcds";
+            _config.Set(sec, name, _keywordColourSyncLcds);
+            _config.SetComment(sec, name, "to identify non RSM LCDs for colour sync");
+
+            name = "AuxiliaryBlocks";
+            _config.Set(sec, name, _keywordAuxBlocks);
+            _config.SetComment(sec, name, "to identify aux blocks");
+
+            name = "DefensivePdcs";
+            _config.Set(sec, name, _keywordDefPdcs);
+            _config.SetComment(sec, name, "to identify defensive PDCs");
+
+            name = "MinimumThrusters";
+            _config.Set(sec, name, _keywordThrustersMinimum);
+            _config.SetComment(sec, name, "to identify minimum epsteins");
+
+            name = "DockingThrusters";
+            _config.Set(sec, name, _keywordThrustersDocking);
+            _config.SetComment(sec, name, "to identify docking epsteins");
+
+            name = "NavLights";
+            _config.Set(sec, name, _keywordLightNavigation);
+            _config.SetComment(sec, name, "to identify navigational lights");
+
+            name = "Airlock";
+            _config.Set(sec, name, _keywordAirlock);
+            _config.SetComment(sec, name, "to identify airlock doors and vents");
+
+            // Init & Block Naming -----------------------------------------------------------------
+
+            sec = "InitNaming";
+
+            name = "NameDelimiter";
+            _config.Set(sec, name, _nameDelimiter.ToString());
+            _config.SetComment(sec, name, "single char delimiter for names");
+
+            name = "NameWeaponTypes";
+            _config.Set(sec, name, _appendWeaponTypes);
+            _config.SetComment(sec, name, "append type names to all weapons on init");
+
+            name = "NameDriveTypes";
+            _config.Set(sec, name, _appendDriveTypes);
+            _config.SetComment(sec, name, "append type names to all drives on init");
+
+            string ForcedNames = "";
+
+            foreach (string FName in _enumerateTheseBlocks)
+            {
+                if (ForcedNames != "") ForcedNames += ",";
+                ForcedNames += FName;
+            }
+
+            name = "BlocksToNumber";
+            _config.Set(sec, name, _appendDriveTypes);
+            _config.SetComment(sec, name, "comma seperated list of block names to be numbered at init");
+
+            // Misc -----------------------------------------------------------------
+
+            sec = "Misc";
+
+            name = "DisableLightingControl";
+            _config.Set(sec, name, _disableLightingControl);
+            _config.SetComment(sec, name, "disable all lighting control");
+
+            name = "DisableLcdColourControl";
+            _config.Set(sec, name, _disableLcdColourControl);
+            _config.SetComment(sec, name, "disable text colour control for all LCDs");
+
+            name = "ShowBasicTelemetry";
+            _config.Set(sec, name, _showBasicTelemetry);
+            _config.SetComment(sec, name, "show basic telemetry data on advanced thrust LCDs");
+
+            string DecelPercents = "";
+
+            foreach (double Percent in _decelPercentages)
+            {
+                if (DecelPercents != "") DecelPercents += ",";
+                DecelPercents += (Percent * 100).ToString();
+            }
+
+            name = "DecelerationPercentages";
+            _config.Set(sec, name, DecelPercents);
+            _config.SetComment(sec, name, "thrust percentages to show on advanced thrust LCDs");
 
             // Performance & Debugging -----------------------------------------------------------------
 
-            _config.Set("Debug", "VerboseDebugging", _d);
-            _config.Set("Debug", "RuntimeProfiling", _p);
-            _config.Set("Debug", "BlockRefreshFreq", _blockRefreshFreq);
-            _config.Set("Debug", "StallCount", _loopStallCount);
-            _config.SetSectionComment("Debug", "Settings related to debugging and script performance.");
+            sec = "Debug";
 
+            name = "VerboseDebugging";
+            _config.Set(sec, name, _d);
+            _config.SetComment(sec, name, "prints more logging info to PB details");
+
+            name = "RuntimeProfiling";
+            _config.Set(sec, name, _p);
+            _config.SetComment(sec, name, "prints script runtime profiling info to PB details");
+
+            name = "BlockRefreshFreq";
+            _config.Set(sec, name, _blockRefreshFreq);
+            _config.SetComment(sec, name, "ticks x100 between block refreshes");
+
+            name = "StallCount";
+            _config.Set(sec, name, _loopStallCount);
+            _config.SetComment(sec, name, "ticks x100 to stall between runs");
+
+            // System -----------------------------------------------------------------
+
+            sec = "System";
+
+            name = "VerboseDebugging";
+            _config.Set(sec, name, _d);
+            _config.SetComment(sec, name, "prints more logging info to PB details");
+
+            foreach (ITEM item in ITEMS)
+            {
+                name = item.Type.SubtypeId;
+                _config.Set(sec, name, item.InitQty);
+            }
+
+            _config.SetSectionComment(sec, "set automatically at init.");
+
+            // Save it -----------------------------------------------------------------
 
             Me.CustomData = _config.ToString();
         }
@@ -164,82 +403,82 @@ namespace IngameScript
                     switch (legacyVars[(i - 1)])
                     {
                         case "Ship name. Blocks without this name will be ignored":
-                            SHIP_NAME = value;
+                            _shipName = value;
                             break;
 
                         case "Block name delimiter, used by init. One character only!":
-                            NAME_DELIMITER = char.Parse(value.Substring(0, 1));
+                            _nameDelimiter = char.Parse(value.Substring(0, 1));
                             break;
 
                         case "Keyword used to identify RSM LCDs.":
-                            KEYWORD_LCD = value;
+                            _keywordRsmLcds = value;
                             break;
 
                         case "Keyword used to identify autorepair systems":
                         case "Keyword used to identify auxiliary blocks":
-                            KEYWORD_AUX = value;
+                            _keywordAuxBlocks = value;
                             break;
 
                         case "Keyword used to identify defence PDCs.":
-                            KEYWORD_DEF_PDC = value;
+                            _keywordDefPdcs = value;
                             break;
 
                         case "Keyword used to identify minimum epstein drives.":
-                            KEYWORD_THRUST_MIN = value;
+                            _keywordThrustersMinimum = value;
                             break;
 
                         case "Keyword used to identify docking epstein drives.":
-                            KEYWORD_THRUST_DOCKING = value;
+                            _keywordThrustersDocking = value;
                             break;
 
                         case "Keyword to ignore block.":
-                            KEYWORD_IGNORE = value;
+                            _keywordIgnore = value;
                             break;
 
                         case "Automatically configure PDCs, Railguns, Torpedoes.":
-                            AUTO_CONFIG_WEAPs = bool.Parse(value);
+                            _autoConfigWeapons = bool.Parse(value);
                             break;
 
                         case "Disable lighting all control.":
-                            DISABLE_LIGHTING = bool.Parse(value);
+                            _disableLightingControl = bool.Parse(value);
                             break;
                         case "Disable LCD Text Colour Enforcement.":
-                            DISABLE_LCD_COLOURS = bool.Parse(value);
+                            _disableLcdColourControl = bool.Parse(value);
                             break;
 
                         case "Enable Weapon Autoload Functionality.":
-                            AUTOLOAD = bool.Parse(value);
+                            _autoLoad = bool.Parse(value);
                             break;
 
 
                         case "Number these blocks at init.":
-                            FORCE_ENUMERATION.Clear();
+                            _enumerateTheseBlocks.Clear();
                             string[] FNames = value.Split(',');
                             foreach (string FName in FNames)
                             {
                                 if (FName != "")
-                                    FORCE_ENUMERATION.Add(FName);
+                                    _enumerateTheseBlocks.Add(FName);
                             }
                             break;
 
                         case "Add type names to weapons at init.":
-                            NAME_WEAPON_TYPES = bool.Parse(value);
+                            _appendWeaponTypes = bool.Parse(value);
                             break;
 
                         case "Only set batteries to discharge on active railgun/coilgun target.":
-                            DISCHARGE_MGMT = bool.Parse(value);
+                            _manageBatteryDischarge = bool.Parse(value);
                             break;
 
 
                         case "Show basic telemetry.":
-                            ADVANCED_THRUST_SHOW_BASICS = bool.Parse(value);
+                            _showBasicTelemetry = bool.Parse(value);
                             break;
                         case "Show Decel Percentages (comma seperated).":
-                            ADVANCED_THRUST_PERCENTS.Clear();
+                            _decelPercentages.Clear();
                             string[] Percents = value.Split(',');
                             foreach (string Percent in Percents)
                             {
-                                ADVANCED_THRUST_PERCENTS.Add(double.Parse(Percent) / 100);
+                                _decelPercentages.Add(double.Parse(Percent) / 100);
                             }
                             break;
 
@@ -320,11 +559,11 @@ namespace IngameScript
                             break;
 
                         case "Doors open timer (x100 ticks, default 3)":
-                            DOOR_OPEN_TIME = int.Parse(value);
+                            _doorCloseTimer = int.Parse(value);
                             break;
 
                         case "Airlock doors disabled timer (x100 ticks, default 6)":
-                            DOOR_AIRLOCK_TIME = int.Parse(value);
+                            _airlockDoorDisableTimer = int.Parse(value);
                             break;
 
                         case "Throttle script (x100 ticks pause between loops, default 0)":
@@ -340,11 +579,11 @@ namespace IngameScript
                             break;
 
                         case "Private spawn (don't inject faction tag into SK custom data).":
-                            SPAWN_PRIVATE = bool.Parse(value);
+                            _privateSpawns = bool.Parse(value);
                             break;
 
                         case "Comma seperated friendly factions or steam ids for survival kits.":
-                            FRIENDLY_TAGS = string.Join("\n", value.Split(','));
+                            _friendlyTags = string.Join("\n", value.Split(','));
                             break;
 
                         case "Current Stance":
@@ -454,98 +693,98 @@ namespace IngameScript
                             {
                                 case "Ship name. Blocks without this name will be ignored":
                                     config_count++;
-                                    SHIP_NAME = value;
+                                    _shipName = value;
 
                                     break;
                                 case "Block name delimiter, used by init. One character only!":
 
                                     config_count++;
-                                    NAME_DELIMITER = char.Parse(value.Substring(0, 1));
+                                    _nameDelimiter = char.Parse(value.Substring(0, 1));
 
-                                    if (_d) Echo("DELIMITER = " + NAME_DELIMITER);
+                                    if (_d) Echo("DELIMITER = " + _nameDelimiter);
 
                                     break;
                                 case "Keyword used to identify RSM LCDs.":
                                     config_count++;
-                                    KEYWORD_LCD = value;
+                                    _keywordRsmLcds = value;
 
                                     break;
                                 case "Keyword used to identify autorepair systems":
                                 case "Keyword used to identify auxiliary blocks":
                                     config_count++;
-                                    KEYWORD_AUX = value;
+                                    _keywordAuxBlocks = value;
 
                                     break;
                                 case "Keyword used to identify defence PDCs.":
                                     config_count++;
-                                    KEYWORD_DEF_PDC = value;
+                                    _keywordDefPdcs = value;
 
                                     break;
                                 case "Keyword used to identify minimum epstein drives.":
                                     config_count++;
-                                    KEYWORD_THRUST_MIN = value;
+                                    _keywordThrustersMinimum = value;
                                     break;
                                 case "Keyword used to identify docking epstein drives.":
                                     config_count++;
-                                    KEYWORD_THRUST_DOCKING = value;
+                                    _keywordThrustersDocking = value;
                                     break;
                                 case "Keyword to ignore block.":
                                     config_count++;
-                                    KEYWORD_IGNORE = value;
+                                    _keywordIgnore = value;
                                     break;
                                 case "Automatically configure PDCs, Railguns, Torpedoes.":
                                     config_count++;
-                                    AUTO_CONFIG_WEAPs = bool.Parse(value);
+                                    _autoConfigWeapons = bool.Parse(value);
                                     break;
 
                                 case "Disable lighting all control.":
                                     config_count++;
-                                    DISABLE_LIGHTING = bool.Parse(value);
+                                    _disableLightingControl = bool.Parse(value);
                                     break;
                                 case "Disable LCD Text Colour Enforcement.":
                                     config_count++;
-                                    DISABLE_LCD_COLOURS = bool.Parse(value);
+                                    _disableLcdColourControl = bool.Parse(value);
                                     break;
 
                                 case "Enable Weapon Autoload Functionality.":
                                     config_count++;
-                                    AUTOLOAD = bool.Parse(value);
+                                    _autoLoad = bool.Parse(value);
                                     break;
 
 
                                 case "Number these blocks at init.":
                                     config_count++;
-                                    FORCE_ENUMERATION.Clear();
+                                    _enumerateTheseBlocks.Clear();
                                     string[] FNames = value.Split(',');
                                     foreach (string FName in FNames)
                                     {
                                         if (FName != "")
-                                            FORCE_ENUMERATION.Add(FName);
+                                            _enumerateTheseBlocks.Add(FName);
                                     }
                                     break;
 
                                 case "Add type names to weapons at init.":
                                     config_count++;
-                                    NAME_WEAPON_TYPES = bool.Parse(value);
+                                    _appendWeaponTypes = bool.Parse(value);
                                     break;
 
                                 case "Only set batteries to discharge on active railgun/coilgun target.":
                                     config_count++;
-                                    DISCHARGE_MGMT = bool.Parse(value);
+                                    _manageBatteryDischarge = bool.Parse(value);
                                     break;
 
 
                                 case "Show basic telemetry.":
                                     config_count++;
-                                    ADVANCED_THRUST_SHOW_BASICS = bool.Parse(value);
+                                    _showBasicTelemetry = bool.Parse(value);
                                     break;
                                 case "Show Decel Percentages (comma seperated).":
                                     config_count++;
-                                    ADVANCED_THRUST_PERCENTS.Clear();
+                                    _decelPercentages.Clear();
                                     string[] Percents = value.Split(',');
                                     foreach (string Percent in Percents)
                                     {
-                                        ADVANCED_THRUST_PERCENTS.Add(double.Parse(Percent) / 100);
+                                        _decelPercentages.Add(double.Parse(Percent) / 100);
                                     }
                                     break;
 
@@ -650,11 +889,11 @@ namespace IngameScript
 
                                 case "Doors open timer (x100 ticks, default 3)":
                                     config_count++;
-                                    DOOR_OPEN_TIME = int.Parse(value);
+                                    _doorCloseTimer = int.Parse(value);
                                     break;
                                 case "Airlock doors disabled timer (x100 ticks, default 6)":
                                     config_count++;
-                                    DOOR_AIRLOCK_TIME = int.Parse(value);
+                                    _airlockDoorDisableTimer = int.Parse(value);
                                     break;
                                 case "Throttle script (x100 ticks pause between loops, default 0)":
                                     config_count++;
@@ -672,13 +911,13 @@ namespace IngameScript
 
                                 case "Private spawn (don't inject faction tag into SK custom data).":
                                     config_count++;
-                                    SPAWN_PRIVATE = bool.Parse(value);
+                                    _privateSpawns = bool.Parse(value);
                                     break;
 
 
                                 case "Comma seperated friendly factions or steam ids for survival kits.":
                                     config_count++;
-                                    FRIENDLY_TAGS = string.Join("\n", value.Split(','));
+                                    _friendlyTags = string.Join("\n", value.Split(','));
                                     //debug = bool.Parse(value);
                                     break;
 
@@ -759,10 +998,10 @@ namespace IngameScript
                     Echo("Custom Data Error (vars)");
                 }
 
-                if (SPAWN_PRIVATE)
+                if (_privateSpawns)
                 {
                     if (SPAWN_OPEN)
-                        SK_DATA = FRIENDLY_TAGS;
+                        SK_DATA = _friendlyTags;
                     else
                         SK_DATA = "";
 
@@ -773,7 +1012,7 @@ namespace IngameScript
                         FACTION_TAG;
 
                     if (SPAWN_OPEN)
-                        SK_DATA += "\n" + FRIENDLY_TAGS;
+                        SK_DATA += "\n" + _friendlyTags;
 
                     SK_DATA += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
                          FACTION_TAG;
@@ -912,7 +1151,7 @@ namespace IngameScript
 
             string DecelPercents = "";
 
-            foreach (double Percent in ADVANCED_THRUST_PERCENTS)
+            foreach (double Percent in _decelPercentages)
             {
                 if (DecelPercents != "") DecelPercents += ",";
                 DecelPercents += (Percent * 100).ToString();
@@ -920,7 +1159,7 @@ namespace IngameScript
 
             string ForcedNames = "";
 
-            foreach (string FName in FORCE_ENUMERATION)
+            foreach (string FName in _enumerateTheseBlocks)
             {
                 if (ForcedNames != "") ForcedNames += ",";
                 ForcedNames += FName;
@@ -933,29 +1172,29 @@ namespace IngameScript
                 + "If this data can't be parsed, it will be reset!" + "\n"
 
                 + "\n---- [General Settings] ----\n"
-                + "Block name delimiter, used by init. One character only!\n=" + NAME_DELIMITER + "\n"
-                + "Keyword used to identify RSM LCDs.\n=" + KEYWORD_LCD + "\n"
-                + "Keyword used to identify auxiliary blocks\n=" + KEYWORD_AUX + "\n"
-                + "Keyword used to identify minimum epstein drives.\n=" + KEYWORD_THRUST_MIN + "\n"
-                + "Keyword used to identify docking epstein drives.\n=" + KEYWORD_THRUST_DOCKING + "\n"
-                + "Keyword used to identify defence PDCs.\n=" + KEYWORD_DEF_PDC + "\n"
-                + "Keyword to ignore block.\n=" + KEYWORD_IGNORE + "\n"
-                + "Enable Weapon Autoload Functionality.\n=" + AUTOLOAD + "\n"
-                + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + AUTO_CONFIG_WEAPs + "\n"
-                + "Disable lighting all control.\n=" + DISABLE_LIGHTING + "\n"
-                + "Disable LCD Text Colour Enforcement.\n=" + DISABLE_LCD_COLOURS + "\n"
-                + "Private spawn (don't inject faction tag into SK custom data).\n=" + SPAWN_PRIVATE + "\n"
-                + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", FRIENDLY_TAGS.Split('\n'))) + "\n"
+                + "Block name delimiter, used by init. One character only!\n=" + _nameDelimiter + "\n"
+                + "Keyword used to identify RSM LCDs.\n=" + _keywordRsmLcds + "\n"
+                + "Keyword used to identify auxiliary blocks\n=" + _keywordAuxBlocks + "\n"
+                + "Keyword used to identify minimum epstein drives.\n=" + _keywordThrustersMinimum + "\n"
+                + "Keyword used to identify docking epstein drives.\n=" + _keywordThrustersDocking + "\n"
+                + "Keyword used to identify defence PDCs.\n=" + _keywordDefPdcs + "\n"
+                + "Keyword to ignore block.\n=" + _keywordIgnore + "\n"
+                + "Enable Weapon Autoload Functionality.\n=" + _autoLoad + "\n"
+                + "Automatically configure PDCs, Railguns, Torpedoes.\n=" + _autoConfigWeapons + "\n"
+                + "Disable lighting all control.\n=" + _disableLightingControl + "\n"
+                + "Disable LCD Text Colour Enforcement.\n=" + _disableLcdColourControl + "\n"
+                + "Private spawn (don't inject faction tag into SK custom data).\n=" + _privateSpawns + "\n"
+                + "Comma seperated friendly factions or steam ids for survival kits.\n=" + (string.Join(",", _friendlyTags.Split('\n'))) + "\n"
                 + "Number these blocks at init.\n=" + ForcedNames + "\n"
-                + "Add type names to weapons at init.\n=" + NAME_WEAPON_TYPES + "\n"
-                + "Only set batteries to discharge on active railgun/coilgun target.\n=" + DISCHARGE_MGMT + "\n"
+                + "Add type names to weapons at init.\n=" + _appendWeaponTypes + "\n"
+                + "Only set batteries to discharge on active railgun/coilgun target.\n=" + _manageBatteryDischarge + "\n"
 
                 + "\n---- [Door Timers] ----\n"
-                + "Doors open timer (x100 ticks, default 3)\n=" + DOOR_OPEN_TIME + "\n"
-                + "Airlock doors disabled timer (x100 ticks, default 6)\n=" + DOOR_AIRLOCK_TIME + "\n"
+                + "Doors open timer (x100 ticks, default 3)\n=" + _doorCloseTimer + "\n"
+                + "Airlock doors disabled timer (x100 ticks, default 6)\n=" + _airlockDoorDisableTimer + "\n"
 
                 + "\n---- [Advanced Thrust LCD] ----\n"
-                + "Show basic telemetry.\n=" + ADVANCED_THRUST_SHOW_BASICS + "\n"
+                + "Show basic telemetry.\n=" + _showBasicTelemetry + "\n"
                 + "Show Decel Percentages (comma seperated).\n=" + DecelPercents + "\n"
 
                 + "\n---- [Performance & Debugging] ----\n"
@@ -965,7 +1204,7 @@ namespace IngameScript
 
                 + "\n---- [System] ----\n"
                 + "You can edit these if you want...\nbut they are usually populated by the script and saved here.\n"
-                + "Ship name. Blocks without this name will be ignored\n=" + SHIP_NAME + "\n"
+                + "Ship name. Blocks without this name will be ignored\n=" + _shipName + "\n"
                 + "Current Stance\n=" + STANCE + "\n"
                 + "Reactor Integrity\n=" + INIT_REACTORs + "\n"
                 + "Battery Integrity\n=" + INIT_BATTERIEs + "\n"

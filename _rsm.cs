@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.6 $MDK_DATE$";
+        string Version = "1.99.7 $MDK_DATE$";
         #endregion
         #endregion
 
@@ -130,10 +130,10 @@ namespace IngameScript
             buildItemsList();
 
             // default thrust percentages.
-            ADVANCED_THRUST_PERCENTS.Add(0.5);
-            ADVANCED_THRUST_PERCENTS.Add(0.25);
-            ADVANCED_THRUST_PERCENTS.Add(0.1);
-            ADVANCED_THRUST_PERCENTS.Add(0.05);
+            _decelPercentages.Add(0.5);
+            _decelPercentages.Add(0.25);
+            _decelPercentages.Add(0.1);
+            _decelPercentages.Add(0.05);
 
             // this is the bit that actually makes it loop, yo
             Runtime.UpdateFrequency = UpdateFrequency.Update100;

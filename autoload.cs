@@ -31,7 +31,7 @@ namespace IngameScript
         void runAutoLoad()
         {
 
-            if (!AUTOLOAD) return;
+            if (!_autoLoad) return;
 
             if (_d) Echo("Running autoload...");
 

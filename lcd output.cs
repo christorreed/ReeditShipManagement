@@ -264,7 +264,7 @@ namespace IngameScript
 
             string sec_aux =
                 "-- Auxiliary  ---------------" + spinner + "--" + "\n\n"
-                + KEYWORD_AUX + ":" + output_aux.PadLeft(31 - KEYWORD_AUX.Length) + "\n\n";
+                + _keywordAuxBlocks + ":" + output_aux.PadLeft(31 - _keywordAuxBlocks.Length) + "\n\n";
 
             string sec_doors =
                "-- Doors & Vents ------------" + spinner + "--" + "\n\n"
@@ -385,8 +385,8 @@ namespace IngameScript
             if (AUX_ACTIVE_COUNT > 0)
             {
                 LCDAlerts.Add(new ALERT(
-                    KEYWORD_AUX + " is active (" + AUX_ACTIVE_COUNT + ")",
-                    KEYWORD_AUX + " is active (" + AUX_ACTIVE_COUNT + ")",
+                    _keywordAuxBlocks + " is active (" + AUX_ACTIVE_COUNT + ")",
+                    _keywordAuxBlocks + " is active (" + AUX_ACTIVE_COUNT + ")",
                     0));
             }
 
@@ -589,18 +589,18 @@ namespace IngameScript
 
             /*string sec_header =
                 LCD_DIVIDER + "\n" +
-                centreText(spinner + " " + SHIP_NAME.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
+                centreText(spinner + " " + _shipName.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
                 centreText(STANCE, LCD_WIDTH) + "\n" +
                 LCD_DIVIDER + "\n" +
                 status_lts + "\n";*/
 
             string sec_header =
 
-                 centreText(SHIP_NAME.ToUpper(), LCD_WIDTH) + "\n" +
+                 centreText(_shipName.ToUpper(), LCD_WIDTH) + "\n" +
                  "  " + spinner + " " + centreText(STANCE, LCD_WIDTH - 10) + " " + spinner + "  \n" +
 
 
-                //centreText(spinner + " " + SHIP_NAME.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
+                //centreText(spinner + " " + _shipName.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
                 //centreText(STANCE, LCD_WIDTH) + "\n" +
                 //LCD_DIVIDER + "\n" +
 
@@ -629,7 +629,7 @@ namespace IngameScript
                 if (_d) Echo("Building advanced thrust...");
 
                 string Basics = "";
-                if (ADVANCED_THRUST_SHOW_BASICS)
+                if (_showBasicTelemetry)
                 {
                     Basics =
                         "\nMass:            " + (Math.Round((MASS / 1000000), 2) + " Mkg").PadLeft(15) +
@@ -647,7 +647,7 @@ namespace IngameScript
                     "\nDecel (Dampener):" + stopDistance(THRUST_MAX, vel, true) +
                     "\nDecel (Actual):  " + stopDistance(THRUST_ACTUAL, vel);
 
-                foreach (double Percent in ADVANCED_THRUST_PERCENTS)
+                foreach (double Percent in _decelPercentages)
                 {
                     sec_thrust_advanced += "\n" + ("Decel (" + (Percent * 100) + "%):").PadRight(17) + stopDistance((float)(THRUST_MAX * Percent), vel);
                 }
@@ -807,7 +807,7 @@ namespace IngameScript
 
 
                 // force font colour
-                if (!DISABLE_LCD_COLOURS)
+                if (!_disableLcdColourControl)
                 {
 
                     if (show_header_overlay)

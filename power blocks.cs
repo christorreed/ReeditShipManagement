@@ -61,7 +61,7 @@ namespace IngameScript
                     // and we're using discharge management
                     // choose if to discharge or auto based on
                     // railgun target status.
-                    if (Discharging && DISCHARGE_MGMT)
+                    if (Discharging && _manageBatteryDischarge)
                     {
                         if (RAILs_HAVE_TARGET)
                             Battery.ChargeMode = ChargeMode.Discharge;
@@ -100,9 +100,9 @@ namespace IngameScript
                     else if (state == 1)
                         Battery.ChargeMode = ChargeMode.Recharge;
 
-                    // if DISCHARGE_MGMT is active, we will do this dynamically
+                    // if _manageBatteryDischarge is active, we will do this dynamically
                     // but if its not, just fulltime recharge it.
-                    else if (!DISCHARGE_MGMT)
+                    else if (!_manageBatteryDischarge)
                         Battery.ChargeMode = ChargeMode.Recharge;
                     
                 }

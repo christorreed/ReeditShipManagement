@@ -91,7 +91,7 @@ namespace IngameScript
             setO2Tanks(STANCES[S][16]);
 
             // set lighting
-            if (DISABLE_LIGHTING)
+            if (_disableLightingControl)
             {
                 if (_d) Echo("No lighting was set because lighting control is disabled.");
             }
@@ -163,7 +163,7 @@ namespace IngameScript
                 );
             for (int i = 0; i < serversEfc.Count; i++)
             {
-                if (serversEfc[i].IsFunctional && serversEfc[i].CustomName.Contains(SHIP_NAME))
+                if (serversEfc[i].IsFunctional && serversEfc[i].CustomName.Contains(_shipName))
                 {
 
                     // 17: EFC boost; 0: off, 1: on

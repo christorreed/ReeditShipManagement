@@ -82,7 +82,7 @@ namespace IngameScript
                             // defence
                             (Pdc as IMyConveyorSorter).Enabled = true;
 
-                            if (AUTO_CONFIG_WEAPs)
+                            if (_autoConfigWeapons)
                             {
                                 try
                                 {
@@ -106,7 +106,7 @@ namespace IngameScript
                             // offence
                             (Pdc as IMyConveyorSorter).Enabled = true;
 
-                            if (AUTO_CONFIG_WEAPs)
+                            if (_autoConfigWeapons)
                             {
                                 try
                                 {
@@ -153,7 +153,7 @@ namespace IngameScript
                             // defence
                             (Pdc as IMyConveyorSorter).Enabled = true;
 
-                            if (AUTO_CONFIG_WEAPs)
+                            if (_autoConfigWeapons)
                             {
                                 try
                                 {

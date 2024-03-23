@@ -42,7 +42,7 @@ namespace IngameScript
                     (Torp as IMyConveyorSorter).Enabled = STANCES[S][0] > 0;
 
                     // autoloading is complex for torpedoes.
-                    if (AUTOLOAD)
+                    if (_autoLoad)
                     {
 
                         // get active ammo.
@@ -78,7 +78,7 @@ namespace IngameScript
                     {
                         (Torp as IMyConveyorSorter).Enabled = true;
 
-                        if (AUTO_CONFIG_WEAPs)
+                        if (_autoConfigWeapons)
                         {
                             Torp.SetValue("WC_FocusFire", true);
                             Torp.SetValue("WC_Grids", true);
