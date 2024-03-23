@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.3 $MDK_DATE$";
+        string Version = "1.99.4 $MDK_DATE$";
         #endregion
         #endregion
 
@@ -53,7 +53,7 @@ namespace IngameScript
         // threshold for above
         // not a constant, will be modified
         // to speed up fueling.
-        int EXTRACTOR_WAIT_THRESH = 30;
+        int EXTRACTOR_WAIT_THRESH = 9;
 
         // Constants -----------------------------------------------------------------
 
@@ -495,6 +495,8 @@ namespace IngameScript
                         loadExtractors();
 
                         if (D_PROFILE) Echo("Took " + msSinceLast());
+
+                        return; // come back to the below if we load extractors instead.
                     }
                     else
                     {
