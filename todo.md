@@ -1,7 +1,10 @@
 # debugs
 
 - first init, get zero value
+- make stuff faster
+- fuel tank loading freq might need to go up
 
+x check camera keep-alives
 x less .GetItemAmount(Item) calls
 x - store item counts as you go
 x - fix balancing
@@ -28,6 +31,7 @@ x review and improve quickRefresh
 - confirm if to also check for blocks for ship names
 - review and improve updateLcds 
 - review and improve setStance
+- - fuel tank loading command
 
 X review and fix extractor management
 X finalise init naming initBlockNames

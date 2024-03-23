@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string V = "1.99.2 $MDK_DATE$";
+        string Version = "1.99.3 $MDK_DATE$";
         #endregion
         #endregion
 
@@ -118,6 +118,9 @@ namespace IngameScript
 
         public Program()
         {
+            Echo("Welcome to RSM\nV " + Version);
+            if (D_PROFILE) msSinceLast();
+
             RARE_STEP = REFRESH_FREQ;
 
             FACTION_TAG = Me.GetOwnerFactionTag();
@@ -134,6 +137,10 @@ namespace IngameScript
 
             // this is the bit that actually makes it loop, yo
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
+
+            if (D) Echo("Parsing custom data...");
+            updateCustomData(false);
+            if (D_PROFILE) Echo("Took " + msSinceLast());
         }
 
 
@@ -328,7 +335,8 @@ namespace IngameScript
                 doThisStuffRarely();
 
                 // update the LCDs
-                refreshLcds();
+                //refreshLcds();
+                // removed this for now bc it takes too long
 
                 return;
             }
@@ -587,9 +595,8 @@ namespace IngameScript
 
         void doThisStuffRarely()
         {
-            updateCustomData(false);
 
-            
+
 
             if (D) Echo("Clearing block lists...");
             clearBlockLists();
@@ -662,9 +669,15 @@ namespace IngameScript
         {
             
             string Output = 
-                "REEDIT SHIP MANAGEMENT \n\n|- Version: " + V +
-                "\n|- Stance: " + STANCE_NAMES[S] + "(" + S + ")" +
-                "\n|- Step: " + OCCASIONAL_STEP + ", " + INFREQUENT_STEP + ", " + RARE_STEP + "/" + REFRESH_FREQ;
+                "REEDIT SHIP MANAGEMENT \n\n|- Version: " + Version +
+                "\n|- Stance: " + STANCE_NAMES[S] + "(" + S + ")";
+
+            if (BOOTING)
+                Output += "\n|- Booting " + BOOT_STEP;
+
+            else
+                Output += "\n|- Step: " + RARE_STEP + "/" + REFRESH_FREQ + " (" + OCCASIONAL_STEP + ", " + INFREQUENT_STEP + ")";
+                
 
             if (D_PROFILE)
             {
@@ -676,7 +689,9 @@ namespace IngameScript
                     "\n|- Instructions: " + INSTRUCTIONS + " (" + INSTRUCTIONS_MAX + ")";
             }
 
-            Echo(Output);
+
+
+            Echo(Output + "\n");
 
 
         }
