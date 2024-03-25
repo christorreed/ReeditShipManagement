@@ -40,6 +40,9 @@ namespace IngameScript
             // this rebuilds general that we need here lists.
             doThisStuffRarely();
 
+            // we need to refresh items to get counts for init values
+            refreshItems();
+
             // also set our step to 0,
             // reset counter for next rare stuff run
             RARE_STEP = 0;
