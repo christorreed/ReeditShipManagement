@@ -120,7 +120,7 @@ namespace IngameScript
         public Program()
         {
             Echo("Welcome to RSM\nV " + Version);
-            if (_p) msSinceLast();
+            msSinceLast();
 
             RARE_STEP = _blockRefreshFreq;
 
@@ -139,9 +139,9 @@ namespace IngameScript
             // this is the bit that actually makes it loop, yo
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
 
-            if (_d) Echo("Parsing custom data...");
+            Echo("Parsing custom data...");
             prepCustomData();
-            if (_p) Echo("Took " + msSinceLast());
+            Echo("Took " + msSinceLast());
         }
 
 
