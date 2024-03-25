@@ -21,21 +21,21 @@ x "An item with the same key has already been added" during
  
 # todos
 
-x review and improve the main loop
-x review and improve quickRefresh
 - fix runProgramable, make it run commands over sperate ticks
 - add toolcore welder control (setToolActivate, iterateWelders)
 - review and improve manageDoors
-- experiment with ini, use for config (updateCustomData)
-- confirm if to also check for blocks for ship names
 - review and improve updateLcds 
 - review and improve setStance
-- - fuel tank loading command
-- handle fixed weapons better
+- fuel tank loading command
 - _appendDriveTypes
 - make stance a class ffs
-x consider changing position of the ignore keyword.
 
+x handle fixed weapons better
+x confirm if to also check for blocks for ship names
+x experiment with ini, use for config (updateCustomData)
+x review and improve the main loop
+x review and improve quickRefresh
+x consider changing position of the ignore keyword.
 X review and fix extractor management
 X finalise init naming initBlockNames
 

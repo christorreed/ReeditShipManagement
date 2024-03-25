@@ -106,6 +106,9 @@ namespace IngameScript
         {
             try
             {
+                // ignore weapons that are not turrets.
+                if (WC_PB_API.GetWeaponAzimuthMatrix(block, 0) == VRageMath.Matrix.Zero) return;
+
                 block.SetValue<Int64>("WC_Shoot Mode", 3);
                 if (_d) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
             }
@@ -119,6 +122,9 @@ namespace IngameScript
         {
             try
             {
+                // ignore weapons that are not turrets.
+                if (WC_PB_API.GetWeaponAzimuthMatrix(block, 0) == VRageMath.Matrix.Zero) return;
+
                 block.SetValue<Int64>("WC_Shoot Mode", 0);
                 if (_d) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
             }
