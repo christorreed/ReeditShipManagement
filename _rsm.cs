@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.5 $MDK_DATE$";
+        string Version = "1.99.11 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -77,7 +77,7 @@ namespace IngameScript
         // Warning Variables -----------------------------------------------------------------
 
         bool NEED_FUEL = false;
-        bool SPAWN_OPEN = false;
+        bool _spawnOpen = false;
         bool NO_EXTRACTOR = false;
         bool NO_SPARE_TANKS = false;
         int UNOWNED_BLOCKS = 0;
@@ -86,11 +86,11 @@ namespace IngameScript
         // Misc Globals -----------------------------------------------------------------
 
         // the current stance index
-        // of the STANCES & STANCE_NAMES lists
+        // of the _stances & _stanceNames lists
         int S = 0;
 
         // the name of the current stance.
-        string STANCE = "N/A";
+        string _currentStance = "N/A";
 
         // the current ship calculated fuel percentage.
         // starts at 100 so we don't refuel before we check.
@@ -101,11 +101,12 @@ namespace IngameScript
         float MASS;
 
         // the faction tag of the PB owner
-        string FACTION_TAG;
+        string _factionTag;
 
         // this is the SK custom data string
         // we will build it and force it into SK custom data
-        string SK_DATA;
+        string _survivalKitData;
+        string _survivalKitOpenData;
 
         // this reduces the LCD output build overhead
         // if you are not using an advanced thrust LCD
@@ -119,28 +120,28 @@ namespace IngameScript
         public Program()
         {
             Echo("Welcome to RSM\nV " + Version);
-            if (D_PROFILE) msSinceLast();
+            msSinceLast();
 
-            RARE_STEP = REFRESH_FREQ;
+            RARE_STEP = _blockRefreshFreq;
 
-            FACTION_TAG = Me.GetOwnerFactionTag();
+            _factionTag = Me.GetOwnerFactionTag();
 
             PROFILER = new Profiler(Runtime);
 
             buildItemsList();
 
             // default thrust percentages.
-            ADVANCED_THRUST_PERCENTS.Add(0.5);
-            ADVANCED_THRUST_PERCENTS.Add(0.25);
-            ADVANCED_THRUST_PERCENTS.Add(0.1);
-            ADVANCED_THRUST_PERCENTS.Add(0.05);
+            _decelPercentages.Add(0.5);
+            _decelPercentages.Add(0.25);
+            _decelPercentages.Add(0.1);
+            _decelPercentages.Add(0.05);
 
             // this is the bit that actually makes it loop, yo
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
 
-            if (D) Echo("Parsing custom data...");
-            updateCustomData(false);
-            if (D_PROFILE) Echo("Took " + msSinceLast());
+            Echo("Parsing custom data...");
+            prepCustomData();
+            Echo("Took " + msSinceLast());
         }
 
 
@@ -155,7 +156,7 @@ namespace IngameScript
 
         void processCommand(string argument)
         {
-            if (D) Echo("Processing command '" + argument + "'...");
+            if (_d) Echo("Processing command '" + argument + "'...");
 
             if (argument == "")
             {
@@ -227,10 +228,10 @@ namespace IngameScript
                 case "spawn":
                     if (args[1].ToLower() == "open")
                     {
-                        SPAWN_OPEN = true;
+                        _spawnOpen = true;
 
                         // force a block refresh now.
-                        RARE_STEP = REFRESH_FREQ;
+                        RARE_STEP = _blockRefreshFreq;
 
                         ALERTS.Add(new ALERT(
                             "Spawns were opened to friends",
@@ -240,10 +241,10 @@ namespace IngameScript
                     }
                     else
                     {
-                        SPAWN_OPEN = false;
+                        _spawnOpen = false;
 
                         // force a block refresh now.
-                        RARE_STEP = REFRESH_FREQ;
+                        RARE_STEP = _blockRefreshFreq;
 
                         ALERTS.Add(new ALERT(
                             "Spawns were closed to friends",
@@ -292,7 +293,7 @@ namespace IngameScript
         void mainLoop()
         {
             // do we need to wait before we loop?
-            if (WAIT_STEP < WAIT_COUNT)
+            if (WAIT_STEP < _loopStallCount)
             {
                 WAIT_STEP++;
                 return;
@@ -310,18 +311,18 @@ namespace IngameScript
             // if we're profiling
             // set the start time
             // no point logging the first one out
-            if (D_PROFILE) msSinceLast();
+            if (_p) msSinceLast();
 
             // prep keep alives
             // lots of block refreshes use this
             // to determine if to enforce power status on those blocks
             // 22: keep-alives; 0: ignore, 1: force on, 2: force off
-            if (STANCES[S][22] == 1)
+            if (_stances[S][22] == 1)
             {
                 ADJUST_KEEP_ALIVES = true;
                 ADJUST_KEEP_ALIVES_TO = true;
             }
-            else if (STANCES[S][22] == 2)
+            else if (_stances[S][22] == 2)
             {
                 ADJUST_KEEP_ALIVES = true;
             }
@@ -329,7 +330,7 @@ namespace IngameScript
             // okay now let's actually do some stuff...
 
             // what kind of stuff are we going to do?
-            if (RARE_STEP >= REFRESH_FREQ)
+            if (RARE_STEP >= _blockRefreshFreq)
             {
                 RARE_STEP = 0;
                 doThisStuffRarely();
@@ -383,57 +384,57 @@ namespace IngameScript
             switch (BOOT_STEP)
             {
                 case 0:
-                    if (D) Echo("Refreshing " + RAILs.Count + " railguns...");
+                    if (_d) Echo("Refreshing " + RAILs.Count + " railguns...");
                     refreshRailguns();
                     // checks integrity, sets power, gets target status for discharge mgmt
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
 
                     if (BOOTING) break;
                     else goto case 1;
 
                 case 1:
-                    if (D) Echo("Refreshing " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
-                    refreshPowerBlocks(STANCES[S][16]);
+                    if (_d) Echo("Refreshing " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
+                    refreshPowerBlocks(_stances[S][16]);
                     // checks integrity, sets power on,
                     // calcs power, batt discharge mgmt
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
 
                     if (BOOTING) break;
                     else goto case 2;
 
                 case 2:
-                    if (D) Echo("Refreshing " + THRUSTERs_EPSTEIN.Count + " epsteins...");
+                    if (_d) Echo("Refreshing " + THRUSTERs_EPSTEIN.Count + " epsteins...");
                     refreshMainThrusters();
                     // checks integrity, thrust
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
 
                     if (BOOTING) break;
                     else goto case 3;
 
                 case 3:
-                    if (D) Echo("Refreshing " + LIDARs.Count + " lidars...");
+                    if (_d) Echo("Refreshing " + LIDARs.Count + " lidars...");
                     refreshLidars(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
                     // checks integrity
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
 
                     if (BOOTING) break;
                     else goto case 4;
 
                 case 4:
-                    if (D) Echo("Refreshing " + DOORs.Count + " doors...");
+                    if (_d) Echo("Refreshing " + DOORs.Count + " doors...");
                     refreshDoors();
                     // manages doors, airlocks
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
 
                     break;
 
                 default:
-                    if (D) Echo("Booting complete");
+                    if (_d) Echo("Booting complete");
                     BOOTING = false;
                     BOOT_STEP = 0;
 
@@ -447,43 +448,43 @@ namespace IngameScript
             switch (OCCASIONAL_STEP)
             {
                 case 0:
-                    if (D) Echo("Clearing temp inventories...");
+                    if (_d) Echo("Clearing temp inventories...");
                     clearTempInventories();
                     // before we check torps
                     // clear temp inventories from all items...
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
 
-                    if (D) Echo("Refreshing " + TORPs.Count + " torpedo launchers...");
+                    if (_d) Echo("Refreshing " + TORPs.Count + " torpedo launchers...");
                     refreshTorpedoes();
                     // checks integrity, sets power, gets torpedo inventories
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
 
-                    if (D) Echo("Refreshing items...");
+                    if (_d) Echo("Refreshing items...");
                     refreshItems();
                     // count each of the checked items in each inventory
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
                     break;
 
                 case 1:
-                    if (D) Echo("Running autoload...");
+                    if (_d) Echo("Running autoload...");
                     runAutoLoad();
                     // count each of the checked items in each inventory
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
                     break;
 
                 case 2:
-                    if (D) Echo("Refreshing " + TANKs_H2.Count + " H2 tanks...");
+                    if (_d) Echo("Refreshing " + TANKs_H2.Count + " H2 tanks...");
                     refreshH2Tanks();
                     // > priority low
                     // checks integrity, filled ratio
 
-                    if (D_PROFILE) Echo("Took " + msSinceLast());
+                    if (_p) Echo("Took " + msSinceLast());
 
-                    if (D) Echo("Refreshing refuel status...");
+                    if (_d) Echo("Refreshing refuel status...");
                     refreshRefuelStatus();
                     // checks if we NEED_FUEL?
 
@@ -491,10 +492,10 @@ namespace IngameScript
                     if (NEED_FUEL)
                     {
                         // ...load extractors
-                        if (D) Echo("Fuel low, filling extractors...");
+                        if (_d) Echo("Fuel low, filling extractors...");
                         loadExtractors();
 
-                        if (D_PROFILE) Echo("Took " + msSinceLast());
+                        if (_p) Echo("Took " + msSinceLast());
 
                         return; // come back to the below if we load extractors instead.
                     }
@@ -504,7 +505,7 @@ namespace IngameScript
                         // do something low priority instead
                         doThisStuffInfrequently();
 
-                        if (D_PROFILE) Echo("Took " + msSinceLast());
+                        if (_p) Echo("Took " + msSinceLast());
                     }
 
                     OCCASIONAL_STEP = 0;
@@ -517,39 +518,39 @@ namespace IngameScript
         void doThisStuffInfrequently()
         {
 
-            if (D) Echo("Refreshing " + THRUSTERs_RCS.Count + " rcs...");
+            if (_d) Echo("Refreshing " + THRUSTERs_RCS.Count + " rcs...");
             refreshRcsThrusters();
             // checks integrity
 
-            if (D) Echo("Refreshing " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
+            if (_d) Echo("Refreshing " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
             refreshPDCs();
             // checks integrity, sets power on
 
-            if (D) Echo("Refreshing " + GYROs.Count + " gyros...");
+            if (_d) Echo("Refreshing " + GYROs.Count + " gyros...");
             refreshGyros(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
             // checks integrity, sets power
 
-            if (D) Echo("Refreshing " + TANKs_O2.Count + " O2 tanks...");
+            if (_d) Echo("Refreshing " + TANKs_O2.Count + " O2 tanks...");
             refreshO2Tanks();
             // checks integrity, filled ratio
 
-            if (D) Echo("Refreshing " + ANTENNAs.Count + " antennas...");
+            if (_d) Echo("Refreshing " + ANTENNAs.Count + " antennas...");
             refreshAntennas();
             // checks msg, range
 
-            if (D) Echo("Refreshing " + CARGOs.Count + " cargos...");
+            if (_d) Echo("Refreshing " + CARGOs.Count + " cargos...");
             refreshCargos();
             // checks integrity
 
-            if (D) Echo("Refreshing " + VENTs.Count + " vents...");
+            if (_d) Echo("Refreshing " + VENTs.Count + " vents...");
             refreshVents(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
             // checks integrity, sets power
 
-            if (D) Echo("Refreshing " + AUXILIARIEs.Count + " auxiliary blocks...");
+            if (_d) Echo("Refreshing " + AUXILIARIEs.Count + " auxiliary blocks...");
             iterateAuxiliaries();
             // checks integrity, sets power
 
-            if (D) Echo("Refreshing " + WELDERs.Count + " welders...");
+            if (_d) Echo("Refreshing " + WELDERs.Count + " welders...");
             iterateWelders();
             // checks integrity, sets power
 
@@ -557,17 +558,17 @@ namespace IngameScript
             // and so only need to happen if we are adjusting those.
             if (ADJUST_KEEP_ALIVES)
             {
-                if (D) Echo("Refreshing " + CONNECTORs.Count + " connectors...");
+                if (_d) Echo("Refreshing " + CONNECTORs.Count + " connectors...");
                 refreshConnectors(ADJUST_KEEP_ALIVES_TO);
                 // > priority low
                 // checks integrity, sets power
 
-                if (D) Echo("Refreshing " + CAMERAs.Count + " cameras...");
+                if (_d) Echo("Refreshing " + CAMERAs.Count + " cameras...");
                 refreshCameras(ADJUST_KEEP_ALIVES_TO);
                 // > priority low
                 // sets power
 
-                if (D) Echo("Refreshing " + SENSORs.Count + " sensors...");
+                if (_d) Echo("Refreshing " + SENSORs.Count + " sensors...");
                 refreshSensors(ADJUST_KEEP_ALIVES_TO);
                 // > priority low
                 // sets power
@@ -608,24 +609,18 @@ namespace IngameScript
         void doThisStuffRarely()
         {
 
-
-
-            if (D) Echo("Clearing block lists...");
+            if (_d) Echo("Clearing block lists...");
             clearBlockLists();
+            if (_p) Echo("Took " + msSinceLast());
 
-            if (D_PROFILE) Echo("Took " + msSinceLast());
-
-            if (D) Echo("Refreshing block lists...");
+            if (_d) Echo("Refreshing block lists...");
             GridTerminalSystem.GetBlocksOfType((List<IMyTerminalBlock>)null, sortBlockLists);
+            if (_p) Echo("Took " + msSinceLast());
 
-            if (D_PROFILE) Echo("Took " + msSinceLast());
-
-            if (D)
-            {
-                if (I) Echo("Total blocks to rename: " + INIT_NAMEs.Count);
-                Echo("Setting KeepFull threshold");
-            }
+            if (_d) Echo("Setting KeepFull threshold");
             setKeepFullThresh();
+
+
 
             if (CONTROLLER == null)
             {
@@ -640,9 +635,9 @@ namespace IngameScript
                         ));
             }
 
-            if (D) Echo("Finished block refresh.");
+            if (_d) Echo("Finished block refresh.");
 
-            if (D_PROFILE) Echo("Took " + msSinceLast());
+            if (_p) Echo("Took " + msSinceLast());
         }
 
 
@@ -652,7 +647,7 @@ namespace IngameScript
         // work through a commands log
         void runProgramable(IMyTerminalBlock Pb, string Argument)
         {
-            if (D)
+            if (_d)
                 Echo("Running '" + Argument + "' on '" + Pb.CustomName + "'");
             bool Success = (Pb as IMyProgrammableBlock).TryRun(Argument);
             if (Success)
@@ -681,17 +676,14 @@ namespace IngameScript
         {
             
             string Output = 
-                "REEDIT SHIP MANAGEMENT \n\n|- Version: " + Version +
-                "\n|- Stance: " + STANCE_NAMES[S] + "(" + S + ")";
+                "REEDIT SHIP MANAGEMENT \n\n|- V " + Version +
+                "\n|- Stance: " + _stanceNames[S] + "(" + S + ")" +
+                "\n|- Step: " + RARE_STEP + "/" + _blockRefreshFreq + " (" + OCCASIONAL_STEP + ")";
 
             if (BOOTING)
-                Output += "\n|- Booting " + BOOT_STEP;
+                Output += "\n|- Booting " + BOOT_STEP;              
 
-            else
-                Output += "\n|- Step: " + RARE_STEP + "/" + REFRESH_FREQ + " (" + OCCASIONAL_STEP + ")";
-                
-
-            if (D_PROFILE)
+            if (_p)
             {
                 PROFILER.Run();
 
@@ -710,7 +702,7 @@ namespace IngameScript
         long TIME = 0;
         string msSinceLast()
         {
-            //if (!D_PROFILE) return "";
+            //if (!_p) return "";
 
             long Now = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 

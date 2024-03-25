@@ -27,7 +27,7 @@ namespace IngameScript
         // add toolcore support!
 
         double ACTUAL_WELDERS = 0;
-        int INIT_WELDERs = 0;
+        int _initWelders = 0;
         double INTEGRITY_WELDERs = 0;
 
         void iterateWelders()
@@ -40,7 +40,7 @@ namespace IngameScript
                     ACTUAL_WELDERS++;
             }
 
-            INTEGRITY_WELDERs = Math.Round(100 * (ACTUAL_WELDERS / INIT_WELDERs));
+            INTEGRITY_WELDERs = Math.Round(100 * (ACTUAL_WELDERS / _initWelders));
         }
     }
 }

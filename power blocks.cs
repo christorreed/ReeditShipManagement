@@ -36,7 +36,7 @@ namespace IngameScript
         // Batteries -----------------------------------------------------------------
 
         private double TOTAL_BATTERIEs = 0;
-        private double INIT_BATTERIEs = 0;
+        private double _initBatteries = 0;
         private double ACTUAL_BATTERIEs = 0;
         private double INTEGRITY_BATTERIEs = 0;
 
@@ -61,7 +61,7 @@ namespace IngameScript
                     // and we're using discharge management
                     // choose if to discharge or auto based on
                     // railgun target status.
-                    if (Discharging && DISCHARGE_MGMT)
+                    if (Discharging && _manageBatteryDischarge)
                     {
                         if (RAILs_HAVE_TARGET)
                             Battery.ChargeMode = ChargeMode.Discharge;
@@ -71,14 +71,14 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_BATTERIEs = Math.Round(100 * (MAX_POWER / INIT_BATTERIEs));
+            INTEGRITY_BATTERIEs = Math.Round(100 * (MAX_POWER / _initBatteries));
         }
         private void initBatteries()
         {
-            INIT_BATTERIEs = 0;
+            _initBatteries = 0;
             foreach (IMyBatteryBlock Battery in BATTERIEs)
             {
-                INIT_BATTERIEs += Battery.MaxOutput;
+                _initBatteries += Battery.MaxOutput;
             }
         }
 
@@ -100,9 +100,9 @@ namespace IngameScript
                     else if (state == 1)
                         Battery.ChargeMode = ChargeMode.Recharge;
 
-                    // if DISCHARGE_MGMT is active, we will do this dynamically
+                    // if _manageBatteryDischarge is active, we will do this dynamically
                     // but if its not, just fulltime recharge it.
-                    else if (!DISCHARGE_MGMT)
+                    else if (!_manageBatteryDischarge)
                         Battery.ChargeMode = ChargeMode.Recharge;
                     
                 }
@@ -111,7 +111,7 @@ namespace IngameScript
 
         // Reactors -----------------------------------------------------------------
         
-        private double INIT_REACTORs = 0;
+        private double _initReactors = 0;
         private double ACTUAL_REACTORs = 0;
         private double INTEGRITY_REACTORs = 0;
 
@@ -137,17 +137,17 @@ namespace IngameScript
                     
                 }
             }
-            INTEGRITY_REACTORs = Math.Round(100 * (ACTUAL_REACTORs / INIT_REACTORs));
+            INTEGRITY_REACTORs = Math.Round(100 * (ACTUAL_REACTORs / _initReactors));
 
             MAX_POWER += ACTUAL_REACTORs;
         }
 
         private void initReactors()
         {
-            INIT_REACTORs = 0;
+            _initReactors = 0;
             foreach (IMyReactor Reactor in REACTORs)
             {
-                INIT_REACTORs += Reactor.MaxOutput;
+                _initReactors += Reactor.MaxOutput;
             }
         }
     }

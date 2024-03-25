@@ -26,7 +26,7 @@ namespace IngameScript
 
         private double TOTAL_H2 = 0;
         private double ACTUAL_H2 = 0;
-        private double INIT_H2 = 0;
+        private double _initH2 = 0;
         private double INTEGRITY_H2 = 0;
         private void refreshH2Tanks()
         {
@@ -45,16 +45,16 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_H2 = Math.Round(100 * (TOTAL_H2 / INIT_H2));
+            INTEGRITY_H2 = Math.Round(100 * (TOTAL_H2 / _initH2));
         }
 
         private void initH2Tanks()
         {
-            INIT_H2 = 0;
+            _initH2 = 0;
             foreach (IMyGasTank Tank in TANKs_H2)
             {
                 if (Tank != null)
-                    INIT_H2 += Tank.Capacity;
+                    _initH2 += Tank.Capacity;
             }
         }
 
@@ -79,7 +79,7 @@ namespace IngameScript
 
         private double TOTAL_O2 = 0;
         private double ACTUAL_O2 = 0;
-        private double INIT_O2 = 0;
+        private double _initO2 = 0;
         private double INTEGRITY_O2 = 0;
         private void refreshO2Tanks()
         {
@@ -97,16 +97,16 @@ namespace IngameScript
                     ACTUAL_O2 += (Tank.Capacity * Tank.FilledRatio);
                 }
             }
-            INTEGRITY_O2 = Math.Round(100 * (TOTAL_O2 / INIT_O2));
+            INTEGRITY_O2 = Math.Round(100 * (TOTAL_O2 / _initO2));
         }
 
         private void initO2Tanks()
         {
-            INIT_O2 = 0;
+            _initO2 = 0;
             foreach (IMyGasTank Tank in TANKs_O2)
             {
                 if (Tank != null)
-                    INIT_O2 += Tank.Capacity;
+                    _initO2 += Tank.Capacity;
             }
         }
 

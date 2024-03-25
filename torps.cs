@@ -25,7 +25,7 @@ namespace IngameScript
         // Torpedo Launchers -----------------------------------------------------------------
 
         private double ACTUAL_TORPs = 0;
-        private int INIT_TORPs = 0;
+        private int _initTorpLaunchers = 0;
         private double INTEGRITY_TORPs = 0;
 
         private void refreshTorpedoes()
@@ -39,10 +39,10 @@ namespace IngameScript
                     ACTUAL_TORPs++;
 
                     // turn torps on for 1+ on [0]
-                    (Torp as IMyConveyorSorter).Enabled = STANCES[S][0] > 0;
+                    (Torp as IMyConveyorSorter).Enabled = _stances[S][0] > 0;
 
                     // autoloading is complex for torpedoes.
-                    if (AUTOLOAD)
+                    if (_autoLoad)
                     {
 
                         // get active ammo.
@@ -51,7 +51,7 @@ namespace IngameScript
                         int Ammo = sortAmmoType(AmmoType);
                         //IMyInventory WeapInv = Torp.GetInventory();
 
-                        if (D) Echo("Launcher " + Torp.CustomName + " needs " + AmmoType + "(" + Ammo + ")");
+                        if (_d) Echo("Launcher " + Torp.CustomName + " needs " + AmmoType + "(" + Ammo + ")");
 
                         addTempInventory(Torp, Ammo);
 
@@ -59,7 +59,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_TORPs = Math.Round(100 * (ACTUAL_TORPs / INIT_TORPs));
+            INTEGRITY_TORPs = Math.Round(100 * (ACTUAL_TORPs / _initTorpLaunchers));
         }
 
         private void setTorpedoes(int state)
@@ -78,7 +78,7 @@ namespace IngameScript
                     {
                         (Torp as IMyConveyorSorter).Enabled = true;
 
-                        if (AUTO_CONFIG_WEAPs)
+                        if (_autoConfigWeapons)
                         {
                             Torp.SetValue("WC_FocusFire", true);
                             Torp.SetValue("WC_Grids", true);

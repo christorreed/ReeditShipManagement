@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -106,18 +107,26 @@ namespace IngameScript
 
                 // test for unowned blocks...
                 string Tag = b.GetOwnerFactionTag();
-                if (Tag != FACTION_TAG && Tag != "")
+                if (Tag != _factionTag && Tag != "")
                 {
                     Echo("!" + Tag + ": " + b.CustomName);
                     UNOWNED_BLOCKS++;
                     return false;
                 }
 
+                // ship name check.
+
+                if (!I && _requireShipName && !b.CustomName.Contains(_shipName))
+                    // if we are not running init
+                    // and we _requireShipName
+                    // and the ship name isn't included
+                    return false; // ignore this block
+                
                 // grab aux blocks
-                if (b.CustomName.Contains(KEYWORD_AUX))
+                if (b.CustomName.Contains(_keywordAuxBlocks))
                     AUXILIARIEs.Add(b);
 
-                //if (D) Echo("Sorting " + b.CustomName);
+                //if (_d) Echo("Sorting " + b.CustomName);
 
                 string blockId = b.BlockDefinition.ToString();
 
@@ -133,8 +142,12 @@ namespace IngameScript
                 // Medical Rooms
                 if (blockId.Contains("MedicalRoom/"))
                 {
-                    b.CustomData = SK_DATA;
-                    if (!b.CustomName.Contains(KEYWORD_IGNORE)) b.ApplyAction("OnOff_On");
+                    if (_spawnOpen)
+                        b.CustomData = _survivalKitOpenData;
+                    else
+                        b.CustomData = _survivalKitData;
+
+                    if (!b.CustomName.Contains(_keywordIgnore)) b.ApplyAction("OnOff_On");
                     if (I) INIT_NAMEs.Add(b, "Medical Room");
                     return false;
                 }
@@ -142,8 +155,12 @@ namespace IngameScript
                 // Survival Kits
                 if (blockId.Contains("SurvivalKit/"))
                 {
-                    b.CustomData = SK_DATA;
-                    if (!b.CustomName.Contains(KEYWORD_IGNORE)) b.ApplyAction("OnOff_On");
+                    if (_spawnOpen)
+                        b.CustomData = _survivalKitOpenData;
+                    else
+                        b.CustomData = _survivalKitData;
+
+                    if (!b.CustomName.Contains(_keywordIgnore)) b.ApplyAction("OnOff_On");
                     if (I) INIT_NAMEs.Add(b, "Survival Kit");
                     return false;
                 }
@@ -157,9 +174,9 @@ namespace IngameScript
 
                     if (I) INIT_NAMEs.Add(b, "LCD");
 
-                    if (TempLCD.CustomName.Contains(KEYWORD_LCD))
+                    if (TempLCD.CustomName.Contains(_keywordRsmLcds))
                         LCDs_RSM.Add(TempLCD);
-                    else if (!DISABLE_LCD_COLOURS && TempLCD.CustomName.Contains(KEYWORD_COLOUR_SYNC))
+                    else if (!_disableLcdColourControl && TempLCD.CustomName.Contains(_keywordColourSyncLcds))
                         LCDs_CS.Add(TempLCD);
 
                     return false;
@@ -168,7 +185,7 @@ namespace IngameScript
                 // IGNORE KEYWORD CHECK -----------------------------------------------------------------
 
                 // Ignore blocks with the ignore keyword...
-                if (b.CustomName.Contains(KEYWORD_IGNORE))
+                if (b.CustomName.Contains(_keywordIgnore))
                     return false;
 
                 // PDCs -----------------------------------------------------------------
@@ -351,21 +368,21 @@ namespace IngameScript
                         )
                     {
                         LIGHTs_INTERIOR.Add(TempLight);
-                        if (I) INIT_NAMEs.Add(b, "Light" + NAME_DELIMITER + "Interior");
+                        if (I) INIT_NAMEs.Add(b, "Light" + _nameDelimiter + "Interior");
                     }
 
                     // nav lights
-                    else if (b.CustomName.ToUpper().Contains(KEYWORD_LIGHT_NAV))
+                    else if (b.CustomName.Contains(_keywordLightNavigation))
                     {
                         if (b.CustomName.ToUpper().Contains("STARBOARD"))
                         {
                             LIGHTs_NAV_STARBOARD.Add(TempLight);
-                            if (I) INIT_NAMEs.Add(b, "Light" + NAME_DELIMITER + "Nav" + NAME_DELIMITER + "Starboard");
+                            if (I) INIT_NAMEs.Add(b, "Light" + _nameDelimiter + "Nav" + _nameDelimiter + "Starboard");
                         }
                         else
                         {
                             LIGHTs_NAV_PORT.Add(TempLight);
-                            if (I) INIT_NAMEs.Add(b, "Light" + NAME_DELIMITER + "Nav" + NAME_DELIMITER + "Port");
+                            if (I) INIT_NAMEs.Add(b, "Light" + _nameDelimiter + "Nav" + _nameDelimiter + "Port");
                         }
                     }
 
@@ -373,7 +390,7 @@ namespace IngameScript
                     else
                     {
                         LIGHTs_EXTERIOR.Add(TempLight);
-                        if (I) INIT_NAMEs.Add(b, "Light" + NAME_DELIMITER + "Exterior");
+                        if (I) INIT_NAMEs.Add(b, "Light" + _nameDelimiter + "Exterior");
                     }
 
                     return false;
@@ -413,7 +430,7 @@ namespace IngameScript
                         else if (blockId.Contains("MCRN"))
                             AppendReactor = "MCRN";
 
-                        INIT_NAMEs.Add(b, "Reactor" + NAME_DELIMITER + AppendReactor);
+                        INIT_NAMEs.Add(b, "Reactor" + _nameDelimiter + AppendReactor);
                     }
                     return false;
                 }
@@ -459,7 +476,7 @@ namespace IngameScript
                 if (TempVent != null)
                 {
                     VENTs.Add(TempVent);
-                    if (b.CustomName.Contains(KEYWORD_AIRLOCK)) VENTs_AIRLOCKS.Add(TempVent);
+                    if (b.CustomName.Contains(_keywordAirlock)) VENTs_AIRLOCKS.Add(TempVent);
                     if (I) INIT_NAMEs.Add(b, "Vent");
                     return false;
                 }
@@ -484,7 +501,7 @@ namespace IngameScript
                     {
                         string ConnectorAppend = "";
                         if (blockId.Contains("Passageway"))
-                            ConnectorAppend = NAME_DELIMITER + "Passageway";
+                            ConnectorAppend = _nameDelimiter + "Passageway";
                         INIT_NAMEs.Add(b, "Connector" + ConnectorAppend);
                     }
                     return false;
@@ -577,7 +594,7 @@ namespace IngameScript
 
                 if (blockId.Contains("Welder"))
                 {
-                    //if (D) Echo(b.CustomName);
+                    //if (_d) Echo(b.CustomName);
                     WELDERs.Add(b);
                     if (I) INIT_NAMEs.Add(b, "Welder");
                     return false;
@@ -672,7 +689,7 @@ namespace IngameScript
             }
             catch (Exception Ex)
             {
-                if (D)
+                if (_d)
                 {
                     Echo("Failed to sort " + b.CustomName + "\nAdded " + INIT_NAMEs.Count + " so far.");
                     Echo(Ex.Message);
@@ -752,7 +769,7 @@ namespace IngameScript
         {
 
             // sort PDCs from PDCs_DEF
-            if (b.CustomName.Contains(KEYWORD_DEF_PDC))
+            if (b.CustomName.Contains(_keywordDefPdcs))
                 PDCs_DEF.Add(b);
             else
                 PDCs.Add(b);
@@ -764,7 +781,7 @@ namespace IngameScript
             if (I)
             {
                 string Append = "";
-                if (NAME_WEAPON_TYPES) Append = NAME_DELIMITER + init;
+                if (_appendWeaponTypes) Append = _nameDelimiter + init;
                 INIT_NAMEs.Add(b, "PDC" + Append);
             }
 
@@ -785,7 +802,7 @@ namespace IngameScript
             if (I)
             {
                 string Append = "";
-                if (NAME_WEAPON_TYPES) Append = NAME_DELIMITER + init;
+                if (_appendWeaponTypes) Append = _nameDelimiter + init;
                 INIT_NAMEs.Add(b, "Torpedo" + Append);
             }
 
@@ -804,7 +821,7 @@ namespace IngameScript
             if (I)
             {
                 string Append = "";
-                if (NAME_WEAPON_TYPES) Append = NAME_DELIMITER + init;
+                if (_appendWeaponTypes) Append = _nameDelimiter + init;
                 INIT_NAMEs.Add(b, "Railgun" + Append);
             }
 

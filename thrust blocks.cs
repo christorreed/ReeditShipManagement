@@ -28,7 +28,7 @@ namespace IngameScript
         private float THRUST_MAX;
         private float THRUST_ACTUAL;
 
-        private float INIT_THRUSTERs_MAIN;
+        private float _initThrustMain;
         private double INTEGRITY_THRUSTERs_MAIN;
 
         private void refreshMainThrusters()
@@ -53,7 +53,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_THRUSTERs_MAIN = Math.Round(100 * (MaxTotal / INIT_THRUSTERs_MAIN));
+            INTEGRITY_THRUSTERs_MAIN = Math.Round(100 * (MaxTotal / _initThrustMain));
 
             // calculate current thrust.
             // if nothing is on, we want to show numbers for all drives
@@ -72,11 +72,11 @@ namespace IngameScript
 
         private void initMainThrusters()
         {
-            INIT_THRUSTERs_MAIN = 0;
+            _initThrustMain = 0;
             foreach (IMyThrust Thruster in THRUSTERs_EPSTEIN)
             {
                 if (Thruster != null)
-                    INIT_THRUSTERs_MAIN += Thruster.MaxThrust;
+                    _initThrustMain += Thruster.MaxThrust;
             }
         }
 
@@ -95,7 +95,7 @@ namespace IngameScript
 
         private void setMainThruster(IMyThrust Thruster, int state, int state_rcs, bool chem = false)
         {
-            bool DockingThruster = Thruster.CustomName.Contains(KEYWORD_THRUST_DOCKING);
+            bool DockingThruster = Thruster.CustomName.Contains(_keywordThrustersDocking);
 
             // docking thrusters follow state_rcs.
             // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
@@ -118,7 +118,7 @@ namespace IngameScript
             }
             else // ...and we def doing something to it...
             {
-                bool MinThruster = Thruster.CustomName.Contains(KEYWORD_THRUST_MIN);
+                bool MinThruster = Thruster.CustomName.Contains(_keywordThrustersMinimum);
 
                 // lets decide what that is...
                 if (
@@ -144,7 +144,7 @@ namespace IngameScript
         // RCS Thrusters -----------------------------------------------------------------
 
         private float ACTUAL_THRUSTERs_RCS;
-        private float INIT_THRUSTERs_RCS;
+        private float _initThrustRCS;
         private double INTEGRITY_THRUSTERs_RCS;
 
         private void refreshRcsThrusters()
@@ -159,15 +159,15 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_THRUSTERs_RCS = Math.Round(100 * (ACTUAL_THRUSTERs_RCS / INIT_THRUSTERs_RCS));
+            INTEGRITY_THRUSTERs_RCS = Math.Round(100 * (ACTUAL_THRUSTERs_RCS / _initThrustRCS));
         }
         private void initRcsThrusters()
         {
-            INIT_THRUSTERs_RCS = 0;
+            _initThrustRCS = 0;
             foreach (IMyThrust Thruster in THRUSTERs_RCS)
             {
                 if (Thruster != null)
-                    INIT_THRUSTERs_RCS += Thruster.MaxThrust;
+                    _initThrustRCS += Thruster.MaxThrust;
             }
         }
 

@@ -54,7 +54,7 @@ namespace IngameScript
             }
             catch
             {
-                if (D) Echo("Failed to load projector position for " + Projector.Name);
+                if (_d) Echo("Failed to load projector position for " + Projector.Name);
             }
         }
     }

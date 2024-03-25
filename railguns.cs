@@ -25,7 +25,7 @@ namespace IngameScript
         // Railguns -----------------------------------------------------------------
 
         private double ACTUAL_RAILs = 0;
-        private int INIT_RAILs = 0;
+        private int _initKinetics = 0;
         private double INTEGRITY_RAILs = 0;
 
         private bool RAILs_HAVE_TARGET = false;
@@ -44,7 +44,7 @@ namespace IngameScript
                     ACTUAL_RAILs++;
 
                     // turn railguns on for 1+ on [2]
-                    (Rail as IMyConveyorSorter).Enabled = STANCES[S][2] > 0;
+                    (Rail as IMyConveyorSorter).Enabled = _stances[S][2] > 0;
 
                     if (!RAILs_HAVE_TARGET)
                     {
@@ -54,7 +54,7 @@ namespace IngameScript
                             string Name = RailTarget.Value.Name;
                             if (Name != null && Name != "")
                             {
-                                if (D) Echo("At least one rail has a target!");
+                                if (_d) Echo("At least one rail has a target!");
                                 RAILs_HAVE_TARGET = true;
                             }
                         }
@@ -62,7 +62,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_RAILs = Math.Round(100 * (ACTUAL_RAILs / INIT_RAILs));
+            INTEGRITY_RAILs = Math.Round(100 * (ACTUAL_RAILs / _initKinetics));
         }
 
         private void setRails(int state)
@@ -81,7 +81,7 @@ namespace IngameScript
                     {
                         (Rail as IMyConveyorSorter).Enabled = true;
 
-                        if (AUTO_CONFIG_WEAPs)
+                        if (_autoConfigWeapons)
                         {
                             Rail.SetValue("WC_Grids", true);
                             Rail.SetValue("WC_LargeGrid", true);
@@ -89,7 +89,10 @@ namespace IngameScript
 
                             Rail.SetValue("WC_SubSystems", true);
                             setBlockRepelOff(Rail);
+                        }
 
+                        if (_setTurretFireMode)
+                        {
                             if (state < 2) // hold fire if less than 2
                             {
                                 setBlockFireModeManual(Rail);

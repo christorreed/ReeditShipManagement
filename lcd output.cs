@@ -154,7 +154,7 @@ namespace IngameScript
         // updates all LCDs on the ship to display our data.
         void refreshLcds()
         {
-            if (D) Echo("Updating LCDs...");
+            if (_d) Echo("Updating LCDs...");
 
             updateTelemetry();
 
@@ -232,7 +232,7 @@ namespace IngameScript
             // -----------------------
 
 
-            if (D)
+            if (_d)
             {
                 Echo("Actual H2:" + ACTUAL_H2 + "\nTotal H2: " + TOTAL_H2);
 
@@ -242,7 +242,7 @@ namespace IngameScript
             double oxygen_percentage = Math.Round(100 * (ACTUAL_O2 / TOTAL_O2));
             double battery_percentage = Math.Round(100 * (ACTUAL_BATTERIEs / TOTAL_BATTERIEs));
 
-            double init_power = Math.Round(INIT_REACTORs + INIT_BATTERIEs, 1);
+            double init_power = Math.Round(_initReactors + _initBatteries, 1);
             double nice_max_power = Math.Round(MAX_POWER, 1);
             double capacity_percentage = Math.Round(100 * (nice_max_power/init_power));
 
@@ -264,7 +264,7 @@ namespace IngameScript
 
             string sec_aux =
                 "-- Auxiliary  ---------------" + spinner + "--" + "\n\n"
-                + KEYWORD_AUX + ":" + output_aux.PadLeft(31 - KEYWORD_AUX.Length) + "\n\n";
+                + _keywordAuxBlocks + ":" + output_aux.PadLeft(31 - _keywordAuxBlocks.Length) + "\n\n";
 
             string sec_doors =
                "-- Doors & Vents ------------" + spinner + "--" + "\n\n"
@@ -316,7 +316,7 @@ namespace IngameScript
                 h2_priority = 2;
             }
      
-            if (STANCES[S][21] > 1)
+            if (_stances[S][21] > 1)
             {
                 if (NO_SPARE_TANKS)
                 {
@@ -385,8 +385,8 @@ namespace IngameScript
             if (AUX_ACTIVE_COUNT > 0)
             {
                 LCDAlerts.Add(new ALERT(
-                    KEYWORD_AUX + " is active (" + AUX_ACTIVE_COUNT + ")",
-                    KEYWORD_AUX + " is active (" + AUX_ACTIVE_COUNT + ")",
+                    _keywordAuxBlocks + " is active (" + AUX_ACTIVE_COUNT + ")",
+                    _keywordAuxBlocks + " is active (" + AUX_ACTIVE_COUNT + ")",
                     0));
             }
 
@@ -531,7 +531,7 @@ namespace IngameScript
             // Build Subsystem Integrity
             // -------------------------
 
-            int[] CurrentStance = STANCES[S];
+            int[] CurrentStance = _stances[S];
 
             string sec_integrity =
 
@@ -539,29 +539,29 @@ namespace IngameScript
 
             try
             {
-                if (INIT_THRUSTERs_MAIN > 0)
+                if (_initThrustMain > 0)
                     sec_integrity += "Epstein   [" + generateBar(INTEGRITY_THRUSTERs_MAIN) + "] " + (INTEGRITY_THRUSTERs_MAIN + "% ").PadLeft(5) + STANCE_DATA_OUT_MAINTHRUST[CurrentStance[3]] + "\n";
-                if (INIT_THRUSTERs_RCS > 0)
+                if (_initThrustRCS > 0)
                     sec_integrity += "RCS       [" + generateBar(INTEGRITY_THRUSTERs_RCS) + "] " + (INTEGRITY_THRUSTERs_RCS + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
-                if (INIT_REACTORs > 0)
+                if (_initReactors > 0)
                     sec_integrity += "Reactors  [" + generateBar(INTEGRITY_REACTORs) + "] " + (INTEGRITY_REACTORs + "% ").PadLeft(5) + "    \n";
-                if (INIT_BATTERIEs > 0)
+                if (_initBatteries > 0)
                     sec_integrity += "Batteries [" + generateBar(INTEGRITY_BATTERIEs) + "] " + (INTEGRITY_BATTERIEs + "% ").PadLeft(5) + STANCE_DATA_OUT_BATTS[CurrentStance[16]] + "\n";
-                if (INIT_PDCs > 0)
+                if (_initPdcs > 0)
                     sec_integrity += "PDCs      [" + generateBar(INTEGRITY_PDCs) + "] " + (INTEGRITY_PDCs + "% ").PadLeft(5) + STANCE_DATA_OUT_PDCS[CurrentStance[1]] + "\n";
-                if (INIT_TORPs > 0)
+                if (_initTorpLaunchers > 0)
                     sec_integrity += "Torpedoes [" + generateBar(INTEGRITY_TORPs) + "] " + (INTEGRITY_TORPs + "% ").PadLeft(5) + STANCE_DATA_OUT_TOGGLE[CurrentStance[0]] + "\n";
-                if (INIT_RAILs > 0)
+                if (_initKinetics > 0)
                     sec_integrity += "Railguns  [" + generateBar(INTEGRITY_RAILs) + "] " + (INTEGRITY_RAILs + "% ").PadLeft(5) + STANCE_DATA_OUT_RAILS[CurrentStance[2]] + "\n";
-                if (INIT_H2 > 0)
+                if (_initH2 > 0)
                     sec_integrity += "H2 Tanks  [" + generateBar(INTEGRITY_H2) + "] " + (INTEGRITY_H2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
-                if (INIT_O2 > 0)
+                if (_initO2 > 0)
                     sec_integrity += "O2 Tanks  [" + generateBar(INTEGRITY_O2) + "] " + (INTEGRITY_O2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
-                if (INIT_GYROs > 0)
+                if (_initGyros > 0)
                     sec_integrity += "Gyros     [" + generateBar(INTEGRITY_GYROs) + "] " + (INTEGRITY_GYROs + "% ").PadLeft(5) + "    \n";
-                if (INIT_CARGOs > 0)
+                if (_initCargos > 0)
                     sec_integrity += "Cargo     [" + generateBar(INTEGRITY_CARGOs) + "] " + (INTEGRITY_CARGOs + "% ").PadLeft(5) + "    \n";
-                if (INIT_WELDERs > 0)
+                if (_initWelders > 0)
                     sec_integrity += "Welders   [" + generateBar(INTEGRITY_WELDERs) + "] " + (INTEGRITY_WELDERs + "% ").PadLeft(5) + "    \n";
             }
 
@@ -572,7 +572,7 @@ namespace IngameScript
                 sec_integrity = LCD_DIVIDER + "\n\n"
                     + "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
 
-            if (D) Echo("Building header...");
+            if (_d) Echo("Building header...");
 
             // ------------------------
             // Build header and overlay
@@ -589,18 +589,18 @@ namespace IngameScript
 
             /*string sec_header =
                 LCD_DIVIDER + "\n" +
-                centreText(spinner + " " + SHIP_NAME.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
+                centreText(spinner + " " + _shipName.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
                 centreText(STANCE, LCD_WIDTH) + "\n" +
                 LCD_DIVIDER + "\n" +
                 status_lts + "\n";*/
 
             string sec_header =
 
-                 centreText(SHIP_NAME.ToUpper(), LCD_WIDTH) + "\n" +
-                 "  " + spinner + " " + centreText(STANCE, LCD_WIDTH - 10) + " " + spinner + "  \n" +
+                 centreText(_shipName.ToUpper(), LCD_WIDTH) + "\n" +
+                 "  " + spinner + " " + centreText(_currentStance, LCD_WIDTH - 10) + " " + spinner + "  \n" +
 
 
-                //centreText(spinner + " " + SHIP_NAME.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
+                //centreText(spinner + " " + _shipName.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
                 //centreText(STANCE, LCD_WIDTH) + "\n" +
                 //LCD_DIVIDER + "\n" +
 
@@ -626,10 +626,10 @@ namespace IngameScript
             if (BUILD_ADVANCED_THRUST)
             {
 
-                if (D) Echo("Building advanced thrust...");
+                if (_d) Echo("Building advanced thrust...");
 
                 string Basics = "";
-                if (ADVANCED_THRUST_SHOW_BASICS)
+                if (_showBasicTelemetry)
                 {
                     Basics =
                         "\nMass:            " + (Math.Round((MASS / 1000000), 2) + " Mkg").PadLeft(15) +
@@ -647,7 +647,7 @@ namespace IngameScript
                     "\nDecel (Dampener):" + stopDistance(THRUST_MAX, vel, true) +
                     "\nDecel (Actual):  " + stopDistance(THRUST_ACTUAL, vel);
 
-                foreach (double Percent in ADVANCED_THRUST_PERCENTS)
+                foreach (double Percent in _decelPercentages)
                 {
                     sec_thrust_advanced += "\n" + ("Decel (" + (Percent * 100) + "%):").PadRight(17) + stopDistance((float)(THRUST_MAX * Percent), vel);
                 }
@@ -655,7 +655,7 @@ namespace IngameScript
                 sec_thrust_advanced += "\n\n";
             }
 
-            if (D) Echo("Interating over "+ LCDs_RSM.Count + " LCDs");
+            if (_d) Echo("Interating over "+ LCDs_RSM.Count + " LCDs");
 
             for (int i = 0; i < LCDs_RSM.Count; i++)
             {
@@ -807,7 +807,7 @@ namespace IngameScript
 
 
                 // force font colour
-                if (!DISABLE_LCD_COLOURS)
+                if (!_disableLcdColourControl)
                 {
 
                     if (show_header_overlay)
@@ -821,7 +821,7 @@ namespace IngameScript
                 }
             }
 
-            if (D) Echo("Finished updating " + LCDs_RSM.Count.ToString() + " LCDs...");
+            if (_d) Echo("Finished updating " + LCDs_RSM.Count.ToString() + " LCDs...");
 
             return;
         }
@@ -832,15 +832,15 @@ namespace IngameScript
 
             if (LCDs_CS.Count > 0)
             {
-                if (D) Echo("Setting " + LCDs_CS.Count + " colour sync LCDs.");
+                if (_d) Echo("Setting " + LCDs_CS.Count + " colour sync LCDs.");
 
                 foreach (IMyTextPanel LCD in LCDs_CS)
                 {
                     LCD.FontColor = new Color(
-                        STANCES[S][12],
-                        STANCES[S][13],
-                        STANCES[S][14],
-                        STANCES[S][15]
+                        _stances[S][12],
+                        _stances[S][13],
+                        _stances[S][14],
+                        _stances[S][15]
                         );
                 }
             }
@@ -917,12 +917,12 @@ namespace IngameScript
             switch (bar_type)
             {
                 case "H2":
-                    percentage = Math.Round(100 * (ACTUAL_H2 / INIT_H2));
+                    percentage = Math.Round(100 * (ACTUAL_H2 / _initH2));
                     val = percentage.ToString() + " %";
                     FUEL_PERCENTAGES = percentage;
                     break;
                 case "O2":
-                    percentage = Math.Round(100 * (ACTUAL_O2 / INIT_O2));
+                    percentage = Math.Round(100 * (ACTUAL_O2 / _initO2));
                     val = percentage.ToString() + " %";
                     break;
                 case "Battery":

@@ -56,7 +56,7 @@ namespace IngameScript
                 }
                 catch
                 {
-                    if (D) Echo("Failed to set aux block " + Block.CustomName);
+                    if (_d) Echo("Failed to set aux block " + Block.CustomName);
                 }
             }
         }
