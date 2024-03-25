@@ -52,7 +52,8 @@ namespace IngameScript
 
             _currentStance = stance;
 
-            updateCustomData(true);
+            // update config
+            setCustomData();
 
             // set rails
             if (_d) Echo("Setting " + RAILs.Count + " railguns to " + _stances[S][2]);

@@ -76,11 +76,11 @@ namespace IngameScript
                 initItems();
             }
 
-            updateCustomData(true);
+            // save all of these new values to custom data straight away.
+            setCustomData();
 
             if (_d) Echo("Initialising block names...");
             initBlockNames();
-
 
             ALERTS.Add(new ALERT(
                 "Init:" + ship,

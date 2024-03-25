@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.8 $MDK_DATE$";
+        string Version = "1.99.9 $MDK_DATE$";
         #endregion
         #endregion
 
@@ -77,7 +77,7 @@ namespace IngameScript
         // Warning Variables -----------------------------------------------------------------
 
         bool NEED_FUEL = false;
-        bool SPAWN_OPEN = false;
+        bool _spawnOpen = false;
         bool NO_EXTRACTOR = false;
         bool NO_SPARE_TANKS = false;
         int UNOWNED_BLOCKS = 0;
@@ -101,11 +101,12 @@ namespace IngameScript
         float MASS;
 
         // the faction tag of the PB owner
-        string FACTION_TAG;
+        string _factionTag;
 
         // this is the SK custom data string
         // we will build it and force it into SK custom data
-        string SK_DATA;
+        string _survivalKitData;
+        string _survivalKitOpenData;
 
         // this reduces the LCD output build overhead
         // if you are not using an advanced thrust LCD
@@ -123,7 +124,7 @@ namespace IngameScript
 
             RARE_STEP = _blockRefreshFreq;
 
-            FACTION_TAG = Me.GetOwnerFactionTag();
+            _factionTag = Me.GetOwnerFactionTag();
 
             PROFILER = new Profiler(Runtime);
 
@@ -139,7 +140,7 @@ namespace IngameScript
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
 
             if (_d) Echo("Parsing custom data...");
-            updateCustomData(false);
+            prepCustomData();
             if (_p) Echo("Took " + msSinceLast());
         }
 
@@ -227,7 +228,7 @@ namespace IngameScript
                 case "spawn":
                     if (args[1].ToLower() == "open")
                     {
-                        SPAWN_OPEN = true;
+                        _spawnOpen = true;
 
                         // force a block refresh now.
                         RARE_STEP = _blockRefreshFreq;
@@ -240,7 +241,7 @@ namespace IngameScript
                     }
                     else
                     {
-                        SPAWN_OPEN = false;
+                        _spawnOpen = false;
 
                         // force a block refresh now.
                         RARE_STEP = _blockRefreshFreq;
@@ -608,24 +609,18 @@ namespace IngameScript
         void doThisStuffRarely()
         {
 
-
-
             if (_d) Echo("Clearing block lists...");
             clearBlockLists();
-
             if (_p) Echo("Took " + msSinceLast());
 
             if (_d) Echo("Refreshing block lists...");
             GridTerminalSystem.GetBlocksOfType((List<IMyTerminalBlock>)null, sortBlockLists);
-
             if (_p) Echo("Took " + msSinceLast());
 
-            if (_d)
-            {
-                if (I) Echo("Total blocks to rename: " + INIT_NAMEs.Count);
-                Echo("Setting KeepFull threshold");
-            }
+            if (_d) Echo("Setting KeepFull threshold");
             setKeepFullThresh();
+
+
 
             if (CONTROLLER == null)
             {
@@ -681,7 +676,7 @@ namespace IngameScript
         {
             
             string Output = 
-                "REEDIT SHIP MANAGEMENT \n\n|- Version: " + Version +
+                "REEDIT SHIP MANAGEMENT \n\n|- V " + Version +
                 "\n|- Stance: " + _stanceNames[S] + "(" + S + ")";
 
             if (BOOTING)

@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -106,7 +107,7 @@ namespace IngameScript
 
                 // test for unowned blocks...
                 string Tag = b.GetOwnerFactionTag();
-                if (Tag != FACTION_TAG && Tag != "")
+                if (Tag != _factionTag && Tag != "")
                 {
                     Echo("!" + Tag + ": " + b.CustomName);
                     UNOWNED_BLOCKS++;
@@ -141,7 +142,11 @@ namespace IngameScript
                 // Medical Rooms
                 if (blockId.Contains("MedicalRoom/"))
                 {
-                    b.CustomData = SK_DATA;
+                    if (_spawnOpen)
+                        b.CustomData = _survivalKitOpenData;
+                    else
+                        b.CustomData = _survivalKitData;
+
                     if (!b.CustomName.Contains(_keywordIgnore)) b.ApplyAction("OnOff_On");
                     if (I) INIT_NAMEs.Add(b, "Medical Room");
                     return false;
@@ -150,7 +155,11 @@ namespace IngameScript
                 // Survival Kits
                 if (blockId.Contains("SurvivalKit/"))
                 {
-                    b.CustomData = SK_DATA;
+                    if (_spawnOpen)
+                        b.CustomData = _survivalKitOpenData;
+                    else
+                        b.CustomData = _survivalKitData;
+
                     if (!b.CustomName.Contains(_keywordIgnore)) b.ApplyAction("OnOff_On");
                     if (I) INIT_NAMEs.Add(b, "Survival Kit");
                     return false;
