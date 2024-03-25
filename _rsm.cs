@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.12 ($MDK_DATE$)";
+        string Version = "1.99.13 ($MDK_DATE$)";
         #endregion
         #endregion
 

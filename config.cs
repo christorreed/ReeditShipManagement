@@ -117,7 +117,7 @@ namespace IngameScript
         // Performance & Debugging -----------------------------------------------------------------
 
         // verbose debugging enabled
-        bool _d = false;
+        bool _d = true;
 
         // performance profiling enabled
         bool _p = true;
@@ -167,7 +167,7 @@ namespace IngameScript
             {
                 // Main -----------------------------------------------------------------
 
-                sec = "Main"; Echo(sec);
+                sec = "RSM.Main"; Echo(sec);
 
                 _requireShipName = _config.Get(sec, "RequireShipName").ToBoolean(_requireShipName);
                 _autoLoad = _config.Get(sec, "EnableAutoload").ToBoolean(_autoLoad);
@@ -178,14 +178,14 @@ namespace IngameScript
 
                 // Spawns -----------------------------------------------------------------
 
-                sec = "Spawns"; Echo(sec);
+                sec = "RSM.Spawns"; Echo(sec);
 
                 _privateSpawns = _config.Get(sec, "PrivateSpawns").ToBoolean(_privateSpawns);
                 _friendlyTags = _config.Get(sec, "FriendlyTags").ToString(_friendlyTags);
 
                 // Doors -----------------------------------------------------------------
 
-                sec = "Doors"; Echo(sec);
+                sec = "RSM.Doors"; Echo(sec);
 
                 _manageDoors = _config.Get(sec, "EnableDoorManagement").ToBoolean(_manageDoors);
                 _doorCloseTimer = _config.Get(sec, "DoorCloseTimer").ToInt32(_doorCloseTimer);
@@ -193,7 +193,7 @@ namespace IngameScript
 
                 // Keywords -----------------------------------------------------------------
 
-                sec = "Keywords"; Echo(sec);
+                sec = "RSM.Keywords"; Echo(sec);
 
                 _keywordIgnore = _config.Get(sec, "Ignore").ToString(_keywordIgnore);
                 _keywordRsmLcds = _config.Get(sec, "RsmLcds").ToString(_keywordRsmLcds);
@@ -207,7 +207,7 @@ namespace IngameScript
 
                 // Init & Block Naming -----------------------------------------------------------------
 
-                sec = "InitNaming"; Echo(sec);
+                sec = "RSM.InitNaming"; Echo(sec);
 
                 _nameDelimiter = _config.Get(sec, "Ignore").ToChar(_nameDelimiter);
                 _appendWeaponTypes = _config.Get(sec, "NameWeaponTypes").ToBoolean(_appendWeaponTypes);
@@ -221,7 +221,7 @@ namespace IngameScript
 
                 // Misc -----------------------------------------------------------------
 
-                sec = "Misc"; Echo(sec);
+                sec = "RSM.Misc"; Echo(sec);
 
                 _disableLightingControl = _config.Get(sec, "DisableLightingControl").ToBoolean(_disableLightingControl);
                 _disableLcdColourControl = _config.Get(sec, "DisableLcdColourControl").ToBoolean(_disableLcdColourControl);
@@ -240,7 +240,7 @@ namespace IngameScript
 
                 // Performance & Debugging -----------------------------------------------------------------
 
-                sec = "Debug"; Echo(sec);
+                sec = "RSM.Debug"; Echo(sec);
 
                 _d = _config.Get(sec, "VerboseDebugging").ToBoolean(_d);
                 _p = _config.Get(sec, "RuntimeProfiling").ToBoolean(_p);
@@ -249,7 +249,7 @@ namespace IngameScript
 
                 // Stances -----------------------------------------------------------------
 
-                sec = "Stance"; Echo(sec);
+                sec = "RSM.Stance"; Echo(sec);
 
                 _currentStance = _config.Get(sec, "CurrentStance").ToString(_currentStance);
 
@@ -267,10 +267,10 @@ namespace IngameScript
                 foreach (string sect in sections)
                 {
                     // ignore sections which are not stances
-                    if (sect.Contains("Stance."))
+                    if (sect.Contains("RSM.Stance."))
                     {
                         // get the stance name
-                        string newName = sect.Substring(7);
+                        string newName = sect.Substring(11);
                         Echo("parsing " + newName);
                         newStanceNames.Add(newName);
 
@@ -356,13 +356,13 @@ namespace IngameScript
 
                 // System -----------------------------------------------------------------
 
-                sec = "System"; Echo(sec);
+                sec = "RSM.System"; Echo(sec);
 
                 _shipName = _config.Get(sec, "ShipName").ToString(_shipName);
 
                 // InitItems -----------------------------------------------------------------
 
-                sec = "InitItems"; Echo(sec);
+                sec = "RSM.InitItems"; Echo(sec);
 
                 foreach (ITEM item in ITEMS)
                 {
@@ -373,7 +373,7 @@ namespace IngameScript
 
                 // InitSubSystems -----------------------------------------------------------------
 
-                sec = "InitSubSystems"; Echo(sec);
+                sec = "RSM.InitSubSystems"; Echo(sec);
 
                 _initReactors = _config.Get(sec, "Reactors").ToDouble(_initReactors);
                 _initReactors = _config.Get(sec, "Batteries").ToDouble(_initReactors);
@@ -404,7 +404,7 @@ namespace IngameScript
 
             // Main -----------------------------------------------------------------
 
-            sec = "Main";
+            sec = "RSM.Main";
 
             name = "RequireShipName";
             _config.Set(sec, name, _requireShipName);
@@ -443,7 +443,7 @@ namespace IngameScript
             
             // Spawns -----------------------------------------------------------------
 
-            sec = "Spawns";
+            sec = "RSM.Spawns";
 
             name = "PrivateSpawns";
             _config.Set(sec, name, _privateSpawns);
@@ -455,7 +455,7 @@ namespace IngameScript
 
             // Doors -----------------------------------------------------------------
 
-            sec = "Doors";
+            sec = "RSM.Doors";
 
             name = "EnableDoorManagement";
             _config.Set(sec, name, _manageDoors);
@@ -471,7 +471,7 @@ namespace IngameScript
 
             // Keywords -----------------------------------------------------------------
 
-            sec = "Keywords";
+            sec = "RSM.Keywords";
 
             name = "Ignore";
             _config.Set(sec, name, _keywordIgnore);
@@ -511,7 +511,7 @@ namespace IngameScript
 
             // Init & Block Naming -----------------------------------------------------------------
 
-            sec = "InitNaming";
+            sec = "RSM.InitNaming";
 
             name = "NameDelimiter";
             _config.Set(sec, name, _nameDelimiter.ToString());
@@ -539,7 +539,7 @@ namespace IngameScript
 
             // Misc -----------------------------------------------------------------
 
-            sec = "Misc";
+            sec = "RSM.Misc";
 
             name = "DisableLightingControl";
             _config.Set(sec, name, _disableLightingControl);
@@ -567,7 +567,7 @@ namespace IngameScript
 
             // Performance & Debugging -----------------------------------------------------------------
 
-            sec = "Debug";
+            sec = "RSM.Debug";
 
             name = "VerboseDebugging";
             _config.Set(sec, name, _d);
@@ -587,7 +587,7 @@ namespace IngameScript
 
             // Stances -----------------------------------------------------------------
 
-            sec = "Stance";
+            sec = "RSM.Stance";
 
             name = "CurrentStance";
             _config.Set(sec, name, _currentStance);
@@ -596,7 +596,7 @@ namespace IngameScript
 
             for (int i = 0; i < _stanceNames.Count; i++)
             {
-                sec = "Stance." + _stanceNames[i];
+                sec = "RSM.Stance." + _stanceNames[i];
 
                 _config.Set(sec, "Torps",                   _stances[i][0]);
                 _config.Set(sec, "Pdcs",                    _stances[i][1]);
@@ -649,7 +649,7 @@ namespace IngameScript
 
             // System -----------------------------------------------------------------
 
-            sec = "System";
+            sec = "RSM.System";
 
             name = "ShipName";
             _config.Set(sec, name, _shipName);
@@ -658,7 +658,7 @@ namespace IngameScript
 
             // InitItems -----------------------------------------------------------------
 
-            sec = "InitItems";
+            sec = "RSM.InitItems";
 
             foreach (ITEM item in ITEMS)
             {
@@ -670,7 +670,7 @@ namespace IngameScript
 
             // InitSubSystems -----------------------------------------------------------------
 
-            sec = "InitSubSystems";
+            sec = "RSM.InitSubSystems";
 
             _config.Set(sec, "Reactors", _initReactors);
             _config.Set(sec, "Batteries", _initReactors);

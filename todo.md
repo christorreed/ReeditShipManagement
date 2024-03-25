@@ -21,6 +21,9 @@ x "An item with the same key has already been added" during
  
 # todos
 
+- debug
+- find a way to provide default custom data mostly commented out.
+- > wish i could put comments *below* the section titles
 - fix runProgramable, make it run commands over sperate ticks
 - add toolcore welder control (setToolActivate, iterateWelders)
 - review and improve manageDoors
