@@ -137,6 +137,9 @@ namespace IngameScript
         {
             string toParse = Me.CustomData;
 
+            string sec;
+            bool success = true;
+
             // attempt to parse ini from the custom data
             MyIniParseResult result;
             if (!_config.TryParse(toParse, out result))
@@ -160,20 +163,238 @@ namespace IngameScript
                 }
             }
 
-            // Performance & Debugging -----------------------------------------------------------------
+            try
+            {
+                // Main -----------------------------------------------------------------
 
-            _d = _config.Get("Debug", "VerboseDebugging").ToBoolean(_d);
-            _p = _config.Get("Debug", "RuntimeProfiling").ToBoolean(_p);
-            _blockRefreshFreq =  _config.Get("Debug", "BlockRefreshFreq").ToInt32(_blockRefreshFreq);
-            _loopStallCount =  _config.Get("Debug", "StallCount").ToInt32(_loopStallCount);
+                sec = "Main"; Echo(sec);
 
-            
+                _requireShipName = _config.Get(sec, "RequireShipName").ToBoolean(_requireShipName);
+                _autoLoad = _config.Get(sec, "EnableAutoload").ToBoolean(_autoLoad);
+                _autoLoadReactors = _config.Get(sec, "AutoloadReactors").ToBoolean(_autoLoadReactors);
+                _autoConfigWeapons = _config.Get(sec, "AutoConfigWeapons").ToBoolean(_autoConfigWeapons);
+                _setTurretFireMode = _config.Get(sec, "SetTurretFireMode").ToBoolean(_setTurretFireMode);
+                _manageBatteryDischarge = _config.Get(sec, "ManageBatteryDischarge").ToBoolean(_manageBatteryDischarge);
 
-            return true;
+                // Spawns -----------------------------------------------------------------
+
+                sec = "Spawns"; Echo(sec);
+
+                _privateSpawns = _config.Get(sec, "PrivateSpawns").ToBoolean(_privateSpawns);
+                _friendlyTags = _config.Get(sec, "FriendlyTags").ToString(_friendlyTags);
+
+                // Doors -----------------------------------------------------------------
+
+                sec = "Doors"; Echo(sec);
+
+                _manageDoors = _config.Get(sec, "EnableDoorManagement").ToBoolean(_manageDoors);
+                _doorCloseTimer = _config.Get(sec, "DoorCloseTimer").ToInt32(_doorCloseTimer);
+                _doorCloseTimer = _config.Get(sec, "AirlockDoorDisableTimer").ToInt32(_doorCloseTimer);
+
+                // Keywords -----------------------------------------------------------------
+
+                sec = "Keywords"; Echo(sec);
+
+                _keywordIgnore = _config.Get(sec, "Ignore").ToString(_keywordIgnore);
+                _keywordRsmLcds = _config.Get(sec, "RsmLcds").ToString(_keywordRsmLcds);
+                _keywordColourSyncLcds = _config.Get(sec, "ColourSyncLcds").ToString(_keywordColourSyncLcds);
+                _keywordAuxBlocks = _config.Get(sec, "AuxiliaryBlocks").ToString(_keywordAuxBlocks);
+                _keywordDefPdcs = _config.Get(sec, "DefensivePdcs").ToString(_keywordDefPdcs);
+                _keywordThrustersMinimum = _config.Get(sec, "MinimumThrusters").ToString(_keywordThrustersMinimum);
+                _keywordThrustersDocking = _config.Get(sec, "DockingThrusters").ToString(_keywordThrustersDocking);
+                _keywordLightNavigation = _config.Get(sec, "NavLights").ToString(_keywordLightNavigation);
+                _keywordAirlock = _config.Get(sec, "Airlock").ToString(_keywordAirlock);
+
+                // Init & Block Naming -----------------------------------------------------------------
+
+                sec = "InitNaming"; Echo(sec);
+
+                _nameDelimiter = _config.Get(sec, "Ignore").ToChar(_nameDelimiter);
+                _appendWeaponTypes = _config.Get(sec, "NameWeaponTypes").ToBoolean(_appendWeaponTypes);
+                _appendDriveTypes = _config.Get(sec, "NameDriveTypes").ToBoolean(_appendDriveTypes);
+
+                string names = _config.Get(sec, "BlocksToNumber").ToString("");
+                string[] namesArr = names.Split(',');
+                _enumerateTheseBlocks.Clear();
+                foreach (string name in namesArr)
+                    if (name != "") _enumerateTheseBlocks.Add(name);
+
+                // Misc -----------------------------------------------------------------
+
+                sec = "Misc"; Echo(sec);
+
+                _disableLightingControl = _config.Get(sec, "DisableLightingControl").ToBoolean(_disableLightingControl);
+                _disableLcdColourControl = _config.Get(sec, "DisableLcdColourControl").ToBoolean(_disableLcdColourControl);
+                _showBasicTelemetry = _config.Get(sec, "ShowBasicTelemetry").ToBoolean(_showBasicTelemetry);
+
+                string percs = _config.Get(sec, "DecelerationPercentages").ToString("");
+                string[] percsArr = percs.Split(',');
+                if (percsArr.Length > 1)
+                {
+                    _decelPercentages.Clear();
+                    foreach (string perc in percsArr)
+                    {
+                        _decelPercentages.Add(double.Parse(perc) / 100);
+                    }
+                }
+
+                // Performance & Debugging -----------------------------------------------------------------
+
+                sec = "Debug"; Echo(sec);
+
+                _d = _config.Get(sec, "VerboseDebugging").ToBoolean(_d);
+                _p = _config.Get(sec, "RuntimeProfiling").ToBoolean(_p);
+                _blockRefreshFreq = _config.Get(sec, "BlockRefreshFreq").ToInt32(_blockRefreshFreq);
+                _loopStallCount = _config.Get(sec, "StallCount").ToInt32(_loopStallCount);
+
+                // Stances -----------------------------------------------------------------
+
+                sec = "Stance"; Echo(sec);
+
+                _currentStance = _config.Get(sec, "CurrentStance").ToString(_currentStance);
+
+                List<string> newStanceNames = new List<string>();
+                List<int[]> newStances = new List<int[]>();
+
+                // get all sections
+                List<string> sections = new List<string>();
+                _config.GetSections(sections);
+
+                // use the first default stance to determine the stance data length.
+                int dataLength = _stances[0].Length;
+
+                // iterate all sections
+                foreach (string sect in sections)
+                {
+                    // ignore sections which are not stances
+                    if (sect.Contains("Stance."))
+                    {
+                        // get the stance name
+                        string newName = sect.Substring(7);
+                        Echo("parsing " + newName);
+                        newStanceNames.Add(newName);
+
+                        // build the stance array
+                        int[] newData = new int[dataLength];
+                        newData[0] = _config.Get(sect, "Torps").ToInt32(_stances[0][0]);
+                        newData[1] = _config.Get(sect, "Pdcs").ToInt32(_stances[0][1]);
+                        newData[2] = _config.Get(sect, "Kinetics").ToInt32(_stances[0][2]);
+                        newData[3] = _config.Get(sect, "MainThrust").ToInt32(_stances[0][3]);
+                        newData[4] = _config.Get(sect, "ManeuveringThrust").ToInt32(_stances[0][4]);
+                        newData[5] = _config.Get(sect, "Spotlights").ToInt32(_stances[0][5]);
+                        newData[6] = _config.Get(sect, "ExteriorLights").ToInt32(_stances[0][6]);
+
+                        string exteriorColour = _config.Get(sect, "ExteriorColour").ToString();
+
+                        int r = 33, g = 144, b = 255, a = 255;
+
+                        try
+                        {
+                            string[] c = exteriorColour.Split(',');
+                            r = int.Parse(c[0]);
+                            g = int.Parse(c[1]);
+                            b = int.Parse(c[2]);
+                            a = int.Parse(c[3]);
+                        }
+                        catch
+                        {
+                            Echo("failed to parse exterior colour");
+                        }
+
+                        newData[7] = r;
+                        newData[8] = g;
+                        newData[9] = b;
+                        newData[10] = a;
+
+
+                        newData[11] = _config.Get(sect, "InteriorLights").ToInt32(_stances[0][11]);
+
+                        string interiorColour = _config.Get(sect, "InteriorAndLcdColour").ToString();
+
+                        try
+                        {
+                            string[] c = interiorColour.Split(',');
+                            r = int.Parse(c[0]);
+                            g = int.Parse(c[1]);
+                            b = int.Parse(c[2]);
+                            a = int.Parse(c[3]);
+                        }
+                        catch
+                        {
+                            Echo("failed to parse exterior colour");
+                        }
+
+                        newData[12] = r;
+                        newData[13] = g;
+                        newData[14] = b;
+                        newData[15] = a;
+
+                        newData[16] = _config.Get(sect, "StockpileAndRecharge").ToInt32(_stances[0][16]);
+                        newData[17] = _config.Get(sect, "EfcBoost").ToInt32(_stances[0][17]);
+                        newData[18] = _config.Get(sect, "NavOsBurnPercent").ToInt32(_stances[0][18]);
+                        newData[19] = _config.Get(sect, "NavOsAbort").ToInt32(_stances[0][19]);
+                        newData[20] = _config.Get(sect, "AuxiliaryBlocks").ToInt32(_stances[0][20]);
+                        newData[21] = _config.Get(sect, "Extractor").ToInt32(_stances[0][21]);
+                        newData[22] = _config.Get(sect, "KeepAlives").ToInt32(_stances[0][22]);
+                        newData[23] = _config.Get(sect, "HangarDoors").ToInt32(_stances[0][23]);
+
+                        newStances.Add(newData);
+                    }
+                }
+
+                if (newStances.Count < 1)
+                {
+                    Echo("Failed to parse any stances!\nStances reset to default!");
+                    success = false;
+                }
+                else
+                { // parsed at least one stance.
+                    Echo("Finished parsing " + newStances.Count + " stances.");
+                    _stances = newStances;
+                    _stanceNames = newStanceNames;
+                }
+
+                // System -----------------------------------------------------------------
+
+                sec = "System"; Echo(sec);
+
+                _shipName = _config.Get(sec, "ShipName").ToString(_shipName);
+
+                // InitItems -----------------------------------------------------------------
+
+                sec = "InitItems"; Echo(sec);
+
+                foreach (ITEM item in ITEMS)
+                {
+                    item.InitQty = _config
+                        .Get(sec, item.Type.SubtypeId)
+                        .ToInt32(item.InitQty);
+                }
+
+                // InitSubSystems -----------------------------------------------------------------
+
+                sec = "InitSubSystems"; Echo(sec);
+
+                _initReactors = _config.Get(sec, "Reactors").ToDouble(_initReactors);
+                _initReactors = _config.Get(sec, "Batteries").ToDouble(_initReactors);
+                _initPdcs = _config.Get(sec, "PDCs").ToInt32(_initPdcs);
+                _initTorpLaunchers = _config.Get(sec, "TorpLaunchers").ToInt32(_initTorpLaunchers);
+                _initKinetics = _config.Get(sec, "KineticWeapons").ToInt32(_initKinetics);
+                _initH2 = _config.Get(sec, "H2Storage").ToDouble(_initH2);
+                _initO2 = _config.Get(sec, "O2Storage").ToDouble(_initO2);
+                _initThrustMain = _config.Get(sec, "MainThrust").ToSingle(_initThrustMain);
+                _initThrustRCS = _config.Get(sec, "RCSThrust").ToSingle(_initThrustRCS);
+                _initGyros = _config.Get(sec, "Gyros").ToDouble(_initGyros);
+                _initCargos = _config.Get(sec, "CargoStorage").ToDouble(_initCargos);
+                _initWelders = _config.Get(sec, "Welders").ToInt32(_initWelders);
+            }
+            catch (Exception ex)
+            {
+                Echo("Parsing error!\n" + ex.Message + "\n" + ex.StackTrace);
+                success = false;
+            }
+            return success;
         }
-
-
-
 
         void setCustomData()
         {
@@ -399,8 +620,8 @@ namespace IngameScript
                 _config.Set(sec, "NavOsAbort",              _stances[i][19]);
                 _config.Set(sec, "AuxiliaryBlocks",         _stances[i][20]);
                 _config.Set(sec, "Extractor",               _stances[i][21]);
-                _config.Set(sec, "KeepAlives",              _stances[i][20]);
-                _config.Set(sec, "HangarDoors",             _stances[i][21]);
+                _config.Set(sec, "KeepAlives",              _stances[i][22]);
+                _config.Set(sec, "HangarDoors",             _stances[i][23]);
 
                 // comment the first stance only.
                 if (i == 0)
@@ -814,7 +1035,10 @@ namespace IngameScript
             }
 
             _survivalKitData = start + end;
-            _survivalKitOpenData = start + _friendlyTags + end; ;
+            _survivalKitOpenData = 
+                start + 
+                string.Join("\n", _friendlyTags.Split(',')) + 
+                end; ;
         }
     }
 }

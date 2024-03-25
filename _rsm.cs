@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.9 $MDK_DATE$";
+        string Version = "1.99.11 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -677,14 +677,11 @@ namespace IngameScript
             
             string Output = 
                 "REEDIT SHIP MANAGEMENT \n\n|- V " + Version +
-                "\n|- Stance: " + _stanceNames[S] + "(" + S + ")";
+                "\n|- Stance: " + _stanceNames[S] + "(" + S + ")" +
+                "\n|- Step: " + RARE_STEP + "/" + _blockRefreshFreq + " (" + OCCASIONAL_STEP + ")";
 
             if (BOOTING)
-                Output += "\n|- Booting " + BOOT_STEP;
-
-            else
-                Output += "\n|- Step: " + RARE_STEP + "/" + _blockRefreshFreq + " (" + OCCASIONAL_STEP + ")";
-                
+                Output += "\n|- Booting " + BOOT_STEP;              
 
             if (_p)
             {
