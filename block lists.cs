@@ -114,14 +114,22 @@ namespace IngameScript
                     return false;
                 }
 
-                // ship name check.
+                // IGNORE KEYWORD CHECK -----------------------------------------------------------------
+
+                // Ignore blocks with the ignore keyword...
+                if (b.CustomName.Contains(_keywordIgnore))
+                    return false;
+
+                // SHIP NAME CHECK -----------------------------------------------------------------
 
                 if (!I && _requireShipName && !b.CustomName.Contains(_shipName))
                     // if we are not running init
                     // and we _requireShipName
                     // and the ship name isn't included
                     return false; // ignore this block
-                
+
+                // Aux -----------------------------------------------------------------
+
                 // grab aux blocks
                 if (b.CustomName.Contains(_keywordAuxBlocks))
                     AUXILIARIEs.Add(b);
@@ -181,12 +189,6 @@ namespace IngameScript
 
                     return false;
                 }
-
-                // IGNORE KEYWORD CHECK -----------------------------------------------------------------
-
-                // Ignore blocks with the ignore keyword...
-                if (b.CustomName.Contains(_keywordIgnore))
-                    return false;
 
                 // PDCs -----------------------------------------------------------------
 

@@ -1,9 +1,8 @@
 # debugs
 
-- first init, get zero value
+x first init, get zero value
 x make stuff faster
 x fuel tank loading freq might need to go up
-
 x check camera keep-alives
 x less .GetItemAmount(Item) calls
 x - store item counts as you go
@@ -35,7 +34,7 @@ x review and improve quickRefresh
 - handle fixed weapons better
 - _appendDriveTypes
 - make stance a class ffs
-- consider changing position of the ignore keyword.
+x consider changing position of the ignore keyword.
 
 X review and fix extractor management
 X finalise init naming initBlockNames
