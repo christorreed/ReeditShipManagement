@@ -32,6 +32,13 @@ x review and improve quickRefresh
 - review and improve updateLcds 
 - review and improve setStance
 - - fuel tank loading command
+<<<<<<< Updated upstream
+=======
+- handle fixed weapons better
+- _appendDriveTypes
+- make stance a class ffs
+- consider changing position of the ignore keyword.
+>>>>>>> Stashed changes
 
 X review and fix extractor management
 X finalise init naming initBlockNames
