@@ -21,7 +21,7 @@ x "An item with the same key has already been added" during
  
 # todos
 
-- debug
+- debug/test
 - find a way to provide default custom data mostly commented out.
 - > wish i could put comments *below* the section titles
 - fix runProgramable, make it run commands over sperate ticks
@@ -32,6 +32,7 @@ x "An item with the same key has already been added" during
 - fuel tank loading command
 - _appendDriveTypes
 - make stance a class ffs
+- more aggressive naming into sub groups.  Like power.reactor
 
 x handle fixed weapons better
 x confirm if to also check for blocks for ship names

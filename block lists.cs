@@ -37,7 +37,6 @@ namespace IngameScript
         private List<IMyCargoContainer> CARGOs = new List<IMyCargoContainer>();
         private List<IMyShipConnector> CONNECTORs = new List<IMyShipConnector>();
         private List<IMyShipController> CONTROLLERs = new List<IMyShipController>();
-        private List<IMyDoor> DOORs = new List<IMyDoor>();
         private List<IMyAirtightHangarDoor> DOORs_HANGAR = new List<IMyAirtightHangarDoor>();
         private List<IMyTerminalBlock> EXTRACTORs = new List<IMyTerminalBlock>();
         private List<IMyTerminalBlock> EXTRACTORs_SMALL = new List<IMyTerminalBlock>();
@@ -48,7 +47,6 @@ namespace IngameScript
         private List<IMyGasTank> TANKs_H2 = new List<IMyGasTank>();
         private List<IMyGasTank> TANKs_O2 = new List<IMyGasTank>();
         private List<IMyAirVent> VENTs = new List<IMyAirVent>();
-        private List<IMyAirVent> VENTs_AIRLOCKS = new List<IMyAirVent>();
         private List<IMyTerminalBlock> WELDERs = new List<IMyTerminalBlock>();
 
         // Weapons Lists
@@ -82,6 +80,10 @@ namespace IngameScript
 
         // Aux List
         private List<IMyTerminalBlock> AUXILIARIEs = new List<IMyTerminalBlock>();
+
+        // Doors
+        private List<Door> _doors = new List<Door>();
+        private List<Airlock> _airlocks = new List<Airlock>();
 
         // INIT
         private bool I = false;
@@ -468,7 +470,44 @@ namespace IngameScript
                 var TempDoor = b as IMyDoor;
                 if (TempDoor != null)
                 {
-                    DOORs.Add(TempDoor);
+                    Door d = new Door();
+                    d.Block = TempDoor;
+                    if (b.CustomName.Contains(_keywordAirlock))
+                    {
+                        try
+                        {
+                            string airlockId = b.CustomName.Split(_nameDelimiter)[3];
+                            d.IsAirlock = true;
+
+                            bool found = false;
+                            foreach (Airlock airlock in _airlocks)
+                            {
+                                if (airlockId == airlock.Id)
+                                {
+                                    airlock.Doors.Add(d);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found)
+                            {
+                                Airlock al = new Airlock();
+                                al.Id = airlockId;
+                                al.Doors.Add(d);
+                                _airlocks.Add(al);
+                            }
+                        }
+                        catch
+                        {
+                            if (_d) Echo("Error with door name " + b.CustomName);
+                            _doors.Add(d);
+                        }
+                    }
+                    else
+                    {
+                        _doors.Add(d);
+                    }
+                    
                     if (I) INIT_NAMEs.Add(b, "Door");
                     return false;
                 }
@@ -478,7 +517,38 @@ namespace IngameScript
                 if (TempVent != null)
                 {
                     VENTs.Add(TempVent);
-                    if (b.CustomName.Contains(_keywordAirlock)) VENTs_AIRLOCKS.Add(TempVent);
+                    if (b.CustomName.Contains(_keywordAirlock))
+                    {
+                        try
+                        {
+                            string airlockId = b.CustomName.Split(_nameDelimiter)[3];
+
+                            bool found = false;
+                            foreach (Airlock airlock in _airlocks)
+                            {
+                                if (airlockId == airlock.Id)
+                                {
+                                    airlock.Vents.Add(TempVent);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found)
+                            {
+                                // set to depressurise
+
+
+                                Airlock al = new Airlock();
+                                al.Id = airlockId; 
+                                al.Vents.Add(TempVent);
+                                _airlocks.Add(al);
+                            }
+                        }
+                        catch
+                        {
+                            if (_d) Echo("Error with airlock vent name " + b.CustomName);
+                        }
+                    }
                     if (I) INIT_NAMEs.Add(b, "Vent");
                     return false;
                 }
@@ -711,7 +781,8 @@ namespace IngameScript
             CARGOs.Clear();
             CONNECTORs.Clear();
             CONTROLLERs.Clear();
-            DOORs.Clear();
+            _doors.Clear();
+            _airlocks.Clear();
             DOORs_HANGAR.Clear();
             EXTRACTORs.Clear();
             EXTRACTORs_SMALL.Clear();
@@ -722,7 +793,6 @@ namespace IngameScript
             TANKs_H2.Clear();
             TANKs_O2.Clear();
             VENTs.Clear();
-            VENTs_AIRLOCKS.Clear();
             WELDERs.Clear();
 
             // Weapons Lists

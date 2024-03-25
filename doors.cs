@@ -22,18 +22,188 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+        class Door
+        {
+            public IMyDoor Block;
+            public int OpenCounter = 0;
+            public int DisabledCounter = 0;
+            public bool IsAirlock = false;
+            public bool IsAirlockFirstOpen = false;
+        }
+
+        class Airlock
+        {
+            public string Id;
+
+            // are we waiting to open a door
+            public bool nowCycling = false;
+
+            // this one prevents looping
+            public bool justCycled = false;
+
+            public List<Door> Doors = new List<Door>();
+            public List<IMyAirVent> Vents = new List<IMyAirVent>();
+        }
+
 
         List<string> AIRLOCK_LOOP_PREVENTION = new List<string>();
 
-        int doors_count = 0;
-        int doors_count_closed = 0;
-        int doors_count_unlocked = 0;
+        int _doorsCount = 0;
+        int _doorsCountClosed = 0;
+        int _doorsCountUnlocked = 0;
 
         // todo
         // manageDoors() is a cluster fuck
         // fix it
         // - remove reliance on door custom data, clear this shit out
         // - make airlocks easier to configure, more fool proof. Autodetecting?
+
+        // returns true if door just opened,
+        // or else, false.
+        bool refreshDoor(Door door)
+        {
+            bool justClosed = false;
+            if (door.Block == null) return false;
+
+            // is our door at least a little bit open?
+            bool open = door.Block.OpenRatio > 0;
+
+            // count not null doors
+            _doorsCount++;
+
+            // count unlocked doors
+            if (isDoorUnlocked(door.Block))
+                _doorsCountUnlocked++;
+
+            if (open)
+            {
+                // if we're open, we should be on
+                door.Block.Enabled = true;
+
+                if (door.OpenCounter == 0)
+                {
+                    // this door only just opened.
+                    if (_d) Echo("Door just opened... (" + door.Block.CustomName + ")");
+                    
+                }
+
+                door.OpenCounter++;
+
+                // has the timer reached the threshold?
+                if (door.OpenCounter >= _doorCloseTimer)
+                {
+                    door.OpenCounter = 0;
+                    door.Block.CloseDoor();
+                    justClosed = true;
+                }
+            }
+            else
+            {
+                // count closed doors
+                _doorsCountClosed++;
+            } 
+
+            return justClosed;
+        }
+
+        void refreshAirlocks()
+        {
+            if (!_manageDoors)
+            {
+                if (_d) Echo("Door management is disabled.");
+                return;
+            }
+
+            foreach (Airlock airlock in _airlocks)
+            {
+                foreach (Door door in airlock.Doors)
+                {
+                    if (door.Block == null) continue;
+
+                    // iterate over the doors as normal.
+                    bool justClosed = refreshDoor(door);
+                    door.IsAirlockFirstOpen = true;
+
+                    // if our door just closed, and the airlock didn't just cycle
+                    if (justClosed)
+                    {
+                        // this prevents looping
+                        if (airlock.justCycled)
+                            airlock.justCycled = false;
+
+                        else
+                        // then it's time to cycle.
+                        airlock.nowCycling = true;
+                    }
+                }
+
+                // okay so we're actively cycling
+                if (airlock.nowCycling)
+                {
+                    foreach (Door door in airlock.Doors)
+                    {
+                        if (door.Block == null) continue;
+
+                        if (door.Block.OpenRatio > 0)
+                        {
+                            // if we're open, close.
+                            door.Block.CloseDoor();
+                        }
+                        else
+                        {
+                            // if we're closed, disable.
+                            door.Block.Enabled = false;
+                        }
+                    }
+                }
+
+                bool cycleDone = false;
+
+                foreach (IMyAirVent vent in airlock.Vents)
+                {
+                    if (vent ==  null) continue;
+
+                    // force enable
+                    if (!vent.Enabled) vent.Enabled = true;
+
+                    // force Depressurize
+                    if (!vent.Depressurize) vent.Depressurize = true;
+
+                    // if at least one vent can CanPressurize, has depressurized, and is now cycling
+                    if (vent.CanPressurize &&vent.GetOxygenLevel() < .01 && airlock.nowCycling)
+                    {
+                        // cycle is complete
+                        cycleDone = true;
+                    }
+                }
+
+                if (cycleDone)
+                {
+                    airlock.nowCycling = false;
+                    airlock.justCycled = true;
+
+                    foreach (Door door in airlock.Doors)
+                    {
+                        if (door.Block == null) continue;
+
+                        // turn them all back on.
+                        door.Block.Enabled = true;
+
+                        if (door.IsAirlockFirstOpen)
+                            // except for the door that opened first
+                            door.IsAirlockFirstOpen = false;
+                        else
+                            // auto open door.
+                            door.Block.OpenDoor();
+                    }
+
+                }
+
+
+            }
+
+
+        }
 
         void refreshDoors()
         {
@@ -42,6 +212,17 @@ namespace IngameScript
                 if (_d) Echo("Door management is disabled.");
                 return;
             }
+
+            _doorsCount = 0;
+            _doorsCountClosed = 0;
+            _doorsCountUnlocked = 0;
+
+            foreach (Door door in _doors) refreshDoor(door);
+
+
+
+
+            return;
 
             string marked_for_disabling = "";
             doors_count = 0;

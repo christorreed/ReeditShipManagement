@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.13 ($MDK_DATE$)";
+        string Version = "1.99.14 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -425,10 +425,14 @@ namespace IngameScript
                     else goto case 4;
 
                 case 4:
-                    if (_d) Echo("Refreshing " + DOORs.Count + " doors...");
+                    if (_d) Echo("Refreshing " + _doors.Count + " doors...");
                     refreshDoors();
-                    // manages doors, airlocks
+                    // manages doors
+                    if (_p) Echo("Took " + msSinceLast());
 
+                    if (_d) Echo("Refreshing " + _airlocks.Count + " airlocks...");
+                    refreshAirlocks();
+                    // manage airlocks
                     if (_p) Echo("Took " + msSinceLast());
 
                     break;
