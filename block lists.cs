@@ -64,8 +64,8 @@ namespace IngameScript
         private List<IMyThrust> THRUSTERs_ATMO = new List<IMyThrust>();
 
         // PB Lists
-        private List<IMyProgrammableBlock> PBs_EFC = new List<IMyProgrammableBlock>();
-        private List<IMyProgrammableBlock> PBs_NAVOS = new List<IMyProgrammableBlock>();
+        private List<IMyProgrammableBlock> _pbsEfc = new List<IMyProgrammableBlock>();
+        private List<IMyProgrammableBlock> _pbsNavOs = new List<IMyProgrammableBlock>();
 
         // LCD Lists
         private List<IMyTextPanel> LCDs = new List<IMyTextPanel>();
@@ -651,11 +651,14 @@ namespace IngameScript
                 var TempPB = b as IMyProgrammableBlock;
                 if (TempPB != null)
                 {
-                    if (b.CustomName.Contains(KEYWORD_PB_EFC))
-                        PBs_EFC.Add(TempPB);
-                    else if (b.CustomName.Contains(KEYWORD_PB_NAVOS))
-                        PBs_NAVOS.Add(TempPB);
                     if (I) INIT_NAMEs.Add(b, "PB Server");
+
+                    string[] lines = b.CustomData.Split('\n');
+                    if (lines[1].Split('=')[0] == "Sigma_Draconis_Expanse_Server ")
+                        _pbsEfc.Add(TempPB);
+                    else if (lines[0].Split(' ')[0] == "NavConfig")
+                        _pbsNavOs.Add(TempPB);
+                    
                     return false;
                 }
 
@@ -833,8 +836,8 @@ namespace IngameScript
             THRUSTERs_ATMO.Clear();
 
             // PB Lists
-            PBs_EFC.Clear();
-            PBs_NAVOS.Clear();
+            _pbsEfc.Clear();
+            _pbsNavOs.Clear();
 
             // LCD Lists
             LCDs.Clear();

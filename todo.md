@@ -31,6 +31,8 @@ x "An item with the same key has already been added" during
 - fuel tank loading command
 - make stance a class ffs
 - more aggressive naming into sub groups.  Like power.reactor
+- refactor the rest of the var names
+- booting improvements, lcd outputs
 
 x _appendDriveTypes
 x review and improve manageDoors
