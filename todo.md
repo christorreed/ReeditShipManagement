@@ -26,14 +26,14 @@ x "An item with the same key has already been added" during
 - > wish i could put comments *below* the section titles
 - fix runProgramable, make it run commands over sperate ticks
 - add toolcore welder control (setToolActivate, iterateWelders)
-- review and improve manageDoors
 - review and improve updateLcds 
 - review and improve setStance
 - fuel tank loading command
-- _appendDriveTypes
 - make stance a class ffs
 - more aggressive naming into sub groups.  Like power.reactor
 
+x _appendDriveTypes
+x review and improve manageDoors
 x handle fixed weapons better
 x confirm if to also check for blocks for ship names
 x experiment with ini, use for config (updateCustomData)

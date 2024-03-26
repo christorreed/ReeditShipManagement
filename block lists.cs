@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using VRage;
 using VRage.Collections;
 using VRage.Game;
@@ -301,7 +302,30 @@ namespace IngameScript
                     else
                     {
                         THRUSTERs_EPSTEIN.Add(TempThruster);
-                        if (I) INIT_NAMEs.Add(b, "Epstein");
+
+                        if (I) 
+                        {
+                            string append = "";
+
+                            if (_appendDriveTypes)
+                            {
+                                try
+                                {
+                                    append = b.DisplayName.Split('"')[1];
+                                    append =
+                                        _nameDelimiter +
+                                        append[0].ToString().ToUpper() +
+                                        append.Substring(1).ToLower();
+                                }
+                                catch
+                                {
+                                    if (_d) Echo("Failed to get drive type from " + b.DisplayName);
+                                }
+
+                            }
+                            INIT_NAMEs.Add(b, "Epstein" + append);
+                        }
+
                     }
                     return false;
                 }
@@ -852,9 +876,9 @@ namespace IngameScript
             // setup the block naming...
             if (I)
             {
-                string Append = "";
-                if (_appendWeaponTypes) Append = _nameDelimiter + init;
-                INIT_NAMEs.Add(b, "PDC" + Append);
+                string append = "";
+                if (_appendWeaponTypes) append = _nameDelimiter + init;
+                INIT_NAMEs.Add(b, "PDC" + append);
             }
 
             return false;

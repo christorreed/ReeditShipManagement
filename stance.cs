@@ -24,9 +24,6 @@ namespace IngameScript
     {
         void setStance(string stance)
         {
-            // todo
-            // review this method
-
             bool found = false;
             for (int i = 0; i < _stanceNames.Count; i++)
             {
