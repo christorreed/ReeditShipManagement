@@ -373,11 +373,11 @@ namespace IngameScript
             }
 
             // handle doors
-            if (doors_count_unlocked > 0)
+            if (_doorsCountUnlocked > 0)
             {
                 LCDAlerts.Add(new ALERT(
-                    doors_count_unlocked + " doors are insecure",
-                    doors_count_unlocked + " doors are insecure",
+                    _doorsCountUnlocked + " doors are insecure",
+                    _doorsCountUnlocked + " doors are insecure",
                     0));
             }
 
@@ -494,9 +494,9 @@ namespace IngameScript
 
             // handle doors
             //string output_doors = (doors_count_closed + "/" + doors_count).PadLeft(15);
-            if (doors_count > doors_count_closed)
+            if (_doorsCount > _doorsCountClosed)
             {
-                int open = (doors_count - doors_count_closed);
+                int open = (_doorsCount - _doorsCountClosed);
                 LCDAlerts.Add(new ALERT(
                     open + " doors are open",
                     open + " doors are open",

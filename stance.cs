@@ -145,7 +145,7 @@ namespace IngameScript
             // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
             if (_stances[S][2] == 2)
             {
-                if (_d) Echo("Setting " + DOORs.Count + " doors to locked because we are in combat (rails set to free-fire).");
+                if (_d) Echo("Setting " + _doors.Count + " doors to locked because we are in combat (rails set to free-fire).");
                 setDoorsLock("locked", "");
             }
 
