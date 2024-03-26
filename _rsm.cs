@@ -418,7 +418,11 @@ namespace IngameScript
                     if (_d) Echo("Refreshing " + LIDARs.Count + " lidars...");
                     refreshLidars(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
                     // checks integrity
+                    if (_p) Echo("Took " + msSinceLast());
 
+                    if (_d) Echo("Refreshing pb servers...");
+                    refreshPbServers();
+                    // checks for buffered commands and sends them
                     if (_p) Echo("Took " + msSinceLast());
 
                     if (BOOTING) break;
@@ -670,6 +674,13 @@ namespace IngameScript
             catch (Exception ex)
             {
                 WC_PB_API = null;
+
+                ALERTS.Add(new ALERT(
+                    "WcPbApi Error!",
+                    "WcPbApi failed to start!\n" + ex.Message
+                    , 1
+                    ));
+
                 Echo("WcPbAPI failed to activate!");
                 Echo(ex.Message);
                 return;
@@ -678,7 +689,6 @@ namespace IngameScript
 
         void isThereAnEchoInHere() // Outputs stuff to the console.
         {
-            
             string Output = 
                 "REEDIT SHIP MANAGEMENT \n\n|- V " + Version +
                 "\n|- Stance: " + _stanceNames[S] + "(" + S + ")" +
@@ -687,7 +697,7 @@ namespace IngameScript
             if (BOOTING)
                 Output += "\n|- Booting " + BOOT_STEP;              
 
-            if (_p)
+            if (_p) // if we are profiling, profile...
             {
                 PROFILER.Run();
 
@@ -696,28 +706,22 @@ namespace IngameScript
                     "\n|- Runtime Max: " + Math.Round(PROFILER.MaxRuntimeMs, 4) + " ms" +
                     "\n|- Instructions: " + INSTRUCTIONS + " (" + INSTRUCTIONS_MAX + ")";
             }
-
-
-
             Echo(Output + "\n");
-
-
         }
-        long TIME = 0;
+
+        long _lastTimeStamp = 0;
         string msSinceLast()
         {
-            //if (!_p) return "";
-
             long Now = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-            if (TIME == 0)
+            if (_lastTimeStamp == 0)
             {
-                TIME = Now;
+                _lastTimeStamp = Now;
                 return "0 ms";
             }
 
-            long Res = Now - TIME;
-            TIME = Now;
+            long Res = Now - _lastTimeStamp;
+            _lastTimeStamp = Now;
 
             return Res + " ms";
         }

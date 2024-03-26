@@ -1,5 +1,7 @@
 # debugs
 
+- hudlcd:toggle:pattern not working
+
 x first init, get zero value
 x make stuff faster
 x fuel tank loading freq might need to go up

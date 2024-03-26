@@ -82,9 +82,11 @@ namespace IngameScript
             if (_d) Echo("Setting " + BATTERIEs.Count + " batteries to = " + _stances[S][16]);
             setBatteries(_stances[S][16]);
 
+            // set h2 tanks
             if (_d) Echo("Setting " + TANKs_H2.Count + " H2 tanks to stockpile = " + _stances[S][16]);
             setH2Tanks(_stances[S][16]);
 
+            // set o2 tanks
             if (_d) Echo("Setting " + TANKs_O2.Count + " O2 tanks to stockpile = " + _stances[S][16]);
             setO2Tanks(_stances[S][16]);
 
@@ -127,14 +129,15 @@ namespace IngameScript
 
             }
 
+            // set aux
             if (_d) Echo("Setting " + AUXILIARIEs.Count + " aux block to " + _stances[S][20]);
             setAuxiliaries(_stances[S][20]);
 
-
+            // set extractors
             if (_d) Echo("Setting " + EXTRACTORs.Count + " extrators to " + _stances[S][21]);
             setExtractors(_stances[S][21]);
 
-
+            // set hangar doors
             if (_d) Echo("Setting " + DOORs_HANGAR.Count + " hangar doors units to " + _stances[S][23]);
             setHangarDoors(_stances[S][23]);
 
