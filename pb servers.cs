@@ -78,21 +78,30 @@ namespace IngameScript
             // EFC
             // if we have already run this tick
             // buffer this command
-            if (script == "EFC" && _pbCommandRanEfc)
+            if (script == "EFC")
             {
+                if (_pbsEfc.Count < 1) return;
 
-                _pbCommandsBufferEfc.Add(argument);
-                return;
+                if (_pbCommandRanEfc)
+                {
+                    _pbCommandsBufferEfc.Add(argument);
+                    return;
+                }
             }
 
             // NavOS
             // if we have already run this tick
             // buffer this command
-            if (script == "NavOS" && _pbCommandRanNavOs)
+            if (script == "NavOS")
             {
+                // if we don't even have such a Pb, bail
+                if (_pbsNavOs.Count < 1) return;
 
-                _pbCommandsBufferNavOs.Add(argument);
-                return;
+                if (_pbCommandRanNavOs)
+                {
+                    _pbCommandsBufferNavOs.Add(argument);
+                    return;
+                }
             }
 
             // otherwise, run right away

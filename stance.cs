@@ -152,40 +152,34 @@ namespace IngameScript
             // colour sync for non RSM LCDs
             syncLcdColours();
 
+            // prep pb commands
 
-
-            // todo
-            // redo server integration
-            // spread over more than one tick
-            // also build NavOS integration
-
-            /*
-            if (_d) Echo("Setting " + serversEfc.Count + " [EFC] servers to boost = " + _stances[S][17]
-                );
-            for (int i = 0; i < serversEfc.Count; i++)
+            // this one first bc it's most important.
+            // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
+            if (_stances[S][19] == 1)
             {
-                if (serversEfc[i].IsFunctional && serversEfc[i].CustomName.Contains(_shipName))
-                {
-
-                    // 17: EFC boost; 0: off, 1: on
-                    if (_stances[S][17] == 1)
-                        runProgramable(serversEfc[i], "Boost On");
-                    else
-                        runProgramable(serversEfc[i], "Boost Off");
-
-                    // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
-                    if (_stances[S][18] > 0)
-                    {
-                        runProgramable(serversEfc[i], "Set Burn " + BURN_PERCENTAGES[_stances[S][18]]);
-                    }
-
-
-                    // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-                    if (_stances[S][19] == 1)
-                        runProgramable(serversEfc[i], "Off");
-                }
+                addPbServerCommand("Off", "EFC");
+                addPbServerCommand("Abort", "NavOS");
             }
-            */
+            
+
+            // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
+            if (_stances[S][18] > 0)
+            {
+                addPbServerCommand("Set Burn " + BURN_PERCENTAGES[_stances[S][18]], "EFC");
+                addPbServerCommand("Thrust Set " + BURN_PERCENTAGES[_stances[S][18]], "NavOS");
+            }
+
+
+            // 17: EFC boost; 0: off, 1: on
+            if (_stances[S][17] == 1)
+            {
+                addPbServerCommand("Boost On", "EFC");
+            }
+            else
+            {
+                addPbServerCommand("Boost Off", "EFC");
+            }
 
             if (_d) Echo("Finished setting stance.");
         }
