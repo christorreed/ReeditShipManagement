@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.16 ($MDK_DATE$)";
+        string Version = "1.99.17 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -71,8 +71,7 @@ namespace IngameScript
         // litres of fuel in a jerry can
         const double CAPACITY_JERRY_CAN = 50000;
 
-        // EFC/NavOS set burn percentages
-        int[] BURN_PERCENTAGES = new int[] { 0, 5, 25, 50, 75, 100 };
+        
 
         // Warning Variables -----------------------------------------------------------------
 
@@ -87,10 +86,9 @@ namespace IngameScript
 
         // the current stance index
         // of the _stances & _stanceNames lists
-        int S = 0;
+        //int S = 0;
 
-        // the name of the current stance.
-        string _currentStance = "N/A";
+
 
         // the current ship calculated fuel percentage.
         // starts at 100 so we don't refuel before we check.
@@ -317,12 +315,12 @@ namespace IngameScript
             // lots of block refreshes use this
             // to determine if to enforce power status on those blocks
             // 22: keep-alives; 0: ignore, 1: force on, 2: force off
-            if (_stances[S][22] == 1)
+            if (_currentStance.KeepAlives == ToggleModes.On)
             {
                 ADJUST_KEEP_ALIVES = true;
                 ADJUST_KEEP_ALIVES_TO = true;
             }
-            else if (_stances[S][22] == 2)
+            else if (_currentStance.KeepAlives == ToggleModes.Off)
             {
                 ADJUST_KEEP_ALIVES = true;
             }
@@ -395,7 +393,7 @@ namespace IngameScript
 
                 case 1:
                     if (_d) Echo("Refreshing " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
-                    refreshPowerBlocks(_stances[S][16]);
+                    refreshPowerBlocks(_currentStance.TankAndBatteryMode);
                     // checks integrity, sets power on,
                     // calcs power, batt discharge mgmt
 
@@ -691,7 +689,7 @@ namespace IngameScript
         {
             string Output = 
                 "REEDIT SHIP MANAGEMENT \n\n|- V " + Version +
-                "\n|- Stance: " + _stanceNames[S] + "(" + S + ")" +
+                "\n|- Stance: " + _currentStanceName +
                 "\n|- Step: " + RARE_STEP + "/" + _blockRefreshFreq + " (" + OCCASIONAL_STEP + ")";
 
             if (BOOTING)

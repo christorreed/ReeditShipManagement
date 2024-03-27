@@ -316,7 +316,7 @@ namespace IngameScript
                 h2_priority = 2;
             }
      
-            if (_stances[S][21] > 1)
+            if (_currentStance.ExtractorMode != ExtractorModes.Off)
             {
                 if (NO_SPARE_TANKS)
                 {
@@ -531,32 +531,38 @@ namespace IngameScript
             // Build Subsystem Integrity
             // -------------------------
 
-            int[] CurrentStance = _stances[S];
-
             string sec_integrity =
-
                 "──┤ Subsystem Integrity ├────" + basic_spinner + "──\n\n";
+
+            string empty = sec_integrity.ToString();
+
+            string mainThrusterStance = nameof(_currentStance.MainDriveMode).Substring(3).ToUpper();
+            string rcsThrusterStance = nameof(_currentStance.ManeuveringThrusterMode).Substring(3).ToUpper();
+            string tanksAndBatteriesStance = nameof(_currentStance.TankAndBatteryMode).Substring(3).ToUpper();
+            string pdcsStance = nameof(_currentStance.PdcMode).Substring(3).ToUpper();
+            string torpStance = nameof(_currentStance.TorpedoMode).Substring(3).ToUpper();
+            string railStance = nameof(_currentStance.RailgunMode).Substring(3).ToUpper();
 
             try
             {
                 if (_initThrustMain > 0)
-                    sec_integrity += "Epstein   [" + generateBar(INTEGRITY_THRUSTERs_MAIN) + "] " + (INTEGRITY_THRUSTERs_MAIN + "% ").PadLeft(5) + STANCE_DATA_OUT_MAINTHRUST[CurrentStance[3]] + "\n";
+                    sec_integrity += "Epstein   [" + generateBar(INTEGRITY_THRUSTERs_MAIN) + "] " + (INTEGRITY_THRUSTERs_MAIN + "% ").PadLeft(5) + mainThrusterStance + "\n";
                 if (_initThrustRCS > 0)
-                    sec_integrity += "RCS       [" + generateBar(INTEGRITY_THRUSTERs_RCS) + "] " + (INTEGRITY_THRUSTERs_RCS + "% ").PadLeft(5) + STANCE_DATA_OUT_RCS[CurrentStance[4]] + "\n";
+                    sec_integrity += "RCS       [" + generateBar(INTEGRITY_THRUSTERs_RCS) + "] " + (INTEGRITY_THRUSTERs_RCS + "% ").PadLeft(5) + rcsThrusterStance + "\n";
                 if (_initReactors > 0)
                     sec_integrity += "Reactors  [" + generateBar(INTEGRITY_REACTORs) + "] " + (INTEGRITY_REACTORs + "% ").PadLeft(5) + "    \n";
                 if (_initBatteries > 0)
-                    sec_integrity += "Batteries [" + generateBar(INTEGRITY_BATTERIEs) + "] " + (INTEGRITY_BATTERIEs + "% ").PadLeft(5) + STANCE_DATA_OUT_BATTS[CurrentStance[16]] + "\n";
+                    sec_integrity += "Batteries [" + generateBar(INTEGRITY_BATTERIEs) + "] " + (INTEGRITY_BATTERIEs + "% ").PadLeft(5) + tanksAndBatteriesStance + "\n";
                 if (_initPdcs > 0)
-                    sec_integrity += "PDCs      [" + generateBar(INTEGRITY_PDCs) + "] " + (INTEGRITY_PDCs + "% ").PadLeft(5) + STANCE_DATA_OUT_PDCS[CurrentStance[1]] + "\n";
+                    sec_integrity += "PDCs      [" + generateBar(INTEGRITY_PDCs) + "] " + (INTEGRITY_PDCs + "% ").PadLeft(5) + pdcsStance + "\n";
                 if (_initTorpLaunchers > 0)
-                    sec_integrity += "Torpedoes [" + generateBar(INTEGRITY_TORPs) + "] " + (INTEGRITY_TORPs + "% ").PadLeft(5) + STANCE_DATA_OUT_TOGGLE[CurrentStance[0]] + "\n";
+                    sec_integrity += "Torpedoes [" + generateBar(INTEGRITY_TORPs) + "] " + (INTEGRITY_TORPs + "% ").PadLeft(5) + torpStance + "\n";
                 if (_initKinetics > 0)
-                    sec_integrity += "Railguns  [" + generateBar(INTEGRITY_RAILs) + "] " + (INTEGRITY_RAILs + "% ").PadLeft(5) + STANCE_DATA_OUT_RAILS[CurrentStance[2]] + "\n";
+                    sec_integrity += "Railguns  [" + generateBar(INTEGRITY_RAILs) + "] " + (INTEGRITY_RAILs + "% ").PadLeft(5) + railStance + "\n";
                 if (_initH2 > 0)
-                    sec_integrity += "H2 Tanks  [" + generateBar(INTEGRITY_H2) + "] " + (INTEGRITY_H2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
+                    sec_integrity += "H2 Tanks  [" + generateBar(INTEGRITY_H2) + "] " + (INTEGRITY_H2 + "% ").PadLeft(5) + tanksAndBatteriesStance + "\n";
                 if (_initO2 > 0)
-                    sec_integrity += "O2 Tanks  [" + generateBar(INTEGRITY_O2) + "] " + (INTEGRITY_O2 + "% ").PadLeft(5) + STANCE_DATA_OUT_TANKS[CurrentStance[16]] + "\n";
+                    sec_integrity += "O2 Tanks  [" + generateBar(INTEGRITY_O2) + "] " + (INTEGRITY_O2 + "% ").PadLeft(5) + tanksAndBatteriesStance + "\n";
                 if (_initGyros > 0)
                     sec_integrity += "Gyros     [" + generateBar(INTEGRITY_GYROs) + "] " + (INTEGRITY_GYROs + "% ").PadLeft(5) + "    \n";
                 if (_initCargos > 0)
@@ -568,7 +574,7 @@ namespace IngameScript
             catch { }
 
 
-            if (sec_integrity == "-- Subsystem Integrity ------" + spinner + "--" + "\n\n") // nothing init basically.
+            if (sec_integrity == empty + "\n\n") // nothing init basically.
                 sec_integrity = LCD_DIVIDER + "\n\n"
                     + "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
 
@@ -597,7 +603,7 @@ namespace IngameScript
             string sec_header =
 
                  centreText(_shipName.ToUpper(), LCD_WIDTH) + "\n" +
-                 "  " + spinner + " " + centreText(_currentStance, LCD_WIDTH - 10) + " " + spinner + "  \n" +
+                 "  " + spinner + " " + centreText(_currentStanceName, LCD_WIDTH - 10) + " " + spinner + "  \n" +
 
 
                 //centreText(spinner + " " + _shipName.ToUpper() + " " + spinner, LCD_WIDTH) + "\n" +
@@ -813,11 +819,7 @@ namespace IngameScript
                     if (show_header_overlay)
                         LCDs_RSM[i].FontColor = LCD_OVERLAY_COLOUR;
                     else
-                        LCDs_RSM[i].FontColor = new Color(
-                            CurrentStance[12],
-                            CurrentStance[13],
-                            CurrentStance[14],
-                            CurrentStance[15]);
+                        LCDs_RSM[i].FontColor = _currentStance.LcdTextColour;
                 }
             }
 
@@ -829,19 +831,19 @@ namespace IngameScript
         // colour sync for non RSM LCDs
         void syncLcdColours()
         {
-
             if (LCDs_CS.Count > 0)
             {
                 if (_d) Echo("Setting " + LCDs_CS.Count + " colour sync LCDs.");
 
                 foreach (IMyTextPanel LCD in LCDs_CS)
                 {
-                    LCD.FontColor = new Color(
-                        _stances[S][12],
-                        _stances[S][13],
-                        _stances[S][14],
-                        _stances[S][15]
-                        );
+                    LCD.FontColor = _currentStance.LcdTextColour;
+                }
+
+                // do the RSM ones as well while we're at it.
+                foreach (IMyTextPanel LCD in LCDs_RSM)
+                {
+                    LCD.FontColor = _currentStance.LcdTextColour;
                 }
             }
         }
@@ -986,7 +988,5 @@ namespace IngameScript
                 }
             }
         }
-
-
     }
 }

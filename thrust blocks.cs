@@ -80,20 +80,22 @@ namespace IngameScript
             }
         }
 
-        private void setMainThrusters(int state, int state_rcs)
+        private void setMainThrusters(MainDriveModes mode, ManeuveringThrusterModes modeRcs)
         {
+            if (mode == MainDriveModes.NoChange) return;
+
             foreach (IMyThrust Thruster in THRUSTERs_EPSTEIN)
             {
-                setMainThruster(Thruster, state, state_rcs);
+                setMainThruster(Thruster, mode, modeRcs);
             }
 
             foreach (IMyThrust Thruster in THRUSTERs_CHEM)
             {
-                setMainThruster(Thruster, state, state_rcs, true);
+                setMainThruster(Thruster, mode, modeRcs, true);
             }
         }
 
-        private void setMainThruster(IMyThrust Thruster, int state, int state_rcs, bool chem = false)
+        private void setMainThruster(IMyThrust Thruster, MainDriveModes mode, ManeuveringThrusterModes modeRcs, bool chem = false)
         {
             bool DockingThruster = Thruster.CustomName.Contains(_keywordThrustersDocking);
 
@@ -101,9 +103,7 @@ namespace IngameScript
             // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
             if (DockingThruster)
             {
-                if (state_rcs == 9) // no change.
-                    return; // so do nothing
-                else if (state_rcs > 0)
+                if (modeRcs != ManeuveringThrusterModes.Off && modeRcs != ManeuveringThrusterModes.AtmoOnly)
                     Thruster.Enabled = true;
                 else
                     Thruster.Enabled = false;
@@ -112,23 +112,20 @@ namespace IngameScript
             // Guess it's a main thruster...
 
             // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
-            else if (state == 9) // no change
-            {
-                return; // so do nothing
-            }
-            else // ...and we def doing something to it...
+
+            else
             {
                 bool MinThruster = Thruster.CustomName.Contains(_keywordThrustersMinimum);
 
                 // lets decide what that is...
                 if (
-                    (state == 1) // On
+                    (mode == MainDriveModes.On) // On
                     ||
-                    (state == 2 && MinThruster) // Min Only
+                    (mode == MainDriveModes.Minimum && MinThruster) // Min Only
                     ||
-                    (state == 3 && !chem) // Eps only
+                    (mode == MainDriveModes.EpsteinOnly && !chem) // Eps only
                     ||
-                    (state == 4 && chem) // Chems only
+                    (mode == MainDriveModes.ChemOnly && chem) // Chems only
                     )
                 {
                     Thruster.Enabled = true;
@@ -171,57 +168,52 @@ namespace IngameScript
             }
         }
 
-        private void setRcsThrusters(int state)
+        private void setRcsThrusters(ManeuveringThrusterModes mode)
         {
             foreach (IMyThrust Thruster in THRUSTERs_RCS)
             {
                 if (Thruster != null)
-                    setRcsThruster(Thruster, state);
+                    setRcsThruster(Thruster, mode);
             }
 
             foreach (IMyThrust Thruster in THRUSTERs_ATMO)
             {
                 if (Thruster != null)
-                    setRcsThruster(Thruster, state, true);
+                    setRcsThruster(Thruster, mode, true);
             }
         }
 
-        private void setRcsThruster(IMyThrust Thruster, int state, bool atmo = false)
+        private void setRcsThruster(IMyThrust Thruster, ManeuveringThrusterModes mode, bool atmo = false)
         {
             // Guess it's a main thruster...
 
             // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
-            if (state == 9) // no change
-            {
-                return; // so do nothing
-            }
-            else // ...and we def doing something to it...
-            {
-                // this seems like it's around the wrong way.
-                // but its not...
-                bool Forward = Thruster.GridThrustDirection == Vector3I.Backward;
-                bool Reverse = Thruster.GridThrustDirection == Vector3I.Forward;
+
+            // this seems like it's around the wrong way.
+            // but its not...
+            bool Forward = Thruster.GridThrustDirection == Vector3I.Backward;
+            bool Reverse = Thruster.GridThrustDirection == Vector3I.Forward;
 
                 // ...lets decide what that is...
-                if (
-                    (state == 1) // On
-                    ||
-                    (state == 2 && !Forward) // all on, fwd off.
-                    ||
-                    (state == 3 && !Reverse) // all on, rev off.
-                    ||
-                    (state == 4 && !atmo) // all rcs on, atmo off
-                    ||
-                    (state == 5 && atmo) // all rcs off, atmo on
-                    )
-                {
-                    Thruster.Enabled = true;
-                }
-                else
-                {
-                    Thruster.Enabled = false;
-                }
+            if (
+                (mode == ManeuveringThrusterModes.On) // On
+                ||
+                (mode == ManeuveringThrusterModes.ForwardOff && !Forward) // all on, fwd off.
+                ||
+                (mode == ManeuveringThrusterModes.ReverseOff && !Reverse) // all on, rev off.
+                ||
+                (mode == ManeuveringThrusterModes.RcsOnly && !atmo) // all rcs on, atmo off
+                ||
+                (mode == ManeuveringThrusterModes.AtmoOnly && atmo) // all rcs off, atmo on
+                )
+            {
+                Thruster.Enabled = true;
             }
+            else
+            {
+                Thruster.Enabled = false;
+            }
+            
         }
     }
 }

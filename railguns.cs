@@ -44,7 +44,7 @@ namespace IngameScript
                     ACTUAL_RAILs++;
 
                     // turn railguns on for 1+ on [2]
-                    (Rail as IMyConveyorSorter).Enabled = _stances[S][2] > 0;
+                    (Rail as IMyConveyorSorter).Enabled = _currentStance.RailgunMode != RailgunModes.Off;
 
                     if (!RAILs_HAVE_TARGET)
                     {
@@ -65,15 +65,15 @@ namespace IngameScript
             INTEGRITY_RAILs = Math.Round(100 * (ACTUAL_RAILs / _initKinetics));
         }
 
-        private void setRails(int state)
+        private void setRails(RailgunModes mode)
         {
+            if (mode == RailgunModes.NoChange) return;
+
             foreach (IMyTerminalBlock Rail in RAILs)
             {
                 if (Rail != null & Rail.IsFunctional)
                 {
-                    // state
-                    // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-                    if (state == 0)
+                    if (mode == RailgunModes.Off)
                     {
                         (Rail as IMyConveyorSorter).Enabled = false;
                     }
@@ -86,20 +86,21 @@ namespace IngameScript
                             Rail.SetValue("WC_Grids", true);
                             Rail.SetValue("WC_LargeGrid", true);
                             Rail.SetValue("WC_SmallGrid", true);
-
                             Rail.SetValue("WC_SubSystems", true);
                             setBlockRepelOff(Rail);
                         }
 
                         if (_setTurretFireMode)
                         {
-                            if (state < 2) // hold fire if less than 2
+                            if (mode == RailgunModes.OpenFire) 
                             {
-                                setBlockFireModeManual(Rail);
-                            }
-                            else // weapons free
-                            {
+                                // weapons free
                                 setBlockFireModeAuto(Rail);
+                            }
+                            else 
+                            {
+                                // hold fire
+                                setBlockFireModeManual(Rail);
                             }
                         }
                     }

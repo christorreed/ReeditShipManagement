@@ -225,18 +225,18 @@ namespace IngameScript
 
         // Hangar Doors -----------------------------------------------------------------
 
-        void setHangarDoors(int state)
+        void setHangarDoors(HangarDoorModes mode)
         {
             // 23: hangar doors; 0: closed, 1: open, 2: no change
 
-            if (state == 2) return; // no change
+            if (mode == HangarDoorModes.NoChange) return; // no change
 
             foreach (IMyAirtightHangarDoor Hangar in DOORs_HANGAR)
             {
                 if (Hangar == null)
                     continue;
 
-                if (state == 0)
+                if (mode == HangarDoorModes.Closed)
                     Hangar.CloseDoor();
                 else
                     Hangar.OpenDoor();

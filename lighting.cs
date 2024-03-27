@@ -24,54 +24,62 @@ namespace IngameScript
     {
         // Spotlights -----------------------------------------------------------------
 
-        void setSpotlights(int state)
+        void setSpotlights(SpotlightModes mode)
         {
+            if (mode == SpotlightModes.NoChange) return;
+
             foreach (IMyReflectorLight Spot in LIGHTs_SPOT)
             {
                 if (Spot == null) continue;
 
                 // 5: spotlights; 0: off, 1: on, 2: on max radius
-                if (state == 0)
+                if (mode == SpotlightModes.Off)
                     Spot.Enabled = false; // off
                 else
                 {
                     Spot.Enabled = false; // on
-                    if (state == 2) Spot.Radius = 9999;
+                    if (mode == SpotlightModes.OnMax) Spot.Radius = 9999;
                 }
             }
         }
 
         // Exterior Lights -----------------------------------------------------------------
 
-        void setExteriorLights(int state, Color colour)
+        void setExteriorLights(LightToggleModes mode, Color colour)
         {
+            if (mode == LightToggleModes.NoChange) return;
+
             foreach (IMyLightingBlock Light in LIGHTs_EXTERIOR)
             {
                 if (Light == null) continue;
 
-                if (state == 0)
+                if (mode == LightToggleModes.Off)
                     Light.Enabled = false;
                 else
                     Light.Enabled = true;
 
-                Light.SetValue("Color", colour);
+                if (mode != LightToggleModes.OnNoColourChange)
+                    Light.SetValue("Color", colour);
             }
         }
 
         // Interior Lights -----------------------------------------------------------------
 
-        void setInteriorLights(int state, Color colour)
+        void setInteriorLights(LightToggleModes mode, Color colour)
         {
+            if (mode == LightToggleModes.NoChange) return;
+
             foreach (IMyLightingBlock Light in LIGHTs_EXTERIOR)
             {
                 if (Light == null) continue;
 
-                if (state == 0)
+                if (mode == LightToggleModes.Off)
                     Light.Enabled = false;
                 else
                     Light.Enabled = true;
 
-                Light.SetValue("Color", colour);
+                if (mode != LightToggleModes.OnNoColourChange)
+                    Light.SetValue("Color", colour);
             }
         }
 
@@ -81,23 +89,25 @@ namespace IngameScript
         Color COLOUR_PORT = new Color(255, 0, 0, 255);
         Color COLOUR_STARBOARD = new Color(255, 0, 0, 255);
 
-        void setNavLights(int state)
+        void setNavLights(LightToggleModes mode)
         {
+            if(mode == LightToggleModes.NoChange) return;
+
             foreach (IMyLightingBlock Light in LIGHTs_NAV_PORT)
             {
-                setNavLight(Light, state, COLOUR_PORT);
+                setNavLight(Light, mode, COLOUR_PORT);
             }
 
             foreach (IMyLightingBlock Light in LIGHTs_NAV_STARBOARD)
             {
-                setNavLight(Light, state, COLOUR_STARBOARD);
+                setNavLight(Light, mode, COLOUR_STARBOARD);
             }
         }
 
-        void setNavLight(IMyLightingBlock Light, int state, Color colour)
+        void setNavLight(IMyLightingBlock Light, LightToggleModes mode, Color colour)
         {
             if (Light == null) return;
-            if (state == 0)
+            if (mode == LightToggleModes.Off)
             {
                 Light.Enabled = false;
                 Light.SetValue("Color", COLOUR_BLACK);
@@ -105,7 +115,8 @@ namespace IngameScript
             else
             {
                 Light.Enabled = true;
-                Light.SetValue("Color", colour);
+                if (mode != LightToggleModes.OnNoColourChange)
+                    Light.SetValue("Color", colour);
             }              
         }
     }

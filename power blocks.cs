@@ -25,11 +25,11 @@ namespace IngameScript
     {
         private double MAX_POWER;
 
-        private void refreshPowerBlocks(int state)
+        private void refreshPowerBlocks(TankAndBatteryModes mode)
         {
             MAX_POWER = 0;
 
-            refreshBatteries(state);
+            refreshBatteries(mode);
             refreshReactors();
         }
 
@@ -40,7 +40,7 @@ namespace IngameScript
         private double ACTUAL_BATTERIEs = 0;
         private double INTEGRITY_BATTERIEs = 0;
 
-        private void refreshBatteries(int state)
+        private void refreshBatteries(TankAndBatteryModes mode)
         {
             TOTAL_BATTERIEs = 0;
             ACTUAL_BATTERIEs = 0;
@@ -56,7 +56,7 @@ namespace IngameScript
                     // always turn batteries on
                     Battery.Enabled = true;
 
-                    bool Discharging = state == 2;
+                    bool Discharging = mode == TankAndBatteryModes.Discharge;
                     // if we're discharging in this stance
                     // and we're using discharge management
                     // choose if to discharge or auto based on
@@ -82,8 +82,9 @@ namespace IngameScript
             }
         }
 
-        private void setBatteries(int state)
+        private void setBatteries(TankAndBatteryModes mode)
         {
+            if (mode == TankAndBatteryModes.NoChange) return;
 
             foreach (IMyBatteryBlock Battery in BATTERIEs)
             {
@@ -94,10 +95,10 @@ namespace IngameScript
 
                     // state
                     // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
-                    if (state == 0)
+                    if (mode == TankAndBatteryModes.Auto)
                         Battery.ChargeMode = ChargeMode.Auto;
                     
-                    else if (state == 1)
+                    else if (mode == TankAndBatteryModes.StockpileRecharge)
                         Battery.ChargeMode = ChargeMode.Recharge;
 
                     // if _manageBatteryDischarge is active, we will do this dynamically

@@ -39,9 +39,9 @@ namespace IngameScript
             }
         }
 
-        void setAuxiliaries(int state)
+        void setAuxiliaries(ToggleModes mode)
         {
-            // 20: auxiliary blocks; 0: off, 1: on
+            if (mode == ToggleModes.NoChange) return;
 
             foreach (IMyTerminalBlock Block in AUXILIARIEs)
             {
@@ -49,7 +49,7 @@ namespace IngameScript
 
                 try
                 {
-                    if (state == 0)
+                    if (mode == ToggleModes.Off)
                         Block.ApplyAction("OnOff_Off");
                     else
                         Block.ApplyAction("OnOff_On");

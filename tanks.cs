@@ -58,8 +58,10 @@ namespace IngameScript
             }
         }
 
-        private void setH2Tanks(int state)
+        private void setH2Tanks(TankAndBatteryModes mode)
         {
+            if (mode == TankAndBatteryModes.NoChange) return;
+
             foreach (IMyGasTank Tank in TANKs_H2)
             {
                 if (Tank == null) continue;
@@ -67,11 +69,10 @@ namespace IngameScript
                 // why would this ever be off
                 Tank.Enabled = true;
 
-                // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
-                if (state == 0)
-                    Tank.Stockpile = false;
-                else
+                if (mode == TankAndBatteryModes.StockpileRecharge)
                     Tank.Stockpile = true;
+                else
+                    Tank.Stockpile = false;
             }
         }
 
@@ -110,8 +111,10 @@ namespace IngameScript
             }
         }
 
-        private void setO2Tanks(int state)
+        private void setO2Tanks(TankAndBatteryModes mode)
         {
+            if (mode == TankAndBatteryModes.NoChange) return;
+
             foreach (IMyGasTank Tank in TANKs_O2)
             {
                 if (Tank == null) continue;
@@ -119,11 +122,10 @@ namespace IngameScript
                 // why would this ever be off
                 Tank.Enabled = true;
 
-                // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
-                if (state == 0)
-                    Tank.Stockpile = false;
-                else
+                if (mode == TankAndBatteryModes.StockpileRecharge)
                     Tank.Stockpile = true;
+                else
+                    Tank.Stockpile = false;
             }
         }
     }

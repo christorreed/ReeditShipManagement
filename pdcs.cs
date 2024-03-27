@@ -34,14 +34,21 @@ namespace IngameScript
 
             foreach (IMyTerminalBlock Pdc in PDCs)
             {
-                // turn pdcs on for 2+ on [1]
-                processPdc(Pdc, _stances[S][1] > 1);
+                // turn pdcs on
+                processPdc(Pdc,
+                    // except if off
+                    _currentStance.PdcMode != PdcModes.Off
+                    &&
+                    // or min defence
+                    _currentStance.PdcMode != PdcModes.MinDefence
+                    );
             }
 
             foreach (IMyTerminalBlock Pdc in PDCs_DEF)
             {
-                // turn defensive pdcs on for 1+ on [1]
-                processPdc(Pdc, _stances[S][1] > 0);
+                processPdc(Pdc,
+                    // except if off
+                    _currentStance.PdcMode != PdcModes.Off);
             }
 
             INTEGRITY_PDCs = Math.Round(100 * (ACTUAL_PDCs / _initPdcs));
@@ -53,32 +60,26 @@ namespace IngameScript
             {
                 ACTUAL_PDCs++;
 
-                // IsFull doesn't work because volume of a full inner PDC is...
-                // 1000000 / 1000002
-                // so instead now I just confirm that it's > 95% full.
-
                 (pdc as IMyConveyorSorter).Enabled = power_state;
-
             }
         }
 
-        private void setPdcs(int state)
+        private void setPdcs(PdcModes mode)
         {
+            if (mode == PdcModes.NoChange) return;
+
             foreach (IMyTerminalBlock Pdc in PDCs)
-
-
             {
                 if (Pdc != null & Pdc.IsFunctional)
                 {
-                    // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
-                    switch (state)
+                    switch (mode)
                     {
-                        case 0:
-                        case 1:
+                        case PdcModes.Off:
+                        case PdcModes.MinDefence:
                             // off
                             (Pdc as IMyConveyorSorter).Enabled = false;
                             break;
-                        case 2:
+                        case PdcModes.AllDefence:
                             // defence
                             (Pdc as IMyConveyorSorter).Enabled = true;
 
@@ -102,7 +103,7 @@ namespace IngameScript
                                 }
                             }
                             break;
-                        case 3:
+                        case PdcModes.Offence:
                             // offence
                             (Pdc as IMyConveyorSorter).Enabled = true;
 
@@ -127,11 +128,6 @@ namespace IngameScript
                                 }
                             }
                             break;
-
-                        case 4:
-                            // switch on only...
-                            (Pdc as IMyConveyorSorter).Enabled = true;
-                            break;
                     }
                 }
             }
@@ -140,16 +136,15 @@ namespace IngameScript
             {
                 if (Pdc != null & Pdc.IsFunctional)
                 {
-                    // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence
-                    switch (state)
+                    switch (mode)
                     {
-                        case 0:
+                        case PdcModes.Off:
                             // off
                             (Pdc as IMyConveyorSorter).Enabled = false;
                             break;
-                        case 1:
-                        case 2:
-                        case 3:
+                        case PdcModes.MinDefence:
+                        case PdcModes.AllDefence:
+                        case PdcModes.Offence:
                             // defence
                             (Pdc as IMyConveyorSorter).Enabled = true;
 
@@ -172,11 +167,6 @@ namespace IngameScript
                                     Echo("Strange PDC config error! Possible WC crash!");
                                 }
                             }
-                            break;
-
-                        case 4:
-                            // switch on only...
-                            (Pdc as IMyConveyorSorter).Enabled = true;
                             break;
                     }
                 }

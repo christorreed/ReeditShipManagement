@@ -26,16 +26,16 @@ x "An item with the same key has already been added" during
 - debug/test
 - find a way to provide default custom data mostly commented out.
 - > wish i could put comments *below* the section titles
-- fix runProgramable, make it run commands over sperate ticks
 - add toolcore welder control (setToolActivate, iterateWelders)
 - review and improve updateLcds 
-- review and improve setStance
 - fuel tank loading command
-- make stance a class ffs
 - more aggressive naming into sub groups.  Like power.reactor
 - refactor the rest of the var names
 - booting improvements, lcd outputs
 
+x make stance a class ffs
+x fix runProgramable, make it run commands over sperate ticks
+x review and improve setStance
 x _appendDriveTypes
 x review and improve manageDoors
 x handle fixed weapons better

@@ -22,21 +22,161 @@ namespace IngameScript
 {
     partial class Program
     {
+        class Stance
+        {
+            public ToggleModes TorpedoMode;
+            public PdcModes PdcMode;
+            public RailgunModes RailgunMode;
+            public MainDriveModes MainDriveMode;
+            public ManeuveringThrusterModes ManeuveringThrusterMode;
+            public SpotlightModes SpotlightMode;
+            public LightToggleModes ExteriorLightMode;
+            public Color ExteriorLightColour;
+            public LightToggleModes InteriorLightMode;
+            public Color InteriorLightColour;
+            public LightToggleModes NavLightMode;
+            public Color LcdTextColour;
+            public TankAndBatteryModes TankAndBatteryMode;
+            public int BurnPercentage;
+            public ToggleModes EfcBoost;
+            public KillOrAbortNavigationModes KillOrAbortNavigation;
+            public ToggleModes AuxMode;
+            public ExtractorModes ExtractorMode;
+            public ToggleModes KeepAlives;
+            public HangarDoorModes HangarDoorsMode;
+        }
+
+        // the name of the current stance.
+        string _currentStanceName = "N/A";
+
+        // the actual stance object
+        Stance _currentStance;
+
+        // default stance mode values
+        // strings so they can be used as default values
+        // by the MyIni parser
+        string _defaultTorpedoMode = "On";
+        string _defaultPdcMode = "Offence";
+        string _defaultRailgunMode = "OpenFire";
+        string _defaultMainDriveMode = "On";
+        string _defaultManeuveringThrusterMode = "On";
+        string _defaultSpotlightMode = "On";
+        string _defaultExteriorLightMode = "On";
+        string _defaultExteriorLightColour = "33, 144, 255, 255"; // reedit blue
+        string _defaultInteriorLightMode = "On";
+        string _defaultInteriorLightColour = "255, 214, 170, 255"; // 100W Tungsten
+        string _defaultNavLightMode = "On";
+        string _defaultLcdTextColour = "33, 144, 255, 255"; // reedit blue
+        string _defaultTankAndBatteryMode = "Auto";
+        int _defaultBurnPercentage = -1; // no change
+        string _defaultEfcBoost = "NoChange";
+        string _defaultKillOrAbortNavigation = "NoChange";
+        string _defaultAuxMode = "NoChange";
+        string _defaultExtractorMode = "KeepFull";
+        string _defaultKeepAlives = "On";
+        string _defaultHangarDoorMode = "NoChange";
+
+        enum ToggleModes
+        {
+            Off,
+            On,
+            NoChange
+        }
+
+        enum LightToggleModes
+        {
+            Off,
+            On,
+            NoChange,
+            OnNoColourChange
+        }
+
+        enum PdcModes
+        {
+            Off,
+            MinDefence,
+            AllDefence,
+            Offence,
+            AllOnOnly,
+            NoChange
+        }
+
+        enum RailgunModes
+        {
+            Off,
+            HoldFire,
+            OpenFire,
+            NoChange
+        }
+
+        enum MainDriveModes
+        {
+            Off,
+            On,
+            Minimum,
+            EpsteinOnly,
+            ChemOnly,
+            NoChange
+        }
+
+        enum ManeuveringThrusterModes
+        {
+            Off,
+            On,
+            ForwardOff,
+            ReverseOff,
+            RcsOnly,
+            AtmoOnly,
+            NoChange
+        }
+
+        enum SpotlightModes
+        {
+            On,
+            Off,
+            OnMax,
+            NoChange
+        }
+
+        enum TankAndBatteryModes
+        {
+            Auto,
+            StockpileRecharge,
+            Discharge,
+            NoChange
+        }
+
+        enum KillOrAbortNavigationModes
+        {
+            Abort,
+            NoChange
+        }
+
+        enum ExtractorModes
+        {
+            Off,
+            On,
+            FillWhenLow,
+            KeepFull,
+            //NoChange
+            // removing this option for extractors
+            // bc it will create issues later.
+        }
+
+        enum HangarDoorModes
+        {
+            Closed,
+            Open,
+            NoChange
+        }
+
         void setStance(string stance)
         {
-            bool found = false;
-            for (int i = 0; i < _stanceNames.Count; i++)
+            Stance newStance;
+
+            if (!_stances.TryGetValue(stance, out newStance))
             {
-                //Echo("? "+ stance + " == " + _stanceNames[i] + "");
-                if (stance.ToLower() == _stanceNames[i].ToLower())
-                {
-                    S = i;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
+                // the key isn't in the dictionary.
                 ALERTS.Add(new ALERT(
                     "NO SUCH STANCE!",
                     "A command was ignored because the provided stance doens't exist. Stance names are case sensitive!"
@@ -47,48 +187,50 @@ namespace IngameScript
 
             if (_d) Echo("Setting stance '" + stance + "'.");
 
-            _currentStance = stance;
+            // set the main stance vars
+            _currentStance = newStance;
+            _currentStanceName = stance;
 
             // update config
             setCustomData();
 
             // set rails
-            if (_d) Echo("Setting " + RAILs.Count + " railguns to " + _stances[S][2]);
-            setRails(_stances[S][2]);
+            if (_d) Echo("Setting " + RAILs.Count + " railguns to " + _currentStance.RailgunMode);
+            setRails(_currentStance.RailgunMode);
 
             // set torps
-            if (_d) Echo("Setting " + TORPs.Count + " torpedoes to " + _stances[S][0]);
-            setTorpedoes(_stances[S][0]);
+            if (_d) Echo("Setting " + TORPs.Count + " torpedoes to " + _currentStance.TorpedoMode);
+            setTorpedoes(_currentStance.TorpedoMode);
 
             // set pdcs
-            if (_d) Echo("Setting " + PDCs.Count + " PDCs, " + PDCs_DEF.Count + " defence PDCs to " + _stances[S][1]);
-            setPdcs(_stances[S][1]);
+            if (_d) Echo("Setting " + PDCs.Count + " PDCs, " + PDCs_DEF.Count + " defence PDCs to " + _currentStance.PdcMode);
+            setPdcs(_currentStance.PdcMode);
 
             // set main drives
             if (_d) Echo(
                 "Setting "
                 + THRUSTERs_EPSTEIN.Count + " epsteins, "
-                + THRUSTERs_CHEM.Count + " chems" + " to " + _stances[S][3]);
-            setMainThrusters(_stances[S][3], _stances[S][4]);
+                + THRUSTERs_CHEM.Count + " chems" + " to " + _currentStance.MainDriveMode);
+            setMainThrusters(_currentStance.MainDriveMode, _currentStance.ManeuveringThrusterMode);
 
             // set RCS
             if (_d) Echo(
                 "Setting "
                 + THRUSTERs_RCS.Count + " rcs, "
-                + THRUSTERs_ATMO.Count + " atmos" + " to " + _stances[S][11]);
-            setRcsThrusters(_stances[S][11]);
+                + THRUSTERs_ATMO.Count + " atmos" + " to " + _currentStance.ManeuveringThrusterMode);
+            setRcsThrusters(_currentStance.ManeuveringThrusterMode);
 
             // set batteries
-            if (_d) Echo("Setting " + BATTERIEs.Count + " batteries to = " + _stances[S][16]);
-            setBatteries(_stances[S][16]);
+            if (_d) Echo("Setting " + BATTERIEs.Count + " batteries to = " + _currentStance.TankAndBatteryMode);
+            setBatteries(_currentStance.TankAndBatteryMode);
 
             // set h2 tanks
-            if (_d) Echo("Setting " + TANKs_H2.Count + " H2 tanks to stockpile = " + _stances[S][16]);
-            setH2Tanks(_stances[S][16]);
+            if (_d) Echo("Setting " + TANKs_H2.Count + " H2 tanks to stockpile = " + _currentStance.TankAndBatteryMode);
+            setH2Tanks(_currentStance.TankAndBatteryMode);
 
             // set o2 tanks
-            if (_d) Echo("Setting " + TANKs_O2.Count + " O2 tanks to stockpile = " + _stances[S][16]);
-            setO2Tanks(_stances[S][16]);
+            if (_d) Echo("Setting " + TANKs_O2.Count + " O2 tanks to stockpile = " + _currentStance.TankAndBatteryMode);
+            setO2Tanks(_currentStance.TankAndBatteryMode);
 
             // set lighting
             if (_disableLightingControl)
@@ -98,54 +240,43 @@ namespace IngameScript
             else
             {
                 // set spotlights
-                if (_d) Echo("Setting " + LIGHTs_SPOT.Count + " spotlights to " + _stances[S][5]);
-                setSpotlights(_stances[S][5]);
+                if (_d) Echo("Setting " + LIGHTs_SPOT.Count + " spotlights to " + _currentStance.SpotlightMode);
+                setSpotlights(_currentStance.SpotlightMode);
 
                 // set exterior lights
-                if (_d) Echo("Setting " + LIGHTs_EXTERIOR.Count + " exterior lights to " + _stances[S][6]);
-                Color ColourExterior = new Color(
-                    _stances[S][7],
-                    _stances[S][8],
-                    _stances[S][9],
-                    _stances[S][10]
-                    );
-                setExteriorLights(_stances[S][6], ColourExterior);
+                if (_d) Echo("Setting " + LIGHTs_EXTERIOR.Count + " exterior lights to " + _currentStance.ExteriorLightMode);
+
+                setExteriorLights(_currentStance.ExteriorLightMode, _currentStance.ExteriorLightColour);
 
                 // set nav lights
-                if (_d) Echo("Setting " + LIGHTs_INTERIOR.Count + " exterior lights to " + _stances[S][11]);
-                Color ColourInterior = new Color(
-                    _stances[S][12],
-                    _stances[S][13],
-                    _stances[S][14],
-                    _stances[S][15]
-                    );
-                setInteriorLights(_stances[S][11], ColourInterior);
+                if (_d) Echo("Setting " + LIGHTs_INTERIOR.Count + " exterior lights to " + _currentStance.InteriorLightMode);
+                setInteriorLights(_currentStance.InteriorLightMode, _currentStance.InteriorLightColour);
 
                 if (_d) Echo(
                     "Setting "
                     + LIGHTs_NAV_PORT.Count + " port nav lights, "
-                    + LIGHTs_NAV_STARBOARD.Count + " starboard nav lights to " + _stances[S][6]);
-                setNavLights(_stances[S][6]);
+                    + LIGHTs_NAV_STARBOARD.Count + " starboard nav lights to " + _currentStance.NavLightMode);
+                setNavLights(_currentStance.NavLightMode);
 
             }
 
             // set aux
-            if (_d) Echo("Setting " + AUXILIARIEs.Count + " aux block to " + _stances[S][20]);
-            setAuxiliaries(_stances[S][20]);
+            if (_d) Echo("Setting " + AUXILIARIEs.Count + " aux block to " + _currentStance.AuxMode);
+            setAuxiliaries(_currentStance.AuxMode);
 
             // set extractors
-            if (_d) Echo("Setting " + EXTRACTORs.Count + " extrators to " + _stances[S][21]);
-            setExtractors(_stances[S][21]);
+            if (_d) Echo("Setting " + EXTRACTORs.Count + " extrators to " + _currentStance.ExtractorMode);
+            setExtractors(_currentStance.ExtractorMode);
 
             // set hangar doors
-            if (_d) Echo("Setting " + DOORs_HANGAR.Count + " hangar doors units to " + _stances[S][23]);
-            setHangarDoors(_stances[S][23]);
+            if (_d) Echo("Setting " + DOORs_HANGAR.Count + " hangar doors units to " + _currentStance.HangarDoorsMode);
+            setHangarDoors(_currentStance.HangarDoorsMode);
 
             // lock doors if we're in close combat
             // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
-            if (_stances[S][2] == 2)
+            if (_currentStance.RailgunMode == RailgunModes.OpenFire)
             {
-                if (_d) Echo("Setting " + _doors.Count + " doors to locked because we are in combat (rails set to free-fire).");
+                if (_d) Echo("Setting " + _doors.Count + " doors to locked because we are in combat (rails set to open fire).");
                 setDoorsLock("locked", "");
             }
 
@@ -155,31 +286,25 @@ namespace IngameScript
             // prep pb commands
 
             // this one first bc it's most important.
-            // 19: EFC kill; 0: no change, 1: run 'Off' on EFC.
-            if (_stances[S][19] == 1)
+            // NavOs/Efc Abort/Kill
+            if (_currentStance.KillOrAbortNavigation == KillOrAbortNavigationModes.Abort)
             {
                 addPbServerCommand("Off", "EFC");
                 addPbServerCommand("Abort", "NavOS");
             }
             
-
-            // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
-            if (_stances[S][18] > 0)
+            // NavOs/Efc Burn
+            if (_currentStance.BurnPercentage > 0)
             {
-                addPbServerCommand("Set Burn " + BURN_PERCENTAGES[_stances[S][18]], "EFC");
-                addPbServerCommand("Thrust Set " + BURN_PERCENTAGES[_stances[S][18]], "NavOS");
+                addPbServerCommand("Set Burn " + _currentStance.BurnPercentage, "EFC");
+                addPbServerCommand("Thrust Set " + _currentStance.BurnPercentage, "NavOS");
             }
 
-
-            // 17: EFC boost; 0: off, 1: on
-            if (_stances[S][17] == 1)
-            {
+            // Efc Boost
+            if (_currentStance.EfcBoost == ToggleModes.On)
                 addPbServerCommand("Boost On", "EFC");
-            }
-            else
-            {
+            else if (_currentStance.EfcBoost == ToggleModes.Off)
                 addPbServerCommand("Boost Off", "EFC");
-            }
 
             if (_d) Echo("Finished setting stance.");
         }

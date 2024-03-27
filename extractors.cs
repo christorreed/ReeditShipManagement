@@ -30,19 +30,16 @@ namespace IngameScript
         // if this is SG or LG
         double EXTACTOR_KEEP_FULL_THRESH;
 
-        void setExtractors(int state)
+        void setExtractors(ExtractorModes mode)
         {
-            // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
-
             foreach (IMyTerminalBlock Extractor in EXTRACTORs)
             {
                 if (Extractor == null) continue;
 
-                if (state == 0)
+                if (mode == ExtractorModes.Off)
                     Extractor.ApplyAction("OnOff_Off");
                 else
                     Extractor.ApplyAction("OnOff_On");
-                
             }
         }
 
@@ -63,7 +60,11 @@ namespace IngameScript
             // this method basically determines, based on the current stance
             // if we NEED_FUEL...
 
-            if (_stances[S][21] < 2)
+            if (
+                _currentStance.ExtractorMode == ExtractorModes.Off
+                ||
+                _currentStance.ExtractorMode == ExtractorModes.On
+                )
             {
                 if (_d) Echo("Extractor management disabled.");
             }
@@ -76,13 +77,21 @@ namespace IngameScript
             {
                 if (_d) Echo("No tanks!");
             }
-            else if (_stances[S][21] == 2 && FUEL_PERCENTAGES < TOP_UP_PERCENTAGE)
+            else if (
+                _currentStance.ExtractorMode == ExtractorModes.FillWhenLow
+                &&
+                FUEL_PERCENTAGES < TOP_UP_PERCENTAGE
+                )
             // refuel at 10%
             {
                 if (_d) Echo("Fuel low! (" + FUEL_PERCENTAGES + "% / " + TOP_UP_PERCENTAGE + "%)");
                 NEED_FUEL = true;
             }
-            else if (_stances[S][21] == 3 && ACTUAL_H2 < (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH))
+            else if (
+                _currentStance.ExtractorMode == ExtractorModes.KeepFull
+                &&
+                ACTUAL_H2 < (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH)
+                )
             // refuel to keep tanks full.
             {
                 if (_d) Echo("Fuel ready for top up (" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
@@ -92,7 +101,7 @@ namespace IngameScript
             {
                 Echo("Fuel level OK (" + FUEL_PERCENTAGES + "%).");
 
-                if (_stances[S][21] == 3)
+                if (_currentStance.ExtractorMode == ExtractorModes.KeepFull)
                     Echo("Keeping tanks full\n(" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
             }
         }

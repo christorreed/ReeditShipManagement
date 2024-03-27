@@ -22,8 +22,214 @@ namespace IngameScript
 {
     partial class Program
     {
+
+        Dictionary<string, Stance> _stances = new Dictionary<string, Stance>
+        {
+            {
+                "Cruise",
+                new Stance{
+                    TorpedoMode = ToggleModes.On,
+                    PdcMode = PdcModes.AllDefence,
+                    RailgunMode = RailgunModes.HoldFire,
+                    MainDriveMode = MainDriveModes.EpsteinOnly,
+                    ManeuveringThrusterMode = ManeuveringThrusterModes.ForwardOff,
+                    SpotlightMode = SpotlightModes.Off,
+                    ExteriorLightMode = LightToggleModes.On,
+                    ExteriorLightColour = new Color(33, 144, 255, 255),
+                    InteriorLightMode = LightToggleModes.On,
+                    InteriorLightColour = new Color(255, 214, 170, 255),
+                    LcdTextColour = new Color(33, 144, 255, 255),
+                    TankAndBatteryMode = TankAndBatteryModes.Auto,
+                    BurnPercentage = 50,
+                    EfcBoost = ToggleModes.NoChange,
+                    KillOrAbortNavigation = KillOrAbortNavigationModes.Abort,
+                    AuxMode = ToggleModes.NoChange,
+                    ExtractorMode = ExtractorModes.KeepFull,
+                    KeepAlives = ToggleModes.On,
+                    HangarDoorsMode = HangarDoorModes.NoChange
+                }
+            },
+            {
+                "StealthCruise",
+                new Stance{
+                    TorpedoMode = ToggleModes.On,
+                    PdcMode = PdcModes.AllDefence,
+                    RailgunMode = RailgunModes.HoldFire,
+                    MainDriveMode = MainDriveModes.Minimum,
+                    ManeuveringThrusterMode = ManeuveringThrusterModes.ForwardOff,
+                    SpotlightMode = SpotlightModes.Off,
+                    ExteriorLightMode = LightToggleModes.Off,
+                    ExteriorLightColour = new Color(0, 0, 0, 255),
+                    InteriorLightMode = LightToggleModes.On,
+                    InteriorLightColour = new Color(23, 73, 186, 255),
+                    LcdTextColour = new Color(23, 73, 186, 255),
+                    TankAndBatteryMode = TankAndBatteryModes.Auto,
+                    BurnPercentage = 5,
+                    EfcBoost = ToggleModes.Off,
+                    KillOrAbortNavigation = KillOrAbortNavigationModes.Abort,
+                    AuxMode = ToggleModes.NoChange,
+                    ExtractorMode = ExtractorModes.KeepFull,
+                    KeepAlives = ToggleModes.On,
+                    HangarDoorsMode = HangarDoorModes.NoChange
+                }
+            },
+            {
+                "Docked",
+                new Stance{
+                    TorpedoMode = ToggleModes.On,
+                    PdcMode = PdcModes.AllDefence,
+                    RailgunMode = RailgunModes.HoldFire,
+                    MainDriveMode = MainDriveModes.Off,
+                    ManeuveringThrusterMode = ManeuveringThrusterModes.Off,
+                    SpotlightMode = SpotlightModes.Off,
+                    ExteriorLightMode = LightToggleModes.On,
+                    ExteriorLightColour = new Color(33, 144, 255, 255),
+                    InteriorLightMode = LightToggleModes.On,
+                    InteriorLightColour = new Color(255, 240, 225, 255),
+                    NavLightMode = LightToggleModes.On,
+                    LcdTextColour = new Color(255, 255, 255, 255),
+                    TankAndBatteryMode = TankAndBatteryModes.StockpileRecharge,
+                    BurnPercentage = -1,
+                    EfcBoost = ToggleModes.NoChange,
+                    KillOrAbortNavigation = KillOrAbortNavigationModes.Abort,
+                    AuxMode = ToggleModes.Off,
+                    ExtractorMode = ExtractorModes.On,
+                    KeepAlives = ToggleModes.On,
+                    HangarDoorsMode = HangarDoorModes.NoChange
+                }
+            },
+            {
+                "Docking",
+                new Stance{
+                    TorpedoMode = ToggleModes.On,
+                    PdcMode = PdcModes.AllDefence,
+                    RailgunMode = RailgunModes.HoldFire,
+                    MainDriveMode = MainDriveModes.Off,
+                    ManeuveringThrusterMode = ManeuveringThrusterModes.On,
+                    SpotlightMode = SpotlightModes.OnMax,
+                    ExteriorLightMode = LightToggleModes.On,
+                    ExteriorLightColour = new Color(33, 144, 255, 255),
+                    InteriorLightMode = LightToggleModes.On,
+                    InteriorLightColour = new Color(212, 170, 83, 255),
+                    NavLightMode = LightToggleModes.On,
+                    LcdTextColour = new Color(212, 170, 83, 255),
+                    TankAndBatteryMode = TankAndBatteryModes.Auto,
+                    BurnPercentage = -1,
+                    EfcBoost = ToggleModes.NoChange,
+                    KillOrAbortNavigation = KillOrAbortNavigationModes.Abort,
+                    AuxMode = ToggleModes.Off,
+                    ExtractorMode = ExtractorModes.KeepFull,
+                    KeepAlives = ToggleModes.On,
+                    HangarDoorsMode = HangarDoorModes.NoChange
+                }
+            },
+            {
+                "NoAttack",
+                new Stance{
+                    TorpedoMode = ToggleModes.Off,
+                    PdcMode = PdcModes.Off,
+                    RailgunMode = RailgunModes.Off,
+                    MainDriveMode = MainDriveModes.On,
+                    ManeuveringThrusterMode = ManeuveringThrusterModes.On,
+                    SpotlightMode = SpotlightModes.Off,
+                    ExteriorLightMode = LightToggleModes.On,
+                    ExteriorLightColour = new Color(255, 255, 255, 255),
+                    InteriorLightMode = LightToggleModes.On,
+                    InteriorLightColour = new Color(84, 157, 82, 255),
+                    NavLightMode = LightToggleModes.NoChange,
+                    LcdTextColour = new Color(84, 157, 82, 255),
+                    TankAndBatteryMode = TankAndBatteryModes.NoChange,
+                    BurnPercentage = -1,
+                    EfcBoost = ToggleModes.NoChange,
+                    KillOrAbortNavigation = KillOrAbortNavigationModes.NoChange,
+                    AuxMode = ToggleModes.NoChange,
+                    ExtractorMode = ExtractorModes.KeepFull,
+                    KeepAlives = ToggleModes.On,
+                    HangarDoorsMode = HangarDoorModes.NoChange
+                }
+            },
+            {
+                "Combat",
+                new Stance{
+                    TorpedoMode = ToggleModes.On,
+                    PdcMode = PdcModes.AllDefence,
+                    RailgunMode = RailgunModes.OpenFire,
+                    MainDriveMode = MainDriveModes.On,
+                    ManeuveringThrusterMode = ManeuveringThrusterModes.On,
+                    SpotlightMode = SpotlightModes.Off,
+                    ExteriorLightMode = LightToggleModes.Off,
+                    ExteriorLightColour = new Color(0, 0, 0, 255),
+                    InteriorLightMode = LightToggleModes.On,
+                    InteriorLightColour = new Color(210, 98, 17, 255),
+                    NavLightMode = LightToggleModes.On,
+                    LcdTextColour = new Color(210, 98, 17, 255),
+                    TankAndBatteryMode = TankAndBatteryModes.Discharge,
+                    BurnPercentage = 100,
+                    EfcBoost = ToggleModes.On,
+                    KillOrAbortNavigation = KillOrAbortNavigationModes.Abort,
+                    AuxMode = ToggleModes.On,
+                    ExtractorMode = ExtractorModes.KeepFull,
+                    KeepAlives = ToggleModes.On,
+                    HangarDoorsMode = HangarDoorModes.NoChange
+                }
+            },
+            {
+                "CQB",
+                new Stance{
+                    TorpedoMode = ToggleModes.On,
+                    PdcMode = PdcModes.Offence,
+                    RailgunMode = RailgunModes.OpenFire,
+                    MainDriveMode = MainDriveModes.On,
+                    ManeuveringThrusterMode = ManeuveringThrusterModes.On,
+                    SpotlightMode = SpotlightModes.Off,
+                    ExteriorLightMode = LightToggleModes.Off,
+                    ExteriorLightColour = new Color(0, 0, 0, 255),
+                    InteriorLightMode = LightToggleModes.On,
+                    InteriorLightColour = new Color(243, 18, 18, 255),
+                    NavLightMode = LightToggleModes.On,
+                    LcdTextColour = new Color(243, 18, 18, 255),
+                    TankAndBatteryMode = TankAndBatteryModes.Discharge,
+                    BurnPercentage = 100,
+                    EfcBoost = ToggleModes.On,
+                    KillOrAbortNavigation = KillOrAbortNavigationModes.Abort,
+                    AuxMode = ToggleModes.On,
+                    ExtractorMode = ExtractorModes.KeepFull,
+                    KeepAlives = ToggleModes.On,
+                    HangarDoorsMode = HangarDoorModes.NoChange
+                }
+            },
+            {
+                "WeaponsHot",
+                new Stance{
+                    TorpedoMode = ToggleModes.On,
+                    PdcMode = PdcModes.Offence,
+                    RailgunMode = RailgunModes.OpenFire,
+                    MainDriveMode = MainDriveModes.NoChange,
+                    ManeuveringThrusterMode = ManeuveringThrusterModes.NoChange,
+                    SpotlightMode = SpotlightModes.NoChange,
+                    ExteriorLightMode = LightToggleModes.NoChange,
+                    ExteriorLightColour = new Color(0, 0, 0, 255),
+                    InteriorLightMode = LightToggleModes.NoChange,
+                    InteriorLightColour = new Color(243, 18, 18, 255),
+                    NavLightMode = LightToggleModes.NoChange,
+                    LcdTextColour = new Color(243, 18, 18, 255),
+                    TankAndBatteryMode = TankAndBatteryModes.Discharge,
+                    BurnPercentage = -1,
+                    EfcBoost = ToggleModes.NoChange,
+                    KillOrAbortNavigation = KillOrAbortNavigationModes.NoChange,
+                    AuxMode = ToggleModes.NoChange,
+                    ExtractorMode = ExtractorModes.KeepFull,
+                    KeepAlives = ToggleModes.On,
+                    HangarDoorsMode = HangarDoorModes.NoChange
+                }
+            }
+        };
+
+
+
+
         // these are default values that will be over written by updateCustomData();
-        List<string> _stanceNames = new List<string>(new string[] { 
+        /*List<string> _stanceNames = new List<string>(new string[] { 
             "Cruise", 
             //"MaxCruise", 
             "Docked", 
@@ -35,8 +241,9 @@ namespace IngameScript
             //"Sleep", 
             "StealthCruise",
             "WeaponsHot"
-        });
+        });*/
 
+        /*
         List<int[]> _stances = new List<int[]>
         {
              new int[] { // Cruise 0
@@ -66,7 +273,7 @@ namespace IngameScript
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            /*new int[] { // MaxCruise
+            new int[] { // MaxCruise
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -91,7 +298,7 @@ namespace IngameScript
                 3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
-            },*/
+            },
 
             new int[] { // Docked 1
                 1,      // 0: torpedoes; 0: off, 1: on;
@@ -174,7 +381,7 @@ namespace IngameScript
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            /*new int[] { // Coast
+            new int[] { // Coast
                 1,      // 0: torpedoes; 0: off, 1: on;
                 2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -199,7 +406,7 @@ namespace IngameScript
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 1,      // 22: keep-alives for reactors, connectors, tanks, batteries, ; 0: ignore, 1: force on, 2: force off
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
-            },*/
+            },
 
 
             new int[] { // Combat 4
@@ -256,7 +463,7 @@ namespace IngameScript
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
 
-            /*new int[] { // Sleep
+            new int[] { // Sleep
                 0,      // 0: torpedoes; 0: off, 1: on;
                 0,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
                 0,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
@@ -281,7 +488,7 @@ namespace IngameScript
                 0,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
                 2,      // 22: keep-alives for connectors, gyros, lcds; 0: ignore, 1: force on, 2: force off
                 0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
-            },*/
+            },
 
             new int[] { // StealthCruise 6
                 1,      // 0: torpedoes; 0: off, 1: on;
@@ -337,5 +544,6 @@ namespace IngameScript
                 2,      // 23: hangar doors; 0: closed, 1: open, 2: no change
             },
         };
+        */
     }
 }

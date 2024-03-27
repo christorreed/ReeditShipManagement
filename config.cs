@@ -249,19 +249,13 @@ namespace IngameScript
 
                 // Stances -----------------------------------------------------------------
 
-                sec = "RSM.Stance"; Echo(sec);
+                Echo("Parsing stances...");
 
-                _currentStance = _config.Get(sec, "CurrentStance").ToString(_currentStance);
-
-                List<string> newStanceNames = new List<string>();
-                List<int[]> newStances = new List<int[]>();
+                Dictionary<string, Stance> newStances = new Dictionary<string, Stance>();
 
                 // get all sections
                 List<string> sections = new List<string>();
                 _config.GetSections(sections);
-
-                // use the first default stance to determine the stance data length.
-                int dataLength = _stances[0].Length;
 
                 // iterate all sections
                 foreach (string sect in sections)
@@ -272,73 +266,97 @@ namespace IngameScript
                         // get the stance name
                         string newName = sect.Substring(11);
                         Echo("parsing " + newName);
-                        newStanceNames.Add(newName);
 
-                        // build the stance array
-                        int[] newData = new int[dataLength];
-                        newData[0] = _config.Get(sect, "Torps").ToInt32(_stances[0][0]);
-                        newData[1] = _config.Get(sect, "Pdcs").ToInt32(_stances[0][1]);
-                        newData[2] = _config.Get(sect, "Kinetics").ToInt32(_stances[0][2]);
-                        newData[3] = _config.Get(sect, "MainThrust").ToInt32(_stances[0][3]);
-                        newData[4] = _config.Get(sect, "ManeuveringThrust").ToInt32(_stances[0][4]);
-                        newData[5] = _config.Get(sect, "Spotlights").ToInt32(_stances[0][5]);
-                        newData[6] = _config.Get(sect, "ExteriorLights").ToInt32(_stances[0][6]);
+                        Stance newStance = new Stance();
 
-                        string exteriorColour = _config.Get(sect, "ExteriorColour").ToString();
+                        // no try catch,
+                        // let the errors flow,
+                        // let her crash
 
+                        // string used for parsing
+                        string working;
+
+                        // used for parsing colours
+                        string[] c;
                         int r = 33, g = 144, b = 255, a = 255;
 
-                        try
-                        {
-                            string[] c = exteriorColour.Split(',');
-                            r = int.Parse(c[0]);
-                            g = int.Parse(c[1]);
-                            b = int.Parse(c[2]);
-                            a = int.Parse(c[3]);
-                        }
-                        catch
-                        {
-                            Echo("failed to parse exterior colour");
-                        }
+                        // now we parse out all of the properties of this stance...
 
-                        newData[7] = r;
-                        newData[8] = g;
-                        newData[9] = b;
-                        newData[10] = a;
+                        working = _config.Get(sect, "Torps").ToString(_defaultTorpedoMode);
+                        newStance.TorpedoMode = (ToggleModes)Enum.Parse(typeof(ToggleModes), working);
 
+                        working = _config.Get(sect, "Pdcs").ToString(_defaultPdcMode);
+                        newStance.PdcMode = (PdcModes)Enum.Parse(typeof(PdcModes), working);
 
-                        newData[11] = _config.Get(sect, "InteriorLights").ToInt32(_stances[0][11]);
+                        working = _config.Get(sect, "Kinetics").ToString(_defaultRailgunMode);
+                        newStance.RailgunMode = (RailgunModes)Enum.Parse(typeof(RailgunModes), working);
 
-                        string interiorColour = _config.Get(sect, "InteriorAndLcdColour").ToString();
+                        working = _config.Get(sect, "MainThrust").ToString(_defaultMainDriveMode);
+                        newStance.MainDriveMode = (MainDriveModes)Enum.Parse(typeof(MainDriveModes), working);
 
-                        try
-                        {
-                            string[] c = interiorColour.Split(',');
-                            r = int.Parse(c[0]);
-                            g = int.Parse(c[1]);
-                            b = int.Parse(c[2]);
-                            a = int.Parse(c[3]);
-                        }
-                        catch
-                        {
-                            Echo("failed to parse exterior colour");
-                        }
+                        working = _config.Get(sect, "ManeuveringThrust").ToString(_defaultManeuveringThrusterMode);
+                        newStance.ManeuveringThrusterMode = (ManeuveringThrusterModes)Enum.Parse(typeof(ManeuveringThrusterModes), working);
 
-                        newData[12] = r;
-                        newData[13] = g;
-                        newData[14] = b;
-                        newData[15] = a;
+                        working = _config.Get(sect, "Spotlights").ToString(_defaultSpotlightMode);
+                        newStance.SpotlightMode = (SpotlightModes)Enum.Parse(typeof(SpotlightModes), working);
 
-                        newData[16] = _config.Get(sect, "StockpileAndRecharge").ToInt32(_stances[0][16]);
-                        newData[17] = _config.Get(sect, "EfcBoost").ToInt32(_stances[0][17]);
-                        newData[18] = _config.Get(sect, "NavOsBurnPercent").ToInt32(_stances[0][18]);
-                        newData[19] = _config.Get(sect, "NavOsAbort").ToInt32(_stances[0][19]);
-                        newData[20] = _config.Get(sect, "AuxiliaryBlocks").ToInt32(_stances[0][20]);
-                        newData[21] = _config.Get(sect, "Extractor").ToInt32(_stances[0][21]);
-                        newData[22] = _config.Get(sect, "KeepAlives").ToInt32(_stances[0][22]);
-                        newData[23] = _config.Get(sect, "HangarDoors").ToInt32(_stances[0][23]);
+                        working = _config.Get(sect, "ExteriorLights").ToString(_defaultExteriorLightMode);
+                        newStance.ExteriorLightMode = (LightToggleModes)Enum.Parse(typeof(LightToggleModes), working);
 
-                        newStances.Add(newData);
+                        working = _config.Get(sect, "ExteriorLightColour").ToString(_defaultExteriorLightColour);
+                        c = working.Split(',');
+                        r = int.Parse(c[0]);
+                        g = int.Parse(c[1]);
+                        b = int.Parse(c[2]);
+                        a = int.Parse(c[3]);
+                        newStance.ExteriorLightColour = new Color(r, g, b, a);
+
+                        working = _config.Get(sect, "InteriorLights").ToString(_defaultInteriorLightMode);
+                        newStance.InteriorLightMode = (LightToggleModes)Enum.Parse(typeof(LightToggleModes), working);
+
+                        working = _config.Get(sect, "InteriorLightColour").ToString(_defaultInteriorLightColour);
+                        c = working.Split(',');
+                        r = int.Parse(c[0]);
+                        g = int.Parse(c[1]);
+                        b = int.Parse(c[2]);
+                        a = int.Parse(c[3]);
+                        newStance.InteriorLightColour = new Color(r, g, b, a);
+
+                        working = _config.Get(sect, "NavLights").ToString(_defaultNavLightMode);
+                        newStance.NavLightMode = (LightToggleModes)Enum.Parse(typeof(LightToggleModes), working);
+
+                        working = _config.Get(sect, "LcdTextColour").ToString(_defaultLcdTextColour);
+                        c = working.Split(',');
+                        r = int.Parse(c[0]);
+                        g = int.Parse(c[1]);
+                        b = int.Parse(c[2]);
+                        a = int.Parse(c[3]);
+                        newStance.LcdTextColour = new Color(r, g, b, a);
+
+                        working = _config.Get(sect, "TanksAndBatteries").ToString(_defaultTankAndBatteryMode);
+                        newStance.TankAndBatteryMode = (TankAndBatteryModes)Enum.Parse(typeof(TankAndBatteryModes), working);
+
+                        newStance.BurnPercentage = _config.Get(sect, "NavOsEfcBurnPercentage").ToInt32(_defaultBurnPercentage);
+
+                        working = _config.Get(sect, "EfcBoost").ToString(_defaultEfcBoost);
+                        newStance.EfcBoost = (ToggleModes)Enum.Parse(typeof(ToggleModes), working);
+
+                        working = _config.Get(sect, "NavOsAbortEfcOff").ToString(_defaultKillOrAbortNavigation);
+                        newStance.KillOrAbortNavigation = (KillOrAbortNavigationModes)Enum.Parse(typeof(KillOrAbortNavigationModes), working);
+
+                        working = _config.Get(sect, "AuxMode").ToString(_defaultAuxMode);
+                        newStance.AuxMode = (ToggleModes)Enum.Parse(typeof(ToggleModes), working);
+
+                        working = _config.Get(sect, "Extractor").ToString(_defaultExtractorMode);
+                        newStance.ExtractorMode = (ExtractorModes)Enum.Parse(typeof(ExtractorModes), working);
+
+                        working = _config.Get(sect, "KeepAlives").ToString(_defaultKeepAlives);
+                        newStance.KeepAlives = (ToggleModes)Enum.Parse(typeof(ToggleModes), working);
+
+                        working = _config.Get(sect, "HangarDoors").ToString(_defaultHangarDoorMode);
+                        newStance.HangarDoorsMode = (HangarDoorModes)Enum.Parse(typeof(HangarDoorModes), working);
+
+                        newStances.Add(newName, newStance);
                     }
                 }
 
@@ -351,8 +369,23 @@ namespace IngameScript
                 { // parsed at least one stance.
                     Echo("Finished parsing " + newStances.Count + " stances.");
                     _stances = newStances;
-                    _stanceNames = newStanceNames;
                 }
+
+                sec = "RSM.Stance"; Echo(sec);
+
+                _currentStanceName = _config.Get(sec, "CurrentStance").ToString(_currentStanceName);
+
+                // set the _currentStance var
+                Stance newCurrentStance;
+                if (!_stances.TryGetValue(_currentStanceName, out newCurrentStance))
+                {
+                    // the key isn't in the dictionary.
+                    _currentStanceName = "N/A";
+                    _currentStance = null;
+                } // otherwise, we found our guy.
+                else _currentStance = newCurrentStance;
+
+
 
                 // System -----------------------------------------------------------------
 
@@ -590,61 +623,55 @@ namespace IngameScript
             sec = "RSM.Stance";
 
             name = "CurrentStance";
-            _config.Set(sec, name, _currentStance);
+            _config.Set(sec, name, _currentStanceName);
 
             _config.SetSectionComment(sec, div + " Stances\n Add or remove as required\n" + div);
 
-            for (int i = 0; i < _stanceNames.Count; i++)
+            foreach (var stanceDict in _stances)
             {
-                sec = "RSM.Stance." + _stanceNames[i];
+                sec = "RSM.Stance." + stanceDict.Key;
 
-                _config.Set(sec, "Torps",                   _stances[i][0]);
-                _config.Set(sec, "Pdcs",                    _stances[i][1]);
-                _config.Set(sec, "Kinetics",                _stances[i][2]);
-                _config.Set(sec, "MainThrust",              _stances[i][3]);
-                _config.Set(sec, "ManeuveringThrust",       _stances[i][4]);
-                _config.Set(sec, "Spotlights",              _stances[i][5]);
-                _config.Set(sec, "ExteriorLights",          _stances[i][6]);
-                _config.Set(sec, "ExteriorColour",          _stances[i][7] + "," + 
-                                                            _stances[i][8] + "," + 
-                                                            _stances[i][9] + "," + 
-                                                            _stances[i][10]);
-                _config.Set(sec, "InteriorLights",          _stances[i][11]);
-                _config.Set(sec, "InteriorAndLcdColour",    _stances[i][12] + "," + 
-                                                            _stances[i][13] + "," +
-                                                            _stances[i][14] + "," + 
-                                                            _stances[i][15]);
-                _config.Set(sec, "StockpileAndRecharge",    _stances[i][16]);
-                _config.Set(sec, "EfcBoost",                _stances[i][17]);
-                _config.Set(sec, "NavOsBurnPercent",        _stances[i][18]);
-                _config.Set(sec, "NavOsAbort",              _stances[i][19]);
-                _config.Set(sec, "AuxiliaryBlocks",         _stances[i][20]);
-                _config.Set(sec, "Extractor",               _stances[i][21]);
-                _config.Set(sec, "KeepAlives",              _stances[i][22]);
-                _config.Set(sec, "HangarDoors",             _stances[i][23]);
+                Stance stance = stanceDict.Value;
+                _config.Set(sec, "Torps", nameof(stance.TorpedoMode));
+                _config.Set(sec, "Pdcs", nameof(stance.PdcMode));
+                _config.Set(sec, "Kinetics", nameof(stance.RailgunMode));
+                _config.Set(sec, "MainThrust", nameof(stance.MainDriveMode));
+                _config.Set(sec, "ManeuveringThrust", nameof(stance.ManeuveringThrusterMode));
+                _config.Set(sec, "Spotlights", nameof(stance.SpotlightMode));
+                _config.Set(sec, "ExteriorLights", nameof(stance.ExteriorLightMode));
+                _config.Set(sec, "ExteriorLightColour", nameof(stance.ExteriorLightColour));
+                _config.Set(sec, "InteriorLights", nameof(stance.InteriorLightMode));
+                _config.Set(sec, "InteriorLightColour", nameof(stance.InteriorLightColour));
+                _config.Set(sec, "NavLights", nameof(stance.NavLightMode));
+                _config.Set(sec, "LcdTextColour", nameof(stance.LcdTextColour));
+                _config.Set(sec, "TanksAndBatteries", nameof(stance.TankAndBatteryMode));
+                _config.Set(sec, "NavOsEfcBurnPercentage", nameof(stance.BurnPercentage));
+                _config.Set(sec, "EfcBoost", nameof(stance.EfcBoost));
+                _config.Set(sec, "NavOsAbortEfcOff", nameof(stance.KillOrAbortNavigation));
+                _config.Set(sec, "AuxMode", nameof(stance.AuxMode));
+                _config.Set(sec, "Extractor", nameof(stance.ExtractorMode));
+                _config.Set(sec, "Extractor", nameof(stance.ExtractorMode));
+                _config.Set(sec, "HangarDoors", nameof(stance.HangarDoorsMode));
 
-                // comment the first stance only.
-                if (i == 0)
-                {
-                    _config.SetComment(sec, "Torps",                    "torpedoes; 0: off, 1: on;");
-                    _config.SetComment(sec, "Pdcs",                     "pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only");
-                    _config.SetComment(sec, "Kinetics",                 "railguns etc; 0: off, 1: hold fire, 2: AI weapons free;");
-                    _config.SetComment(sec, "MainThrust",               "main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change");
-                    _config.SetComment(sec, "ManeuveringThrust",        "maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change");
-                    _config.SetComment(sec, "Spotlights",               "spotlights; 0: off, 1: on, 2: on max radius");
-                    _config.SetComment(sec, "ExteriorLights",           "exterior lights; 0: off, 1: on");
-                    _config.SetComment(sec, "ExteriorColour",           "colour for exterior lights");
-                    _config.SetComment(sec, "InteriorLights",           "interior lights lights; 0: off, 1: on");
-                    _config.SetComment(sec, "InteriorAndLcdColour",     "colour for interior lights, LCD text");
-                    _config.SetComment(sec, "StockpileAndRecharge",     "stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts");
-                    _config.SetComment(sec, "EfcBoost",                 "EFC boost; 0: off, 1: on");
-                    _config.SetComment(sec, "NavOsBurnPercent",         "EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%");
-                    _config.SetComment(sec, "NavOsAbort",               "EFC kill; 0: no change, 1: run 'Off' on EFC");
-                    _config.SetComment(sec, "AuxiliaryBlocks",          "auxiliary blocks; 0: off, 1: on");
-                    _config.SetComment(sec, "Extractor",                "extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.");
-                    _config.SetComment(sec, "KeepAlives",               "keep-alives for connectors, tanks, batteries, gyros, lcds, reactors; 0: ignore, 1: force on, 2: force off");
-                    _config.SetComment(sec, "HangarDoors",              "hangar doors; 0: closed, 1: open, 2: no change");
-                }
+
+                _config.SetComment(sec, "Torps", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "Pdcs", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "Kinetics", getAllEnumValues(typeof(RailgunModes)));
+                _config.SetComment(sec, "MainThrust", getAllEnumValues(typeof(MainDriveModes)));
+                _config.SetComment(sec, "ManeuveringThrust", getAllEnumValues(typeof(ManeuveringThrusterModes)));
+                _config.SetComment(sec, "Spotlights", getAllEnumValues(typeof(SpotlightModes)));
+                _config.SetComment(sec, "ExteriorLights", getAllEnumValues(typeof(LightToggleModes)));
+                _config.SetComment(sec, "InteriorLights", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "NavLights", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "TanksAndBatteries", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "NavOsEfcBurnPercentage", "Burn % 0-100, -1 for no change");
+                _config.SetComment(sec, "EfcBoost", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "NavOsAbortEfcOff", getAllEnumValues(typeof(KillOrAbortNavigationModes)));
+                _config.SetComment(sec, "AuxMode", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "Extractor", getAllEnumValues(typeof(ExtractorModes)));
+                _config.SetComment(sec, "KeepAlives", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "HangarDoors", getAllEnumValues(typeof(HangarDoorModes)));               
+
             }
 
             // System -----------------------------------------------------------------
@@ -903,7 +930,17 @@ namespace IngameScript
                                 break;
 
                             case "Current Stance":
-                                _currentStance = value;
+                                _currentStanceName = value;
+
+                                // set the _currentStance var
+                                Stance newCurrentStance;
+                                if (!_stances.TryGetValue(_currentStanceName, out newCurrentStance))
+                                {
+                                    // the key isn't in the dictionary.
+                                    _currentStanceName = "N/A";
+                                    _currentStance = null;
+                                } // otherwise, we found our guy.
+                                else _currentStance = newCurrentStance;
                                 break;
 
                             case "Reactor Integrity":
@@ -961,42 +998,141 @@ namespace IngameScript
 
                 if (_d) Echo("Parsing " + (stances.Length - 1) + " stances");
 
-                int data_length = _stances[0].Length;
+                int data_length = 24;
 
-                List<string> new_name_list = new List<string>();
-                List<int[]> new_data_list = new List<int[]>();
+                Dictionary<string, Stance> newStances = new Dictionary<string, Stance>();
+
+                // EFC/NavOS set burn percentages
+                int[] burnPercs = new int[] { 0, 5, 25, 50, 75, 100 };
+
+                //List<string> new_name_list = new List<string>();
+                //List<int[]> new_data_list = new List<int[]>();
 
                 for (int i = 1; i < stances.Length; i++)
                 {
+
+
                     string[] stance_vars = stances[i].Split('=');
 
-                    string new_name = "";
-                    int[] new_data = new int[data_length];
+                    string newName = "";
+                    int[] newData = new int[data_length];
 
-                    new_name = stance_vars[0].Split(' ')[0];
-                    if (_d) Echo("Parsing '" + new_name + "'");
-                    for (int j = 0; j < new_data.Length; j++)
+
+
+                    newName = stance_vars[0].Split(' ')[0];
+                    if (_d) Echo("Parsing '" + newName + "'");
+                    for (int j = 0; j < newData.Length; j++)
                     {
                         string[] cleanup = stance_vars[(j + 1)].Split('\n');
-                        new_data[j] = int.Parse(cleanup[0]);
+                        newData[j] = int.Parse(cleanup[0]);
                         //if (_d) Echo(new_data[j].ToString());
                     }
-                    new_name_list.Add(new_name);
-                    new_data_list.Add(new_data);
+                    //new_name_list.Add(new_name);
+                    //new_data_list.Add(new_data);
+
+                    /*
+                    new int[] { // Cruise 0
+                        1,      // 0: torpedoes; 0: off, 1: on;
+                        2,      // 1: pdcs; 0: all off, 1: minimum defence, 2: all defence, 3: offence, 4: all on only
+                        1,      // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;
+                        1,      // 3: main drives; 0: off, 1: on, 2: minimum only, 3: epstein only, 4: chems only, 9: no change
+                        2,      // 4: maneuvering thrusters; 0: off, 1: on, 2: forward off, 3: reverse off, 4: rcs only, 5: atmo only, 9: no change
+                        0,      // 5: spotlights; 0: off, 1: on, 2: on max radius
+                        1,      // 6: exterior lights; 0: off, 1: on
+                        30,     // 7: Red - Exterior lights colour
+                        144,    // 8: Green - Exterior lights colour
+                        255,    // 9: Blue - Exterior lights colour
+                        255,    // 10: Alpha - Exterior lights colour
+                        1,      // 11: interior lights lights; 0: off, 1: on
+                        30,     // 12: Red - Interior lights colour
+                        144,    // 13: Green - Interior lights colour
+                        225,    // 14: Blue - Interior lights colour
+                        255,    // 15: Alpha - Interior lights colour
+                        0,      // 16: stockpile tanks, recharge batts; 0: off, 1: on, 2: discharge batts
+                        0,      // 17: EFC boost; 0: off, 1: on
+                        2,      // 18: EFC burn %; 0: no change, 1: 5%, 2: 25%, 3: 50%, 4: 75%, 5: 100%
+                        0,      // 19: EFC kill; 0: no change, 1: run 'Off' on EFC
+                        0,      // 20: auxiliary blocks; 0: off, 1: on
+                        3,      // 21: extractor; 0: off, 1: on, 2: auto load below 10%, 3: keep ship tanks full.
+                        1,      // 22: keep-alives for connectors, tanks, batteries, gyros, lcds; 0: ignore, 1: force on, 2: force off
+                        0,      // 23: hangar doors; 0: closed, 1: open, 2: no change
+                     */
+
+                    // convert the legacy int array into a stance class.
+
+                    Stance newStance = new Stance();
+
+                    if (newData[0] == 0) newStance.TorpedoMode = ToggleModes.Off;
+                    else newStance.TorpedoMode = ToggleModes.On;
+
+                    if (newData[1] == 0) newStance.PdcMode = PdcModes.Off;
+                    else if (newData[1] == 1) newStance.PdcMode = PdcModes.MinDefence;
+                    else if (newData[1] == 2) newStance.PdcMode = PdcModes.AllDefence;
+                    else if (newData[1] == 3) newStance.PdcMode = PdcModes.Offence;
+                    else if (newData[1] == 4) newStance.PdcMode = PdcModes.AllOnOnly;
+
+                    if (newData[2] == 0) newStance.RailgunMode = RailgunModes.Off;
+                    else if (newData[2] == 1) newStance.RailgunMode = RailgunModes.HoldFire;
+                    else if (newData[2] == 2) newStance.RailgunMode = RailgunModes.OpenFire;
+
+                    if (newData[3] == 0) newStance.MainDriveMode = MainDriveModes.Off;
+                    else if(newData[3] == 1) newStance.MainDriveMode = MainDriveModes.On;
+                    else if(newData[3] == 2) newStance.MainDriveMode = MainDriveModes.Minimum;
+
+                    if (newData[4] == 0) newStance.ManeuveringThrusterMode = ManeuveringThrusterModes.Off;
+                    else if (newData[4] == 1) newStance.ManeuveringThrusterMode = ManeuveringThrusterModes.On;
+                    else if (newData[4] == 2) newStance.ManeuveringThrusterMode = ManeuveringThrusterModes.ForwardOff;
+                    else if (newData[4] == 3) newStance.ManeuveringThrusterMode = ManeuveringThrusterModes.ReverseOff;
+
+                    if (newData[5] == 0) newStance.SpotlightMode = SpotlightModes.Off;
+                    else if (newData[5] == 1) newStance.SpotlightMode = SpotlightModes.On;
+                    else if (newData[5] == 2) newStance.SpotlightMode = SpotlightModes.OnMax;
+
+                    if (newData[6] == 0) newStance.ExteriorLightMode = LightToggleModes.Off;
+                    else newStance.ExteriorLightMode = LightToggleModes.On;
+
+                    newStance.ExteriorLightColour = new Color(newData[7], newData[8], newData[9], newData[10]);
+
+                    if (newData[11] == 0) newStance.InteriorLightMode = LightToggleModes.Off;
+                    else newStance.InteriorLightMode = LightToggleModes.On;
+
+                    newStance.InteriorLightColour = new Color(newData[12], newData[13], newData[14], newData[15]);
+
+                    if (newData[16] == 0) newStance.TankAndBatteryMode = TankAndBatteryModes.Auto;
+                    else if (newData[16] == 1) newStance.TankAndBatteryMode = TankAndBatteryModes.StockpileRecharge;
+                    else if (newData[16] == 2) newStance.TankAndBatteryMode = TankAndBatteryModes.Discharge;
+
+                    if (newData[17] == 0) newStance.EfcBoost = ToggleModes.Off;
+                    else newStance.EfcBoost = ToggleModes.On;
+
+                    newStance.BurnPercentage = burnPercs[newData[18]];
+
+                    if (newData[19] == 0) newStance.KillOrAbortNavigation = KillOrAbortNavigationModes.NoChange;
+                    else newStance.KillOrAbortNavigation = KillOrAbortNavigationModes.Abort;
+
+                    if (newData[20] == 0) newStance.AuxMode = ToggleModes.Off;
+                    else newStance.AuxMode = ToggleModes.On;
+
+                    if (newData[21] == 0) newStance.ExtractorMode = ExtractorModes.Off;
+                    else if (newData[21] == 1) newStance.ExtractorMode = ExtractorModes.On;
+                    else if (newData[21] == 2) newStance.ExtractorMode = ExtractorModes.FillWhenLow;
+                    else if (newData[21] == 3) newStance.ExtractorMode = ExtractorModes.KeepFull;
+
+                    if (newData[22] == 0) newStance.KeepAlives = ToggleModes.Off;
+                    else newStance.KeepAlives = ToggleModes.On;
+
+                    if (newData[23] == 0) newStance.HangarDoorsMode = HangarDoorModes.Closed;
+                    else if (newData[23] == 1) newStance.HangarDoorsMode = HangarDoorModes.Open;
+                    else newStance.HangarDoorsMode = HangarDoorModes.NoChange;
+
+                    newStances.Add(newName, newStance);
+
                 }
-                if (new_name_list.Count >= 1 && new_name_list.Count == new_data_list.Count)
+                if (newStances.Count >= 1)
                 {
                     // we did it.
-                    _stanceNames = new_name_list;
-                    _stances = new_data_list;
-                    //parsedStances = true;
-                    if (_d) Echo("Finished parsing " + _stanceNames.Count + " stances.");
-
-                    // update the S value as well so lights and colours aren't effected.
-                    for (int j = 0; j < _stanceNames.Count; j++)
-                    {
-                        if (_currentStance == _stanceNames[j]) S = j;
-                    }
+                    if (_d) Echo("Finished parsing " + newStances.Count + " stances.");
+                    _stances = newStances;
                 }
                 else
                 {
@@ -1039,6 +1175,17 @@ namespace IngameScript
                 start + 
                 string.Join("\n", _friendlyTags.Split(',')) + 
                 end; ;
+        }
+
+        string getAllEnumValues(Type enumType)
+        {
+            string vals = "";
+            foreach (string val in Enum.GetValues(enumType))
+            {
+                if (vals != "") vals += ", ";
+                vals += val;
+            }
+            return vals;
         }
     }
 }

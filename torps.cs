@@ -39,7 +39,7 @@ namespace IngameScript
                     ACTUAL_TORPs++;
 
                     // turn torps on for 1+ on [0]
-                    (Torp as IMyConveyorSorter).Enabled = _stances[S][0] > 0;
+                    (Torp as IMyConveyorSorter).Enabled = _currentStance.TorpedoMode == ToggleModes.On;
 
                     // autoloading is complex for torpedoes.
                     if (_autoLoad)
@@ -62,15 +62,15 @@ namespace IngameScript
             INTEGRITY_TORPs = Math.Round(100 * (ACTUAL_TORPs / _initTorpLaunchers));
         }
 
-        private void setTorpedoes(int state)
+        private void setTorpedoes(ToggleModes mode)
         {
+            if (mode == ToggleModes.NoChange) return;
+
             foreach (IMyTerminalBlock Torp in TORPs)
             {
                 if (Torp != null & Torp.IsFunctional)
                 {
-                    // state
-                    // 0: torpedoes; 0: off, 1: on;
-                    if (state == 0)
+                    if (mode == ToggleModes.Off)
                     {
                         (Torp as IMyConveyorSorter).Enabled = false;
                     }
