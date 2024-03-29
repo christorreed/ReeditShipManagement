@@ -627,31 +627,33 @@ namespace IngameScript
 
             _config.SetSectionComment(sec, div + " Stances\n Add or remove as required\n" + div);
 
+            string colourComment = "Red, Green, Blue, Alpha";
+
             foreach (var stanceDict in _stances)
             {
                 sec = "RSM.Stance." + stanceDict.Key;
 
                 Stance stance = stanceDict.Value;
-                _config.Set(sec, "Torps", nameof(stance.TorpedoMode));
-                _config.Set(sec, "Pdcs", nameof(stance.PdcMode));
-                _config.Set(sec, "Kinetics", nameof(stance.RailgunMode));
-                _config.Set(sec, "MainThrust", nameof(stance.MainDriveMode));
-                _config.Set(sec, "ManeuveringThrust", nameof(stance.ManeuveringThrusterMode));
-                _config.Set(sec, "Spotlights", nameof(stance.SpotlightMode));
-                _config.Set(sec, "ExteriorLights", nameof(stance.ExteriorLightMode));
-                _config.Set(sec, "ExteriorLightColour", nameof(stance.ExteriorLightColour));
-                _config.Set(sec, "InteriorLights", nameof(stance.InteriorLightMode));
-                _config.Set(sec, "InteriorLightColour", nameof(stance.InteriorLightColour));
-                _config.Set(sec, "NavLights", nameof(stance.NavLightMode));
-                _config.Set(sec, "LcdTextColour", nameof(stance.LcdTextColour));
-                _config.Set(sec, "TanksAndBatteries", nameof(stance.TankAndBatteryMode));
-                _config.Set(sec, "NavOsEfcBurnPercentage", nameof(stance.BurnPercentage));
-                _config.Set(sec, "EfcBoost", nameof(stance.EfcBoost));
-                _config.Set(sec, "NavOsAbortEfcOff", nameof(stance.KillOrAbortNavigation));
-                _config.Set(sec, "AuxMode", nameof(stance.AuxMode));
-                _config.Set(sec, "Extractor", nameof(stance.ExtractorMode));
-                _config.Set(sec, "Extractor", nameof(stance.ExtractorMode));
-                _config.Set(sec, "HangarDoors", nameof(stance.HangarDoorsMode));
+                _config.Set(sec, "Torps", stance.TorpedoMode.ToString());
+                _config.Set(sec, "Pdcs", stance.PdcMode.ToString());
+                _config.Set(sec, "Kinetics", stance.RailgunMode.ToString());
+                _config.Set(sec, "MainThrust", stance.MainDriveMode.ToString());
+                _config.Set(sec, "ManeuveringThrust", stance.ManeuveringThrusterMode.ToString());
+                _config.Set(sec, "Spotlights", stance.SpotlightMode.ToString());
+                _config.Set(sec, "ExteriorLights", stance.ExteriorLightMode.ToString());
+                _config.Set(sec, "ExteriorLightColour", buildColourString(stance.ExteriorLightColour));
+                _config.Set(sec, "InteriorLights", stance.InteriorLightMode.ToString());
+                _config.Set(sec, "InteriorLightColour", buildColourString(stance.InteriorLightColour));
+                _config.Set(sec, "NavLights", stance.NavLightMode.ToString());
+                _config.Set(sec, "LcdTextColour", buildColourString(stance.LcdTextColour));
+                _config.Set(sec, "TanksAndBatteries", stance.TankAndBatteryMode.ToString());
+                _config.Set(sec, "NavOsEfcBurnPercentage", stance.BurnPercentage.ToString());
+                _config.Set(sec, "EfcBoost", stance.EfcBoost.ToString());
+                _config.Set(sec, "NavOsAbortEfcOff", stance.KillOrAbortNavigation.ToString());
+                _config.Set(sec, "AuxMode", stance.AuxMode.ToString());
+                _config.Set(sec, "Extractor", stance.ExtractorMode.ToString());
+                _config.Set(sec, "KeepAlives", stance.KeepAlives.ToString());
+                _config.Set(sec, "HangarDoors", stance.HangarDoorsMode.ToString());
 
 
                 _config.SetComment(sec, "Torps", getAllEnumValues(typeof(ToggleModes)));
@@ -661,8 +663,11 @@ namespace IngameScript
                 _config.SetComment(sec, "ManeuveringThrust", getAllEnumValues(typeof(ManeuveringThrusterModes)));
                 _config.SetComment(sec, "Spotlights", getAllEnumValues(typeof(SpotlightModes)));
                 _config.SetComment(sec, "ExteriorLights", getAllEnumValues(typeof(LightToggleModes)));
+                _config.SetComment(sec, "ExteriorLightColour", colourComment);
                 _config.SetComment(sec, "InteriorLights", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "InteriorLightColour", colourComment);
                 _config.SetComment(sec, "NavLights", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "LcdTextColour", colourComment);
                 _config.SetComment(sec, "TanksAndBatteries", getAllEnumValues(typeof(ToggleModes)));
                 _config.SetComment(sec, "NavOsEfcBurnPercentage", "Burn % 0-100, -1 for no change");
                 _config.SetComment(sec, "EfcBoost", getAllEnumValues(typeof(ToggleModes)));
@@ -1180,12 +1185,17 @@ namespace IngameScript
         string getAllEnumValues(Type enumType)
         {
             string vals = "";
-            foreach (string val in Enum.GetValues(enumType))
+            foreach (var val in Enum.GetValues(enumType))
             {
                 if (vals != "") vals += ", ";
-                vals += val;
+                vals += val.ToString();
             }
             return vals;
+        }
+
+        string buildColourString(Color colour)
+        {
+            return colour.R + ", " + colour.G + ", " + colour.B + ", " + colour.A;
         }
     }
 }
