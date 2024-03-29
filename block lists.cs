@@ -649,17 +649,22 @@ namespace IngameScript
 
                 // PBs -----------------------------------------------------------------
                 var TempPB = b as IMyProgrammableBlock;
-                if (TempPB != null)
+                if (TempPB != null && TempPB != Me)
                 {
                     if (I) INIT_NAMEs.Add(b, "PB Server");
 
-                    string[] lines = b.CustomData.Split('\n');
-                    if (lines[1].Split('=')[0] == "Sigma_Draconis_Expanse_Server ")
-                        _pbsEfc.Add(TempPB);
-                    else if (lines[0].Split(' ')[0] == "NavConfig")
-                        _pbsNavOs.Add(TempPB);
-                    
-                    return false;
+                    try
+                    {
+                        string[] lines = b.CustomData.Split('\n');
+                        if (lines[1].Split('=')[0] == "Sigma_Draconis_Expanse_Server ")
+                            _pbsEfc.Add(TempPB);
+                        else if (lines[0].Split(' ')[0] == "NavConfig")
+                            _pbsNavOs.Add(TempPB);
+
+                        return false;
+                    }
+                    catch {} // do nothing, no error here.
+
                 }
 
                 // Projectors -----------------------------------------------------------------
