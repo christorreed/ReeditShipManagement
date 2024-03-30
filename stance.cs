@@ -76,6 +76,7 @@ namespace IngameScript
         string _defaultKeepAlives = "On";
         string _defaultHangarDoorMode = "NoChange";
 
+        #region mdk preserve
         enum ToggleModes
         {
             Off,
@@ -169,6 +170,7 @@ namespace IngameScript
             Open,
             NoChange
         }
+        #endregion
 
         void setStance(string stance)
         {

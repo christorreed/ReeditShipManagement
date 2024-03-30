@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.18 ($MDK_DATE$)";
+        string Version = "1.99.21 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -134,12 +134,13 @@ namespace IngameScript
             _decelPercentages.Add(0.1);
             _decelPercentages.Add(0.05);
 
-            // this is the bit that actually makes it loop, yo
-            Runtime.UpdateFrequency = UpdateFrequency.Update100;
-
             Echo("Parsing custom data...");
             prepCustomData();
             Echo("Took " + msSinceLast());
+
+            // this is the bit that actually makes it loop, yo
+            // do this last so a crash prevents it occuring.
+            Runtime.UpdateFrequency = UpdateFrequency.Update100;
         }
 
 

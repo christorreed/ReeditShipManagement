@@ -649,16 +649,19 @@ namespace IngameScript
 
                 // PBs -----------------------------------------------------------------
                 var TempPB = b as IMyProgrammableBlock;
-                if (TempPB != null && TempPB != Me)
+                if (TempPB != null)
                 {
                     if (I) INIT_NAMEs.Add(b, "PB Server");
 
+                    // don't bother checking the RSM pb
+                    // for other PBs.
+                    if (TempPB == Me) return false;
+
                     try
                     {
-                        string[] lines = b.CustomData.Split('\n');
-                        if (lines[1].Split('=')[0] == "Sigma_Draconis_Expanse_Server ")
+                        if (b.CustomData.Contains("Sigma_Draconis_Expanse_Server "))
                             _pbsEfc.Add(TempPB);
-                        else if (lines[0].Split(' ')[0] == "NavConfig")
+                        else if (b.CustomData.Contains("NavConfig"))
                             _pbsNavOs.Add(TempPB);
 
                         return false;
