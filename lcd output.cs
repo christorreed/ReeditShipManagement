@@ -536,12 +536,23 @@ namespace IngameScript
 
             string empty = sec_integrity.ToString();
 
-            string mainThrusterStance = nameof(_currentStance.MainDriveMode).Substring(3).ToUpper();
-            string rcsThrusterStance = nameof(_currentStance.ManeuveringThrusterMode).Substring(3).ToUpper();
-            string tanksAndBatteriesStance = nameof(_currentStance.TankAndBatteryMode).Substring(3).ToUpper();
-            string pdcsStance = nameof(_currentStance.PdcMode).Substring(3).ToUpper();
-            string torpStance = nameof(_currentStance.TorpedoMode).Substring(3).ToUpper();
-            string railStance = nameof(_currentStance.RailgunMode).Substring(3).ToUpper();
+            string mainThrusterStance = _currentStance.MainDriveMode.ToString().ToUpper();
+            if (mainThrusterStance.Length > 3) mainThrusterStance = mainThrusterStance.Substring(0, 3);
+
+            string rcsThrusterStance = _currentStance.ManeuveringThrusterMode.ToString().ToUpper();
+            if (rcsThrusterStance.Length > 3) rcsThrusterStance = rcsThrusterStance.Substring(0, 3);
+
+            string tanksAndBatteriesStance = _currentStance.MainDriveMode.ToString().ToUpper();
+            if (tanksAndBatteriesStance.Length > 3) tanksAndBatteriesStance = tanksAndBatteriesStance.Substring(0, 3);
+
+            string pdcsStance = _currentStance.PdcMode.ToString().ToUpper();
+            if (pdcsStance.Length > 3) pdcsStance = pdcsStance.Substring(0, 3);
+
+            string torpStance = _currentStance.TorpedoMode.ToString().ToUpper();
+            if (torpStance.Length > 3) torpStance = torpStance.Substring(0, 3);
+
+            string railStance = _currentStance.RailgunMode.ToString().ToUpper();
+            if (railStance.Length > 3) railStance = railStance.Substring(0, 3);
 
             try
             {
