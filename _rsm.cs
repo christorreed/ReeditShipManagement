@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.21 ($MDK_DATE$)";
+        string Version = "1.99.24 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -316,6 +316,7 @@ namespace IngameScript
             // lots of block refreshes use this
             // to determine if to enforce power status on those blocks
             // 22: keep-alives; 0: ignore, 1: force on, 2: force off
+
             if (_currentStance.KeepAlives == ToggleModes.On)
             {
                 ADJUST_KEEP_ALIVES = true;

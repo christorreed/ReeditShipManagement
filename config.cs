@@ -945,6 +945,7 @@ namespace IngameScript
                                     // the key isn't in the dictionary.
                                     _currentStanceName = "N/A";
                                     _currentStance = null;
+
                                 } // otherwise, we found our guy.
                                 else _currentStance = newCurrentStance;
                                 break;
@@ -1166,6 +1167,15 @@ namespace IngameScript
                 setCustomData();
             }
 
+            // if we don't have a current stance,
+            // still show N/A
+            // but put the first stance values into the
+            // _currentStance for test purposes later.
+            if (_currentStance == null)
+            {
+                _currentStance = _stances.First().Value;
+            }
+
             // prep spawn data
             string start = "";
             string end = "";
@@ -1180,7 +1190,7 @@ namespace IngameScript
             _survivalKitOpenData = 
                 start + 
                 string.Join("\n", _friendlyTags.Split(',')) + 
-                end; ;
+                end;
         }
 
         string getAllEnumValues(Type enumType)
