@@ -654,7 +654,7 @@ namespace IngameScript
 
             name = "DoorCloseTimer";
             _config.Set(sec, name, _doorCloseTimer);
-            _config.SetComment(sec, name, "enable door management functionality");
+            _config.SetComment(sec, name, "door open timer (x100 ticks)");
 
             name = "AirlockDoorDisableTimer";
             _config.Set(sec, name, _airlockDoorDisableTimer);
@@ -826,7 +826,7 @@ namespace IngameScript
                 _config.SetComment(sec, "InteriorLightColour", colourComment);
                 _config.SetComment(sec, "NavLights", getAllEnumValues(typeof(ToggleModes)));
                 _config.SetComment(sec, "LcdTextColour", colourComment);
-                _config.SetComment(sec, "TanksAndBatteries", getAllEnumValues(typeof(ToggleModes)));
+                _config.SetComment(sec, "TanksAndBatteries", getAllEnumValues(typeof(TankAndBatteryModes)));
                 _config.SetComment(sec, "NavOsEfcBurnPercentage", "Burn % 0-100, -1 for no change");
                 _config.SetComment(sec, "EfcBoost", getAllEnumValues(typeof(ToggleModes)));
                 _config.SetComment(sec, "NavOsAbortEfcOff", getAllEnumValues(typeof(KillOrAbortNavigationModes)));
