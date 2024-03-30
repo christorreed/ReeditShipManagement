@@ -423,8 +423,9 @@ namespace IngameScript
             }
             catch (Exception ex)
             {
-                Echo("Parsing error!\n" + ex.Message + "\n" + ex.StackTrace);
-                success = false;
+                Echo("Parsing error! Check custom data values!");
+                throw ex;
+                //success = false;
             }
             return success;
         }
