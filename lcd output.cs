@@ -652,15 +652,16 @@ namespace IngameScript
                         "\nMass:            " + (Math.Round((MASS / 1000000), 2) + " Mkg").PadLeft(15) +
                         "\n" + vel_msg + (vel + " ms").PadLeft(15) +
                         "\nMax Accel:       " + (AccelMax + " Gs").PadLeft(15) +
-                        "\nActual Accel:    " + (AccelActual + " Gs").PadLeft(15);
+                        "\nActual Accel:    " + (AccelActual + " Gs").PadLeft(15) +
+                        "\nMax Thrust:      " + ((THRUST_MAX / 1000000) + " MN").PadLeft(15) +
+                        "\nActual Thrust:   " + ((THRUST_ACTUAL / 1000000) + " MN").PadLeft(15);
                 }
 
                 sec_thrust_advanced =
 
                     "──┤ Telemetry & Thrust ├─────" + basic_spinner + "──\n"
                     + Basics +
-                    //"\nMax Thrust:      " + ((max_thrust / 1000000) + " MN").PadLeft(15) +
-                    //"\nActual Thrust:   " + ((actual_thrust / 1000000) + " MN").PadLeft(15) +
+
                     "\nDecel (Dampener):" + stopDistance(THRUST_MAX, vel, true) +
                     "\nDecel (Actual):  " + stopDistance(THRUST_ACTUAL, vel);
 

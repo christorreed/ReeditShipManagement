@@ -24,6 +24,7 @@ x "An item with the same key has already been added" during
 # todos
 
 - debug/test
+- germ wants m/s^2 rather than G's bc he's weird.
 - find a way to provide default custom data mostly commented out.
 - > wish i could put comments *below* the section titles
 - add toolcore welder control (setToolActivate, iterateWelders)

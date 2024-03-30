@@ -24,6 +24,7 @@ namespace IngameScript
     {
         class Stance
         {
+            public string Inherits;
             public ToggleModes TorpedoMode;
             public PdcModes PdcMode;
             public RailgunModes RailgunMode;
@@ -55,24 +56,24 @@ namespace IngameScript
         // default stance mode values
         // strings so they can be used as default values
         // by the MyIni parser
-        string _defaultTorpedoMode = "On";
-        string _defaultPdcMode = "Offence";
-        string _defaultRailgunMode = "OpenFire";
-        string _defaultMainDriveMode = "On";
-        string _defaultManeuveringThrusterMode = "On";
-        string _defaultSpotlightMode = "On";
-        string _defaultExteriorLightMode = "On";
-        string _defaultExteriorLightColour = "33, 144, 255, 255"; // reedit blue
-        string _defaultInteriorLightMode = "On";
-        string _defaultInteriorLightColour = "255, 214, 170, 255"; // 100W Tungsten
-        string _defaultNavLightMode = "On";
-        string _defaultLcdTextColour = "33, 144, 255, 255"; // reedit blue
-        string _defaultTankAndBatteryMode = "Auto";
+        ToggleModes _defaultTorpedoMode = ToggleModes.On;
+        PdcModes _defaultPdcMode = PdcModes.Offence;
+        RailgunModes _defaultRailgunMode = RailgunModes.OpenFire;
+        MainDriveModes _defaultMainDriveMode = MainDriveModes.On;
+        ManeuveringThrusterModes _defaultManeuveringThrusterMode = ManeuveringThrusterModes.On;
+        SpotlightModes _defaultSpotlightMode = SpotlightModes.On;
+        LightToggleModes _defaultExteriorLightMode = LightToggleModes.On;
+        Color _defaultExteriorLightColour = new Color(33, 144, 255, 255); // reedit blue
+        LightToggleModes _defaultInteriorLightMode = LightToggleModes.On;
+        Color _defaultInteriorLightColour = new Color(255, 214, 170, 255); // 100W Tungsten
+        LightToggleModes _defaultNavLightMode = LightToggleModes.On;
+        Color _defaultLcdTextColour = new Color(33, 144, 255, 255); // reedit blue
+        TankAndBatteryModes _defaultTankAndBatteryMode = TankAndBatteryModes.Auto;
         int _defaultBurnPercentage = -1; // no change
-        string _defaultEfcBoost = "NoChange";
-        string _defaultKillOrAbortNavigation = "NoChange";
-        string _defaultAuxMode = "NoChange";
-        string _defaultExtractorMode = "KeepFull";
+        ToggleModes _defaultEfcBoost = ToggleModes.NoChange;
+        KillOrAbortNavigationModes _defaultKillOrAbortNavigation = KillOrAbortNavigationModes.NoChange;
+        ToggleModes _defaultAuxMode = ToggleModes.NoChange;
+        ExtractorModes _defaultExtractorMode = ExtractorModes.KeepFull;
         string _defaultKeepAlives = "On";
         string _defaultHangarDoorMode = "NoChange";
 
@@ -310,6 +311,8 @@ namespace IngameScript
 
             if (_d) Echo("Finished setting stance.");
         }
-
+    
     }
+
+
 }
