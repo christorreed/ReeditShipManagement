@@ -24,7 +24,7 @@ namespace IngameScript
     {
         class Stance
         {
-            public string Inherits;
+            public string Inherits = "";
             public ToggleModes TorpedoMode;
             public PdcModes PdcMode;
             public RailgunModes RailgunMode;
@@ -74,8 +74,8 @@ namespace IngameScript
         KillOrAbortNavigationModes _defaultKillOrAbortNavigation = KillOrAbortNavigationModes.NoChange;
         ToggleModes _defaultAuxMode = ToggleModes.NoChange;
         ExtractorModes _defaultExtractorMode = ExtractorModes.KeepFull;
-        string _defaultKeepAlives = "On";
-        string _defaultHangarDoorMode = "NoChange";
+        ToggleModes _defaultKeepAlives = ToggleModes.On;
+        HangarDoorModes _defaultHangarDoorMode = HangarDoorModes.NoChange;
 
         #region mdk preserve
         enum ToggleModes

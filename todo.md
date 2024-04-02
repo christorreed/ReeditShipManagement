@@ -1,6 +1,7 @@
 # debugs
 
 - hudlcd:toggle:pattern not working
+- rcs nfwd not working
 
 x first init, get zero value
 x make stuff faster
@@ -33,6 +34,8 @@ x "An item with the same key has already been added" during
 - more aggressive naming into sub groups.  Like power.reactor
 - refactor the rest of the var names
 - booting improvements, lcd outputs
+- lcd error on config parse failure.
+- snek private spawn default
 
 x make stance a class ffs
 x fix runProgramable, make it run commands over sperate ticks

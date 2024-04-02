@@ -19,7 +19,6 @@ using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRage.Game.ObjectBuilders.Definitions;
 using VRageMath;
-using static Sandbox.Game.SessionComponents.MySessionComponentWarningSystem;
 
 namespace IngameScript
 {
@@ -792,48 +791,236 @@ namespace IngameScript
                 sec = "RSM.Stance." + stanceDict.Key;
 
                 Stance stance = stanceDict.Value;
-                _config.Set(sec, "Torps", stance.TorpedoMode.ToString());
-                _config.Set(sec, "Pdcs", stance.PdcMode.ToString());
-                _config.Set(sec, "Kinetics", stance.RailgunMode.ToString());
-                _config.Set(sec, "MainThrust", stance.MainDriveMode.ToString());
-                _config.Set(sec, "ManeuveringThrust", stance.ManeuveringThrusterMode.ToString());
-                _config.Set(sec, "Spotlights", stance.SpotlightMode.ToString());
-                _config.Set(sec, "ExteriorLights", stance.ExteriorLightMode.ToString());
-                _config.Set(sec, "ExteriorLightColour", buildColourString(stance.ExteriorLightColour));
-                _config.Set(sec, "InteriorLights", stance.InteriorLightMode.ToString());
-                _config.Set(sec, "InteriorLightColour", buildColourString(stance.InteriorLightColour));
-                _config.Set(sec, "NavLights", stance.NavLightMode.ToString());
-                _config.Set(sec, "LcdTextColour", buildColourString(stance.LcdTextColour));
-                _config.Set(sec, "TanksAndBatteries", stance.TankAndBatteryMode.ToString());
-                _config.Set(sec, "NavOsEfcBurnPercentage", stance.BurnPercentage.ToString());
-                _config.Set(sec, "EfcBoost", stance.EfcBoost.ToString());
-                _config.Set(sec, "NavOsAbortEfcOff", stance.KillOrAbortNavigation.ToString());
-                _config.Set(sec, "AuxMode", stance.AuxMode.ToString());
-                _config.Set(sec, "Extractor", stance.ExtractorMode.ToString());
-                _config.Set(sec, "KeepAlives", stance.KeepAlives.ToString());
-                _config.Set(sec, "HangarDoors", stance.HangarDoorsMode.ToString());
+                Stance inheritee = null;
+                if (stance.Inherits != "")
+                {
+                    inheritee = _stances[stance.Inherits];
+                    name = "Inherits";
+                    _config.Set(sec, name, stance.Inherits);
+                    _config.SetComment(sec, name, "Use stance of this name as a template for settings");
+                }
 
 
-                _config.SetComment(sec, "Torps", getAllEnumValues(typeof(ToggleModes)));
-                _config.SetComment(sec, "Pdcs", getAllEnumValues(typeof(ToggleModes)));
-                _config.SetComment(sec, "Kinetics", getAllEnumValues(typeof(RailgunModes)));
-                _config.SetComment(sec, "MainThrust", getAllEnumValues(typeof(MainDriveModes)));
-                _config.SetComment(sec, "ManeuveringThrust", getAllEnumValues(typeof(ManeuveringThrusterModes)));
-                _config.SetComment(sec, "Spotlights", getAllEnumValues(typeof(SpotlightModes)));
-                _config.SetComment(sec, "ExteriorLights", getAllEnumValues(typeof(LightToggleModes)));
-                _config.SetComment(sec, "ExteriorLightColour", colourComment);
-                _config.SetComment(sec, "InteriorLights", getAllEnumValues(typeof(ToggleModes)));
-                _config.SetComment(sec, "InteriorLightColour", colourComment);
-                _config.SetComment(sec, "NavLights", getAllEnumValues(typeof(ToggleModes)));
-                _config.SetComment(sec, "LcdTextColour", colourComment);
-                _config.SetComment(sec, "TanksAndBatteries", getAllEnumValues(typeof(TankAndBatteryModes)));
-                _config.SetComment(sec, "NavOsEfcBurnPercentage", "Burn % 0-100, -1 for no change");
-                _config.SetComment(sec, "EfcBoost", getAllEnumValues(typeof(ToggleModes)));
-                _config.SetComment(sec, "NavOsAbortEfcOff", getAllEnumValues(typeof(KillOrAbortNavigationModes)));
-                _config.SetComment(sec, "AuxMode", getAllEnumValues(typeof(ToggleModes)));
-                _config.SetComment(sec, "Extractor", getAllEnumValues(typeof(ExtractorModes)));
-                _config.SetComment(sec, "KeepAlives", getAllEnumValues(typeof(ToggleModes)));
-                _config.SetComment(sec, "HangarDoors", getAllEnumValues(typeof(HangarDoorModes)));               
+                name = "Torps";
+                if (inheritee != null && stance.TorpedoMode == inheritee.TorpedoMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                } 
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.TorpedoMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(ToggleModes)));
+                }
+
+                name = "Pdcs";
+                if (inheritee != null && stance.PdcMode == inheritee.PdcMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                } 
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.PdcMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(ToggleModes)));
+                }
+
+                name = "Kinetics";
+                if (inheritee != null && stance.RailgunMode == inheritee.RailgunMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.RailgunMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(RailgunModes)));
+                }
+
+                name = "MainThrust";
+                if (inheritee != null && stance.MainDriveMode == inheritee.MainDriveMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.MainDriveMode.ToString());
+                    _config.SetComment(sec, "MainThrust", getAllEnumValues(typeof(MainDriveModes)));
+                }
+
+                name = "ManeuveringThrust";
+                if (inheritee != null && stance.ManeuveringThrusterMode == inheritee.ManeuveringThrusterMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.ManeuveringThrusterMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(ManeuveringThrusterModes)));
+                }
+
+                name = "Spotlights";
+                if (inheritee != null && stance.SpotlightMode == inheritee.SpotlightMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.SpotlightMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(SpotlightModes)));
+                }
+
+                name = "ExteriorLights";
+                if (inheritee != null && stance.ExteriorLightMode == inheritee.ExteriorLightMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.ExteriorLightMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(LightToggleModes)));
+                }
+
+                name = "ExteriorLightColour";
+                if (inheritee != null && stance.ExteriorLightColour == inheritee.ExteriorLightColour)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, buildColourString(stance.ExteriorLightColour));
+                    _config.SetComment(sec, name, colourComment);
+                }
+
+                name = "InteriorLights";
+                if (inheritee != null && stance.InteriorLightMode == inheritee.InteriorLightMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.InteriorLightMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(LightToggleModes)));
+                }
+
+                name = "InteriorLightColour";
+                if (inheritee != null && stance.InteriorLightColour == inheritee.InteriorLightColour)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, buildColourString(stance.InteriorLightColour));
+                    _config.SetComment(sec, name, colourComment);
+                }
+
+                name = "NavLights";
+                if (inheritee != null && stance.NavLightMode == inheritee.NavLightMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.NavLightMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(LightToggleModes)));
+                }
+
+                name = "LcdTextColour";
+                if (inheritee != null && stance.LcdTextColour == inheritee.LcdTextColour)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, buildColourString(stance.LcdTextColour));
+                    _config.SetComment(sec, name, colourComment);
+                }
+
+                name = "TanksAndBatteries";
+                if (inheritee != null && stance.TankAndBatteryMode == inheritee.TankAndBatteryMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.TankAndBatteryMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(TankAndBatteryModes)));
+                }
+
+                name = "NavOsEfcBurnPercentage";
+                if (inheritee != null && stance.BurnPercentage == inheritee.BurnPercentage)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.BurnPercentage.ToString());
+                    _config.SetComment(sec, name, "Burn % 0-100, -1 for no change");
+
+                }
+
+                name = "EfcBoost";
+                if (inheritee != null && stance.EfcBoost == inheritee.EfcBoost)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.EfcBoost.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(ToggleModes)));
+                }
+
+                name = "NavOsAbortEfcOff";
+                if (inheritee != null && stance.KillOrAbortNavigation == inheritee.KillOrAbortNavigation)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.KillOrAbortNavigation.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(KillOrAbortNavigationModes)));
+                }
+
+                name = "AuxMode";
+                if (inheritee != null && stance.AuxMode == inheritee.AuxMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.AuxMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(ToggleModes)));
+                }
+
+                name = "Extractor";
+                if (inheritee != null && stance.ExtractorMode == inheritee.ExtractorMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.ExtractorMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(ExtractorModes)));
+                }
+
+                name = "KeepAlives";
+                if (inheritee != null && stance.KeepAlives == inheritee.KeepAlives)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.KeepAlives.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(ToggleModes)));
+                }
+
+                name = "HangarDoors";
+                if (inheritee != null && stance.HangarDoorsMode == inheritee.HangarDoorsMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.HangarDoorsMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(HangarDoorModes)));
+                }       
 
             }
 
