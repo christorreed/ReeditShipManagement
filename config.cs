@@ -293,7 +293,15 @@ namespace IngameScript
                             {
                                 // we have an inheriter.
                                 inherits = true;
-                                inheritee = newStances[_config.Get(sect, key).ToString()];
+                                try
+                                {
+                                    inheritee = newStances[_config.Get(sect, key).ToString()];
+                                }
+                                catch(Exception ex)
+                                {
+                                    Echo("Failed to find inheritee for " + sect + "\nEnsure inheritee stances are listed before their heirs\n");
+                                    throw ex;
+                                }
                             }
 
                             key = "Torps";
