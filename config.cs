@@ -114,6 +114,9 @@ namespace IngameScript
         // thrust percentages to show on the Advanced Thrust LCD
         List<double> _decelPercentages = new List<double>();
 
+        // use m/s^2 rather than G's for thrust values.
+        bool _isWeirdAboutThrustLikeGerm = false;
+
         // Performance & Debugging -----------------------------------------------------------------
 
         // verbose debugging enabled
@@ -237,6 +240,8 @@ namespace IngameScript
                         _decelPercentages.Add(double.Parse(perc) / 100);
                     }
                 }
+
+                _isWeirdAboutThrustLikeGerm = _config.Get(sec, "ShowThrustInMetric").ToBoolean(_isWeirdAboutThrustLikeGerm);
 
                 // Performance & Debugging -----------------------------------------------------------------
 
@@ -688,11 +693,11 @@ namespace IngameScript
 
             name = "RsmLcds";
             _config.Set(sec, name, _keywordRsmLcds);
-            _config.SetComment(sec, name, "to identify RSM _allLcds");
+            _config.SetComment(sec, name, "to identify RSM lcds");
 
             name = "ColourSyncLcds";
             _config.Set(sec, name, _keywordColourSyncLcds);
-            _config.SetComment(sec, name, "to identify non RSM _allLcds for colour sync");
+            _config.SetComment(sec, name, "to identify non RSM lcds for colour sync");
 
             name = "AuxiliaryBlocks";
             _config.Set(sec, name, _keywordAuxBlocks);
@@ -756,11 +761,11 @@ namespace IngameScript
 
             name = "DisableLcdColourControl";
             _config.Set(sec, name, _disableLcdColourControl);
-            _config.SetComment(sec, name, "disable text colour control for all _allLcds");
+            _config.SetComment(sec, name, "disable text colour control for all lcds");
 
             name = "ShowBasicTelemetry";
             _config.Set(sec, name, _showBasicTelemetry);
-            _config.SetComment(sec, name, "show basic telemetry data on advanced thrust _allLcds");
+            _config.SetComment(sec, name, "show basic telemetry data on advanced thrust lcds");
 
             string DecelPercents = "";
 
@@ -772,7 +777,11 @@ namespace IngameScript
 
             name = "DecelerationPercentages";
             _config.Set(sec, name, DecelPercents);
-            _config.SetComment(sec, name, "thrust percentages to show on advanced thrust _allLcds");
+            _config.SetComment(sec, name, "thrust percentages to show on advanced thrust lcds");
+
+            name = "ShowThrustInMetric";
+            _config.Set(sec, name, _isWeirdAboutThrustLikeGerm);
+            _config.SetComment(sec, name, "show basic telemetry data on advanced thrust lcds");
 
             // Performance & Debugging -----------------------------------------------------------------
 

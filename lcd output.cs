@@ -203,19 +203,26 @@ namespace IngameScript
                 vel_msg = "Velocity (Max):  ";
             }
 
-            double AccelMax = Math.Round((_maxThrust / _shipMass / 9.81), 2);
-            double AccelActual = Math.Round((_actualThrust / _shipMass / 9.81), 2);
+            double accelDueToGrav = 9.81;
+            string units = " Gs";
+            if (_isWeirdAboutThrustLikeGerm)
+            {
+                accelDueToGrav = 1;
+                units = " m/s/s";
+            }
+            double AccelMax = Math.Round((_maxThrust / _shipMass / accelDueToGrav), 2);
+            double AccelActual = Math.Round((_actualThrust / _shipMass / accelDueToGrav), 2);
 
             string output_decel_short;
             if (_actualThrust > 0)
             {
                 output_decel_short = "Decel (Actual):  " + stopDistance(_actualThrust, vel) +
-                    "\nAccel (Actual):  " + (AccelActual + " Gs").PadLeft(15);
+                    "\nAccel (Actual):  " + (AccelActual + units).PadLeft(15);
             }
             else
             {
                 output_decel_short = "Decel (Dampener):" + stopDistance(_maxThrust, vel, true) +
-                    "\nAccel (Best):    " + (AccelMax + " Gs").PadLeft(15);
+                    "\nAccel (Best):    " + (AccelMax + units).PadLeft(15);
             }
 
             string sec_thrust =
