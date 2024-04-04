@@ -35,7 +35,7 @@ x "An item with the same key has already been added" during
 - refactor the rest of the var names
 - booting improvements, lcd outputs
 - lcd error on config parse failure.
-- snek private spawn default
+- snek private spawn default: make spawns private automatically if spawn kits are set to no share
 
 x make stance a class ffs
 x fix runProgramable, make it run commands over sperate ticks

@@ -265,13 +265,9 @@ namespace IngameScript
                     {
                         // get the stance name
                         string newName = sect.Substring(11);
-                        Echo("parsing " + newName);
+                        Echo(newName);
 
                         Stance newStance = new Stance();
-
-                        // no try catch,
-                        // let the errors flow,
-                        // let her crash
 
                         // strings used for parsing
                         string working, key = "";
@@ -281,37 +277,51 @@ namespace IngameScript
                         int r = 33, g = 144, b = 255, a = 255;
 
                         bool inherits = false;
-                        Stance inheritee = new Stance();
+                        Stance inheritee = null;
+
+                        // check for an Inherits value first...
+                        key = "Inherits";
+
+                        if (_config.ContainsKey(sect, key))
+                        {
+                            // we have an inheriter.
+                            inherits = true;
+                            try
+                            {
+                                inheritee = newStances[_config.Get(sect, key).ToString()];
+                                Echo("Inherits " + _config.Get(sect, key).ToString());
+                            }
+                            catch (Exception ex)
+                            {
+                                Echo("Failed to find inheritee for " + sect + "\nEnsure inheritee stances are listed before their heirs\n");
+                                throw ex;
+                            }
+                        }
 
                         try
                         {
                             // now we parse out all of the properties of this stance...
 
-                            // check for an Inherits value first...
-                            key = "Inherits";
-                            if (_config.ContainsKey(sect, key))
-                            {
-                                // we have an inheriter.
-                                inherits = true;
-                                try
-                                {
-                                    inheritee = newStances[_config.Get(sect, key).ToString()];
-                                }
-                                catch(Exception ex)
-                                {
-                                    Echo("Failed to find inheritee for " + sect + "\nEnsure inheritee stances are listed before their heirs\n");
-                                    throw ex;
-                                }
-                            }
+                            if (inherits) Echo(inheritee.TorpedoMode.ToString());
 
                             key = "Torps";
                             if (_config.ContainsKey(sect, key))
+                            {
                                 newStance.TorpedoMode =
                                     (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.TorpedoMode = inheritee.TorpedoMode;
+                                Echo("1");
+                            }
+                            else if (inherits)
+                            {
+                                newStance.TorpedoMode = inheritee.TorpedoMode;
+                                Echo("2");
+                            }
                             else
+                            {
                                 newStance.TorpedoMode = _defaultTorpedoMode;
+                                Echo("3");
+                            }
+                                
 
                             key = "Pdcs";
                             if (_config.ContainsKey(sect, key))
@@ -597,6 +607,7 @@ namespace IngameScript
 
         void setCustomData()
         {
+            _config.Clear();
             
             string sec, name;
 
@@ -811,7 +822,8 @@ namespace IngameScript
 
                 name = "Torps";
                 if (inheritee != null && stance.TorpedoMode == inheritee.TorpedoMode)
-                { // this value matches it's inheritor, so delete it from the ini.
+                { // this value matches it's inheritor,
+                    // so delete it from the ini.
                     if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
                 } 
                 else
@@ -828,7 +840,7 @@ namespace IngameScript
                 else
                 { // otherwise, load it up
                     _config.Set(sec, name, stance.PdcMode.ToString());
-                    _config.SetComment(sec, name, getAllEnumValues(typeof(ToggleModes)));
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(PdcModes)));
                 }
 
                 name = "Kinetics";
@@ -961,7 +973,6 @@ namespace IngameScript
                 { // otherwise, load it up
                     _config.Set(sec, name, stance.BurnPercentage.ToString());
                     _config.SetComment(sec, name, "Burn % 0-100, -1 for no change");
-
                 }
 
                 name = "EfcBoost";
