@@ -23,10 +23,8 @@ namespace IngameScript
 {
     partial class Program
     {
-        //List<IMyTerminalBlock> TO_LOAD = new List<IMyTerminalBlock>();
-        //List<IMyTerminalBlock> TO_BALANCE_LOAD = new List<IMyTerminalBlock>();
 
-        string MISSING_AMMO = "";
+        string _ammoCritical = "";
 
         void runAutoLoad()
         {
@@ -35,7 +33,9 @@ namespace IngameScript
 
             if (_d) Echo("Running autoload...");
 
-            foreach (var Item in ITEMS)
+            _ammoCritical = "";
+
+            foreach (var Item in _items)
             {
                 // if this item isn't ammo, we don't need to do anything.
                 if (!Item.IsTorp && !Item.IsAmmo) continue;
@@ -54,6 +54,8 @@ namespace IngameScript
                 // we need average for balancing.
                 int AverageQty = 0;
                 int AutoloadCount = 0;
+
+                bool ammoCritical = false;
 
                 foreach (INVENTORY Inv in CombinedInventories)
                 {
@@ -81,6 +83,12 @@ namespace IngameScript
                             // we're eligable as a balance source
                             BalanceFrom.Add(Inv);
                         }
+                        else if(!ammoCritical && Item.SpareQty == 0)
+                        {
+                            // we have no spare ammo
+                            // and this gun is empty.
+                            ammoCritical = true;
+                        }
                     }
                     else
                     {
@@ -91,6 +99,12 @@ namespace IngameScript
                             LoadFrom.Add(Inv);
                         }
                     }
+                }
+
+                if (ammoCritical)
+                {
+                    if (_ammoCritical != "") _ammoCritical += "\n";
+                    _ammoCritical += Item.Type.SubtypeId;
                 }
 
                 if (LoadTo.Count > 0)

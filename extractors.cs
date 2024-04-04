@@ -26,13 +26,39 @@ namespace IngameScript
         // Extractors -----------------------------------------------------------------
 
         // this value multiplies the capacity by
-        // the KEEP_FULL_MULTIPLIER depending on
+        // the _extractorKeepFullMultiplier depending on
         // if this is SG or LG
-        double EXTACTOR_KEEP_FULL_THRESH;
+        double _extractorKeepFullThreshold;
+
+        // dampening for extractor management
+        int _extractorWaitCount = 0;
+
+        // threshold for above
+        // not a constant, will be modified
+        // to speed up fueling.
+        int _extractorWaitThreshold = 9;
+
+        // if extractor is topping up,
+        // fill when fuel % falls below this value.
+        int _topUpPercentage = 10;
+
+        // if extractor is keeping full,
+        // fill when there is this many times
+        // one tank's space left in the ship.
+        double _extractorKeepFullMultiplier = 3;
+
+        // litres of fuel in a fuel tank
+        double _fuelTankCapacity = 245000;
+        // litres of fuel in a jerry can
+        double _jerryCanCapacity = 50000;
+
+        // the current ship calculated fuel percentage.
+        // starts at 100 so we don't refuel before we check.
+        double _fuelPercentage = 100;
 
         void setExtractors(ExtractorModes mode)
         {
-            foreach (IMyTerminalBlock Extractor in EXTRACTORs)
+            foreach (IMyTerminalBlock Extractor in _largeExtractors)
             {
                 if (Extractor == null) continue;
 
@@ -46,19 +72,19 @@ namespace IngameScript
         void setKeepFullThresh()
         {
             // set fuel tank/jerry can for extractor management = 3
-            if (EXTRACTORs.Count < 1 && EXTRACTORs_SMALL.Count > 1)
+            if (_largeExtractors.Count < 1 && _smallExtractors.Count > 1)
                 // we have no large extractors and at least one small one
                 // so base the keep full thresh off a jerry can's capacity
-                EXTACTOR_KEEP_FULL_THRESH = (KEEP_FULL_MULTIPLIER * CAPACITY_JERRY_CAN);
+                _extractorKeepFullThreshold = (_extractorKeepFullMultiplier * _jerryCanCapacity);
             else
                 // otherwise, use a normal fuel tank's capacity.
-                EXTACTOR_KEEP_FULL_THRESH = (KEEP_FULL_MULTIPLIER * CAPACITY_FUEL_TANK);
+                _extractorKeepFullThreshold = (_extractorKeepFullMultiplier * _fuelTankCapacity);
         }
 
         void refreshRefuelStatus()
         {
             // this method basically determines, based on the current stance
-            // if we NEED_FUEL...
+            // if we _needFuel...
 
             if (
                 _currentStance.ExtractorMode == ExtractorModes.Off
@@ -68,48 +94,48 @@ namespace IngameScript
             {
                 if (_d) Echo("Extractor management disabled.");
             }
-            else if (EXTRACTOR_WAIT > 0)
+            else if (_extractorWaitCount > 0)
             {
-                EXTRACTOR_WAIT--;
-                if (_d) Echo("waiting (" + EXTRACTOR_WAIT + ")...");
+                _extractorWaitCount--;
+                if (_d) Echo("waiting (" + _extractorWaitCount + ")...");
             }
-            else if (TANKs_H2.Count < 1)
+            else if (_h2Tanks.Count < 1)
             {
                 if (_d) Echo("No tanks!");
             }
             else if (
                 _currentStance.ExtractorMode == ExtractorModes.FillWhenLow
                 &&
-                FUEL_PERCENTAGES < TOP_UP_PERCENTAGE
+                _fuelPercentage < _topUpPercentage
                 )
             // refuel at 10%
             {
-                if (_d) Echo("Fuel low! (" + FUEL_PERCENTAGES + "% / " + TOP_UP_PERCENTAGE + "%)");
-                NEED_FUEL = true;
+                if (_d) Echo("Fuel low! (" + _fuelPercentage + "% / " + _topUpPercentage + "%)");
+                _needFuel = true;
             }
             else if (
                 _currentStance.ExtractorMode == ExtractorModes.KeepFull
                 &&
-                ACTUAL_H2 < (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH)
+                _actualH2 < (_totalH2 - _extractorKeepFullThreshold)
                 )
             // refuel to keep tanks full.
             {
-                if (_d) Echo("Fuel ready for top up (" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
-                NEED_FUEL = true;
+                if (_d) Echo("Fuel ready for top up (" + _actualH2 + " < " + (_totalH2 - _extractorKeepFullThreshold) + ")");
+                _needFuel = true;
             }
             else if (_d)
             {
-                Echo("Fuel level OK (" + FUEL_PERCENTAGES + "%).");
+                Echo("Fuel level OK (" + _fuelPercentage + "%).");
 
                 if (_currentStance.ExtractorMode == ExtractorModes.KeepFull)
-                    Echo("Keeping tanks full\n(" + ACTUAL_H2 + " < " + (TOTAL_H2 - EXTACTOR_KEEP_FULL_THRESH) + ")");
+                    Echo("Keeping tanks full\n(" + _actualH2 + " < " + (_totalH2 - _extractorKeepFullThreshold) + ")");
             }
         }
 
         void loadExtractors()
         {
             // don't want to get stuck in a loop trying this.
-            NEED_FUEL = false;
+            _needFuel = false;
 
             // choose the extractor to load
             IMyTerminalBlock TheChosenOne = null;
@@ -118,7 +144,7 @@ namespace IngameScript
             int Item = 1;
 
             // check for an LG extractor first...
-            foreach (IMyTerminalBlock Extractor in EXTRACTORs)
+            foreach (IMyTerminalBlock Extractor in _largeExtractors)
             {
                 if (Extractor.IsFunctional)
                 {
@@ -129,7 +155,7 @@ namespace IngameScript
             if (TheChosenOne == null)
             {
                 // no LG extractor, check for SG one.
-                foreach (IMyTerminalBlock Extractor in EXTRACTORs_SMALL)
+                foreach (IMyTerminalBlock Extractor in _smallExtractors)
                 {
                     if (Extractor.IsFunctional)
                     {
@@ -142,19 +168,19 @@ namespace IngameScript
                 {
                     // no sg extractor either...
                     if (_d) Echo("No functional extractor to load!");
-                    NO_EXTRACTOR = true;
+                    _noExtractor = true;
                     return;
                 }
             }
 
             // we have an extractor
-            NO_EXTRACTOR = false;
+            _noExtractor = false;
 
             // do we have fuel tanks to load?
-            if (ITEMS[Item].ActualQty < 1)
+            if (_items[Item].ActualQty < 1)
             {
-                NO_SPARE_TANKS = true;
-                if (_d) Echo("No spare " + ITEMS[Item].Type.SubtypeId + " to load!" );
+                _noSpareTanks = true;
+                if (_d) Echo("No spare " + _items[Item].Type.SubtypeId + " to load!" );
                 return;
             }
 
@@ -162,7 +188,7 @@ namespace IngameScript
 
             // set the wait threshold
             // so we don't keep trying to do this over and over again.
-            EXTRACTOR_WAIT = EXTRACTOR_WAIT_THRESH;
+            _extractorWaitCount = _extractorWaitThreshold;
 
             // build an INVENTORY for the loadInventories method
             INVENTORY Inv = new INVENTORY();
@@ -178,7 +204,7 @@ namespace IngameScript
             Invs.Add(Inv);
 
             if (_d) Echo("Attempting to load extractor " + TheChosenOne.CustomName);
-            loadInventories(ITEMS[Item].Inventories, Invs, ITEMS[Item].Type);
+            loadInventories(_items[Item].Inventories, Invs, _items[Item].Type);
 
         }
     }

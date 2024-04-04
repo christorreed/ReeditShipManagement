@@ -22,17 +22,17 @@ namespace IngameScript
 {
     partial class Program
     {
-        // PDCs -----------------------------------------------------------------
+        // _normalPdcs -----------------------------------------------------------------
 
-        private double ACTUAL_PDCs = 0;
         private int _initPdcs = 0;
-        private double INTEGRITY_PDCs = 0;
+        private double _actualPdcs = 0;
+        private double _integrityPdcs = 0;
 
-        private void refreshPDCs()
+        private void refresh_normalPdcs()
         {
-            ACTUAL_PDCs = 0;
+            _actualPdcs = 0;
 
-            foreach (IMyTerminalBlock Pdc in PDCs)
+            foreach (IMyTerminalBlock Pdc in _normalPdcs)
             {
                 // turn pdcs on
                 processPdc(Pdc,
@@ -44,21 +44,21 @@ namespace IngameScript
                     );
             }
 
-            foreach (IMyTerminalBlock Pdc in PDCs_DEF)
+            foreach (IMyTerminalBlock Pdc in _defensivePdcs)
             {
                 processPdc(Pdc,
                     // except if off
                     _currentStance.PdcMode != PdcModes.Off);
             }
 
-            INTEGRITY_PDCs = Math.Round(100 * (ACTUAL_PDCs / _initPdcs));
+            _integrityPdcs = Math.Round(100 * (_actualPdcs / _initPdcs));
         }
 
         private void processPdc(IMyTerminalBlock pdc, bool power_state)
         {
             if (pdc != null && pdc.IsFunctional)
             {
-                ACTUAL_PDCs++;
+                _actualPdcs++;
 
                 (pdc as IMyConveyorSorter).Enabled = power_state;
             }
@@ -68,7 +68,7 @@ namespace IngameScript
         {
             if (mode == PdcModes.NoChange) return;
 
-            foreach (IMyTerminalBlock Pdc in PDCs)
+            foreach (IMyTerminalBlock Pdc in _normalPdcs)
             {
                 if (Pdc != null & Pdc.IsFunctional)
                 {
@@ -132,7 +132,7 @@ namespace IngameScript
                 }
             }
 
-            foreach (IMyTerminalBlock Pdc in PDCs_DEF)
+            foreach (IMyTerminalBlock Pdc in _defensivePdcs)
             {
                 if (Pdc != null & Pdc.IsFunctional)
                 {

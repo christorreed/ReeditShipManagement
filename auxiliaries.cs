@@ -28,14 +28,14 @@ namespace IngameScript
 
         void iterateAuxiliaries()
         {
-            AUX_ACTIVE_COUNT = 0;
+            _activeAuxBlockCount = 0;
 
-            foreach (IMyTerminalBlock Block in AUXILIARIEs)
+            foreach (IMyTerminalBlock Block in _auxiliaries)
             {
                 if (Block == null)
                     continue;
                 if (Block.IsWorking)
-                    AUX_ACTIVE_COUNT++;
+                    _activeAuxBlockCount++;
             }
         }
 
@@ -43,7 +43,7 @@ namespace IngameScript
         {
             if (mode == ToggleModes.NoChange) return;
 
-            foreach (IMyTerminalBlock Block in AUXILIARIEs)
+            foreach (IMyTerminalBlock Block in _auxiliaries)
             {
                 if (Block == null) continue;
 

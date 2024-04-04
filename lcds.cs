@@ -22,11 +22,11 @@ namespace IngameScript
 {
     partial class Program
     {
-        // LCDs -----------------------------------------------------------------
+        // _allLcds -----------------------------------------------------------------
 
         private void iterateLcds()
         {
-            foreach (IMyTextPanel Lcd in LCDs)
+            foreach (IMyTextPanel Lcd in _allLcds)
             {
                 Lcd.Enabled = true;
             }
@@ -34,9 +34,9 @@ namespace IngameScript
 
         private void initLcds()
         {
-            // RSM LCDs -----------------------------------------------------------------
+            // RSM _allLcds -----------------------------------------------------------------
 
-            foreach (IMyTextPanel Lcd in LCDs_RSM)
+            foreach (IMyTextPanel Lcd in _rsmLcds)
             {
                 Lcd.Font = "Monospace";
                 Lcd.ContentType = ContentType.TEXT_AND_IMAGE;
@@ -139,16 +139,16 @@ namespace IngameScript
             }
 
 
-            // All other LCDs -----------------------------------------------------------------
+            // All other _allLcds -----------------------------------------------------------------
             bool NavigationLCDFound = false;
             bool REEDAV1LCDFound = false;
             bool REEDAV2LCDFound = false;
 
-            foreach (IMyTextPanel Lcd in LCDs)
+            foreach (IMyTextPanel Lcd in _allLcds)
             {
                 if (Lcd == null) continue;
 
-                // REEDAV LCDs -----------------------------------------------------------------
+                // REEDAV _allLcds -----------------------------------------------------------------
 
                 // todo
                 // improve? maybe just remove?
@@ -171,7 +171,7 @@ namespace IngameScript
                     continue;
                 }
 
-                // EFC/NavOS Navigation LCDs -----------------------------------------------------------------
+                // EFC/NavOS Navigation _allLcds -----------------------------------------------------------------
 
                 if (
                     !NavigationLCDFound

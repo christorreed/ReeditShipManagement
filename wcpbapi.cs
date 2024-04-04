@@ -22,7 +22,7 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        WcPbApi WC_PB_API;
+        WcPbApi _wcPbApi;
 
         public class WcPbApi
         {

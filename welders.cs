@@ -26,21 +26,22 @@ namespace IngameScript
         // todo
         // add toolcore support!
 
-        double ACTUAL_WELDERS = 0;
+
         int _initWelders = 0;
-        double INTEGRITY_WELDERs = 0;
+        double _actualWelders = 0;
+        double _integrityWelders = 0;
 
         void iterateWelders()
         {
-            ACTUAL_WELDERS = 0;
+            _actualWelders = 0;
 
-            foreach (IMyTerminalBlock Welder in WELDERs)
+            foreach (IMyTerminalBlock Welder in _welders)
             {
                 if (Welder != null && Welder.IsFunctional)
-                    ACTUAL_WELDERS++;
+                    _actualWelders++;
             }
 
-            INTEGRITY_WELDERs = Math.Round(100 * (ACTUAL_WELDERS / _initWelders));
+            _integrityWelders = Math.Round(100 * (_actualWelders / _initWelders));
         }
     }
 }

@@ -25,18 +25,18 @@ namespace IngameScript
         // Gyroscopes -----------------------------------------------------------------
 
         private double _initGyros = 0;
-        private int ACTUAL_GYROs = 0;
-        private double INTEGRITY_GYROs = 0;
+        private int _actualGyros = 0;
+        private double _integrityGyros = 0;
 
         private void refreshGyros(bool power_state, bool set_power_state)
         {
-            ACTUAL_GYROs = 0;
+            _actualGyros = 0;
 
-            foreach (IMyGyro Gyro in GYROs)
+            foreach (IMyGyro Gyro in _gyroscopes)
             {
                 if (Gyro != null && Gyro.IsFunctional)
                 {
-                    ACTUAL_GYROs++;
+                    _actualGyros++;
 
                     if (set_power_state)
                         Gyro.Enabled = power_state;
@@ -44,7 +44,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_GYROs = Math.Round(100 * (ACTUAL_GYROs / _initGyros));
+            _integrityGyros = Math.Round(100 * (_actualGyros / _initGyros));
         }
     }
 }

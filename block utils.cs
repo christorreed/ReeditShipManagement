@@ -49,9 +49,9 @@ namespace IngameScript
                 DefsOut += ThisBlock.BlockDefinition + "\n";
             }
 
-            if (ANTENNAs.Count > 0 && ANTENNAs[0] != null)
+            if (_antennas.Count > 0 && _antennas[0] != null)
             {
-                ANTENNAs[0].CustomData = DefsOut;
+                _antennas[0].CustomData = DefsOut;
             }
         }
 
@@ -80,7 +80,7 @@ namespace IngameScript
                 Out += Prop.Id + " " + Prop.TypeName + "\n";
             }
 
-            if (ANTENNAs.Count > 0 && ANTENNAs[0] != null) ANTENNAs[0].CustomData = Out;
+            if (_antennas.Count > 0 && _antennas[0] != null) _antennas[0].CustomData = Out;
             Block.CustomData = Out;
         }
 
@@ -107,7 +107,7 @@ namespace IngameScript
             try
             {
                 // ignore weapons that are not turrets.
-                if (WC_PB_API.GetWeaponAzimuthMatrix(block, 0) == VRageMath.Matrix.Zero) return;
+                if (_wcPbApi.GetWeaponAzimuthMatrix(block, 0) == VRageMath.Matrix.Zero) return;
 
                 block.SetValue<Int64>("WC_Shoot Mode", 3);
                 if (_d) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));
@@ -123,7 +123,7 @@ namespace IngameScript
             try
             {
                 // ignore weapons that are not turrets.
-                if (WC_PB_API.GetWeaponAzimuthMatrix(block, 0) == VRageMath.Matrix.Zero) return;
+                if (_wcPbApi.GetWeaponAzimuthMatrix(block, 0) == VRageMath.Matrix.Zero) return;
 
                 block.SetValue<Int64>("WC_Shoot Mode", 0);
                 if (_d) Echo("Shoot mode = " + block.GetValue<Int64>("WC_Shoot Mode"));

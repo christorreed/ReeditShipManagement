@@ -23,11 +23,11 @@ namespace IngameScript
 {
     partial class Program
     {
-        private double MAX_POWER;
+        private double _maxPower;
 
         private void refreshPowerBlocks(TankAndBatteryModes mode)
         {
-            MAX_POWER = 0;
+            _maxPower = 0;
 
             refreshBatteries(mode);
             refreshReactors();
@@ -35,23 +35,23 @@ namespace IngameScript
 
         // Batteries -----------------------------------------------------------------
 
-        private double TOTAL_BATTERIEs = 0;
+        private double TOTAL__batteries = 0;
         private double _initBatteries = 0;
-        private double ACTUAL_BATTERIEs = 0;
-        private double INTEGRITY_BATTERIEs = 0;
+        private double ACTUAL__batteries = 0;
+        private double INTEGRITY__batteries = 0;
 
         private void refreshBatteries(TankAndBatteryModes mode)
         {
-            TOTAL_BATTERIEs = 0;
-            ACTUAL_BATTERIEs = 0;
+            TOTAL__batteries = 0;
+            ACTUAL__batteries = 0;
 
-            foreach (IMyBatteryBlock Battery in BATTERIEs)
+            foreach (IMyBatteryBlock Battery in _batteries)
             {
                 if (Battery != null && Battery.IsFunctional)
                 {
-                    ACTUAL_BATTERIEs += Battery.CurrentStoredPower;
-                    TOTAL_BATTERIEs += Battery.MaxStoredPower;
-                    MAX_POWER += Battery.MaxOutput;
+                    ACTUAL__batteries += Battery.CurrentStoredPower;
+                    TOTAL__batteries += Battery.MaxStoredPower;
+                    _maxPower += Battery.MaxOutput;
 
                     // always turn batteries on
                     Battery.Enabled = true;
@@ -63,7 +63,7 @@ namespace IngameScript
                     // railgun target status.
                     if (Discharging && _manageBatteryDischarge)
                     {
-                        if (RAILs_HAVE_TARGET)
+                        if (_kineticsHaveTarget)
                             Battery.ChargeMode = ChargeMode.Discharge;
                         else
                             Battery.ChargeMode = ChargeMode.Auto;
@@ -71,12 +71,12 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_BATTERIEs = Math.Round(100 * (MAX_POWER / _initBatteries));
+            INTEGRITY__batteries = Math.Round(100 * (_maxPower / _initBatteries));
         }
         private void initBatteries()
         {
             _initBatteries = 0;
-            foreach (IMyBatteryBlock Battery in BATTERIEs)
+            foreach (IMyBatteryBlock Battery in _batteries)
             {
                 _initBatteries += Battery.MaxOutput;
             }
@@ -86,7 +86,7 @@ namespace IngameScript
         {
             if (mode == TankAndBatteryModes.NoChange) return;
 
-            foreach (IMyBatteryBlock Battery in BATTERIEs)
+            foreach (IMyBatteryBlock Battery in _batteries)
             {
                 if (Battery != null & Battery.IsFunctional)
                 {
@@ -113,17 +113,17 @@ namespace IngameScript
         // Reactors -----------------------------------------------------------------
         
         private double _initReactors = 0;
-        private double ACTUAL_REACTORs = 0;
-        private double INTEGRITY_REACTORs = 0;
+        private double ACTUAL__reactors = 0;
+        private double INTEGRITY__reactors = 0;
 
-        private int EMPTY_REACTORs = 0;
+        private int EMPTY__reactors = 0;
 
         private void refreshReactors()
         {
-            ACTUAL_REACTORs = 0;
-            EMPTY_REACTORs = 0;
+            ACTUAL__reactors = 0;
+            EMPTY__reactors = 0;
 
-            foreach (IMyReactor Reactor in REACTORs)
+            foreach (IMyReactor Reactor in _reactors)
             {
                 if (Reactor != null && Reactor.IsFunctional)
                 {
@@ -131,22 +131,22 @@ namespace IngameScript
                     Reactor.Enabled = true;
 
                     if (inventoryEmpty(Reactor))
-                        EMPTY_REACTORs++;
+                        EMPTY__reactors++;
                     
                     else
-                        ACTUAL_REACTORs += Reactor.MaxOutput;
+                        ACTUAL__reactors += Reactor.MaxOutput;
                     
                 }
             }
-            INTEGRITY_REACTORs = Math.Round(100 * (ACTUAL_REACTORs / _initReactors));
+            INTEGRITY__reactors = Math.Round(100 * (ACTUAL__reactors / _initReactors));
 
-            MAX_POWER += ACTUAL_REACTORs;
+            _maxPower += ACTUAL__reactors;
         }
 
         private void initReactors()
         {
             _initReactors = 0;
-            foreach (IMyReactor Reactor in REACTORs)
+            foreach (IMyReactor Reactor in _reactors)
             {
                 _initReactors += Reactor.MaxOutput;
             }

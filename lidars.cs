@@ -23,17 +23,17 @@ namespace IngameScript
     partial class Program
     {
         // LiDARs -----------------------------------------------------------------
-        private bool LIDAR_WORKING;
+        private bool _lidarWorking;
         
         private void refreshLidars(bool power_state, bool set_power_state)
         {
-            LIDAR_WORKING = false;
+            _lidarWorking = false;
 
-            foreach (IMyConveyorSorter Lidar in LIDARs)
+            foreach (IMyConveyorSorter Lidar in _lidars)
             {
                 if (Lidar != null && Lidar.IsFunctional)
                 {
-                    LIDAR_WORKING = true;
+                    _lidarWorking = true;
 
                     if (set_power_state)
                         Lidar.Enabled = power_state;

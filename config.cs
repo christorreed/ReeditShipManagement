@@ -38,7 +38,7 @@ namespace IngameScript
         // Enable autoload functionality for reactors.
         bool _autoLoadReactors = true; 
 
-        // Automatically configure PDCs, Railguns, Torpedoes.
+        // Automatically configure _normalPdcs, Railguns, Torpedoes.
         bool _autoConfigWeapons = true;
 
         // set turret fire mode based on stance
@@ -70,10 +70,10 @@ namespace IngameScript
         // Keywords -----------------------------------------------------------------
         
         string _keywordIgnore = "[I]"; // for blocks to be ignored
-        string _keywordRsmLcds = "[RSM]"; // for RSM LCDs
+        string _keywordRsmLcds = "[RSM]"; // for RSM _allLcds
         string _keywordColourSyncLcds = "[CS]"; // for LCD colour sync
         string _keywordAuxBlocks = "Autorepair"; // for auxiliary blocks
-        string _keywordDefPdcs = "Repel"; // for PDCs marked for permanent defence
+        string _keywordDefPdcs = "Repel"; // for _normalPdcs marked for permanent defence
         string _keywordThrustersMinimum = "Min"; // for epsteins enabled at min
         string _keywordThrustersDocking = "Docking"; // for epsteins enabled with RCS
         string _keywordLightNavigation = "Nav"; // for Nav lights
@@ -81,8 +81,8 @@ namespace IngameScript
 
         // todo
         // remove these, check the custom data or something isntead.
-        string KEYWORD_PB_EFC = "[EFC]"; // for EFC PBs/LCDs
-        string KEYWORD_PB_NAVOS = "[NavOS]"; // for NavOS PBs/LCDs
+        string KEYWORD_PB_EFC = "[EFC]"; // for EFC PBs/_allLcds
+        string KEYWORD_PB_NAVOS = "[NavOS]"; // for NavOS PBs/_allLcds
 
         // Init & Block Naming -----------------------------------------------------------------
 
@@ -105,7 +105,7 @@ namespace IngameScript
         // disable lighting all control.
         bool _disableLightingControl = false;
 
-        // disable text colour control for all LCDs 
+        // disable text colour control for all _allLcds 
         bool _disableLcdColourControl = false;
 
         // show basic telemetry data on advanced thrust LCD
@@ -572,7 +572,7 @@ namespace IngameScript
 
                 sec = "RSM.InitItems"; Echo(sec);
 
-                foreach (ITEM item in ITEMS)
+                foreach (Item item in _items)
                 {
                     item.InitQty = _config
                         .Get(sec, item.Type.SubtypeId)
@@ -585,7 +585,7 @@ namespace IngameScript
 
                 _initReactors = _config.Get(sec, "Reactors").ToDouble(_initReactors);
                 _initReactors = _config.Get(sec, "Batteries").ToDouble(_initReactors);
-                _initPdcs = _config.Get(sec, "PDCs").ToInt32(_initPdcs);
+                _initPdcs = _config.Get(sec, "_normalPdcs").ToInt32(_initPdcs);
                 _initTorpLaunchers = _config.Get(sec, "TorpLaunchers").ToInt32(_initTorpLaunchers);
                 _initKinetics = _config.Get(sec, "KineticWeapons").ToInt32(_initKinetics);
                 _initH2 = _config.Get(sec, "H2Storage").ToDouble(_initH2);
@@ -688,11 +688,11 @@ namespace IngameScript
 
             name = "RsmLcds";
             _config.Set(sec, name, _keywordRsmLcds);
-            _config.SetComment(sec, name, "to identify RSM LCDs");
+            _config.SetComment(sec, name, "to identify RSM _allLcds");
 
             name = "ColourSyncLcds";
             _config.Set(sec, name, _keywordColourSyncLcds);
-            _config.SetComment(sec, name, "to identify non RSM LCDs for colour sync");
+            _config.SetComment(sec, name, "to identify non RSM _allLcds for colour sync");
 
             name = "AuxiliaryBlocks";
             _config.Set(sec, name, _keywordAuxBlocks);
@@ -700,7 +700,7 @@ namespace IngameScript
 
             name = "DefensivePdcs";
             _config.Set(sec, name, _keywordDefPdcs);
-            _config.SetComment(sec, name, "to identify defensive PDCs");
+            _config.SetComment(sec, name, "to identify defensive _normalPdcs");
 
             name = "MinimumThrusters";
             _config.Set(sec, name, _keywordThrustersMinimum);
@@ -756,11 +756,11 @@ namespace IngameScript
 
             name = "DisableLcdColourControl";
             _config.Set(sec, name, _disableLcdColourControl);
-            _config.SetComment(sec, name, "disable text colour control for all LCDs");
+            _config.SetComment(sec, name, "disable text colour control for all _allLcds");
 
             name = "ShowBasicTelemetry";
             _config.Set(sec, name, _showBasicTelemetry);
-            _config.SetComment(sec, name, "show basic telemetry data on advanced thrust LCDs");
+            _config.SetComment(sec, name, "show basic telemetry data on advanced thrust _allLcds");
 
             string DecelPercents = "";
 
@@ -772,7 +772,7 @@ namespace IngameScript
 
             name = "DecelerationPercentages";
             _config.Set(sec, name, DecelPercents);
-            _config.SetComment(sec, name, "thrust percentages to show on advanced thrust LCDs");
+            _config.SetComment(sec, name, "thrust percentages to show on advanced thrust _allLcds");
 
             // Performance & Debugging -----------------------------------------------------------------
 
@@ -1056,7 +1056,7 @@ namespace IngameScript
 
             sec = "RSM.InitItems";
 
-            foreach (ITEM item in ITEMS)
+            foreach (Item item in _items)
             {
                 name = item.Type.SubtypeId;
                 _config.Set(sec, name, item.InitQty);
@@ -1070,7 +1070,7 @@ namespace IngameScript
 
             _config.Set(sec, "Reactors", _initReactors);
             _config.Set(sec, "Batteries", _initReactors);
-            _config.Set(sec, "PDCs", _initPdcs);
+            _config.Set(sec, "_normalPdcs", _initPdcs);
             _config.Set(sec, "TorpLaunchers", _initTorpLaunchers);
             _config.Set(sec, "KineticWeapons", _initKinetics);
             _config.Set(sec, "H2Storage", _initH2);
@@ -1123,7 +1123,7 @@ namespace IngameScript
                                 _nameDelimiter = char.Parse(value.Substring(0, 1));
                                 break;
 
-                            case "Keyword used to identify RSM LCDs.":
+                            case "Keyword used to identify RSM _allLcds.":
                                 _keywordRsmLcds = value;
                                 break;
 
@@ -1132,7 +1132,7 @@ namespace IngameScript
                                 _keywordAuxBlocks = value;
                                 break;
 
-                            case "Keyword used to identify defence PDCs.":
+                            case "Keyword used to identify defence _normalPdcs.":
                                 _keywordDefPdcs = value;
                                 break;
 
@@ -1148,7 +1148,7 @@ namespace IngameScript
                                 _keywordIgnore = value;
                                 break;
 
-                            case "Automatically configure PDCs, Railguns, Torpedoes.":
+                            case "Automatically configure _normalPdcs, Railguns, Torpedoes.":
                                 _autoConfigWeapons = bool.Parse(value);
                                 break;
 
@@ -1198,77 +1198,77 @@ namespace IngameScript
 
 
                             case "Fusion Fuel count":
-                                ITEMS[0].InitQty = int.Parse(value);
+                                _items[0].InitQty = int.Parse(value);
                                 break;
 
                             case "Fuel tank count":
-                                ITEMS[1].InitQty = int.Parse(value);
+                                _items[1].InitQty = int.Parse(value);
                                 break;
 
                             case "Jerry can count":
-                                ITEMS[2].InitQty = int.Parse(value);
+                                _items[2].InitQty = int.Parse(value);
                                 break;
 
                             case "40mm PDC Magazine count":
-                                ITEMS[3].InitQty = int.Parse(value);
+                                _items[3].InitQty = int.Parse(value);
                                 break;
                             case "40mm Teflon Tungsten PDC Magazine count":
-                                ITEMS[4].InitQty = int.Parse(value);
+                                _items[4].InitQty = int.Parse(value);
                                 break;
 
                             case "220mm Torpedo count":
                             case "Torpedo count":
-                                ITEMS[5].InitQty = int.Parse(value);
+                                _items[5].InitQty = int.Parse(value);
                                 break;
 
                             case "220mm MCRN torpedo count":
-                                ITEMS[6].InitQty = int.Parse(value);
+                                _items[6].InitQty = int.Parse(value);
                                 break;
 
                             case "220mm UNN torpedo count":
-                                ITEMS[7].InitQty = int.Parse(value);
+                                _items[7].InitQty = int.Parse(value);
                                 break;
 
                             case "Ramshackle torpedo count":
                             case "Ramshackle torpedo Count":
-                                ITEMS[8].InitQty = int.Parse(value);
+                                _items[8].InitQty = int.Parse(value);
                                 break;
 
                             case "Large ramshacke torpedo count":
-                                ITEMS[9].InitQty = int.Parse(value);
+                                _items[9].InitQty = int.Parse(value);
                                 break;
 
                             case "Zako 120mm Railgun rounds count":
                             case "Railgun rounds count":
-                                ITEMS[10].InitQty = int.Parse(value);
+                                _items[10].InitQty = int.Parse(value);
                                 break;
 
                             case "Dawson 100mm UNN Railgun rounds count":
-                                ITEMS[11].InitQty = int.Parse(value);
+                                _items[11].InitQty = int.Parse(value);
                                 break;
 
                             case "Stiletto 100mm MCRN Railgun rounds count":
-                                ITEMS[12].InitQty = int.Parse(value);
+                                _items[12].InitQty = int.Parse(value);
                                 break;
 
                             case "T-47 80mm Railgun rounds count":
-                                ITEMS[13].InitQty = int.Parse(value);
+                                _items[13].InitQty = int.Parse(value);
                                 break;
 
                             case "Foehammer 120mm MCRN rounds count":
-                                ITEMS[14].InitQty = int.Parse(value);
+                                _items[14].InitQty = int.Parse(value);
                                 break;
 
                             case "Farren 120mm UNN Railgun rounds count":
-                                ITEMS[15].InitQty = int.Parse(value);
+                                _items[15].InitQty = int.Parse(value);
                                 break;
 
                             case "Kess 180mm rounds count":
-                                ITEMS[16].InitQty = int.Parse(value);
+                                _items[16].InitQty = int.Parse(value);
                                 break;
 
                             case "Steel plate count":
-                                ITEMS[17].InitQty = int.Parse(value);
+                                _items[17].InitQty = int.Parse(value);
                                 break;
 
                             case "Doors open timer (x100 ticks, default 3)":

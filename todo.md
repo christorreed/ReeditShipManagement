@@ -2,6 +2,7 @@
 
 - hudlcd:toggle:pattern not working
 - rcs nfwd not working
+- - failed to get drive type
 
 x Setting NavOS ThrustRatio via stances does not seem to work
 x Init did not set up content type or font on the RSM HUD LCD
@@ -34,11 +35,11 @@ x "An item with the same key has already been added" during
 - review and improve updateLcds 
 - fuel tank loading command
 - more aggressive naming into sub groups.  Like power.reactor
-- refactor the rest of the var names
 - booting improvements, lcd outputs
 - lcd error on config parse failure.
 - snek private spawn default: make spawns private automatically if spawn kits are set to no share
 
+x refactor the rest of the var names
 x make stance a class ffs
 x fix runProgramable, make it run commands over sperate ticks
 x review and improve setStance

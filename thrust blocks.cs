@@ -25,11 +25,11 @@ namespace IngameScript
     {
         // Epstein Drives -----------------------------------------------------------------
 
-        private float THRUST_MAX;
-        private float THRUST_ACTUAL;
+        private float _maxThrust;
+        private float _actualThrust;
 
         private float _initThrustMain;
-        private double INTEGRITY_THRUSTERs_MAIN;
+        private double _integrityThrustMain;
 
         private void refreshMainThrusters()
         {
@@ -38,7 +38,7 @@ namespace IngameScript
             float ActualTotal = 0;
             float ActualOn = 0;
 
-            foreach (IMyThrust Thruster in THRUSTERs_EPSTEIN)
+            foreach (IMyThrust Thruster in _epsteinThrusters)
             {
                 if (Thruster != null && Thruster.IsFunctional)
                 {
@@ -53,27 +53,27 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_THRUSTERs_MAIN = Math.Round(100 * (MaxTotal / _initThrustMain));
+            _integrityThrustMain = Math.Round(100 * (MaxTotal / _initThrustMain));
 
             // calculate current thrust.
             // if nothing is on, we want to show numbers for all drives
             if (MaxOn == 0)
             {
-                THRUST_MAX = MaxTotal;
-                THRUST_ACTUAL = ActualTotal;
+                _maxThrust = MaxTotal;
+                _actualThrust = ActualTotal;
             }
             // but if some drives are on, show numbers for those drives only.
             else
             {
-                THRUST_MAX = MaxOn;
-                THRUST_ACTUAL = ActualOn;
+                _maxThrust = MaxOn;
+                _actualThrust = ActualOn;
             }
         }
 
         private void initMainThrusters()
         {
             _initThrustMain = 0;
-            foreach (IMyThrust Thruster in THRUSTERs_EPSTEIN)
+            foreach (IMyThrust Thruster in _epsteinThrusters)
             {
                 if (Thruster != null)
                     _initThrustMain += Thruster.MaxThrust;
@@ -84,12 +84,12 @@ namespace IngameScript
         {
             if (mode == MainDriveModes.NoChange) return;
 
-            foreach (IMyThrust Thruster in THRUSTERs_EPSTEIN)
+            foreach (IMyThrust Thruster in _epsteinThrusters)
             {
                 setMainThruster(Thruster, mode, modeRcs);
             }
 
-            foreach (IMyThrust Thruster in THRUSTERs_CHEM)
+            foreach (IMyThrust Thruster in _chemicalThrusters)
             {
                 setMainThruster(Thruster, mode, modeRcs, true);
             }
@@ -140,28 +140,28 @@ namespace IngameScript
 
         // RCS Thrusters -----------------------------------------------------------------
 
-        private float ACTUAL_THRUSTERs_RCS;
+        private float ACTUAL__rcsThrusters;
         private float _initThrustRCS;
-        private double INTEGRITY_THRUSTERs_RCS;
+        private double INTEGRITY__rcsThrusters;
 
         private void refreshRcsThrusters()
         {
-            ACTUAL_THRUSTERs_RCS = 0;
+            ACTUAL__rcsThrusters = 0;
 
-            foreach (IMyThrust Thruster in THRUSTERs_RCS)
+            foreach (IMyThrust Thruster in _rcsThrusters)
             {
                 if (Thruster!= null && Thruster.IsFunctional)
                 {
-                    ACTUAL_THRUSTERs_RCS += Thruster.MaxThrust;
+                    ACTUAL__rcsThrusters += Thruster.MaxThrust;
                 }
             }
 
-            INTEGRITY_THRUSTERs_RCS = Math.Round(100 * (ACTUAL_THRUSTERs_RCS / _initThrustRCS));
+            INTEGRITY__rcsThrusters = Math.Round(100 * (ACTUAL__rcsThrusters / _initThrustRCS));
         }
         private void initRcsThrusters()
         {
             _initThrustRCS = 0;
-            foreach (IMyThrust Thruster in THRUSTERs_RCS)
+            foreach (IMyThrust Thruster in _rcsThrusters)
             {
                 if (Thruster != null)
                     _initThrustRCS += Thruster.MaxThrust;
@@ -170,13 +170,13 @@ namespace IngameScript
 
         private void setRcsThrusters(ManeuveringThrusterModes mode)
         {
-            foreach (IMyThrust Thruster in THRUSTERs_RCS)
+            foreach (IMyThrust Thruster in _rcsThrusters)
             {
                 if (Thruster != null)
                     setRcsThruster(Thruster, mode);
             }
 
-            foreach (IMyThrust Thruster in THRUSTERs_ATMO)
+            foreach (IMyThrust Thruster in _atmoThrusters)
             {
                 if (Thruster != null)
                     setRcsThruster(Thruster, mode, true);

@@ -45,7 +45,7 @@ namespace IngameScript
 
             // also set our step to 0,
             // reset counter for next rare stuff run
-            RARE_STEP = 0;
+            _stepRare = 0;
 
             I = false;
 
@@ -54,7 +54,7 @@ namespace IngameScript
             _shipName = ship;
 
             if (_d) Echo("Initialising lcds...");
-            // setup LCDs.
+            // setup _allLcds.
             initLcds();
 
             if (!basic)
@@ -69,11 +69,11 @@ namespace IngameScript
                 initO2Tanks();
                 initCargos();
 
-                _initPdcs = PDCs.Count + PDCs_DEF.Count;
-                _initTorpLaunchers = TORPs.Count;
-                _initKinetics = RAILs.Count;
-                _initGyros = GYROs.Count;
-                _initWelders = WELDERs.Count;
+                _initPdcs = _normalPdcs.Count + _defensivePdcs.Count;
+                _initTorpLaunchers = _torpedoLaunchers.Count;
+                _initKinetics = _kineticWeapons.Count;
+                _initGyros = _gyroscopes.Count;
+                _initWelders = _welders.Count;
 
                 if (_d) Echo("Initialising item values...");
                 initItems();
@@ -117,7 +117,7 @@ namespace IngameScript
 
                 // now lets count up totals for each category
                 // this is needed so we know how to pad our numbering.
-                foreach (var BlockName in INIT_NAMEs)
+                foreach (var BlockName in _initNames)
                 {
                     NamingCategory Cat;
                     if (NamesWithNumbers.TryGetValue(BlockName.Value, out Cat))
@@ -135,7 +135,7 @@ namespace IngameScript
                 }
             }
             // finally, we're ready to iterate.
-            foreach (var BlockName in INIT_NAMEs)
+            foreach (var BlockName in _initNames)
             {
                 string BlockNumber = "";
                 string ThisName = BlockName.Value;

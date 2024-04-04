@@ -24,52 +24,52 @@ namespace IngameScript
     {
         // Railguns -----------------------------------------------------------------
 
-        private double ACTUAL_RAILs = 0;
         private int _initKinetics = 0;
-        private double INTEGRITY_RAILs = 0;
+        private double _actualKinetics = 0;
+        private double _integrityKinetics = 0;
 
-        private bool RAILs_HAVE_TARGET = false;
+        private bool _kineticsHaveTarget = false;
 
         private void refreshRailguns()
         {
             // will be used to control battery mode.
-            RAILs_HAVE_TARGET = false;
+            _kineticsHaveTarget = false;
 
-            ACTUAL_RAILs = 0;
+            _actualKinetics = 0;
 
-            foreach (IMyTerminalBlock Rail in RAILs)
+            foreach (IMyTerminalBlock Rail in _kineticWeapons)
             {
                 if (Rail != null && Rail.IsFunctional)
                 {
-                    ACTUAL_RAILs++;
+                    _actualKinetics++;
 
                     // turn railguns on for 1+ on [2]
                     (Rail as IMyConveyorSorter).Enabled = _currentStance.RailgunMode != RailgunModes.Off;
 
-                    if (!RAILs_HAVE_TARGET)
+                    if (!_kineticsHaveTarget)
                     {
-                        MyDetectedEntityInfo? RailTarget = WC_PB_API.GetWeaponTarget(Rail);
+                        MyDetectedEntityInfo? RailTarget = _wcPbApi.GetWeaponTarget(Rail);
                         if (RailTarget.HasValue)
                         {
                             string Name = RailTarget.Value.Name;
                             if (Name != null && Name != "")
                             {
                                 if (_d) Echo("At least one rail has a target!");
-                                RAILs_HAVE_TARGET = true;
+                                _kineticsHaveTarget = true;
                             }
                         }
                     }
                 }
             }
 
-            INTEGRITY_RAILs = Math.Round(100 * (ACTUAL_RAILs / _initKinetics));
+            _integrityKinetics = Math.Round(100 * (_actualKinetics / _initKinetics));
         }
 
         private void setRails(RailgunModes mode)
         {
             if (mode == RailgunModes.NoChange) return;
 
-            foreach (IMyTerminalBlock Rail in RAILs)
+            foreach (IMyTerminalBlock Rail in _kineticWeapons)
             {
                 if (Rail != null & Rail.IsFunctional)
                 {

@@ -22,26 +22,26 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        bool COMMS_ON = false;
-        string COMMS_MSG = "";
-        double COMMS_RANGE = 0; 
+        bool _commsActive = false;
+        string _commsMessage = "";
+        double _commsRange = 0; 
        
 
         void refreshAntennas()
         {
-            COMMS_ON = false;
+            _commsActive = false;
 
-            COMMS_RANGE = 0;
+            _commsRange = 0;
             
-            foreach (IMyRadioAntenna Antenna in ANTENNAs)
+            foreach (IMyRadioAntenna Antenna in _antennas)
             {
                 if (Antenna != null)
                 {
                     if (Antenna.IsFunctional)
                     {
                         float range = Antenna.Radius;
-                        if (range > COMMS_RANGE) COMMS_RANGE = range;
-                        if (Antenna.IsBroadcasting && Antenna.Enabled) COMMS_ON = true;
+                        if (range > _commsRange) _commsRange = range;
+                        if (Antenna.IsBroadcasting && Antenna.Enabled) _commsActive = true;
                     }
                 }
             }
@@ -49,9 +49,9 @@ namespace IngameScript
 
         void setAntennaComms(string Comms)
         {
-            COMMS_MSG = Comms;
+            _commsMessage = Comms;
 
-            foreach (IMyTerminalBlock Block in ANTENNAs)
+            foreach (IMyTerminalBlock Block in _antennas)
             {
                 IMyRadioAntenna Antenna = Block as IMyRadioAntenna;
                 if (Antenna != null) Antenna.HudText = Comms;

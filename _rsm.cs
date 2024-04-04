@@ -26,77 +26,40 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.28 ($MDK_DATE$)";
+        string Version = "1.99.29 ($MDK_DATE$)";
         #endregion
         #endregion
 
         // StarCpt's Profiler
         // https://github.com/StarCpt/SERuntimeProfiler/blob/main/RuntimeProfiler.cs
-        private Profiler PROFILER;
+        private Profiler _profiler;
 
         // Loop Counters -----------------------------------------------------------------
 
-        int BOOT_STEP = 0;
-        int WAIT_STEP = 0;
-        int OCCASIONAL_STEP = 0;
-        //int INFREQUENT_STEP = 0;
-        int RARE_STEP;
+        int _stepBoot = 0;
+        int _stepWait = 0;
+        int _stepOccasional = 0;
+        int _stepRare;
 
-        bool BOOTING = true;
+        bool _isBooting = true;
 
-        bool ADJUST_KEEP_ALIVES = false;
-        bool ADJUST_KEEP_ALIVES_TO = false;
-
-        // dampening for extractor management
-        int EXTRACTOR_WAIT = 0;
-
-        // threshold for above
-        // not a constant, will be modified
-        // to speed up fueling.
-        int EXTRACTOR_WAIT_THRESH = 9;
-
-        // Constants -----------------------------------------------------------------
-
-        // if extractor is topping up,
-        // fill when fuel % falls below this value.
-        const int TOP_UP_PERCENTAGE = 10;
-
-        // if extractor is keeping full,
-        // fill when there is this many times
-        // one tank's space left in the ship.
-        const double KEEP_FULL_MULTIPLIER = 3;
-
-        // litres of fuel in a fuel tank
-        const double CAPACITY_FUEL_TANK = 245000;
-        // litres of fuel in a jerry can
-        const double CAPACITY_JERRY_CAN = 50000;
-
-        
+        bool _adjustKeepAlives = false;
+        bool _adjustKeepAlivesTo = false;
 
         // Warning Variables -----------------------------------------------------------------
 
-        bool NEED_FUEL = false;
+        bool _needFuel = false;
         bool _spawnOpen = false;
-        bool NO_EXTRACTOR = false;
-        bool NO_SPARE_TANKS = false;
-        int UNOWNED_BLOCKS = 0;
-        int AUX_ACTIVE_COUNT = 0;
+        bool _noExtractor = false;
+        bool _noSpareTanks = false;
+        int _unownedBlockCount = 0;
+        int _activeAuxBlockCount = 0;
 
         // Misc Globals -----------------------------------------------------------------
 
-        // the current stance index
-        // of the _stances & _stanceNames lists
-        //int S = 0;
-
-
-
-        // the current ship calculated fuel percentage.
-        // starts at 100 so we don't refuel before we check.
-        double FUEL_PERCENTAGES = 100;
-
         // ship telemetry values
-        double VELOCITY;
-        float MASS;
+        double _shipVelocity;
+        float _shipMass;
 
         // the faction tag of the PB owner
         string _factionTag;
@@ -108,23 +71,23 @@ namespace IngameScript
 
         // this reduces the LCD output build overhead
         // if you are not using an advanced thrust LCD
-        bool BUILD_ADVANCED_THRUST = false;
+        bool _buildAdvancedThrust = false;
 
         // instructions count
-        int INSTRUCTIONS = 0;
+        int _instructionsCount = 0;
         // highest instruction count since recompile
-        int INSTRUCTIONS_MAX = 0;
+        int _maxInstructionsCount = 0;
 
         public Program()
         {
             Echo("Welcome to RSM\nV " + Version);
             msSinceLast();
 
-            RARE_STEP = _blockRefreshFreq;
+            _stepRare = _blockRefreshFreq;
 
             _factionTag = Me.GetOwnerFactionTag();
 
-            PROFILER = new Profiler(Runtime);
+            _profiler = new Profiler(Runtime);
 
             buildItemsList();
 
@@ -230,7 +193,7 @@ namespace IngameScript
                         _spawnOpen = true;
 
                         // force a block refresh now.
-                        RARE_STEP = _blockRefreshFreq;
+                        _stepRare = _blockRefreshFreq;
 
                         ALERTS.Add(new ALERT(
                             "Spawns were opened to friends",
@@ -243,7 +206,7 @@ namespace IngameScript
                         _spawnOpen = false;
 
                         // force a block refresh now.
-                        RARE_STEP = _blockRefreshFreq;
+                        _stepRare = _blockRefreshFreq;
 
                         ALERTS.Add(new ALERT(
                             "Spawns were closed to friends",
@@ -256,7 +219,7 @@ namespace IngameScript
                 case "projectors":
                     if (args[1].ToLower() == "save")
                     {
-                        foreach (IMyProjector Projector in PROJECTORs)
+                        foreach (IMyProjector Projector in _projectors)
                             saveProjectorPosition(Projector);
 
                         ALERTS.Add(new ALERT(
@@ -268,7 +231,7 @@ namespace IngameScript
                     }
                     else
                     {
-                        foreach (IMyProjector Projector in PROJECTORs)
+                        foreach (IMyProjector Projector in _projectors)
                             loadProjectorPosition(Projector);
 
                         ALERTS.Add(new ALERT(
@@ -292,20 +255,20 @@ namespace IngameScript
         void mainLoop()
         {
             // do we need to wait before we loop?
-            if (WAIT_STEP < _loopStallCount)
+            if (_stepWait < _loopStallCount)
             {
-                WAIT_STEP++;
+                _stepWait++;
                 return;
             }
-            WAIT_STEP = 0;
+            _stepWait = 0;
 
             // write to the console.
             isThereAnEchoInHere();
 
             // get max instruction count.
-            INSTRUCTIONS = Runtime.CurrentInstructionCount;
-            if (INSTRUCTIONS > INSTRUCTIONS_MAX)
-                INSTRUCTIONS_MAX = Runtime.CurrentInstructionCount;
+            _instructionsCount = Runtime.CurrentInstructionCount;
+            if (_instructionsCount > _maxInstructionsCount)
+                _maxInstructionsCount = Runtime.CurrentInstructionCount;
 
             // if we're profiling
             // set the start time
@@ -319,42 +282,42 @@ namespace IngameScript
 
             if (_currentStance.KeepAlives == ToggleModes.On)
             {
-                ADJUST_KEEP_ALIVES = true;
-                ADJUST_KEEP_ALIVES_TO = true;
+                _adjustKeepAlives = true;
+                _adjustKeepAlivesTo = true;
             }
             else if (_currentStance.KeepAlives == ToggleModes.Off)
             {
-                ADJUST_KEEP_ALIVES = true;
+                _adjustKeepAlives = true;
             }
 
             // okay now let's actually do some stuff...
 
             // what kind of stuff are we going to do?
-            if (RARE_STEP >= _blockRefreshFreq)
+            if (_stepRare >= _blockRefreshFreq)
             {
-                RARE_STEP = 0;
+                _stepRare = 0;
                 doThisStuffRarely();
 
-                // update the LCDs
+                // update the _allLcds
                 //refreshLcds();
                 // removed this for now bc it takes too long
 
                 return;
             }
-            RARE_STEP++;
+            _stepRare++;
 
             // run these things every time
             doThisStuffOften();
             // it actually does these things 
             // one at a time the first time.
-            // ie, its BOOTING.
+            // ie, its _isBooting.
             // splitting it up like this because 
             // SE seems to cache the PB api results,
             // or something like that bc i see much
             // slow results the first time round...
 
             // if we are booting, don't do the unimportant stuff yet...
-            if (BOOTING) return;
+            if (_isBooting) return;
 
             // we run this method every time as well
             // but it always runs in steps.
@@ -362,7 +325,7 @@ namespace IngameScript
             // the final step above runs
             // doThisStuffInfrequently()
 
-            // update the LCDs
+            // update the _allLcds
             refreshLcds();
         }
 
@@ -381,42 +344,42 @@ namespace IngameScript
             // to get much better on subsequent runs
             // due to some kind of caching or something
 
-            switch (BOOT_STEP)
+            switch (_stepBoot)
             {
                 case 0:
-                    if (_d) Echo("Refreshing " + RAILs.Count + " railguns...");
+                    if (_d) Echo("Refreshing " + _kineticWeapons.Count + " railguns...");
                     refreshRailguns();
                     // checks integrity, sets power, gets target status for discharge mgmt
 
                     if (_p) Echo("Took " + msSinceLast());
 
-                    if (BOOTING) break;
+                    if (_isBooting) break;
                     else goto case 1;
 
                 case 1:
-                    if (_d) Echo("Refreshing " + REACTORs.Count + " reactors & " + BATTERIEs.Count + " batteries...");
+                    if (_d) Echo("Refreshing " + _reactors.Count + " reactors & " + _batteries.Count + " batteries...");
                     refreshPowerBlocks(_currentStance.TankAndBatteryMode);
                     // checks integrity, sets power on,
                     // calcs power, batt discharge mgmt
 
                     if (_p) Echo("Took " + msSinceLast());
 
-                    if (BOOTING) break;
+                    if (_isBooting) break;
                     else goto case 2;
 
                 case 2:
-                    if (_d) Echo("Refreshing " + THRUSTERs_EPSTEIN.Count + " epsteins...");
+                    if (_d) Echo("Refreshing " + _epsteinThrusters.Count + " epsteins...");
                     refreshMainThrusters();
                     // checks integrity, thrust
 
                     if (_p) Echo("Took " + msSinceLast());
 
-                    if (BOOTING) break;
+                    if (_isBooting) break;
                     else goto case 3;
 
                 case 3:
-                    if (_d) Echo("Refreshing " + LIDARs.Count + " lidars...");
-                    refreshLidars(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
+                    if (_d) Echo("Refreshing " + _lidars.Count + " lidars...");
+                    refreshLidars(_adjustKeepAlivesTo, _adjustKeepAlives);
                     // checks integrity
                     if (_p) Echo("Took " + msSinceLast());
 
@@ -425,7 +388,7 @@ namespace IngameScript
                     // checks for buffered commands and sends them
                     if (_p) Echo("Took " + msSinceLast());
 
-                    if (BOOTING) break;
+                    if (_isBooting) break;
                     else goto case 4;
 
                 case 4:
@@ -443,17 +406,17 @@ namespace IngameScript
 
                 default:
                     if (_d) Echo("Booting complete");
-                    BOOTING = false;
-                    BOOT_STEP = 0;
+                    _isBooting = false;
+                    _stepBoot = 0;
 
                     return;
             }
-            if (BOOTING) BOOT_STEP++;
+            if (_isBooting) _stepBoot++;
         }
 
         void doThisStuffOccasionally()
         {
-            switch (OCCASIONAL_STEP)
+            switch (_stepOccasional)
             {
                 case 0:
                     if (_d) Echo("Clearing temp inventories...");
@@ -463,7 +426,7 @@ namespace IngameScript
 
                     if (_p) Echo("Took " + msSinceLast());
 
-                    if (_d) Echo("Refreshing " + TORPs.Count + " torpedo launchers...");
+                    if (_d) Echo("Refreshing " + _torpedoLaunchers.Count + " torpedo launchers...");
                     refreshTorpedoes();
                     // checks integrity, sets power, gets torpedo inventories
 
@@ -485,7 +448,7 @@ namespace IngameScript
                     break;
 
                 case 2:
-                    if (_d) Echo("Refreshing " + TANKs_H2.Count + " H2 tanks...");
+                    if (_d) Echo("Refreshing " + _h2Tanks.Count + " H2 tanks...");
                     refreshH2Tanks();
                     // > priority low
                     // checks integrity, filled ratio
@@ -494,10 +457,10 @@ namespace IngameScript
 
                     if (_d) Echo("Refreshing refuel status...");
                     refreshRefuelStatus();
-                    // checks if we NEED_FUEL?
+                    // checks if we _needFuel?
 
                     // if we do...
-                    if (NEED_FUEL)
+                    if (_needFuel)
                     {
                         // ...load extractors
                         if (_d) Echo("Fuel low, filling extractors...");
@@ -516,72 +479,72 @@ namespace IngameScript
                         if (_p) Echo("Took " + msSinceLast());
                     }
 
-                    OCCASIONAL_STEP = 0;
+                    _stepOccasional = 0;
                     return;
             }
 
-            OCCASIONAL_STEP++;
+            _stepOccasional++;
         }
 
         void doThisStuffInfrequently()
         {
 
-            if (_d) Echo("Refreshing " + THRUSTERs_RCS.Count + " rcs...");
+            if (_d) Echo("Refreshing " + _rcsThrusters.Count + " rcs...");
             refreshRcsThrusters();
             // checks integrity
 
-            if (_d) Echo("Refreshing " + PDCs.Count + " PDCs & " + PDCs_DEF.Count + " defensive PDCs...");
-            refreshPDCs();
+            if (_d) Echo("Refreshing " + _normalPdcs.Count + " Pdcs & " + _defensivePdcs.Count + " defensive Pdcs...");
+            refresh_normalPdcs();
             // checks integrity, sets power on
 
-            if (_d) Echo("Refreshing " + GYROs.Count + " gyros...");
-            refreshGyros(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
+            if (_d) Echo("Refreshing " + _gyroscopes.Count + " gyros...");
+            refreshGyros(_adjustKeepAlivesTo, _adjustKeepAlives);
             // checks integrity, sets power
 
-            if (_d) Echo("Refreshing " + TANKs_O2.Count + " O2 tanks...");
+            if (_d) Echo("Refreshing " + _o2Tanks.Count + " O2 tanks...");
             refreshO2Tanks();
             // checks integrity, filled ratio
 
-            if (_d) Echo("Refreshing " + ANTENNAs.Count + " antennas...");
+            if (_d) Echo("Refreshing " + _antennas.Count + " antennas...");
             refreshAntennas();
             // checks msg, range
 
-            if (_d) Echo("Refreshing " + CARGOs.Count + " cargos...");
+            if (_d) Echo("Refreshing " + _cargos.Count + " cargos...");
             refreshCargos();
             // checks integrity
 
-            if (_d) Echo("Refreshing " + VENTs.Count + " vents...");
-            refreshVents(ADJUST_KEEP_ALIVES_TO, ADJUST_KEEP_ALIVES);
+            if (_d) Echo("Refreshing " + _vents.Count + " vents...");
+            refreshVents(_adjustKeepAlivesTo, _adjustKeepAlives);
             // checks integrity, sets power
 
-            if (_d) Echo("Refreshing " + AUXILIARIEs.Count + " auxiliary blocks...");
+            if (_d) Echo("Refreshing " + _auxiliaries.Count + " auxiliary blocks...");
             iterateAuxiliaries();
             // checks integrity, sets power
 
-            if (_d) Echo("Refreshing " + WELDERs.Count + " welders...");
+            if (_d) Echo("Refreshing " + _welders.Count + " welders...");
             iterateWelders();
             // checks integrity, sets power
 
-            if (_d) Echo("Refreshing " + LCDs.Count + " lcds...");
+            if (_d) Echo("Refreshing " + _allLcds.Count + " lcds...");
             iterateLcds();
             // sets power
 
             // these ones are only keep alives
             // and so only need to happen if we are adjusting those.
-            if (ADJUST_KEEP_ALIVES)
+            if (_adjustKeepAlives)
             {
-                if (_d) Echo("Refreshing " + CONNECTORs.Count + " connectors...");
-                refreshConnectors(ADJUST_KEEP_ALIVES_TO);
+                if (_d) Echo("Refreshing " + _connectors.Count + " connectors...");
+                refreshConnectors(_adjustKeepAlivesTo);
                 // > priority low
                 // checks integrity, sets power
 
-                if (_d) Echo("Refreshing " + CAMERAs.Count + " cameras...");
-                refreshCameras(ADJUST_KEEP_ALIVES_TO);
+                if (_d) Echo("Refreshing " + _cameras.Count + " cameras...");
+                refreshCameras(_adjustKeepAlivesTo);
                 // > priority low
                 // sets power
 
-                if (_d) Echo("Refreshing " + SENSORs.Count + " sensors...");
-                refreshSensors(ADJUST_KEEP_ALIVES_TO);
+                if (_d) Echo("Refreshing " + _sensors.Count + " sensors...");
+                refreshSensors(_adjustKeepAlivesTo);
                 // > priority low
                 // sets power
             }
@@ -634,14 +597,14 @@ namespace IngameScript
 
 
 
-            if (CONTROLLER == null)
+            if (_shipController == null)
             {
-                if (CONTROLLERs.Count > 0)
-                    CONTROLLER = CONTROLLERs[0];
+                if (_controllers.Count > 0)
+                    _shipController = _controllers[0];
 
                 else
                     ALERTS.Add(new ALERT(
-                        "NO SHIP CONTROLLER!",
+                        "NO SHIP _shipController!",
                         "No ship controller was found on this grid. Some functionality will not operate correctly.",
                         3
                         ));
@@ -652,32 +615,18 @@ namespace IngameScript
             if (_p) Echo("Took " + msSinceLast());
         }
 
-
-        // todo
-        // review this
-        // make it run commands over sperate ticks
-        // work through a commands log
-        void runProgramable(IMyTerminalBlock Pb, string Argument)
-        {
-            if (_d)
-                Echo("Running '" + Argument + "' on '" + Pb.CustomName + "'");
-            bool Success = (Pb as IMyProgrammableBlock).TryRun(Argument);
-            if (Success)
-                Echo("Failed to run '" + Argument + "' on '" + Pb.CustomName + "'");
-        }
-
         void spinUpWcPbApi()
         {
             // spin up wc.
             // note, this is only needed for refreshing torps/rails
             try
             {
-                WC_PB_API = new WcPbApi();
-                WC_PB_API.Activate(Me);
+                _wcPbApi = new WcPbApi();
+                _wcPbApi.Activate(Me);
             }
             catch (Exception ex)
             {
-                WC_PB_API = null;
+                _wcPbApi = null;
 
                 ALERTS.Add(new ALERT(
                     "WcPbApi Error!",
@@ -696,19 +645,19 @@ namespace IngameScript
             string Output = 
                 "REEDIT SHIP MANAGEMENT \n\n|- V " + Version +
                 "\n|- Stance: " + _currentStanceName +
-                "\n|- Step: " + RARE_STEP + "/" + _blockRefreshFreq + " (" + OCCASIONAL_STEP + ")";
+                "\n|- Step: " + _stepRare + "/" + _blockRefreshFreq + " (" + _stepOccasional + ")";
 
-            if (BOOTING)
-                Output += "\n|- Booting " + BOOT_STEP;              
+            if (_isBooting)
+                Output += "\n|- Booting " + _stepBoot;              
 
             if (_p) // if we are profiling, profile...
             {
-                PROFILER.Run();
+                _profiler.Run();
 
                 Output +=
-                    "\n|- Runtime Av/Tick: " + (Math.Round(PROFILER.RunningAverageMs, 2) / 100) + " ms" +
-                    "\n|- Runtime Max: " + Math.Round(PROFILER.MaxRuntimeMs, 4) + " ms" +
-                    "\n|- Instructions: " + INSTRUCTIONS + " (" + INSTRUCTIONS_MAX + ")";
+                    "\n|- Runtime Av/Tick: " + (Math.Round(_profiler.RunningAverageMs, 2) / 100) + " ms" +
+                    "\n|- Runtime Max: " + Math.Round(_profiler.MaxRuntimeMs, 4) + " ms" +
+                    "\n|- Instructions: " + _instructionsCount + " (" + _maxInstructionsCount + ")";
             }
             Echo(Output + "\n");
         }

@@ -231,7 +231,7 @@ namespace IngameScript
 
             if (mode == HangarDoorModes.NoChange) return; // no change
 
-            foreach (IMyAirtightHangarDoor Hangar in DOORs_HANGAR)
+            foreach (IMyAirtightHangarDoor Hangar in _hangarDoors)
             {
                 if (Hangar == null)
                     continue;

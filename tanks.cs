@@ -24,34 +24,35 @@ namespace IngameScript
     {
         // H2 Tanks -----------------------------------------------------------------
 
-        private double TOTAL_H2 = 0;
-        private double ACTUAL_H2 = 0;
+        private double _totalH2 = 0;
+
         private double _initH2 = 0;
-        private double INTEGRITY_H2 = 0;
+        private double _actualH2 = 0;
+        private double _integrityH2 = 0;
         private void refreshH2Tanks()
         {
-            ACTUAL_H2 = 0;
-            TOTAL_H2 = 0;
+            _actualH2 = 0;
+            _totalH2 = 0;
 
-            foreach (IMyGasTank Tank in TANKs_H2)
+            foreach (IMyGasTank Tank in _h2Tanks)
             {
                 if (Tank.IsFunctional)
                 {
                     // switch on
                     Tank.Enabled = true;
 
-                    TOTAL_H2 += Tank.Capacity;
-                    ACTUAL_H2 += (Tank.Capacity * Tank.FilledRatio);
+                    _totalH2 += Tank.Capacity;
+                    _actualH2 += (Tank.Capacity * Tank.FilledRatio);
                 }
             }
 
-            INTEGRITY_H2 = Math.Round(100 * (TOTAL_H2 / _initH2));
+            _integrityH2 = Math.Round(100 * (_totalH2 / _initH2));
         }
 
         private void initH2Tanks()
         {
             _initH2 = 0;
-            foreach (IMyGasTank Tank in TANKs_H2)
+            foreach (IMyGasTank Tank in _h2Tanks)
             {
                 if (Tank != null)
                     _initH2 += Tank.Capacity;
@@ -62,7 +63,7 @@ namespace IngameScript
         {
             if (mode == TankAndBatteryModes.NoChange) return;
 
-            foreach (IMyGasTank Tank in TANKs_H2)
+            foreach (IMyGasTank Tank in _h2Tanks)
             {
                 if (Tank == null) continue;
 
@@ -87,7 +88,7 @@ namespace IngameScript
             ACTUAL_O2 = 0;
             TOTAL_O2 = 0;
 
-            foreach (IMyGasTank Tank in TANKs_O2)
+            foreach (IMyGasTank Tank in _o2Tanks)
             {
                 if (Tank.IsFunctional)
                 {
@@ -104,7 +105,7 @@ namespace IngameScript
         private void initO2Tanks()
         {
             _initO2 = 0;
-            foreach (IMyGasTank Tank in TANKs_O2)
+            foreach (IMyGasTank Tank in _o2Tanks)
             {
                 if (Tank != null)
                     _initO2 += Tank.Capacity;
@@ -115,7 +116,7 @@ namespace IngameScript
         {
             if (mode == TankAndBatteryModes.NoChange) return;
 
-            foreach (IMyGasTank Tank in TANKs_O2)
+            foreach (IMyGasTank Tank in _o2Tanks)
             {
                 if (Tank == null) continue;
 

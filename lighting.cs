@@ -28,7 +28,7 @@ namespace IngameScript
         {
             if (mode == SpotlightModes.NoChange) return;
 
-            foreach (IMyReflectorLight Spot in LIGHTs_SPOT)
+            foreach (IMyReflectorLight Spot in _spotlights)
             {
                 if (Spot == null) continue;
 
@@ -49,7 +49,7 @@ namespace IngameScript
         {
             if (mode == LightToggleModes.NoChange) return;
 
-            foreach (IMyLightingBlock Light in LIGHTs_EXTERIOR)
+            foreach (IMyLightingBlock Light in _exteriorLights)
             {
                 if (Light == null) continue;
 
@@ -69,7 +69,7 @@ namespace IngameScript
         {
             if (mode == LightToggleModes.NoChange) return;
 
-            foreach (IMyLightingBlock Light in LIGHTs_EXTERIOR)
+            foreach (IMyLightingBlock Light in _exteriorLights)
             {
                 if (Light == null) continue;
 
@@ -85,22 +85,22 @@ namespace IngameScript
 
         // Nav Lights -----------------------------------------------------------------
 
-        Color COLOUR_BLACK = new Color(255, 0, 0, 255);
-        Color COLOUR_PORT = new Color(255, 0, 0, 255);
-        Color COLOUR_STARBOARD = new Color(255, 0, 0, 255);
+        Color _colourBlack = new Color(255, 0, 0, 255);
+        Color _colourPort = new Color(255, 0, 0, 255);
+        Color _colourStarboard = new Color(255, 0, 0, 255);
 
         void setNavLights(LightToggleModes mode)
         {
             if(mode == LightToggleModes.NoChange) return;
 
-            foreach (IMyLightingBlock Light in LIGHTs_NAV_PORT)
+            foreach (IMyLightingBlock Light in _portNavLights)
             {
-                setNavLight(Light, mode, COLOUR_PORT);
+                setNavLight(Light, mode, _colourPort);
             }
 
-            foreach (IMyLightingBlock Light in LIGHTs_NAV_STARBOARD)
+            foreach (IMyLightingBlock Light in _starboardNavLights)
             {
-                setNavLight(Light, mode, COLOUR_STARBOARD);
+                setNavLight(Light, mode, _colourStarboard);
             }
         }
 
@@ -110,7 +110,7 @@ namespace IngameScript
             if (mode == LightToggleModes.Off)
             {
                 Light.Enabled = false;
-                Light.SetValue("Color", COLOUR_BLACK);
+                Light.SetValue("Color", _colourBlack);
             }
             else
             {

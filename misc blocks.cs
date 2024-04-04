@@ -24,12 +24,12 @@ namespace IngameScript
     {
         // Vents -----------------------------------------------------------------
 
-        private int ACTUAL_VENTS_SEALED = 0;
+        private int _ventsSealedCount = 0;
         private void refreshVents(bool power_state, bool set_power_state)
         {
-            ACTUAL_VENTS_SEALED = 0;
+            _ventsSealedCount = 0;
 
-            foreach (IMyAirVent Vent in VENTs)
+            foreach (IMyAirVent Vent in _vents)
             {
                 if (Vent != null)
                 {
@@ -37,7 +37,7 @@ namespace IngameScript
                         Vent.Enabled = power_state;
 
                     if (Vent.CanPressurize)
-                        ACTUAL_VENTS_SEALED++;
+                        _ventsSealedCount++;
                 }
             }
         }
@@ -45,7 +45,7 @@ namespace IngameScript
         // Connectors -----------------------------------------------------------------
         private void refreshConnectors(bool power_state)
         {
-            foreach (IMyShipConnector Conenctor in CONNECTORs)
+            foreach (IMyShipConnector Conenctor in _connectors)
             {
                 if (Conenctor != null)
                     Conenctor.Enabled = power_state;
@@ -55,7 +55,7 @@ namespace IngameScript
         // Cameras -----------------------------------------------------------------
         private void refreshCameras(bool power_state)
         {
-            foreach (IMyCameraBlock Camera in CAMERAs)
+            foreach (IMyCameraBlock Camera in _cameras)
             {
                 if (Camera != null)
                     Camera.Enabled = power_state;
@@ -65,7 +65,7 @@ namespace IngameScript
         // Sensors -----------------------------------------------------------------
         private void refreshSensors(bool power_state)
         {
-            foreach (IMySensorBlock Sensor in SENSORs)
+            foreach (IMySensorBlock Sensor in _sensors)
             {
                 if (Sensor != null)
                     Sensor.Enabled = power_state;

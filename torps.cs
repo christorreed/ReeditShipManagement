@@ -24,19 +24,19 @@ namespace IngameScript
     {
         // Torpedo Launchers -----------------------------------------------------------------
 
-        private double ACTUAL_TORPs = 0;
         private int _initTorpLaunchers = 0;
-        private double INTEGRITY_TORPs = 0;
+        private double _actualTorpLaunchers = 0;
+        private double _integrityTorpedoLaunchers = 0;
 
         private void refreshTorpedoes()
         {
-            ACTUAL_TORPs = 0;
+            _actualTorpLaunchers = 0;
 
-            foreach (IMyTerminalBlock Torp in TORPs)
+            foreach (IMyTerminalBlock Torp in _torpedoLaunchers)
             {
                 if (Torp != null && Torp.IsFunctional)
                 {
-                    ACTUAL_TORPs++;
+                    _actualTorpLaunchers++;
 
                     // turn torps on for 1+ on [0]
                     (Torp as IMyConveyorSorter).Enabled = _currentStance.TorpedoMode == ToggleModes.On;
@@ -46,7 +46,7 @@ namespace IngameScript
                     {
 
                         // get active ammo.
-                        string AmmoType = WC_PB_API.GetActiveAmmo(Torp, 0);
+                        string AmmoType = _wcPbApi.GetActiveAmmo(Torp, 0);
                         //string OutputAmmoType = getOutputAmmoType(AmmoType);
                         int Ammo = sortAmmoType(AmmoType);
                         //IMyInventory WeapInv = Torp.GetInventory();
@@ -59,14 +59,14 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY_TORPs = Math.Round(100 * (ACTUAL_TORPs / _initTorpLaunchers));
+            _integrityTorpedoLaunchers = Math.Round(100 * (_actualTorpLaunchers / _initTorpLaunchers));
         }
 
         private void setTorpedoes(ToggleModes mode)
         {
             if (mode == ToggleModes.NoChange) return;
 
-            foreach (IMyTerminalBlock Torp in TORPs)
+            foreach (IMyTerminalBlock Torp in _torpedoLaunchers)
             {
                 if (Torp != null & Torp.IsFunctional)
                 {

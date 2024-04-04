@@ -220,41 +220,41 @@ namespace IngameScript
             setCustomData();
 
             // set rails
-            if (_d) Echo("Setting " + RAILs.Count + " railguns to " + _currentStance.RailgunMode);
+            if (_d) Echo("Setting " + _kineticWeapons.Count + " railguns to " + _currentStance.RailgunMode);
             setRails(_currentStance.RailgunMode);
 
             // set torps
-            if (_d) Echo("Setting " + TORPs.Count + " torpedoes to " + _currentStance.TorpedoMode);
+            if (_d) Echo("Setting " + _torpedoLaunchers.Count + " torpedoes to " + _currentStance.TorpedoMode);
             setTorpedoes(_currentStance.TorpedoMode);
 
             // set pdcs
-            if (_d) Echo("Setting " + PDCs.Count + " PDCs, " + PDCs_DEF.Count + " defence PDCs to " + _currentStance.PdcMode);
+            if (_d) Echo("Setting " + _normalPdcs.Count + " _normalPdcs, " + _defensivePdcs.Count + " defence _normalPdcs to " + _currentStance.PdcMode);
             setPdcs(_currentStance.PdcMode);
 
             // set main drives
             if (_d) Echo(
                 "Setting "
-                + THRUSTERs_EPSTEIN.Count + " epsteins, "
-                + THRUSTERs_CHEM.Count + " chems" + " to " + _currentStance.MainDriveMode);
+                + _epsteinThrusters.Count + " epsteins, "
+                + _chemicalThrusters.Count + " chems" + " to " + _currentStance.MainDriveMode);
             setMainThrusters(_currentStance.MainDriveMode, _currentStance.ManeuveringThrusterMode);
 
             // set RCS
             if (_d) Echo(
                 "Setting "
-                + THRUSTERs_RCS.Count + " rcs, "
-                + THRUSTERs_ATMO.Count + " atmos" + " to " + _currentStance.ManeuveringThrusterMode);
+                + _rcsThrusters.Count + " rcs, "
+                + _atmoThrusters.Count + " atmos" + " to " + _currentStance.ManeuveringThrusterMode);
             setRcsThrusters(_currentStance.ManeuveringThrusterMode);
 
             // set batteries
-            if (_d) Echo("Setting " + BATTERIEs.Count + " batteries to = " + _currentStance.TankAndBatteryMode);
+            if (_d) Echo("Setting " + _batteries.Count + " batteries to = " + _currentStance.TankAndBatteryMode);
             setBatteries(_currentStance.TankAndBatteryMode);
 
             // set h2 tanks
-            if (_d) Echo("Setting " + TANKs_H2.Count + " H2 tanks to stockpile = " + _currentStance.TankAndBatteryMode);
+            if (_d) Echo("Setting " + _h2Tanks.Count + " H2 tanks to stockpile = " + _currentStance.TankAndBatteryMode);
             setH2Tanks(_currentStance.TankAndBatteryMode);
 
             // set o2 tanks
-            if (_d) Echo("Setting " + TANKs_O2.Count + " O2 tanks to stockpile = " + _currentStance.TankAndBatteryMode);
+            if (_d) Echo("Setting " + _o2Tanks.Count + " O2 tanks to stockpile = " + _currentStance.TankAndBatteryMode);
             setO2Tanks(_currentStance.TankAndBatteryMode);
 
             // set lighting
@@ -265,36 +265,36 @@ namespace IngameScript
             else
             {
                 // set spotlights
-                if (_d) Echo("Setting " + LIGHTs_SPOT.Count + " spotlights to " + _currentStance.SpotlightMode);
+                if (_d) Echo("Setting " + _spotlights.Count + " spotlights to " + _currentStance.SpotlightMode);
                 setSpotlights(_currentStance.SpotlightMode);
 
                 // set exterior lights
-                if (_d) Echo("Setting " + LIGHTs_EXTERIOR.Count + " exterior lights to " + _currentStance.ExteriorLightMode);
+                if (_d) Echo("Setting " + _exteriorLights.Count + " exterior lights to " + _currentStance.ExteriorLightMode);
 
                 setExteriorLights(_currentStance.ExteriorLightMode, _currentStance.ExteriorLightColour);
 
                 // set nav lights
-                if (_d) Echo("Setting " + LIGHTs_INTERIOR.Count + " exterior lights to " + _currentStance.InteriorLightMode);
+                if (_d) Echo("Setting " + _interiorLights.Count + " exterior lights to " + _currentStance.InteriorLightMode);
                 setInteriorLights(_currentStance.InteriorLightMode, _currentStance.InteriorLightColour);
 
                 if (_d) Echo(
                     "Setting "
-                    + LIGHTs_NAV_PORT.Count + " port nav lights, "
-                    + LIGHTs_NAV_STARBOARD.Count + " starboard nav lights to " + _currentStance.NavLightMode);
+                    + _portNavLights.Count + " port nav lights, "
+                    + _starboardNavLights.Count + " starboard nav lights to " + _currentStance.NavLightMode);
                 setNavLights(_currentStance.NavLightMode);
 
             }
 
             // set aux
-            if (_d) Echo("Setting " + AUXILIARIEs.Count + " aux block to " + _currentStance.AuxMode);
+            if (_d) Echo("Setting " + _auxiliaries.Count + " aux block to " + _currentStance.AuxMode);
             setAuxiliaries(_currentStance.AuxMode);
 
             // set extractors
-            if (_d) Echo("Setting " + EXTRACTORs.Count + " extrators to " + _currentStance.ExtractorMode);
+            if (_d) Echo("Setting " + _largeExtractors.Count + " extrators to " + _currentStance.ExtractorMode);
             setExtractors(_currentStance.ExtractorMode);
 
             // set hangar doors
-            if (_d) Echo("Setting " + DOORs_HANGAR.Count + " hangar doors units to " + _currentStance.HangarDoorsMode);
+            if (_d) Echo("Setting " + _hangarDoors.Count + " hangar doors units to " + _currentStance.HangarDoorsMode);
             setHangarDoors(_currentStance.HangarDoorsMode);
 
             // lock doors if we're in close combat
@@ -305,7 +305,7 @@ namespace IngameScript
                 setDoorsLock("locked", "");
             }
 
-            // colour sync for non RSM LCDs
+            // colour sync for non RSM _allLcds
             syncLcdColours();
 
             // prep pb commands

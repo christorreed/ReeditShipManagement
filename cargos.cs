@@ -25,28 +25,28 @@ namespace IngameScript
         // Cargos -----------------------------------------------------------------
 
         private double _initCargos = 0;
-        private double ACTUAL_CARGOs = 0;
-        private double INTEGRITY_CARGOs = 0;
+        private double _actualCargos = 0;
+        private double _integrityCargos = 0;
 
         private void refreshCargos()
         {
-            ACTUAL_CARGOs = 0;
+            _actualCargos = 0;
 
-            foreach (IMyCargoContainer Cargo in CARGOs)
+            foreach (IMyCargoContainer Cargo in _cargos)
             {
                 if (Cargo != null && Cargo.IsFunctional)
                 {
-                    ACTUAL_CARGOs+= Cargo.GetInventory().MaxVolume.RawValue;
+                    _actualCargos+= Cargo.GetInventory().MaxVolume.RawValue;
                 }
             }
 
-            INTEGRITY_CARGOs = Math.Round(100 * (ACTUAL_CARGOs / _initCargos));
+            _integrityCargos = Math.Round(100 * (_actualCargos / _initCargos));
         }
 
         private void initCargos()
         {
             _initCargos = 0;
-            foreach (IMyCargoContainer Cargo in CARGOs)
+            foreach (IMyCargoContainer Cargo in _cargos)
             {
                 if (Cargo != null)
                     _initCargos += Cargo.GetInventory().MaxVolume.RawValue;

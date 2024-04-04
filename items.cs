@@ -50,7 +50,7 @@ namespace IngameScript
 
         }
 
-        class ITEM
+        class Item
         {
             // the total number of this item we have on the ship
             public int ActualQty = 0;
@@ -88,37 +88,7 @@ namespace IngameScript
         }
 
         // the items list.
-        private List<ITEM> ITEMS = new List<ITEM>();
-
-        // key: LcdName
-        // value: ITEM
-        //Dictionary<string, ITEM> ITEMS = new Dictionary<string, ITEM>();
-
-        /*class ITEM
-        {
-            public string NAME = "";
-            public int TARGET = 0;
-            public int COUNT = 0;
-            public MyItemType TYPE;
-            public double PERCENTAGE;
-            public List<IMyInventory> STORED_IN = new List<IMyInventory>();
-            public bool AMMO = false;
-            public bool IS_TORP = false;
-            public bool AMMO_LOW = false;
-            public List<IMyInventory> ARMED_IN = new List<IMyInventory>();
-        }
-
-        ITEM buildItem(string LCDName, string SubTypeID, string TypeID, bool Ammo = false, bool Torp = false)
-        {
-            ITEM NewItem = new ITEM();
-            NewItem.NAME = LCDName;
-            NewItem.TYPE = new MyItemType(SubTypeID, TypeID);
-            NewItem.IS_TORP = Torp;
-            return NewItem;
-        }*/
-
-        //private List<ITEM> ITEMS = new List<ITEM>();
-
+        private List<Item> _items = new List<Item>();
 
 
         void addInventory(IMyTerminalBlock b, int item = 99)
@@ -127,7 +97,7 @@ namespace IngameScript
             if (item == 99)
             {
                 // so add it to aaallll the lists...
-                foreach (var Item in ITEMS)
+                foreach (var Item in _items)
                 {
                     INVENTORY Inv = new INVENTORY();
 
@@ -155,7 +125,7 @@ namespace IngameScript
                     Inv.AutoLoad = false;
 
                 // and add it to that item's list only
-                ITEMS[item].Inventories.Add(Inv);
+                _items[item].Inventories.Add(Inv);
             }
         }
 
@@ -172,7 +142,7 @@ namespace IngameScript
             Inv.AutoLoad = _autoLoad;
 
             // and add it to that item's list only
-            ITEMS[item].TempInventories.Add(Inv);
+            _items[item].TempInventories.Add(Inv);
         }
 
         void buildItem(
@@ -183,12 +153,12 @@ namespace IngameScript
         bool IsTorp = false
         )
         {
-            ITEM Item = new ITEM();
+            Item Item = new Item();
             Item.Type = new MyItemType(SubTypeID, TypeID);
             Item.IsAmmo = IsAmmo;
             Item.IsTorp = IsTorp;
             Item.LcdName = LcdName;
-            ITEMS.Add(Item);
+            _items.Add(Item);
         }
 
         private void buildItemsList()
@@ -232,7 +202,7 @@ namespace IngameScript
 
         void clearTempInventories()
         {
-            foreach (var Item in ITEMS)
+            foreach (var Item in _items)
             {
                 Item.TempInventories.Clear();
             }
@@ -241,7 +211,7 @@ namespace IngameScript
         private void refreshItems()
         {
           
-            foreach (var Item in ITEMS)
+            foreach (var Item in _items)
             {
                 // clear item qty values
                 Item.ActualQty = 0;
@@ -275,13 +245,18 @@ namespace IngameScript
                         Item.SpareQty += Inv.Qty;
                     }
                 }
+
+
+
+
+
             }
         }
 
         private void initItems()
         {
             // set current item counts as the target.
-            foreach (ITEM Item in ITEMS)
+            foreach (Item Item in _items)
             {
                 Item.InitQty = Item.ActualQty;
             }
