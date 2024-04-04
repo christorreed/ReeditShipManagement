@@ -77,52 +77,63 @@ namespace IngameScript
         ToggleModes _defaultKeepAlives = ToggleModes.On;
         HangarDoorModes _defaultHangarDoorMode = HangarDoorModes.NoChange;
 
-        #region mdk preserve
+    
         enum ToggleModes
         {
+            #region mdk preserve
             Off,
             On,
             NoChange
+            #endregion
         }
 
         enum LightToggleModes
         {
+            #region mdk preserve
             Off,
             On,
             NoChange,
             OnNoColourChange
+            #endregion
         }
 
         enum PdcModes
         {
+            #region mdk preserve
             Off,
             MinDefence,
             AllDefence,
             Offence,
             AllOnOnly,
             NoChange
+            #endregion
         }
 
         enum RailgunModes
         {
+            #region mdk preserve
             Off,
             HoldFire,
             OpenFire,
             NoChange
+            #endregion
         }
 
         enum MainDriveModes
         {
+            #region mdk preserve
             Off,
             On,
             Minimum,
             EpsteinOnly,
             ChemOnly,
             NoChange
+            #endregion
         }
 
         enum ManeuveringThrusterModes
         {
+            #region mdk preserve
             Off,
             On,
             ForwardOff,
@@ -130,36 +141,45 @@ namespace IngameScript
             RcsOnly,
             AtmoOnly,
             NoChange
+            #endregion
         }
 
         enum SpotlightModes
         {
+            #region mdk preserve
             On,
             Off,
             OnMax,
             NoChange
+            #endregion
         }
 
         enum TankAndBatteryModes
         {
+            #region mdk preserve
             Auto,
             StockpileRecharge,
             Discharge,
             NoChange
+            #endregion
         }
 
         enum KillOrAbortNavigationModes
         {
+            #region mdk preserve
             Abort,
             NoChange
+            #endregion
         }
 
         enum ExtractorModes
         {
+            #region mdk preserve
             Off,
             On,
             FillWhenLow,
             KeepFull,
+            #endregion
             //NoChange
             // removing this option for extractors
             // bc it will create issues later.
@@ -167,11 +187,13 @@ namespace IngameScript
 
         enum HangarDoorModes
         {
+            #region mdk preserve
             Closed,
             Open,
             NoChange
+            #endregion
         }
-        #endregion
+
 
         void setStance(string stance)
         {
@@ -300,7 +322,7 @@ namespace IngameScript
             if (_currentStance.BurnPercentage > 0)
             {
                 addPbServerCommand("Set Burn " + _currentStance.BurnPercentage, "EFC");
-                addPbServerCommand("Thrust Set " + _currentStance.BurnPercentage, "NavOS");
+                addPbServerCommand("Thrust Set " + _currentStance.BurnPercentage/100, "NavOS");
             }
 
             // Efc Boost
