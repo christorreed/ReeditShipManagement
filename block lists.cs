@@ -311,7 +311,7 @@ namespace IngameScript
                             {
                                 try
                                 {
-                                    append = b.DisplayName.Split('"')[1];
+                                    append = b.DefinitionDisplayNameText.Split('"')[1];
                                     append =
                                         _nameDelimiter +
                                         append[0].ToString().ToUpper() +
@@ -319,7 +319,7 @@ namespace IngameScript
                                 }
                                 catch
                                 {
-                                    if (_d) Echo("Failed to get drive type from " + b.DisplayName);
+                                    if (_d) Echo("Failed to get drive type from " + b.DefinitionDisplayNameText);
                                 }
 
                             }
