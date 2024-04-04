@@ -572,7 +572,7 @@ namespace IngameScript
                 if (_initBatteries > 0)
                     sec_integrity += "Batteries [" + generateBar(INTEGRITY__batteries) + "] " + (INTEGRITY__batteries + "% ").PadLeft(5) + tanksAndBatteriesStance + "\n";
                 if (_initPdcs > 0)
-                    sec_integrity += "_normalPdcs      [" + generateBar(_integrityPdcs) + "] " + (_integrityPdcs + "% ").PadLeft(5) + pdcsStance + "\n";
+                    sec_integrity += "PDCs      [" + generateBar(_integrityPdcs) + "] " + (_integrityPdcs + "% ").PadLeft(5) + pdcsStance + "\n";
                 if (_initTorpLaunchers > 0)
                     sec_integrity += "Torpedoes [" + generateBar(_integrityTorpedoLaunchers) + "] " + (_integrityTorpedoLaunchers + "% ").PadLeft(5) + torpStance + "\n";
                 if (_initKinetics > 0)
