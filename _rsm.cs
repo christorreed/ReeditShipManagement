@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.27 ($MDK_DATE$)";
+        string Version = "1.99.28 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -561,6 +561,10 @@ namespace IngameScript
             if (_d) Echo("Refreshing " + WELDERs.Count + " welders...");
             iterateWelders();
             // checks integrity, sets power
+
+            if (_d) Echo("Refreshing " + LCDs.Count + " lcds...");
+            iterateLcds();
+            // sets power
 
             // these ones are only keep alives
             // and so only need to happen if we are adjusting those.

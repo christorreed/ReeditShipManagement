@@ -134,7 +134,7 @@ namespace IngameScript
                 )
             {
                 // run one.
-                runPbServerCommand(_pbCommandsBufferNavOs[0], "EFC");
+                runPbServerCommand(_pbCommandsBufferNavOs[0], "NavOS");
 
                 // and delete it from the buffer.
                 _pbCommandsBufferNavOs.RemoveAt(0);

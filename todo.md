@@ -3,6 +3,8 @@
 - hudlcd:toggle:pattern not working
 - rcs nfwd not working
 
+x Setting NavOS ThrustRatio via stances does not seem to work
+x Init did not set up content type or font on the RSM HUD LCD
 x first init, get zero value
 x make stuff faster
 x fuel tank loading freq might need to go up

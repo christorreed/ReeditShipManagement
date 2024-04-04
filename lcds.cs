@@ -26,7 +26,10 @@ namespace IngameScript
 
         private void iterateLcds()
         {
-            // todo
+            foreach (IMyTextPanel Lcd in LCDs)
+            {
+                Lcd.Enabled = true;
+            }
         }
 
         private void initLcds()
@@ -35,6 +38,9 @@ namespace IngameScript
 
             foreach (IMyTextPanel Lcd in LCDs_RSM)
             {
+                Lcd.Font = "Monospace";
+                Lcd.ContentType = ContentType.TEXT_AND_IMAGE;
+
                 if (Lcd.CustomName.Contains("HUD1"))
                 {
                     setLcdCustomData(Lcd,
