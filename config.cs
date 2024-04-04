@@ -140,7 +140,7 @@ namespace IngameScript
         {
             string toParse = Me.CustomData;
 
-            string sec;
+            string sec = "";
             bool success = true;
 
             // attempt to parse ini from the custom data
@@ -252,321 +252,6 @@ namespace IngameScript
                 _blockRefreshFreq = _config.Get(sec, "BlockRefreshFreq").ToInt32(_blockRefreshFreq);
                 _loopStallCount = _config.Get(sec, "StallCount").ToInt32(_loopStallCount);
 
-                // Stances -----------------------------------------------------------------
-
-                Echo("Parsing stances...");
-
-                Dictionary<string, Stance> newStances = new Dictionary<string, Stance>();
-
-                // get all sections
-                List<string> sections = new List<string>();
-                _config.GetSections(sections);
-
-                // iterate all sections
-                foreach (string sect in sections)
-                {
-                    // ignore sections which are not stances
-                    if (sect.Contains("RSM.Stance."))
-                    {
-                        // get the stance name
-                        string newName = sect.Substring(11);
-                        Echo(newName);
-
-                        Stance newStance = new Stance();
-
-                        // strings used for parsing
-                        string working, key = "";
-
-                        // used for parsing colours
-                        string[] c;
-                        int r = 33, g = 144, b = 255, a = 255;
-
-                        bool inherits = false;
-                        Stance inheritee = null;
-
-                        // check for an Inherits value first...
-                        key = "Inherits";
-
-                        if (_config.ContainsKey(sect, key))
-                        {
-                            // we have an inheriter.
-                            inherits = true;
-                            try
-                            {
-                                inheritee = newStances[_config.Get(sect, key).ToString()];
-                                Echo("Inherits " + _config.Get(sect, key).ToString());
-                            }
-                            catch (Exception ex)
-                            {
-                                Echo("Failed to find inheritee for " + sect + "\nEnsure inheritee stances are listed before their heirs\n");
-                                throw ex;
-                            }
-                        }
-
-                        try
-                        {
-                            // now we parse out all of the properties of this stance...
-
-                            if (inherits) Echo(inheritee.TorpedoMode.ToString());
-
-                            key = "Torps";
-                            if (_config.ContainsKey(sect, key))
-                            {
-                                newStance.TorpedoMode =
-                                    (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
-                                Echo("1");
-                            }
-                            else if (inherits)
-                            {
-                                newStance.TorpedoMode = inheritee.TorpedoMode;
-                                Echo("2");
-                            }
-                            else
-                            {
-                                newStance.TorpedoMode = _defaultTorpedoMode;
-                                Echo("3");
-                            }
-                                
-
-                            key = "Pdcs";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.PdcMode =
-                                    (PdcModes)Enum.Parse(typeof(PdcModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.PdcMode = inheritee.PdcMode;
-                            else
-                                newStance.PdcMode = _defaultPdcMode;
-
-                            key = "Kinetics";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.RailgunMode =
-                                    (RailgunModes)Enum.Parse(typeof(RailgunModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.RailgunMode = inheritee.RailgunMode;
-                            else
-                                newStance.RailgunMode = _defaultRailgunMode;
-
-                            key = "MainThrust";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.MainDriveMode =
-                                    (MainDriveModes)Enum.Parse(typeof(MainDriveModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.MainDriveMode = inheritee.MainDriveMode;
-                            else
-                                newStance.MainDriveMode = _defaultMainDriveMode;
-
-                            key = "ManeuveringThrust";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.ManeuveringThrusterMode =
-                                    (ManeuveringThrusterModes)Enum.Parse(typeof(ManeuveringThrusterModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.ManeuveringThrusterMode = inheritee.ManeuveringThrusterMode;
-                            else
-                                newStance.ManeuveringThrusterMode = _defaultManeuveringThrusterMode;
-
-                            key = "Spotlights";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.SpotlightMode =
-                                    (SpotlightModes)Enum.Parse(typeof(SpotlightModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.SpotlightMode = inheritee.SpotlightMode;
-                            else
-                                newStance.SpotlightMode = _defaultSpotlightMode;
-
-                            key = "ExteriorLights";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.ExteriorLightMode =
-                                    (LightToggleModes)Enum.Parse(typeof(LightToggleModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.ExteriorLightMode = inheritee.ExteriorLightMode;
-                            else
-                                newStance.ExteriorLightMode = _defaultExteriorLightMode;
-
-                            key = "ExteriorLightColour";
-                            if (_config.ContainsKey(sect, key))
-                            {
-                                working = _config.Get(sect, key).ToString();
-                                c = working.Split(',');
-                                r = int.Parse(c[0]);
-                                g = int.Parse(c[1]);
-                                b = int.Parse(c[2]);
-                                a = int.Parse(c[3]);
-                                newStance.ExteriorLightColour = new Color(r, g, b, a);
-                            }
-                            else if
-                                (inherits) newStance.ExteriorLightColour = inheritee.ExteriorLightColour;
-                            else
-                                newStance.ExteriorLightColour = _defaultExteriorLightColour;
-
-                            key = "InteriorLights";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.InteriorLightMode =
-                                    (LightToggleModes)Enum.Parse(typeof(LightToggleModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.InteriorLightMode = inheritee.InteriorLightMode;
-                            else
-                                newStance.InteriorLightMode = _defaultInteriorLightMode;
-
-                            key = "InteriorLightColour";
-                            if (_config.ContainsKey(sect, key))
-                            {
-                                working = _config.Get(sect, key).ToString();
-                                c = working.Split(',');
-                                r = int.Parse(c[0]);
-                                g = int.Parse(c[1]);
-                                b = int.Parse(c[2]);
-                                a = int.Parse(c[3]);
-                                newStance.InteriorLightColour = new Color(r, g, b, a);
-                            }
-                            else if
-                                (inherits) newStance.InteriorLightColour = inheritee.InteriorLightColour;
-                            else
-                                newStance.InteriorLightColour = _defaultInteriorLightColour;
-
-                            key = "NavLights";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.NavLightMode =
-                                    (LightToggleModes)Enum.Parse(typeof(LightToggleModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.NavLightMode = inheritee.NavLightMode;
-                            else
-                                newStance.NavLightMode = _defaultNavLightMode;
-
-                            key = "LcdTextColour";
-                            if (_config.ContainsKey(sect, key))
-                            {
-                                working = _config.Get(sect, key).ToString();
-                                c = working.Split(',');
-                                r = int.Parse(c[0]);
-                                g = int.Parse(c[1]);
-                                b = int.Parse(c[2]);
-                                a = int.Parse(c[3]);
-                                newStance.LcdTextColour = new Color(r, g, b, a);
-                            }
-                            else if
-                                (inherits) newStance.LcdTextColour = inheritee.LcdTextColour;
-                            else
-                                newStance.LcdTextColour = _defaultLcdTextColour;
-
-                            key = "TanksAndBatteries";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.TankAndBatteryMode =
-                                    (TankAndBatteryModes)Enum.Parse(typeof(TankAndBatteryModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.TankAndBatteryMode = inheritee.TankAndBatteryMode;
-                            else
-                                newStance.TankAndBatteryMode = _defaultTankAndBatteryMode;
-
-                            key = "NavOsEfcBurnPercentage";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.BurnPercentage = _config.Get(sect, "NavOsEfcBurnPercentage").ToInt32(_defaultBurnPercentage);
-                            else if
-                                (inherits) newStance.BurnPercentage = inheritee.BurnPercentage;
-                            else
-                                newStance.BurnPercentage = _defaultBurnPercentage;
-
-                            key = "EfcBoost";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.EfcBoost =
-                                    (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.EfcBoost = inheritee.EfcBoost;
-                            else
-                                newStance.EfcBoost = _defaultEfcBoost;
-
-                            key = "NavOsAbortEfcOff";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.KillOrAbortNavigation =
-                                    (KillOrAbortNavigationModes)Enum.Parse(typeof(KillOrAbortNavigationModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.KillOrAbortNavigation = inheritee.KillOrAbortNavigation;
-                            else
-                                newStance.KillOrAbortNavigation = _defaultKillOrAbortNavigation;
-
-                            key = "NavOsAbortEfcOff";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.KillOrAbortNavigation =
-                                    (KillOrAbortNavigationModes)Enum.Parse(typeof(KillOrAbortNavigationModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.KillOrAbortNavigation = inheritee.KillOrAbortNavigation;
-                            else
-                                newStance.KillOrAbortNavigation = _defaultKillOrAbortNavigation;
-
-                            key = "AuxMode";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.AuxMode =
-                                    (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.AuxMode = inheritee.AuxMode;
-                            else
-                                newStance.AuxMode = _defaultAuxMode;
-
-                            key = "Extractor";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.ExtractorMode =
-                                    (ExtractorModes)Enum.Parse(typeof(ExtractorModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.ExtractorMode = inheritee.ExtractorMode;
-                            else
-                                newStance.ExtractorMode = _defaultExtractorMode;
-
-                            key = "KeepAlives";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.KeepAlives =
-                                    (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.KeepAlives = inheritee.KeepAlives;
-                            else
-                                newStance.KeepAlives = _defaultKeepAlives;
-
-                            key = "HangarDoors";
-                            if (_config.ContainsKey(sect, key))
-                                newStance.HangarDoorsMode =
-                                    (HangarDoorModes)Enum.Parse(typeof(HangarDoorModes), _config.Get(sect, key).ToString());
-                            else if
-                                (inherits) newStance.HangarDoorsMode = inheritee.HangarDoorsMode;
-                            else
-                                newStance.HangarDoorsMode = _defaultHangarDoorMode;
-
-                            newStances.Add(newName, newStance);
-                        }
-                        catch (Exception ex)
-                        {
-                            Echo("Failed to parse stance " + newName + " property " + key + "\nFix and recompile!");
-                            throw ex;
-                        }
-
-                        
-                    }
-                }
-
-                if (newStances.Count < 1)
-                {
-                    Echo("Failed to parse any stances!\nStances reset to default!");
-                    success = false;
-                }
-                else
-                { // parsed at least one stance.
-                    Echo("Finished parsing " + newStances.Count + " stances.");
-                    _stances = newStances;
-                }
-
-                sec = "RSM.Stance"; Echo(sec);
-
-                _currentStanceName = _config.Get(sec, "CurrentStance").ToString(_currentStanceName);
-
-                // set the _currentStance var
-                Stance newCurrentStance;
-                if (!_stances.TryGetValue(_currentStanceName, out newCurrentStance))
-                {
-                    // the key isn't in the dictionary.
-                    _currentStanceName = "N/A";
-                    _currentStance = null;
-                } // otherwise, we found our guy.
-                else _currentStance = newCurrentStance;
-
-
-
                 // System -----------------------------------------------------------------
 
                 sec = "RSM.System"; Echo(sec);
@@ -603,10 +288,319 @@ namespace IngameScript
             }
             catch (Exception ex)
             {
-                Echo("Parsing error! Check custom data values!");
-                throw ex;
-                //success = false;
+                throwConfigParsingError (ex, "Failed to parse section\n" +sec);
             }
+
+            // Stances -----------------------------------------------------------------
+
+            Echo("Parsing stances...");
+
+            Dictionary<string, Stance> newStances = new Dictionary<string, Stance>();
+
+            // get all sections
+            List<string> sections = new List<string>();
+            _config.GetSections(sections);
+
+            // iterate all sections
+            foreach (string sect in sections)
+            {
+                // ignore sections which are not stances
+                if (sect.Contains("RSM.Stance."))
+                {
+                    // get the stance name
+                    string newName = sect.Substring(11);
+                    Echo(newName);
+
+                    Stance newStance = new Stance();
+
+                    // strings used for parsing
+                    string working, key = "";
+
+                    // used for parsing colours
+                    string[] c;
+                    int r = 33, g = 144, b = 255, a = 255;
+
+                    bool inherits = false;
+                    Stance inheritee = null;
+
+                    // check for an Inherits value first...
+                    key = "Inherits";
+
+                    if (_config.ContainsKey(sect, key))
+                    {
+                        // we have an inheriter.
+                        inherits = true;
+                        try
+                        {
+                            inheritee = newStances[_config.Get(sect, key).ToString()];
+                            Echo("Inherits " + _config.Get(sect, key).ToString());
+                        }
+                        catch (Exception ex)
+                        {
+                            throwConfigParsingError(ex, "Failed to find inheritee for\n" + sect + "\nEnsure inheritee stances are\nlisted before their heirs");
+                        }
+                    }
+
+                    try
+                    {
+                        // now we parse out all of the properties of this stance...
+
+                        if (inherits) Echo(inheritee.TorpedoMode.ToString());
+
+                        key = "Torps";
+                        if (_config.ContainsKey(sect, key))
+                        {
+                            newStance.TorpedoMode =
+                                (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
+                            Echo("1");
+                        }
+                        else if (inherits)
+                        {
+                            newStance.TorpedoMode = inheritee.TorpedoMode;
+                            Echo("2");
+                        }
+                        else
+                        {
+                            newStance.TorpedoMode = _defaultTorpedoMode;
+                            Echo("3");
+                        }
+
+
+                        key = "Pdcs";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.PdcMode =
+                                (PdcModes)Enum.Parse(typeof(PdcModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.PdcMode = inheritee.PdcMode;
+                        else
+                            newStance.PdcMode = _defaultPdcMode;
+
+                        key = "Kinetics";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.RailgunMode =
+                                (RailgunModes)Enum.Parse(typeof(RailgunModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.RailgunMode = inheritee.RailgunMode;
+                        else
+                            newStance.RailgunMode = _defaultRailgunMode;
+
+                        key = "MainThrust";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.MainDriveMode =
+                                (MainDriveModes)Enum.Parse(typeof(MainDriveModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.MainDriveMode = inheritee.MainDriveMode;
+                        else
+                            newStance.MainDriveMode = _defaultMainDriveMode;
+
+                        key = "ManeuveringThrust";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.ManeuveringThrusterMode =
+                                (ManeuveringThrusterModes)Enum.Parse(typeof(ManeuveringThrusterModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.ManeuveringThrusterMode = inheritee.ManeuveringThrusterMode;
+                        else
+                            newStance.ManeuveringThrusterMode = _defaultManeuveringThrusterMode;
+
+                        key = "Spotlights";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.SpotlightMode =
+                                (SpotlightModes)Enum.Parse(typeof(SpotlightModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.SpotlightMode = inheritee.SpotlightMode;
+                        else
+                            newStance.SpotlightMode = _defaultSpotlightMode;
+
+                        key = "ExteriorLights";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.ExteriorLightMode =
+                                (LightToggleModes)Enum.Parse(typeof(LightToggleModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.ExteriorLightMode = inheritee.ExteriorLightMode;
+                        else
+                            newStance.ExteriorLightMode = _defaultExteriorLightMode;
+
+                        key = "ExteriorLightColour";
+                        if (_config.ContainsKey(sect, key))
+                        {
+                            working = _config.Get(sect, key).ToString();
+                            c = working.Split(',');
+                            r = int.Parse(c[0]);
+                            g = int.Parse(c[1]);
+                            b = int.Parse(c[2]);
+                            a = int.Parse(c[3]);
+                            newStance.ExteriorLightColour = new Color(r, g, b, a);
+                        }
+                        else if
+                            (inherits) newStance.ExteriorLightColour = inheritee.ExteriorLightColour;
+                        else
+                            newStance.ExteriorLightColour = _defaultExteriorLightColour;
+
+                        key = "InteriorLights";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.InteriorLightMode =
+                                (LightToggleModes)Enum.Parse(typeof(LightToggleModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.InteriorLightMode = inheritee.InteriorLightMode;
+                        else
+                            newStance.InteriorLightMode = _defaultInteriorLightMode;
+
+                        key = "InteriorLightColour";
+                        if (_config.ContainsKey(sect, key))
+                        {
+                            working = _config.Get(sect, key).ToString();
+                            c = working.Split(',');
+                            r = int.Parse(c[0]);
+                            g = int.Parse(c[1]);
+                            b = int.Parse(c[2]);
+                            a = int.Parse(c[3]);
+                            newStance.InteriorLightColour = new Color(r, g, b, a);
+                        }
+                        else if
+                            (inherits) newStance.InteriorLightColour = inheritee.InteriorLightColour;
+                        else
+                            newStance.InteriorLightColour = _defaultInteriorLightColour;
+
+                        key = "NavLights";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.NavLightMode =
+                                (LightToggleModes)Enum.Parse(typeof(LightToggleModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.NavLightMode = inheritee.NavLightMode;
+                        else
+                            newStance.NavLightMode = _defaultNavLightMode;
+
+                        key = "LcdTextColour";
+                        if (_config.ContainsKey(sect, key))
+                        {
+                            working = _config.Get(sect, key).ToString();
+                            c = working.Split(',');
+                            r = int.Parse(c[0]);
+                            g = int.Parse(c[1]);
+                            b = int.Parse(c[2]);
+                            a = int.Parse(c[3]);
+                            newStance.LcdTextColour = new Color(r, g, b, a);
+                        }
+                        else if
+                            (inherits) newStance.LcdTextColour = inheritee.LcdTextColour;
+                        else
+                            newStance.LcdTextColour = _defaultLcdTextColour;
+
+                        key = "TanksAndBatteries";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.TankAndBatteryMode =
+                                (TankAndBatteryModes)Enum.Parse(typeof(TankAndBatteryModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.TankAndBatteryMode = inheritee.TankAndBatteryMode;
+                        else
+                            newStance.TankAndBatteryMode = _defaultTankAndBatteryMode;
+
+                        key = "NavOsEfcBurnPercentage";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.BurnPercentage = _config.Get(sect, "NavOsEfcBurnPercentage").ToInt32(_defaultBurnPercentage);
+                        else if
+                            (inherits) newStance.BurnPercentage = inheritee.BurnPercentage;
+                        else
+                            newStance.BurnPercentage = _defaultBurnPercentage;
+
+                        key = "EfcBoost";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.EfcBoost =
+                                (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.EfcBoost = inheritee.EfcBoost;
+                        else
+                            newStance.EfcBoost = _defaultEfcBoost;
+
+                        key = "NavOsAbortEfcOff";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.KillOrAbortNavigation =
+                                (KillOrAbortNavigationModes)Enum.Parse(typeof(KillOrAbortNavigationModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.KillOrAbortNavigation = inheritee.KillOrAbortNavigation;
+                        else
+                            newStance.KillOrAbortNavigation = _defaultKillOrAbortNavigation;
+
+                        key = "NavOsAbortEfcOff";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.KillOrAbortNavigation =
+                                (KillOrAbortNavigationModes)Enum.Parse(typeof(KillOrAbortNavigationModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.KillOrAbortNavigation = inheritee.KillOrAbortNavigation;
+                        else
+                            newStance.KillOrAbortNavigation = _defaultKillOrAbortNavigation;
+
+                        key = "AuxMode";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.AuxMode =
+                                (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.AuxMode = inheritee.AuxMode;
+                        else
+                            newStance.AuxMode = _defaultAuxMode;
+
+                        key = "Extractor";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.ExtractorMode =
+                                (ExtractorModes)Enum.Parse(typeof(ExtractorModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.ExtractorMode = inheritee.ExtractorMode;
+                        else
+                            newStance.ExtractorMode = _defaultExtractorMode;
+
+                        key = "KeepAlives";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.KeepAlives =
+                                (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.KeepAlives = inheritee.KeepAlives;
+                        else
+                            newStance.KeepAlives = _defaultKeepAlives;
+
+                        key = "HangarDoors";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.HangarDoorsMode =
+                                (HangarDoorModes)Enum.Parse(typeof(HangarDoorModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.HangarDoorsMode = inheritee.HangarDoorsMode;
+                        else
+                            newStance.HangarDoorsMode = _defaultHangarDoorMode;
+
+                        newStances.Add(newName, newStance);
+                    }
+                    catch (Exception ex)
+                    {
+                        throwConfigParsingError(ex, "Failed to parse stance\n" + newName + "\nproperty\n" + key);
+                    }
+                }
+            }
+
+            if (newStances.Count < 1)
+            {
+                Echo("Failed to parse any stances!\nStances reset to default!");
+                success = false;
+            }
+            else
+            { // parsed at least one stance.
+                Echo("Finished parsing " + newStances.Count + " stances.");
+                _stances = newStances;
+            }
+
+            sec = "RSM.Stance"; Echo(sec);
+
+            _currentStanceName = _config.Get(sec, "CurrentStance").ToString(_currentStanceName);
+
+            // set the _currentStance var
+            Stance newCurrentStance;
+            if (!_stances.TryGetValue(_currentStanceName, out newCurrentStance))
+            {
+                // the key isn't in the dictionary.
+                _currentStanceName = "N/A";
+                _currentStance = null;
+            } // otherwise, we found our guy.
+            else _currentStance = newCurrentStance;
+
+
             return success;
         }
 
@@ -1585,6 +1579,31 @@ namespace IngameScript
         string buildColourString(Color colour)
         {
             return colour.R + ", " + colour.G + ", " + colour.B + ", " + colour.A;
+        }
+
+        void throwConfigParsingError(Exception ex, string desc)
+        {
+            // build our error
+            string fuckUp = 
+                "\nRSM FAILED TO START\nDUE TO A CONFIG ERROR!\n\n" + 
+                desc + 
+                "\n\nFix error in custom data\nor clear custom data\nand recompile!\n\n";
+
+            // put it in block details
+            Echo(fuckUp);
+
+            // put it on every RSM screen
+            List<IMyTextPanel> rsmLcds = new List<IMyTextPanel>();
+            GridTerminalSystem.GetBlocksOfType<IMyTextPanel>(rsmLcds, b => b.CustomName.Contains(_keywordRsmLcds));
+            foreach (IMyTextPanel Lcd in  rsmLcds)
+            {
+                Lcd.WriteText(fuckUp);
+                Lcd.FontColor = new Color(193,0,197,255); // make the text pink.
+            }
+
+            // throw a tantrum
+            // refuse to continue.
+            throw ex;
         }
     }
 }

@@ -1,9 +1,10 @@
 # debugs
 
 - hudlcd:toggle:pattern not working
-- rcs nfwd not working
-- failed to get drive type
+- reactor subsys integ value wrong
 
+x rcs nfwd not working
+x failed to get drive type
 x Setting NavOS ThrustRatio via stances does not seem to work
 x Init did not set up content type or font on the RSM HUD LCD
 x first init, get zero value
@@ -30,12 +31,12 @@ x "An item with the same key has already been added" during
 - debug/test
 - add toolcore welder control (setToolActivate, iterateWelders)
 - review and improve updateLcds 
-- fuel tank fast loading command/configurable load speed
+- fuel tank fast loading command
 - more aggressive naming into sub groups.  Like power.reactor
 - booting improvements, lcd outputs
-- lcd error on config parse failure.
 - snek private spawn default: make spawns private automatically if spawn kits are set to no share
 
+x lcd error on config parse failure.
 x find a way to provide default custom data mostly commented out.
 x germ wants m/s^2 rather than G's bc he's weird.
 x refactor the rest of the var names
