@@ -271,7 +271,7 @@ namespace IngameScript
 
                 _initReactors = _config.Get(sec, "Reactors").ToDouble(_initReactors);
                 _initReactors = _config.Get(sec, "Batteries").ToDouble(_initReactors);
-                _initPdcs = _config.Get(sec, "_normalPdcs").ToInt32(_initPdcs);
+                _initPdcs = _config.Get(sec, "Pdcs").ToInt32(_initPdcs);
                 _initTorpLaunchers = _config.Get(sec, "TorpLaunchers").ToInt32(_initTorpLaunchers);
                 _initKinetics = _config.Get(sec, "KineticWeapons").ToInt32(_initKinetics);
                 _initH2 = _config.Get(sec, "H2Storage").ToDouble(_initH2);
@@ -1069,7 +1069,7 @@ namespace IngameScript
 
             _config.Set(sec, "Reactors", _initReactors);
             _config.Set(sec, "Batteries", _initReactors);
-            _config.Set(sec, "_normalPdcs", _initPdcs);
+            _config.Set(sec, "Pdcs", _initPdcs);
             _config.Set(sec, "TorpLaunchers", _initTorpLaunchers);
             _config.Set(sec, "KineticWeapons", _initKinetics);
             _config.Set(sec, "H2Storage", _initH2);
@@ -1582,6 +1582,65 @@ namespace IngameScript
                     _shipName = defaultName;
                 }
             }
+
+        }
+
+        void setSystemData(bool setStance = true, bool setSubsystems = false, bool setInventory = false)
+        {
+            MyIni config = new MyIni();
+            string toParse = Me.CustomData;
+
+            // attempt to parse ini from the custom data
+            MyIniParseResult result;
+            if (!config.TryParse(toParse, out result))
+                ALERTS.Add(new ALERT(
+                    "CONFIG ERROR!!",
+                    "Failed to save to custom data due to a parsing error!\nFix and recompile!",
+                    3
+                    ));
+
+            string sec, name;
+
+            if (setStance)
+            {
+                sec = "RSM.Stance";
+                name = "CurrentStance";
+
+                config.Set(sec, name, _currentStanceName);
+            }
+
+            if (setSubsystems)
+            {
+                sec = "RSM.InitSubSystems";
+
+                config.Set(sec, "Reactors", _initReactors);
+                config.Set(sec, "Batteries", _initReactors);
+                config.Set(sec, "Pdcs", _initPdcs);
+                config.Set(sec, "TorpLaunchers", _initTorpLaunchers);
+                config.Set(sec, "KineticWeapons", _initKinetics);
+                config.Set(sec, "H2Storage", _initH2);
+                config.Set(sec, "O2Storage", _initO2);
+                config.Set(sec, "MainThrust", _initThrustMain);
+                config.Set(sec, "RCSThrust", _initThrustRCS);
+                config.Set(sec, "Gyros", _initGyros);
+                config.Set(sec, "CargoStorage", _initCargos);
+                config.Set(sec, "Welders", _initWelders);
+            }
+
+            if (setInventory)
+            {
+                sec = "RSM.InitItems";
+
+                foreach (Item item in _items)
+                {
+                    name = item.Type.SubtypeId;
+                    config.Set(sec, name, item.InitQty);
+                }
+            }
+
+            // Save it -----------------------------------------------------------------
+
+            Me.CustomData = config.ToString();
 
         }
 

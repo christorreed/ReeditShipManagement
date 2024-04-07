@@ -100,7 +100,7 @@ namespace IngameScript
             _currentStanceName = stance;
 
             // update config
-            setCustomData();
+            setSystemData();
 
             // set rails
             if (_d) Echo("Setting " + _kineticWeapons.Count + " railguns to " + _currentStance.RailgunMode);

@@ -40,7 +40,6 @@
 ## todos high importance
 
 * review and improve updateLcds 
-* automatically detect name at start.
 * saving custom data on stance set.
 * booting improvements, lcd outputs
 
@@ -59,6 +58,7 @@
 
 ## todos done
 
+* ~~automatically detect name at start.~~
 * ~~init no renames.~~
 * ~~more aggressive naming into sub groups.  Like power.reactor~~
 * ~~fuel tank fast loading command~~

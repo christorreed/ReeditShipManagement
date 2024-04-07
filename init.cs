@@ -88,7 +88,7 @@ namespace IngameScript
             }
 
             // save all of these new values to custom data straight away.
-            setCustomData();
+            setSystemData(false, setSubSystems, setInventory);
 
             ALERTS.Add(new ALERT(
                 "Init:" + ship,
