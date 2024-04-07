@@ -6,7 +6,7 @@
 #### Full refactor/rebuild
 
 * RSM has been completely rebuilt from the bottom up with a focus on performance, configurability and ease of use.
-* 
+* RSM now only p
 
 #### Init it... or don't
 
@@ -27,11 +27,16 @@
 * RSM v2 is automatically backwards compatible with older configs
 * I still recommend a config reset when upgrading if possible by deleting all custom data, recompiling, and re-running `Init:ShipName`
 * Stance config now supports inheritance; set the name of the inherited stance, and then only list 
+* Note that, unlike previously, RSM only parses your custom data configuration on *Recompile*. This is for performance reasons.
 
 #### Fully rebuilt User Guide
 
 * Tried to make it both easier to get started quickly, and also more thorough for those who want to understand all of the details.  I bet you're missing something...
 * Read it on [GitHub](https://github.com/christorreed/ReeditShipManagement).
+
+##### Improved Extractor Management
+
+* Extractor management now automatically speeds up or slows down depending on your fuel percentage.
 
 #### Stance Changes
 
@@ -39,7 +44,7 @@
 * Seldom used stances MaxCruise, Coast & Sleep removed from default stance list.
 * Stance names are no longer case sensitive in stance set commands.
 * New stance options for all thrusters for more granularity, including no change to leave drives un touched, and additional options for atmo/chemical drives.
-* Note default stance updates will not effect existing ships/existing stances.  To update to the new stances, clear all stances from custom data.
+	* Note default stance updates will not effect existing ships/existing stances.  To update to the new stances, clear all stances from custom data.
 
 #### Improved Weapons Management
 
@@ -99,6 +104,7 @@
 * Added type to Init naming of railguns (eg `Shipname.Railgun.Zako`) like PDCs, torpedoes.
 * Added type to Init naming of epsteins (eg `Shipname.Epstein.Tachi`).
 * Add type names to weapons at init now enabled by default
+* Added some categorisation, such as `ShipName.Power.Battery` or `ShipName.Power.Reactor.MCRN`
 
 #### One Touch Airlock Improvements
 
@@ -106,6 +112,11 @@
 * Airlocks no longer blow out if the vent airlock is off.
 * Vents are now forced on along with the "keep alive" setting, available per stance.
 * Airlock vents are not automatically configured to depresurize.
+
+#### Added NavOs integration, improved Pb management
+
+* Now set your NavOS burn percentage, and optionally force an Abort, per stance, same as EFC.
+* Commands to other Pbs now buffer up and are fed over several runs to prevent previous errors.
 
 #### Other Changes
 
@@ -118,3 +129,4 @@
 * Removed beacon-based drive sig output display from LCDs
 * H2/O2 levels now show relative to init value, not current max capacity
 * Ignore keyword now prevents autoloading on weapons
+* RSM now optionally supports m/s^2 as a acceleration value rather than Gs
