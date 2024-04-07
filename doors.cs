@@ -109,6 +109,8 @@ namespace IngameScript
 
             foreach (Airlock airlock in _airlocks)
             {
+                //if (_d) Echo("Airlock " + airlock.Id + " has " + airlock.Doors.Count + " doors");
+
                 // iterate over the doors as normal.
                 // doors still close via the normal timer.
                 foreach (Door door in airlock.Doors)
@@ -116,22 +118,30 @@ namespace IngameScript
                     if (door.Block == null) continue;
 
                     bool justClosed = refreshDoor(door);
-                    door.IsAirlockFirstOpen = true;
+
 
                     // if our door just closed, and the airlock didn't just cycle
                     if (justClosed)
                     {
+                        if (_d) Echo("Airlock door " + door.Block.CustomName + " just closed");
+
                         // this prevents looping
                         if (airlock.justCycled) airlock.justCycled = false;
 
                         // then it's time to cycle.
-                        else airlock.nowCycling = true;
+                        else
+                        {
+                            airlock.nowCycling = true;
+                            door.IsAirlockFirstOpen = true;
+                            if (_d) Echo("Airlock " + airlock.Id + " needs to cycle");
+                        }
                     }
                 }
 
                 // okay so we're actively cycling
                 if (airlock.nowCycling)
                 {
+                    //if (_d) Echo("Airlock " + airlock.Id + " is cycling");
                     foreach (Door door in airlock.Doors)
                     {
                         if (door.Block == null) continue;
@@ -143,62 +153,64 @@ namespace IngameScript
                             // if we're closed, disable.
                             door.Block.Enabled = false;
                     }
-                }
+               
+                    bool cycleDone = false;
 
-                bool cycleDone = false;
-
-                foreach (IMyAirVent vent in airlock.Vents)
-                {
-                    if (vent ==  null) continue;
-
-                    // force enable
-                    if (!vent.Enabled) vent.Enabled = true;
-
-                    // force Depressurize
-                    if (!vent.Depressurize) vent.Depressurize = true;
-
-                    // if at least one vent can CanPressurize, has depressurized, and is now cycling
-                    if (vent.CanPressurize &&vent.GetOxygenLevel() < .01 && airlock.nowCycling)
-                        // cycle is complete
-                        cycleDone = true;
-                }
-
-                // roll the cycling timer
-                airlock.nowCyclingTimer++;
-
-                // most of the time we want to auto open.
-                bool autoOpen = true;
-
-                if (airlock.nowCyclingTimer >= _airlockDoorDisableTimer)
-                {
-                    // alright fine.
-                    // airlock *still* hasn't decompressed yet,
-                    // ain't nobody got time for that.
-                    // so lets unlock the airlock,
-                    // but not auto open the door
-                    autoOpen = false;
-                    cycleDone = true;
-                }
-
-                if (cycleDone)
-                {
-                    airlock.nowCycling = false;
-                    airlock.nowCyclingTimer = 0;
-                    airlock.justCycled = true;
-
-                    foreach (Door door in airlock.Doors)
+                    foreach (IMyAirVent vent in airlock.Vents)
                     {
-                        if (door.Block == null) continue;
+                        if (vent == null) continue;
 
-                        // turn them all back on.
-                        door.Block.Enabled = true;
+                        //if (_d) Echo("Checking vent " + vent + " needs to cycle");
 
-                        if (door.IsAirlockFirstOpen)
-                            // except for the door that opened first
-                            door.IsAirlockFirstOpen = false;
-                        else if (autoOpen)
-                            // auto open door.
-                            door.Block.OpenDoor();
+                        // force enable
+                        if (!vent.Enabled) vent.Enabled = true;
+
+                        // force Depressurize
+                        if (!vent.Depressurize) vent.Depressurize = true;
+
+                        // if at least one vent can CanPressurize, has depressurized, and is now cycling
+                        if (vent.CanPressurize && vent.GetOxygenLevel() < .01 && airlock.nowCycling)
+                            // cycle is complete
+                            cycleDone = true;
+                    }
+
+                    // roll the cycling timer
+                    airlock.nowCyclingTimer++;
+
+                    // most of the time we want to auto open.
+                    bool autoOpen = true;
+
+                    if (airlock.nowCyclingTimer >= _airlockDoorDisableTimer)
+                    {
+                        // alright fine.
+                        // airlock *still* hasn't decompressed yet,
+                        // ain't nobody got time for that.
+                        // so lets unlock the airlock,
+                        // but not auto open the door
+                        autoOpen = false;
+                        cycleDone = true;
+                    }
+
+                    if (cycleDone)
+                    {
+                        airlock.nowCycling = false;
+                        airlock.nowCyclingTimer = 0;
+                        airlock.justCycled = true;
+
+                        foreach (Door door in airlock.Doors)
+                        {
+                            if (door.Block == null) continue;
+
+                            // turn them all back on.
+                            door.Block.Enabled = true;
+
+                            if (door.IsAirlockFirstOpen)
+                                // except for the door that opened first
+                                door.IsAirlockFirstOpen = false;
+                            else if (autoOpen)
+                                // auto open door.
+                                door.Block.OpenDoor();
+                        }
                     }
                 }
             }

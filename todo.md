@@ -1,8 +1,11 @@
 # debugs
 
 - hudlcd:toggle:pattern not working
-- reactor subsys integ value wrong
+- fuel tanks loading?
+- run autoload twice?
 
+x airlocks not working
+x reactor subsys integ value wrong
 x rcs nfwd not working
 x failed to get drive type
 x Setting NavOS ThrustRatio via stances does not seem to work

@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.33 ($MDK_DATE$)";
+        string Version = "1.99.37 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -310,7 +310,7 @@ namespace IngameScript
             doThisStuffOften();
             // it actually does these things 
             // one at a time the first time.
-            // ie, its _isBooting.
+            // ie, it _isBooting.
             // splitting it up like this because 
             // SE seems to cache the PB api results,
             // or something like that bc i see much

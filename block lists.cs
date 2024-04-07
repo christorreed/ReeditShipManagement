@@ -523,7 +523,7 @@ namespace IngameScript
                         }
                         catch
                         {
-                            if (_d) Echo("Error with door name " + b.CustomName);
+                            if (_d) Echo("Error with airlock door name " + b.CustomName);
                             _doors.Add(d);
                         }
                     }

@@ -154,7 +154,7 @@ namespace IngameScript
         // updates all _allLcds on the ship to display our data.
         void refreshLcds()
         {
-            if (_d) Echo("Updating _allLcds...");
+            if (_d) Echo("Updating " + _rsmLcds.Count + " LCDs...");
 
             updateTelemetry();
 
