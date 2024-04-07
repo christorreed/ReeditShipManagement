@@ -22,7 +22,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        // _allLcds -----------------------------------------------------------------
+        // LCDs -----------------------------------------------------------------
 
         private void iterateLcds()
         {
@@ -34,7 +34,7 @@ namespace IngameScript
 
         private void initLcds()
         {
-            // RSM _allLcds -----------------------------------------------------------------
+            // RSM LCDs -----------------------------------------------------------------
 
             foreach (IMyTextPanel Lcd in _rsmLcds)
             {
@@ -139,7 +139,7 @@ namespace IngameScript
             }
 
 
-            // All other _allLcds -----------------------------------------------------------------
+            // All other LCDs -----------------------------------------------------------------
             bool NavigationLCDFound = false;
             bool REEDAV1LCDFound = false;
             bool REEDAV2LCDFound = false;
@@ -148,7 +148,7 @@ namespace IngameScript
             {
                 if (Lcd == null) continue;
 
-                // REEDAV _allLcds -----------------------------------------------------------------
+                // REEDAV LCDs -----------------------------------------------------------------
 
                 // todo
                 // improve? maybe just remove?
@@ -171,14 +171,14 @@ namespace IngameScript
                     continue;
                 }
 
-                // EFC/NavOS Navigation _allLcds -----------------------------------------------------------------
+                // EFC/NavOS Navigation LCDs -----------------------------------------------------------------
 
                 if (
                     !NavigationLCDFound
                     &&
-                    (Lcd.CustomName.Contains(KEYWORD_PB_EFC)
+                    (Lcd.CustomName.Contains(_keywordLcdEfc)
                     ||
-                    Lcd.CustomName.ToUpper().Contains(KEYWORD_PB_NAVOS))
+                    Lcd.CustomName.ToUpper().Contains(_keywordLcdNavOs))
                     )
                 {
                     NavigationLCDFound = true;

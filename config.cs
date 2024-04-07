@@ -79,10 +79,8 @@ namespace IngameScript
         string _keywordLightNavigation = "Nav"; // for Nav lights
         string _keywordAirlock = "Airlock"; // for airlocks
 
-        // todo
-        // remove these, check the custom data or something isntead.
-        string KEYWORD_PB_EFC = "[EFC]"; // for EFC PBs/_allLcds
-        string KEYWORD_PB_NAVOS = "[NavOS]"; // for NavOS PBs/_allLcds
+        string _keywordLcdEfc = "[EFC]"; // for EFC PBs/_allLcds
+        string _keywordLcdNavOs = "[NavOS]"; // for NavOS PBs/_allLcds
 
         // Init & Block Naming -----------------------------------------------------------------
 
@@ -92,8 +90,6 @@ namespace IngameScript
         // append type names to all weapons during init.
         bool _appendWeaponTypes = true;
 
-        // todo
-        // implement!!
         // append type names to all drives during init.
         bool _appendDriveTypes = true;
 
