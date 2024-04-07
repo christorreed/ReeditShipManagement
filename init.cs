@@ -25,7 +25,7 @@ namespace IngameScript
     partial class Program
     {
 
-        void initShip(string ship, bool basic = false)
+        void initShip(string ship, bool nameBlocks = true, bool setSubSystems = true, bool setInventory = true)
         {
             // todo
             // review this method
@@ -57,7 +57,7 @@ namespace IngameScript
             // setup _allLcds.
             initLcds();
 
-            if (!basic)
+            if (setSubSystems)
             {
                 // now I calculate subsystem total capacities in order to check for damage later.
                 if (_d) Echo("Initialising subsystem values...");
@@ -68,22 +68,27 @@ namespace IngameScript
                 initH2Tanks();
                 initO2Tanks();
                 initCargos();
-
                 _initPdcs = _normalPdcs.Count + _defensivePdcs.Count;
                 _initTorpLaunchers = _torpedoLaunchers.Count;
                 _initKinetics = _kineticWeapons.Count;
                 _initGyros = _gyroscopes.Count;
                 _initWelders = _welders.Count;
+            }
 
+            if (setInventory)
+            {
                 if (_d) Echo("Initialising item values...");
                 initItems();
             }
 
+            if (nameBlocks)
+            {
+                if (_d) Echo("Initialising block names...");
+                initBlockNames();
+            }
+
             // save all of these new values to custom data straight away.
             setCustomData();
-
-            if (_d) Echo("Initialising block names...");
-            initBlockNames();
 
             ALERTS.Add(new ALERT(
                 "Init:" + ship,

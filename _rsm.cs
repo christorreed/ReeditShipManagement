@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.38 ($MDK_DATE$)";
+        string Version = "1.99.39 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -150,7 +150,21 @@ namespace IngameScript
             switch (args[0].ToLower())
             {
                 case "init":
-                    initShip(args[1]);
+
+                    bool nameBlocks = true, setSubSystems = true, setInventory = true;
+                    
+                    if (args.Length > 2)
+                    {
+                        foreach (string arg in args)
+                        {
+                            if (arg.ToLower() == "nonames") nameBlocks = false;
+                            else if (arg.ToLower() == "nosubs") setSubSystems = false;
+                            else if (arg.ToLower() == "noinv") setInventory = false;
+                        }
+                    }
+
+                    initShip(args[1], nameBlocks, setSubSystems, setInventory);
+
                     return;
 
                 case "initbasic":
