@@ -326,9 +326,6 @@ namespace IngameScript
             // or something like that bc i see much
             // slow results the first time round...
 
-            // if we are booting, don't do the unimportant stuff yet...
-            if (_isBooting) return;
-
             // we run this method every time as well
             // but it always runs in steps.
             doThisStuffOccasionally();
