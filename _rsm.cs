@@ -99,11 +99,12 @@ namespace IngameScript
 
             Echo("Parsing custom data...");
             prepCustomData();
-            Echo("Took " + msSinceLast());
 
             // this is the bit that actually makes it loop, yo
             // do this last so a crash prevents it occuring.
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
+
+            Echo("Took " + msSinceLast());
         }
 
 
@@ -651,6 +652,7 @@ namespace IngameScript
         {
             string Output = 
                 "REEDIT SHIP MANAGEMENT \n\n|- V " + Version +
+                "\n|- Ship Name: " + _shipName +
                 "\n|- Stance: " + _currentStanceName +
                 "\n|- Step: " + _stepRare + "/" + _blockRefreshFreq + " (" + _stepOccasional + ")";
 

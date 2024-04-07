@@ -129,7 +129,7 @@ namespace IngameScript
 
         // System -----------------------------------------------------------------
 
-        string _shipName = "Untitled Ship";
+        string _shipName = "";
 
         // Parse -----------------------------------------------------------------
         bool parseCustomData()
@@ -1559,6 +1559,30 @@ namespace IngameScript
                 start + 
                 string.Join("\n", _friendlyTags.Split(',')) + 
                 end;
+
+
+            // if we have no ship name,
+            // try and get it from the pb name
+            if (_shipName == "")
+            {
+                if (_d) Echo("No ship name, trying to pull it from PB name...");
+                string defaultName = "Untitled Ship";
+                try
+                {
+                    string[] nameBits = Me.CustomName.Split(_nameDelimiter);
+                    if (nameBits.Length > 1)
+                    {
+                        _shipName = nameBits[0];
+                        if (_d) Echo(_shipName);
+                    }
+                    else _shipName = defaultName;
+                }
+                catch
+                {
+                    _shipName = defaultName;
+                }
+            }
+
         }
 
         string getAllEnumValues(Type enumType)
