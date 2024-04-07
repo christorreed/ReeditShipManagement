@@ -368,7 +368,7 @@ namespace IngameScript
                 if (TempBatts != null)
                 {
                     _batteries.Add(TempBatts);
-                    if (I) _initNames.Add(b, "Battery");
+                    if (I) _initNames.Add(b, "Power" + _nameDelimiter + "Battery");
                     return false;
                 }
 
@@ -432,12 +432,12 @@ namespace IngameScript
                     if (blockId.Contains("Hydro"))
                     {
                         _h2Tanks.Add(TempTank);
-                        if (I) _initNames.Add(b, "Hydrogen Tank");
+                        if (I) _initNames.Add(b, "Tank" + _nameDelimiter + "Hydrogen");
                     }
                     else
                     {
                         _o2Tanks.Add(TempTank);
-                        if (I) _initNames.Add(b, "Oxygen Tank");
+                        if (I) _initNames.Add(b, "Tank" + _nameDelimiter + "Oxygen");
                     }
                     return false;
                 }
@@ -452,13 +452,13 @@ namespace IngameScript
 
                     if (I)
                     {
-                        string AppendReactor = "Large";
+                        string AppendReactor = "Lg";
                         if (blockId.Contains("SmallGenerator"))
-                            AppendReactor = "Small";
+                            AppendReactor = "Sm";
                         else if (blockId.Contains("MCRN"))
                             AppendReactor = "MCRN";
 
-                        _initNames.Add(b, "Reactor" + _nameDelimiter + AppendReactor);
+                        _initNames.Add(b, "Power" + _nameDelimiter + "Reactor" + _nameDelimiter + AppendReactor);
                     }
                     return false;
                 }
@@ -608,7 +608,7 @@ namespace IngameScript
                 if (TempHangars != null)
                 {
                     _hangarDoors.Add(TempHangars);
-                    if (I) _initNames.Add(b, "Hangar Door");
+                    if (I) _initNames.Add(b, "Door" + _nameDelimiter + "Hangar");
                     return false;
                 }
 
@@ -703,7 +703,7 @@ namespace IngameScript
                 {
                     //if (_d) Echo(b.CustomName);
                     _welders.Add(b);
-                    if (I) _initNames.Add(b, "Welder");
+                    if (I) _initNames.Add(b, "Tool" + _nameDelimiter + "Welder");
                     return false;
                 }
 
@@ -723,13 +723,13 @@ namespace IngameScript
 
                     if (blockId.Contains("Drill"))
                     {
-                        _initNames.Add(b, "Drill");
+                        _initNames.Add(b, "Tool" + _nameDelimiter + "Drill");
                         return false;
                     }
 
                     if (blockId.Contains("Grinder"))
                     {
-                        _initNames.Add(b, "Grinder");
+                        _initNames.Add(b, "Tool" + _nameDelimiter + "Grinder");
                         return false;
                     }
 
@@ -934,8 +934,5 @@ namespace IngameScript
 
             return false;
         }
-
-
-        
     }
 }
