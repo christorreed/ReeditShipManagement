@@ -40,7 +40,6 @@
 ## todos high importance
 
 * review and improve updateLcds 
-* saving custom data on stance set.
 * booting improvements, lcd outputs
 
 ## todos low importantance
@@ -49,6 +48,7 @@
 * snek private spawn default: make spawns private automatically if spawn kits are set to no share
 * gat support
 * opa pdc ammo type support
+* make _lcdOverlayColour configurable
 
 ## todos general
 
@@ -58,6 +58,7 @@
 
 ## todos done
 
+* ~~saving custom data on stance set.~~
 * ~~automatically detect name at start.~~
 * ~~init no renames.~~
 * ~~more aggressive naming into sub groups.  Like power.reactor~~

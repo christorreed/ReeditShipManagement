@@ -85,7 +85,7 @@ namespace IngameScript
             if (!_stances.TryGetValue(stance, out newStance))
             {
                 // the key isn't in the dictionary.
-                ALERTS.Add(new ALERT(
+                _alerts.Add(new Alert(
                     "NO SUCH STANCE!",
                     "A command was ignored because the provided stance doens't exist. Stance names are case sensitive!"
                     , 3

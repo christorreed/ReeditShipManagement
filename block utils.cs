@@ -133,6 +133,25 @@ namespace IngameScript
                 Echo("Failed to set fire mode to auto on " + block.CustomName);
             }
         }
+
+        void updateTelemetry()
+        {
+            if (_shipController != null)
+            {
+                try
+                {
+                    // calculate current mass and velocity
+                    _shipVelocity = _shipController.GetShipSpeed();
+                    _shipMass = _shipController.CalculateShipMass().PhysicalMass;
+                }
+                catch (Exception exxie)
+                {
+                    Echo("Failed to get velocity or mass!");
+                    Echo(exxie.Message);
+                }
+            }
+        }
+
     }
 }
 

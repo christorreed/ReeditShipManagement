@@ -167,7 +167,7 @@ namespace IngameScript
             if (speed != "")
             {
                 _extractorWaitThreshold = newThresh;
-                ALERTS.Add(new ALERT(
+                _alerts.Add(new Alert(
                     "Extractor loading " + speed,
                     "Extractor load speed has been set to " + speed + " automatically)",
                     0
@@ -256,7 +256,7 @@ namespace IngameScript
             if (Item == 2) typeName = "jerry can";
             
             if (success)
-                ALERTS.Add(new ALERT(
+                _alerts.Add(new Alert(
                     "Loaded a " + typeName,
                     "Sucessfully loaded a " + typeName + " into an extractor.",
                     0

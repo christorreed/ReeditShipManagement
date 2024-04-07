@@ -90,7 +90,7 @@ namespace IngameScript
             // save all of these new values to custom data straight away.
             setSystemData(false, setSubSystems, setInventory);
 
-            ALERTS.Add(new ALERT(
+            _alerts.Add(new Alert(
                 "Init:" + ship,
                 "Initialised '" + ship + "'\nGood Hunting!"
                 , 3

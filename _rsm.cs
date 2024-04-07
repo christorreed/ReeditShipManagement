@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.40 ($MDK_DATE$)";
+        string Version = "1.99.41 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -41,6 +41,7 @@ namespace IngameScript
         int _stepOccasional = 0;
         int _stepRare;
 
+        bool _isParsing = true;
         bool _isBooting = true;
 
         bool _adjustKeepAlives = false;
@@ -83,6 +84,7 @@ namespace IngameScript
             Echo("Welcome to RSM\nV " + Version);
             msSinceLast();
 
+            // this forces a block refresh first.
             _stepRare = _blockRefreshFreq;
 
             _factionTag = Me.GetOwnerFactionTag();
@@ -97,17 +99,13 @@ namespace IngameScript
             _decelPercentages.Add(0.1);
             _decelPercentages.Add(0.05);
 
-            Echo("Parsing custom data...");
-            prepCustomData();
+            // build some strings that we will use over and over again.
+            buildRepeatingStrings();
 
-            // this is the bit that actually makes it loop, yo
-            // do this last so a crash prevents it occuring.
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
 
             Echo("Took " + msSinceLast());
         }
-
-
 
         public void Main(string argument, UpdateType updateSource)
         {
@@ -123,7 +121,7 @@ namespace IngameScript
 
             if (argument == "")
             {
-                ALERTS.Add(new ALERT(
+                _alerts.Add(new Alert(
                     "COMMAND FAILED: Arg Required!",
                     "A command was ignored because the argument was blank."
                     , 3
@@ -136,7 +134,7 @@ namespace IngameScript
             if (args.Length < 2)
             {
 
-                ALERTS.Add(new ALERT(
+                _alerts.Add(new Alert(
                     "COMMAND FAILED: Syntax Error!",
                     "A command was ignored because it wasn't recognised."
                     , 3
@@ -206,7 +204,7 @@ namespace IngameScript
                         // force a block refresh now.
                         _stepRare = _blockRefreshFreq;
 
-                        ALERTS.Add(new ALERT(
+                        _alerts.Add(new Alert(
                             "Spawns were opened to friends",
                             "Spawns are now opened to the friends list as defined in PB custom data."
                             , 2
@@ -219,7 +217,7 @@ namespace IngameScript
                         // force a block refresh now.
                         _stepRare = _blockRefreshFreq;
 
-                        ALERTS.Add(new ALERT(
+                        _alerts.Add(new Alert(
                             "Spawns were closed to friends",
                             "Spawns are now closed to the friends list as defined in PB custom data."
                             , 2
@@ -233,7 +231,7 @@ namespace IngameScript
                         foreach (IMyProjector Projector in _projectors)
                             saveProjectorPosition(Projector);
 
-                        ALERTS.Add(new ALERT(
+                        _alerts.Add(new Alert(
                             "Projector positions saved",
                             "Projector positions were saved and stored to their custom data."
                             , 2
@@ -245,7 +243,7 @@ namespace IngameScript
                         foreach (IMyProjector Projector in _projectors)
                             loadProjectorPosition(Projector);
 
-                        ALERTS.Add(new ALERT(
+                        _alerts.Add(new Alert(
                             "Projector positions loaded",
                             "Projector positions were loaded from custom data."
                             , 2
@@ -254,7 +252,7 @@ namespace IngameScript
                     }
 
                 default:
-                    ALERTS.Add(new ALERT(
+                    _alerts.Add(new Alert(
                         "COMMAND FAILED: Syntax Error!",
                         "A command was ignored because it wasn't recognised."
                         , 3
@@ -272,6 +270,20 @@ namespace IngameScript
                 return;
             }
             _stepWait = 0;
+
+            // the point of this is to stall the config parsing
+            // away from the first tick ie Program()
+            // to spread out the startup load
+            if (_isParsing)
+            {
+                if (_p) msSinceLast();
+
+                Echo("Parsing custom data...");
+                prepCustomData();
+
+                _isParsing = false;
+                return;
+            }
 
             // write to the console.
             isThereAnEchoInHere();
@@ -335,6 +347,8 @@ namespace IngameScript
 
             // update the _allLcds
             refreshLcds();
+
+            if (_p) Echo("Took " + msSinceLast());
         }
 
 
@@ -556,36 +570,6 @@ namespace IngameScript
                 // > priority low
                 // sets power
             }
-
-
-            /*
-                        switch (INFREQUENT_STEP)
-                        {
-                            case 0:
-
-
-
-                                break;
-
-                            case 1:
-
-
-
-                                break;
-
-                            case 2:
-
-
-
-                                break;
-
-                            case 3:
-                                INFREQUENT_STEP = 0;
-                                return;
-                        }
-
-                        INFREQUENT_STEP++;
-            */
         }
 
 
@@ -611,7 +595,7 @@ namespace IngameScript
                     _shipController = _controllers[0];
 
                 else
-                    ALERTS.Add(new ALERT(
+                    _alerts.Add(new Alert(
                         "NO SHIP _shipController!",
                         "No ship controller was found on this grid. Some functionality will not operate correctly.",
                         3
@@ -636,7 +620,7 @@ namespace IngameScript
             {
                 _wcPbApi = null;
 
-                ALERTS.Add(new ALERT(
+                _alerts.Add(new Alert(
                     "WcPbApi Error!",
                     "WcPbApi failed to start!\n" + ex.Message
                     , 1

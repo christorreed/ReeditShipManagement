@@ -6,7 +6,10 @@
 #### Full refactor/rebuild
 
 * RSM has been completely rebuilt from the bottom up with a focus on performance, configurability and ease of use.
-* RSM now only p
+* RSM has always been light on performance, but this has been improved significantly with an emphasis on reduced startup impact.
+* Additional optional performance monitoring has been added, measuring the impact of individual tasks.
+* The RSM codebase is now much more readable and supportable.
+* A raft of small bugs and inefficiencies have been fixed.
 
 #### Init it... or don't
 
@@ -23,7 +26,7 @@
 
 * RSM now generates configurations in custom data in proper ini format, and is more human-readable.
 * Save your config to a .ini file, and then edit in an IDE like VSCode for formatting assistance.
-* RSM v2 will not allow you to run a bad configuration. In the case of a config error, RSM will set all your LCD text pink and display an error. More info under block details. Fix the error, or delete your custom data to reset it.
+* **RSM v2 will not allow you to run a bad configuration.** In the case of a config error, RSM will set all your LCD text pink and display an error. More info under block details. Fix the error, or delete your custom data to reset it.
 * RSM v2 is automatically backwards compatible with older configs
 * I still recommend a config reset when upgrading if possible by deleting all custom data, recompiling, and re-running `Init:ShipName`
 * Stance config now supports inheritance; set the name of the inherited stance, and then only list 
@@ -123,10 +126,11 @@
 * Now monitoring subsystem integrity for cargo containers (based on actual capacity) and welders.
 * Fixed battery display bugs on subsystem integrity lcd.
 * Now counting steel plates on inventory display screen
-* New default ignore keyword: [I]
+* New default ignore keyword: `[I]`
 * Improvements to inventory counting
 * Fixed a bug causing ships which only had one controller to loose telemetry
 * Removed beacon-based drive sig output display from LCDs
 * H2/O2 levels now show relative to init value, not current max capacity
 * Ignore keyword now prevents autoloading on weapons
-* RSM now optionally supports m/s^2 as a acceleration value rather than Gs
+* RSM now optionally supports m/s^2 as a acceleration value rather than Gs, configurable in custom data
+* Improved version naming with build date.

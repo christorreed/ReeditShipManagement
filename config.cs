@@ -1593,7 +1593,7 @@ namespace IngameScript
             // attempt to parse ini from the custom data
             MyIniParseResult result;
             if (!config.TryParse(toParse, out result))
-                ALERTS.Add(new ALERT(
+                _alerts.Add(new Alert(
                     "CONFIG ERROR!!",
                     "Failed to save to custom data due to a parsing error!\nFix and recompile!",
                     3
@@ -1662,6 +1662,9 @@ namespace IngameScript
 
         void throwConfigParsingError(Exception ex, string desc)
         {
+            // stop looping
+            Runtime.UpdateFrequency = UpdateFrequency.None;
+
             // build our error
             string fuckUp = 
                 "\nRSM FAILED TO START\nDUE TO A CONFIG ERROR!\n\n" + 

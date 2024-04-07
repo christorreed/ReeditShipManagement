@@ -49,7 +49,7 @@ namespace IngameScript
                     if (Success && _d)
                         Echo("Ran " + argument + " on " + pb.CustomName + " successfully.");
                     else
-                        ALERTS.Add(new ALERT(
+                        _alerts.Add(new Alert(
                             script + " command failed!",
                             script + " command " + argument + " failed!"
                             , 1
@@ -63,7 +63,7 @@ namespace IngameScript
             }
             catch (Exception ex)
             {
-                ALERTS.Add(new ALERT(
+                _alerts.Add(new Alert(
                     script + " command errored!",
                     script + " command " + argument + " errored!\n" + ex.Message
                     , 3
