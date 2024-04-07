@@ -30,7 +30,7 @@ namespace IngameScript
         // Main -----------------------------------------------------------------
 
         // if true, RSM will operate on all blocks even if they don't have the ship name in them.
-        bool _requireShipName = true;
+        bool _requireShipName = false;
 
         // Enable Autoload Functionality.
         bool _autoLoad = true;
