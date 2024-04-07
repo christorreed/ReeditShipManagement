@@ -31,8 +31,6 @@ namespace IngameScript
 
             if (!_autoLoad) return;
 
-            if (_d) Echo("Running autoload...");
-
             _ammoCritical = "";
 
             foreach (var Item in _items)
