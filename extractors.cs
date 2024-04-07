@@ -204,7 +204,18 @@ namespace IngameScript
             Invs.Add(Inv);
 
             if (_d) Echo("Attempting to load extractor " + TheChosenOne.CustomName);
-            loadInventories(_items[Item].Inventories, Invs, _items[Item].Type);
+            bool success = loadInventories(_items[Item].Inventories, Invs, _items[Item].Type);
+
+            string typeName = "fuel tank";
+            if (Item == 2) typeName = "jerry can";
+            
+            if (success)
+                ALERTS.Add(new ALERT(
+                    "Loaded a " + typeName,
+                    "Sucessfully loaded a " + typeName + " into an extractor.",
+                    0
+                    ));
+            
 
         }
     }

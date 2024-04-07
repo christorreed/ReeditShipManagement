@@ -2,8 +2,8 @@
 
 - hudlcd:toggle:pattern not working
 - fuel tanks loading?
-- run autoload twice?
-
+ 
+x run autoload twice?
 x airlocks not working
 x reactor subsys integ value wrong
 x rcs nfwd not working

@@ -327,9 +327,11 @@ namespace IngameScript
             return thisInventory.VolumeFillFactor == 0;
         }
 
-        void loadInventories(List<INVENTORY> LoadFrom, List<INVENTORY> LoadTo, MyItemType Type, int Average = -1)
+        bool loadInventories(List<INVENTORY> LoadFrom, List<INVENTORY> LoadTo, MyItemType Type, int Average = -1)
         {
             if (_d) Echo("Loading " + LoadTo.Count + " inventories from " + LoadFrom.Count + " sources.");
+
+            bool Success = false;
 
             foreach (INVENTORY ToInv in LoadTo)
             {
@@ -394,7 +396,7 @@ namespace IngameScript
                             }
 
                             // load the item.
-                            bool Success = ToInv.Inv.TransferItemFrom
+                            Success = ToInv.Inv.TransferItemFrom
                                 (FromInv.Inv, InvItem, Qty);
 
                             // if this worked, don't attempt to load this block again.
@@ -407,6 +409,7 @@ namespace IngameScript
                     }
                 }
             }
+            return Success;
         }
 
         /*
