@@ -1,8 +1,8 @@
 # debugs
 
 - hudlcd:toggle:pattern not working
-- fuel tanks loading?
- 
+
+x fuel tanks loading?
 x run autoload twice?
 x airlocks not working
 x reactor subsys integ value wrong
@@ -32,13 +32,20 @@ x "An item with the same key has already been added" during
 # todos
 
 - debug/test
+- update the documentation
+- update the change notes
 - add toolcore welder control (setToolActivate, iterateWelders)
 - review and improve updateLcds 
-- fuel tank fast loading command
-- more aggressive naming into sub groups.  Like power.reactor
 - booting improvements, lcd outputs
 - snek private spawn default: make spawns private automatically if spawn kits are set to no share
+- init no renames.
+- automatically detect name at start.
+- gat support
+- opa pdc ammo type support
+- saving custom data on stance set.
 
+x more aggressive naming into sub groups.  Like power.reactor
+x fuel tank fast loading command
 x lcd error on config parse failure.
 x find a way to provide default custom data mostly commented out.
 x germ wants m/s^2 rather than G's bc he's weird.
