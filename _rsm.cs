@@ -167,10 +167,6 @@ namespace IngameScript
 
                     return;
 
-                case "initbasic":
-                    initShip(args[1], true);
-                    return;
-
                 case "stance":
                     setStance(args[1]);
                     return;
