@@ -36,7 +36,7 @@ namespace IngameScript
         // threshold for above
         // not a constant, will be modified
         // to speed up fueling.
-        int _extractorWaitThreshold = 9;
+        int _extractorWaitThreshold = 8;
 
         // if extractor is topping up,
         // fill when fuel % falls below this value.
@@ -112,6 +112,7 @@ namespace IngameScript
             {
                 if (_d) Echo("Fuel low! (" + _fuelPercentage + "% / " + _topUpPercentage + "%)");
                 _needFuel = true;
+                calculateExtractorWaitThreshold();
             }
             else if (
                 _currentStance.ExtractorMode == ExtractorModes.KeepFull
@@ -120,8 +121,9 @@ namespace IngameScript
                 )
             // refuel to keep tanks full.
             {
-                if (_d) Echo("Fuel ready for top up (" + _actualH2 + " < " + (_totalH2 - _extractorKeepFullThreshold) + ")");
                 _needFuel = true;
+                calculateExtractorWaitThreshold();
+                if (_d) Echo("Fuel ready for top up (" + _actualH2 + " < " + (_totalH2 - _extractorKeepFullThreshold) + ")");
             }
             else if (_d)
             {
@@ -130,6 +132,50 @@ namespace IngameScript
                 if (_currentStance.ExtractorMode == ExtractorModes.KeepFull)
                     Echo("Keeping tanks full\n(" + _actualH2 + " < " + (_totalH2 - _extractorKeepFullThreshold) + ")");
             }
+        }
+
+        void calculateExtractorWaitThreshold()
+        {
+            string speed = "";
+            int newThresh = 8;
+
+            if (_fuelPercentage < 5)
+            {
+                newThresh = 0;
+                if (_extractorWaitThreshold != newThresh)
+                    speed = "v fast";
+            }
+            else if (_fuelPercentage < 10)
+            {
+                newThresh = 2;
+                if (_extractorWaitThreshold != newThresh)
+                    speed = "fast";
+            } 
+            else if (_fuelPercentage < 60)
+            {
+                newThresh = 4;
+                if (_extractorWaitThreshold != newThresh)
+                    speed = "medium";
+            }
+            else if(_extractorWaitThreshold != newThresh)
+                speed = "slow";
+
+
+
+
+
+            if (speed != "")
+            {
+                _extractorWaitThreshold = newThresh;
+                ALERTS.Add(new ALERT(
+                    "Extractor loading " + speed,
+                    "Extractor load speed has been set to " + speed + " automatically)",
+                    0
+                    ));
+            }
+            
+
+
         }
 
         void loadExtractors()
