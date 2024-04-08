@@ -37,7 +37,7 @@
 * Tried to make it both easier to get started quickly, and also more thorough for those who want to understand all of the details.  I bet you're missing something...
 * Read it on [GitHub](https://github.com/christorreed/ReeditShipManagement).
 
-##### Improved Extractor Management
+#### Improved Extractor Management
 
 * Extractor management now automatically speeds up or slows down depending on your fuel percentage.
 
@@ -114,12 +114,12 @@
 * Improved handling of multiple vents in airlocks.
 * Airlocks no longer blow out if the vent airlock is off.
 * Vents are now forced on along with the "keep alive" setting, available per stance.
-* Airlock vents are not automatically configured to depresurize.
+* Airlock vents are now automatically configured to depresurize.
 
 #### Added NavOs integration, improved Pb management
 
 * Now set your NavOS burn percentage, and optionally force an Abort, per stance, same as EFC.
-* Commands to other Pbs now buffer up and are fed over several runs to prevent previous errors.
+* Commands to other Pbs now buffer up and are fed over several runs to prevent errors.
 
 #### Other Changes
 
