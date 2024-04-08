@@ -119,7 +119,7 @@ namespace IngameScript
         bool _d = true;
 
         // performance profiling enabled
-        bool _p = true;
+        bool _p = false;
 
         // ticks x100 to stall between runs
         int _loopStallCount = 0;

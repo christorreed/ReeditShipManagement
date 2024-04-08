@@ -50,7 +50,8 @@
 * gat support
 * opa pdc ammo type support
 * make _lcdOverlayColour configurable
-* some more refactoring of refreshLCD
+* improve building of the subsystem integrity panel
+* 
 
 ## todos general
 
