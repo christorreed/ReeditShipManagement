@@ -1,7 +1,7 @@
-# RSM Changelog
+﻿# RSM Changelog
 ![Reedit Ship Management](/thumb.png "Reedit Ship Management")
 
-## V 1.99.x BETA
+# V 1.99.x BETA
 
 #### Full refactor/rebuild
 
@@ -134,3 +134,319 @@
 * Ignore keyword now prevents autoloading on weapons
 * RSM now optionally supports m/s^2 as a acceleration value rather than Gs, configurable in custom data
 * Improved version naming with build date.
+
+
+
+# V 1.7.0 (2023-09-22)
+**One Touch Airlocks**
+> * I like RSM's fairly simple, nexus proof automatic doors, BUT I HATE WAITING IN AIRLOCKS!  So, now we manage airlock vents as well to minimise time spent waiting.
+> * Basically, you can now configure a vent for an airlock in the same way you configure a door (use a name like `Ship.Vent.Airlock.AirlockIdentifier`) and the door will open as soon as the vent reports sealed and depressurised.
+> * Now you only need press to open the first door, RSM will close it behind you, and then open the next door as soon as possible.
+> * It will turn the door on anyway after the timeout even if the vent isn't ready, but won't open the door automatically.
+> * This is intended for use with a vent on depressurise; this makes for simple, fast, lossless airlocks.
+> * It doesn't support airlocks with more than 2 doors.
+
+**Improved Railgun Management**
+> * Railguns stance values of 1 or 2+ are now processed to toggle between key fire and ai control.
+> * The intention here is that when in a stance like **Cruise** or **Docking**, Railguns (& Coilguns) will be switched on, will provide their radar, but won't actually fire (unless you do so manually).  If we go instead to a stance like **Combat** or **CQB**, we want our weapons free.
+> * This is really a bug fix; custom data always implied this should be happening, it just wasn't.
+> * As a reminder, you can edit the stances to suit you, if you prefer different behaviour.
+> * You can always ignore a particular weapon by adding the ignore keyword to it's name, or disable this entirely entirely by setting `Automatically configure PDCs, Railguns, Torpedoes.` to `false`.
+
+**Private Spawn Mode**
+> * New option in PB custom data `Private spawn`.  False by default (no change to default behaviour) but when true your faction tags will **not** be injected into the custom data of survival kits.
+> * This offers reduced protection against theft, but does close your spawn to other members of the same faction.
+> * Other functions of spawn management will continue to operate.  RSM will clear out your spawn custom data to prevent hacking, and the `Spawn:Open` and `Spawn:Close` commands will continue to work.
+> * For related reasons, it's also been decided that RSM will no longer inject data into or power on SK's on docked ships.  It will only effect SK's on the current construct, like most other RSM functions.
+
+**Improved Low Ammo LCD Alert**
+> * RSM will now display prominent low ammo warnings on the inventory LCD section.
+> * These warnings are triggered by the autoloader when the actively selected ammo for one of your weapons cannot be auto loaded because there are none on your ship. This indicates at least one of your weapons needs more ammo and can't get it!
+
+**Vent Management**
+> Along side the airlock improvements, this new version now adds some basic vent status under the Doors LCD section.
+
+**Low Value Bar Animation**
+> * When one of the bars on the RSM screen goes below 10%, it now flashes a cool little animation to let you know a value is low.
+
+**Bug Fixes & Minor Changes**
+> * Small fixes to the default stances and how rails/torpedoes are processed at stance change.
+> * Added rounding on Max Power values.
+> * Other minor bug fixes
+
+
+# V 1.6.0 (2023-09-05)
+**New Max Power output value on LCD** *As requested by @pixelworld*
+    * This value shows the total max output capacity of all functional reactors and batteries.
+    * Use it to determine your ships ability to keep fighting after taking damage, especially with railgun ships with large power draw requirements.
+**LCD Improvements**
+    * New headers on each LCD section.
+    * Minor changes to the spinner, now visible in each header.
+    * Improvements and bug fixes to the battery subsystem integrity display
+    * Percentage bars on screen will now flash with `!` when below 10% to catch your eye that you're very low on something.
+**Auxiliary Blocks**
+    * Rebranded the functionality previously known as AutoRepair to Auxiliary.
+    * If you are using AutoRepair already, this change shouldn't prevent that at al
+    * This allows the functionality to be used for other things and given a custom name as required by setting the Aux Block Keyword in custom data.
+**Bug Fixes & Minor Changes**
+    * Removed case sensitivity from HudLcd arguments. (thanks @redsavann)
+    * Added, changed some content on the readme on GitHub
+    * Dampened the `Ammo Low` warning so it doesn't appear constantly.
+    * Other minor bug fixes.
+
+# V 1.5.0 (2023-08-12)
+- **Built in RSM Weapon Auto-Loader (i.e. ammo puller)**
+    - Many players have been running *AmmoPuller* or *RSU* scripts separately in order to force load weapons.  Well, RSM already has a nice list of all of your weapons, and was already counting ammo quantities... so might as well load them as well.
+    - RSM now loads the selected ammo type into each weapon automatically.
+    - A new option has been added to PB custom data to disable auto-loader functionality if required.
+    - For *reasons*, auto-loader functionality works on all weapons, including those with the ignore keyword.
+
+- **New RCS Option: Forward/Reverse RCS Off** *As requested by @danimal10055*
+    - Some players like to turn off forward RCS thrusters while cruising.  Since your Epstein drives are more efficient, you can save on fuel by not running RCS when you press `W`.  Set an RCS mode of 2 for the stance in PB custom data.
+    - Other players like to cruise with reverse RCS off, so they can retain dampeners without the ship always trying to brake.  For this, set an RCS mode of 3 for the stance in PB custom data.
+    - RCS mode of 2 (forward RCS off) will now be the default for the `Cruise`, `StealthCruise` & `MaxCruise` stances.
+
+- **Improved Advanced Thrust LCD Output**
+    - The advanced thrust screen has been revamped somewhat.
+    - Additional configuration options available in PB custom data, such as the ability to choose which percentage thrust values to display, and if to show or hide certain elements.
+
+- **FINE! LCD text doesn't have to be blue!** *As requested by @germstorm * 
+    - Some players who are lacking in taste (:stuck_out_tongue_closed_eyes:) didn't like being forced to use sexy RSG blue (33, 144, 255) on all LCDs, nor how RSM enforced it aggressively.
+    - By default, RSM now uses the interior lighting colour as the text colour on all LCDs.  This means your LCDs can change colour with each stance just like lights. 
+    - Some small adjustments to some interior light colours to better suit this change.
+    - There is a new global option in PB custom data to disable text colour enforcement all together.  In this case, RSM won't touch your LCDs at all, and you can make them whatever colour your heart desires.
+    - Some small adjustments to some interior light colours to better suit this change.
+
+- **Inventory Counts now automatically set on `Init:<ShipName>`** 
+  The inventory screen is helpful, but it's a pain in the bum to go and manually set limits for each one.  Now this will be determined automatically when `Init:<ShipName>` is run, counting the number of items currently in the ship, and setting those numbers as the targets for each.
+
+- **New Command `InitBasic:<ShipName>`**
+  This command is exactly the same as the `Init:<ShipName>` command, except inventory counts and block integrity counts will not be saved.  This means u can still tidy up block names with a damaged/not full ship without resetting other parts of the configuration.
+
+- **Added Support for new torpedo types**
+  RSM now supports the new Ramshackle, UNN and MCRN torpedoes, will auto-load them, and will display them on the inventory screen.
+
+*Note: changes to default stances won't occur without resetting your PB custom data!*
+
+
+# V 1.4.1 (2023-07-30)
+Recently seems like something is broken in WC related to repel mode.  Specifically, WC is always reporting that repel mode is on, even when it is off.  Because RSM can't send discreet commands to control repel, it's checking this variable and then sending a toggle command when required.  **This behaviour is forcing all rails and PDCs onto repel mode when any RSM stance is engaged!**
+
+As a result, I've just pushed a bug fix which removes all repel mode control.  I'll dig into this further later, and will probably report a bug to the WC dudes.  For now, recommend the following immediate changes...
+* update your RSM to the latest version, **v 1.4.1**
+* check all weapons for repel mode and adjust accordingly.
+
+# V 1.4.0 (2023-07-14)
+- **New default PDC configuration** As per testing since the recent update, @danimal10055 has made some recommendations on improvements tot he default PDC configuration.  Repel mode will now only be used by PDCs tagged as defence.  This is because repel mode has been found to be much less effective against torpedoes since the recent update.  **Recommend all users update to v1.4.0 to get the most out of their PDCs**
+- **Added support for Coilguns** RSM now supports the new Coilgun.  The coilgun will be named appropriately by init, but otherwise treated like a railgun.
+
+# V 1.3.0 (2023-07-07)
+- **New Subsystem Integrity Monitoring** *as requested by @buranimo*
+    - New LCD screen called Subsystem Integrity gives a quick, at-a-glance readout of integrity of each ship's sub system.
+    - Think of this as SIMPL-lite, with all the information you need about the health of your ship, without the pretty pictures.
+    - At `init`, the maximum integrity is measured and stored into custom data.
+    - Rather than a simple count of the number of blocks or HP, the RSM subsystem integrity hedges the value based on a block's capacity.  For example, reactor integrity is calculated based on maximum power output, so losing a large reactor will have a greater effect on overall 'Reactor Integrity' than a small one.
+- **New Lighting Control Options** *as requested by @germstorm*
+    - There is a master lighting control switch, just set `Disable lighting all control = true` and lights will no longer be effected on stance change. 
+    - There's also a new option 3 for all lighting power states which is simply no change.  This means you can leave certain groups of lights alone if you prefer instead.
+- **Decel now accounting for the additional thrust due to dampeners** *as requested by @germstorm*
+    - The output previously refered to as `Decel (Best)` will now be called `Decel (Dampeners)` and adds a 1.5x buff to thrust in order to accommodate for the weird af extra thrust you get from braking with dampeners.  Germ and I will keep tweaking this to keep those numbers accurate.
+- **Improved Stance Persistence**
+    - The PB save functionality doesn't play nice with Nexus, now storing current stance info in custom data, making for more persistence stances on ships during restarts/instance transitions.
+- **Backend improvements and bug fixes**
+    - improved the parsing of LCD custom data to provide for better resilience.
+    - removed some superfluous lists and functionality to improve performance.
+    - other minor changes...
+
+# V 1.1.1 (2023-06-24)
+- **Block ownership check:**  As suggested by @buranimo﻿, I'm not running a basic ownership test frequently.  If unowned blocks are detected, a warning will appear on LCD saying `!!UNOWNED BLOCKS!!`.  Doesn't do anything else yet, but I'm open to further suggestions.
+- **Minimum Drive Stance Option:** New Epstein drive setting available for stances; 2=minimum thrusters only.  There is a keyword, `Min` by default but configurable.  In this mode, only drives with the keyword will be turned on, others will be turned off.  New default stance **StealthCruise** is the same as the Cruise stance, except with only min drives.
+- **RSM now automatically turns Survival Kits, Medical Rooms on** unless they contain the ignore keyword.
+- **Added support for updated DX weapons.**
+- **Weapons Config Change:** Small changes to the way RSM auto configures Railguns, Torpedoes.
+- **Assorted Bugfixes**
+
+# V 1.0.2 (2023-06-19)
+Fixed a bug with alternative delimiters not working on some blocks.
+
+# V 1.0.1 (2023-06-18)
+Fixed a crash on malformed command (without argument)
+*thanks to @buranimo*
+
+# V 1.0.0 (2023-06-18)
+* Instead of an annoying steam guide, everything has been moved to github
+* There is a new quick start guide to help get new players up and running.
+* I'm calling this the first release version, so we're starting at 1.0.0
+
+# V 0.12.2 
+* Added support for 80mm Railgun rounds (T-47)
+* Fixed a bug with spawn custom data obfuscation.
+
+# V 0.12.1
+Fixed a small bug with default hudlcd configs.
+
+# V 0.12.0
+* Added acceleration output both max and actual to thrust and advanced thrust output pages.
+* Spawn custom data management now effects all SKs and MRs regardless of block name, or construct.  RSM now fully cleans all spawn custom data for you automatically.
+* Spawn custom data now includes spacing for obfuscation. 
+* Added support for sloped PDCs
+* New custom data option automatically sets spotlights to max radius per stance.  Default now for 'Docking' stance, but willrequire custom data reset/adjustment for existing ships.
+* Hid the title line REEDIT SHIP MANAGEMENT from the header LCD
+* Replaced the 'idle' LCD status bar with a . .. ... pattern
+* Cameras, sensors now have better name tidying on init.
+* Added default hudlcd configurations.
+    * Setup 4 LCDs and name them `<shipname>.LCD.[RSM].HUD1 to <shipname>.LCD.[RSM].HUD4`
+    * Now run init.
+    * RSM sets up HUD LCDs perfect for a 16x9 layout.
+
+# V 0.11.0
+Improved LCD output 
+
+# V 0.10.0
+* New command with 3 arguments: 'hudlcd:on', 'hudlcd:off',  'hudlcd:toggle'
+* Hudlcd is game changing, but sometimes you just want it to piss off and take in the stars around you.  The new commands search
+* custom data of every LCD on the ship, and adjust the name in order to remove, or re-add, them to your hud.  Note that the
+* command effects all LCDs, including ignored ones.
+
+# V 0.9.1
+The basic thrust lcd output now defaults to 500ms when stationary, like the one from the advanced view.
+
+# V 0.9.0
+Added support for HudLcd plugin.  You can now add the text 'hudlcd' into the custom data of RSM LCDs, and it won't be cleared.
+Recommended settings: top left= "hudlcd:-.99:.99", "top right= hudlcd:.65:.99"
+
+# V 0.8.3
+Bug fixes
+
+# V 0.8.0
+* Added per-LCD configuration
+    * Screen was starting to get a bit busy with new functionality.  Now you can spread it out across multiple screens.
+    * Configure in custom data of each LCD.
+* Added stop distance calculation to the RSM LCD (as inspired by Germstorm)
+    * A single line stopping distance is provided on the 'Thrust' screen
+    * If Epstine drive overrides are off, RSM will calculate a best possible stopping distance based on maximum Epstine thrust (not RCS)
+    * If any overrides are on, RSM will calculate an actual stopping distance based on configured thrust.
+    * In advanced mode, a whole array of stopping distances are displayed.
+* Fixed a bug causing some blocks without the correct naming to be included.
+    * Note: if you have issues after this, make sure all blocks have the ship name in them by running init.
+
+
+# V 0.7.2
+* Added crash prevention during PDC auto configuration error.  One player reported issues with PDCs which was causing a crash.
+* I've prevented this crash, even though I can't replicate it.  It will throw an error if this occurs to you, if so recommend you grind and rebuild your PDCs as the repel mode function is bugged.
+* Also removed the auto fire mode control on railguns and torpedoes.  I think it was working, but feedback was bad in the menu.
+
+# V 0.7.0
+* New option for extractor management; 3: keep ship tanks full.  In this mode, extractor is loaded sooner to keep fuel tanks on ship at max.
+    * Specifically, fill up will occur when there is room for 3 fuel tanks components worth of H2 in the ship tanks.
+    * Note: This mode is now the default for most stances. You can revert to 2; fill ship up at 10% to retain current settings
+* Improved survival kit custom data management.
+    * New option in PB Server custom data; friendly faction tags or steam IDs.
+    * They will saved to the custom data of your SKs automatically.
+    * You can also toggle this on and off with the command 'Spawn:Open' or 'Spawn:Closed'. If closed, friendly tags are removed from all SKs.
+    * Note: off by default, must run 'Spawn:Open' to set this up.
+    * Add faction tags like 'RSG' or steam ids like '76561198217763901'.
+    * Add multiple by seperating with commas.
+* Comms commands now permit spaces (ie for command 'Comms:Hello There', antenna was "RSG:HelloThere" is now "RSG:Hello There")
+* Fixed a bug related to crashing during stance calls with high EFC burn percentages, such as during Stance:MaxCruise
+
+# V 0.6.1
+Fixed tank stockpile error
+
+# V 0.6.0
+* Battery discharge functionality added to stance management.
+* Combat and CQB default stance data updated to discharge batteries. Note: reset your stance custom data to apply this change.
+
+# V 0.5.1
+Spaces are now ignored in all arguments to prevent syntax errors. This means no spaces in ship names
+
+# V 0.5.0
+* Added support for some additional inventory items on the LCD...
+    * 40mm Tungsten Teflon PDC Boxes
+    * 100mm Railgun Slugs (UNN - Dawson)
+    * 100mm Railgun Slugs (MCRN - Stiletto)
+    * Jerry cans (SG fuel tanks)
+    * just a reminder, you can hide any of these by setting the targets to 0 in custom data.
+* Added improved support for railguns/torpedoes
+    * railguns & torpedoes can now be set to off / hold fire / ai weapons free per stance.
+    * railguns & torpedoes will also be auto-configured like PDCs to ensure they are setup correctly.
+    * by default, both will be forced into ai weapons free during the combat and CQB stances, though this can be disabled in custom data.
+* Improved auto PDC configuration
+    * Repel PDCs now automatically set to target biologicals
+    * Repel PDCs and normal PDCs in defensive mode will now also target SG to protect against PMWs
+* Added support for SG extractors; can now automatically refill H2 tanks via either SG or LG extractors
+* Updated default stance behaviours
+    * stronger defensive PDC behaviour across most stances by default
+    * Defence was renamed to 'Combat' and Offense was renamed to 'CQB', clarifying intended usage.
+    * note the above change means that you may be required to update the toolbar to match.
+    * just a reminder, stances are configured in custom data, so these changes won't occur unless you reset there, they are only defaults.
+* Added option to not change hangar door status with stance.
+* Current stance is now retained across instances/restarts. 
+* Updated guide to reflect several versions worth of changes.
+
+# V 0.4.2
+* Fixed a crash on set stance with certain grids.
+* Changed defence PDC default keywork to 'Repel' so it doesn't interact with OPA PDCs which have defence in the name.
+* Fixed a bug where repel/defence PDCs & railguns were not processed by the init command.
+
+# V 0.4.1
+* Fixed a bug with configurable block name delimiter functionality.
+* Fixed a bug with custom data
+
+# V 0.4.0
+* Script now automatically adds own faction tag to Medical Rooms and Survival Kits
+* Added adjustable delimiter functionality. In custom data you can now set a character other than '.' to be used to name blocks during init.
+* I've capitulated and decided to start referring to Programmable Blocks as PB Server rather than Server so it can be easily found.
+* No longer numbering servers during init
+* Changes to more smoothly permit additional configurable custom data options.
+
+# V 0.3.3
+* Added a delay to fuel extractor management retries so it won't constantly attempt to refuel.
+* Minor bug fixes.
+
+# V 0.3.2
+Improved init function autonaming of LCD blocks.
+
+# V 0.3.1
+* Fixed a bug caused a crash if no antenna.
+* No longer forcing LCD padding.
+
+# V 0.3.0
+*Added projection offset and orientation mangagement with projectors:save and projectors:load commands
+*Added keep alive functionality to Sensors, LCDs & Cameras
+*Getting comms value from first antenna hud text rather than local variable
+*No longer forcing Focus Fire to PDCs in Offence stance.
+*Fixed bugs with fuel percentage calculations
+*Fixed crash on command to destroyed block.
+*Fixed crash on extractor management with no extractor on board
+
+# V 0.2.2
+Fixed several bugs with the extraction management algorithm.
+
+# V 0.2.1
+Fixed a bug that caused block lists to overflow.
+
+# V 0.2.0
+* Second release, now on steam.
+* Improved init, now can be repeated, so you can update ship names, name new blocks.
+* Improved stance management including...
+    * stances can now be edited via PB custom data. You can add or remove them as well, it iterates over as a loop.
+    * additional features were added to each stances
+    * removed 'Combat' and 'Torpedoes' and replaced with 'Defence' and 'Offence'
+    * now supports controlling two PDC groups, normal and defence
+    * some stance features, like block power state, are maintained every loop.
+    * automatic extractor management, automatically load tanks below 10%, if set in stance.
+* Setting a target value of 0 in custom data now removes it from the screen.
+* Added debug variable, better verbose logging.
+* LCD number rounding now the same on bar as text
+* Efficiency, stability improvements.
+    * Refactored the init and stance code bases for effeciency
+    * Fixed crash on no-inventory cockpit block
+    * Fixed crash on door custom data parsing error
+* Built Guide
+
+# V 0.1.0
+Initial release on Discord
+
+# V 0.0.1
+Unreleased initial working version

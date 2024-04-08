@@ -54,7 +54,7 @@
 * booting screen improvements
 * spread init out
 * removed REEDAV stuff?
-* broadcast 
+* broadcast IGC data with current stance for other scripts.
 
 ## todos general
 
