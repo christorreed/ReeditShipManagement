@@ -255,13 +255,11 @@ namespace IngameScript
         string buildBarKey(string barName)
         {
             // "Key       ["
-            return barName + new String(' ', _lcdTextWidth - 22 - barName.Length);
+            return barName + new String(' ', _lcdTextWidth - 22 - barName.Length) + "[";
         }
 
         void refreshLcds()
         {
-            if (_d) Echo("Updating " + _rsmLcds.Count + " LCDs...");
-
             // spinners ----------------------------------------------
 
             _stepSpinner++;
@@ -276,12 +274,12 @@ namespace IngameScript
 
             // build sections ----------------------------------------------
 
-            string sectionInventory = _headerInventory + spinner + _headerEnd;
-            string sectionThrust = _headerThrust + spinner + _headerEnd;
-            string sectionPowerAndTanks = _headerPowerAndTanks + spinner + _headerEnd;
-            string sectionWarnings = _headerWarnings + spinner + _headerEnd;
-            string sectionIntegrity = _headerIntegrity + spinner + _headerEnd;
-            string sectionAdvancedThrust = _headerAdvancedThrust + spinner + _headerEnd;
+            string sectionInventory = _headerInventory + basicSpinner + _headerEnd;
+            string sectionThrust = _headerThrust + basicSpinner + _headerEnd;
+            string sectionPowerAndTanks = _headerPowerAndTanks + basicSpinner + _headerEnd;
+            string sectionWarnings = _headerWarnings + basicSpinner + _headerEnd;
+            string sectionIntegrity = _headerIntegrity + basicSpinner + _headerEnd;
+            string sectionAdvancedThrust = _headerAdvancedThrust + basicSpinner + _headerEnd;
 
             string sectionHeader =
                  centreText(_shipName.ToUpper(), _lcdTextWidth) + "\n" +
@@ -680,8 +678,8 @@ namespace IngameScript
 
 
                 if (_initBatteries + _initReactors + _initH2 == 0) // nothing init basically.
-                    sectionIntegrity = _lcdDivider + "\n\n"
-                        + "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
+                    sectionIntegrity += 
+                        "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
 
                 // build header and overlay ----------------------------------------------
 
@@ -783,17 +781,16 @@ namespace IngameScript
         {
             if (_colourSyncLcds.Count > 0)
             {
-                if (_d) Echo("Setting " + _colourSyncLcds.Count + " colour sync _allLcds.");
 
-                foreach (IMyTextPanel LCD in _colourSyncLcds)
+                foreach (IMyTextPanel lcd in _colourSyncLcds)
                 {
-                    LCD.FontColor = _currentStance.LcdTextColour;
+                    lcd.FontColor = _currentStance.LcdTextColour;
                 }
 
                 // do the RSM ones as well while we're at it.
-                foreach (IMyTextPanel LCD in _rsmLcds)
+                foreach (RsmLcd lcd in _rsmLcds)
                 {
-                    LCD.FontColor = _currentStance.LcdTextColour;
+                    lcd.Block.FontColor = _currentStance.LcdTextColour;
                 }
             }
         }

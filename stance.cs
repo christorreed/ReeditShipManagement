@@ -188,7 +188,8 @@ namespace IngameScript
                 setDoorsLock("locked", "");
             }
 
-            // colour sync for non RSM _allLcds
+            // colour sync for non RSM LCDs
+            if (_d) Echo("Setting " + _colourSyncLcds.Count + " colour sync Lcds.");
             syncLcdColours();
 
             // prep pb commands

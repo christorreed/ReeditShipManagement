@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.42 ($MDK_DATE$)";
+        string Version = "1.99.43 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -342,7 +342,10 @@ namespace IngameScript
             // but it always runs in steps.
             doThisStuffOccasionally();
 
+            if (_p) Echo("Took " + msSinceLast());
+
             // update the _allLcds
+            if (_d) Echo("Updating " + _rsmLcds.Count + " RSM Lcds");
             refreshLcds();
 
             if (_p) Echo("Took " + msSinceLast());

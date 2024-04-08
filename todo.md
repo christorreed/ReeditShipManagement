@@ -2,6 +2,8 @@
 
 ## bugs high importance
 
+*
+
 ## bugs low importantance
 
 * hudlcd:toggle:pattern not working
@@ -39,8 +41,7 @@
 
 ## todos high importance
 
-* review and improve updateLcds 
-* booting improvements, lcd outputs
+*
 
 ## todos low importantance
 
@@ -49,6 +50,7 @@
 * gat support
 * opa pdc ammo type support
 * make _lcdOverlayColour configurable
+* some more refactoring of refreshLCD
 
 ## todos general
 
@@ -58,6 +60,8 @@
 
 ## todos done
 
+* ~~review and improve updateLcds~~
+* ~~booting improvements, lcd outputs~~
 * ~~saving custom data on stance set.~~
 * ~~automatically detect name at start.~~
 * ~~init no renames.~~
@@ -80,7 +84,6 @@
 * ~~consider changing position of the ignore keyword.~~
 * ~~review and fi* extractor management~~
 * ~~finalise init naming initBlockNames~~
-
 
 # wishlist
 

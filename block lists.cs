@@ -186,7 +186,7 @@ namespace IngameScript
                     if (I) _initNames.Add(b, "LCD");
 
                     if (TempLCD.CustomName.Contains(_keywordRsmLcds))
-                        _rsmLcds.Add(sortRsmLcds(TempLCD));
+                        _rsmLcds.Add(sortRsmLcd(TempLCD));
 
                     else if (!_disableLcdColourControl && TempLCD.CustomName.Contains(_keywordColourSyncLcds))
                         _colourSyncLcds.Add(TempLCD);
@@ -936,43 +936,47 @@ namespace IngameScript
             return false;
         }
 
-        RsmLcd sortRsmLcds(IMyTextPanel panel, bool attemptParse = true)
+        RsmLcd sortRsmLcd(IMyTextPanel panel, bool attemptParse = true, string hudLcdSafe = "")
         {
             RsmLcd lcd = new RsmLcd();
             lcd.Block = panel;
 
-            bool success = true;
+            bool dontResetConfig = true;
 
             string
                 toParse = panel.CustomData,
-                sec =  "RSM.LCD",
-                hudLcdSafe = "";
+                sec =  "RSM.LCD";
 
             string[] toParseLines = null;
 
-
-
-
-
             MyIni config = new MyIni();
+            MyIniParseResult result;
 
-            if (attemptParse)
+            // if we're not parsing
+            // we want to reset custom data
+            if (!attemptParse) dontResetConfig = false;
+            else
             {
-                MyIniParseResult result;
-                if (!config.TryParse(toParse, out result))
+                // legacy custom data
+                if (toParse.Substring(0, 12) == "Show Header=")
                 {
-                    // parse failed
-
-                    // we want to reset the custom data
-                    success = false;
-
                     try // attempt legacy parse
                     {
-                        if (toParseLines == null)
-                            toParseLines = toParse.Split('\n');
+                        toParseLines = toParse.Split('\n');
+
                         foreach (string line in toParseLines)
                         {
-                            if (line.Contains("="))
+                            // split like this bc hudXlcd
+                            if (line.Contains("hud"))
+                            {
+                                if (line.Contains("lcd"))
+                                {
+                                    // found the hudlcd string
+                                    hudLcdSafe = line;
+                                    break;
+                                }
+                            }
+                            else if (line.Contains("="))
                             {
                                 string[] Parsed = line.Split('=');
 
@@ -990,24 +994,34 @@ namespace IngameScript
 
                                 else if (Parsed[0] == "Show Inventory")
                                     lcd.ShowInventory = bool.Parse(Parsed[1]);
-                                
+
                                 else if (Parsed[0] == "Show Thrust")
                                     lcd.ShowThrust = bool.Parse(Parsed[1]);
-                                
+
                                 else if (Parsed[0] == "Show Subsystem Integrity")
                                     lcd.ShowIntegrity = bool.Parse(Parsed[1]);
-                                
+
                                 else if (Parsed[0] == "Show Advanced Thrust")
                                     lcd.ShowAdvancedThrust = bool.Parse(Parsed[1]);
-                                
+
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        if (_d) Echo("Failed to parse legacy config.\n" + ex.Message);
+                        dontResetConfig = false;
                         // oh well, we tried.
                     }
-                    
+                }
+
+
+                else if (!config.TryParse(toParse, out result))
+                {
+                    // parse failed
+
+                    // we want to reset the custom data
+                    dontResetConfig = false;
                 }
                 else
                 {
@@ -1023,37 +1037,23 @@ namespace IngameScript
                 }
             }
 
-
-
             // header, or overlay
             // can't be both bro.
             if (lcd.ShowHeader && lcd.ShowHeaderOverlay) 
             {
                 // save it
                 lcd.ShowHeader = false;
-                success = false;
+                dontResetConfig = false;
             }
                 
 
-            if (!success)
+            if (!dontResetConfig)
             {
                 // failed to parse, so lets reset.
 
                 // save the hudlcd component
                 if (toParseLines == null)
                     toParseLines = toParse.Split('\n');
-
-                foreach (string line in toParseLines)
-                {
-                    // split like this bc hudXlcd
-                    if (line.Contains("hud"))
-                        if (line.Contains("lcd"))
-                        {
-                            // found the hudlcd string
-                            hudLcdSafe = line;
-                            break;
-                        }    
-                }
 
                 config.Set(sec, "ShowHeader", lcd.ShowHeader);
                 config.Set(sec, "ShowHeaderOverlay", lcd.ShowHeaderOverlay);
@@ -1063,14 +1063,17 @@ namespace IngameScript
                 config.Set(sec, "ShowThrust", lcd.ShowThrust);
                 config.Set(sec, "ShowIntegrity", lcd.ShowIntegrity);
                 config.Set(sec, "ShowAdvancedThrust", lcd.ShowAdvancedThrust);
+                config.Set(sec, "Hud", hudLcdSafe);
 
-                lcd.Block.CustomData = config.ToString() + "\n" + hudLcdSafe;
+                lcd.Block.CustomData = config.ToString();
 
-                _alerts.Add(new Alert(
-                    "LCD CONFIG ERROR!!",
-                    "Failed to parse LCD config for " + panel.CustomName + "!\nLCD config was reset!",
-                    3
-                    ));
+                // only throw an alert during the block building process
+                if (attemptParse)
+                    _alerts.Add(new Alert(
+                        "LCD CONFIG ERROR!!",
+                        "Failed to parse LCD config for " + panel.CustomName + "!\nLCD config was reset!",
+                        3
+                        ));
             }
 
             return lcd;

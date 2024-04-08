@@ -31,9 +31,7 @@ namespace IngameScript
         void setToolActivate(IMyTerminalBlock Block, bool Activate)
         {
             Block.GetActionWithName("ToolCore_Shoot_Action").Apply(Block);
-
             (Block as IMyConveyorSorter).GetActionWithName("ToolCore_Shoot_Action").Apply(Block);
-
         }
 
         void printBlockIds()
