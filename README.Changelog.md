@@ -1,5 +1,7 @@
 ﻿# RSM Change Log
 
+(Steam)[https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140] | (Discord)[https://discord.com/channels/516135382191177728/1066185228697211030/1066185233386446980] | (Guide)[https://github.com/christorreed/ReeditShipManagement/]
+
 ## V 2.0.0 (*IN DEVELOPMENT*)
 
 #### Full refactor/rebuild
