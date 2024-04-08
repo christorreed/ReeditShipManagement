@@ -1,7 +1,6 @@
-﻿# RSM Changelog
-![Reedit Ship Management](/thumb.png "Reedit Ship Management")
+﻿# RSM Change Log
 
-# V 2.0.0 (*IN DEVELOPMENT*)
+## V 2.0.0 (*IN DEVELOPMENT*)
 
 #### Full refactor/rebuild
 
@@ -136,16 +135,16 @@
 * Improved version naming with build date.
 * Removed old beacon-based signal data from display (custom hud now)
 
-# V 1.99.45 (BETA) (2024-04-08)
+## V 1.99.45 (BETA) (2024-04-08)
 
 Released v2 public beta [link](https://discord.com/channels/516135382191177728/1066185228697211030/1226887321010442351)
 
-# V 1.11.1 (2023-12-01)
+## V 1.11.1 (2023-12-01)
 
 Fixes a bug with cargo scanning introduced in 1.11.0
     *Thanks @aryemis, @gigawatt9099*
 
-# V 1.11.0 (2023-11-30)
+## V 1.11.0 (2023-11-30)
 
 * New Cargo Volume Factor in names at init.
     * @hato2 and I were riffing about how Cargo ***Large*** no longer has any meanying now that we have so many different varieties of cargo.  We love the new blocks, but are nostalgic for the simplicity of the LCC as a unit.
@@ -160,7 +159,7 @@ Fixes a bug with cargo scanning introduced in 1.11.0
     * Blocks that do support numbering include lights, PBs, Extractors, Batteries, Beacons, Gyros, Hangar Doors, Antennas, Vents, RCS, Epstein Drives, O2 Tanks, H2 Tanks, Cargos, H2 Engines, Reactors all weapon types.
     * Other blocks like Connectors, Merge Blocks, Doors etc do not support numbering.  This can change in the future if requested
 
-# V 1.10.0 (2023-11-30)
+## V 1.10.0 (2023-11-30)
 
 * One random new feature: selective block numbering at init.
     * As requested by @raz19 and @aryemis.
@@ -170,7 +169,7 @@ Fixes a bug with cargo scanning introduced in 1.11.0
 * @reckless0661 was right; current thrust output was borked.  Borked no more.
 * @gigawatt9099 pointed out that there was a bug causing light names to become ever longer.  Now fixed, and should automatically correct any of these errors next time you run `Init:ShipName`.
 
-# V 1.9.1 (2023-11-05)
+## V 1.9.1 (2023-11-05)
 
 **HUD6: HUD1 LCD Overlay**
     * Hudlcd is awesome, but since it doesn't support sprites, it's hard to add different colours to the interface... unless we use an overlay.
@@ -223,7 +222,7 @@ Fixes a bug with cargo scanning introduced in 1.11.0
     * Added runtime profiling thanks to  Lurking StarCtpn's library.  RSM only runs once per 100 ticks, and at it's worst should consume 1%-2% of your runtime limit, so it shouldn't be too much of a problem, but I'm keeping an eye on it.
     * A variety of bug fixes and minor changes.
 
-# V 1.7.0 (2023-09-22)
+## V 1.7.0 (2023-09-22)
 
 **One Touch Airlocks**
     * I like RSM's fairly simple, nexus proof automatic doors, BUT I HATE WAITING IN AIRLOCKS!  So, now we manage airlock vents as well to minimise time spent waiting.
@@ -261,7 +260,7 @@ Fixes a bug with cargo scanning introduced in 1.11.0
     * Added rounding on Max Power values.
     * Other minor bug fixes
 
-# V 1.6.0 (2023-09-05)
+## V 1.6.0 (2023-09-05)
 
 **New Max Power output value on LCD** *As requested by @pixelworld*
     * This value shows the total max output capacity of all functional reactors and batteries.
@@ -281,7 +280,7 @@ Fixes a bug with cargo scanning introduced in 1.11.0
     * Dampened the `Ammo Low` warning so it doesn't appear constantly.
     * Other minor bug fixes.
 
-# V 1.5.0 (2023-08-12)
+## V 1.5.0 (2023-08-12)
 
 * **Built in RSM Weapon Auto-Loader (i.e. ammo puller)**
     * Many players have been running *AmmoPuller* or *RSU* scripts separately in order to force load weapons.  Well, RSM already has a nice list of all of your weapons, and was already counting ammo quantities... so might as well load them as well.
@@ -316,7 +315,7 @@ Fixes a bug with cargo scanning introduced in 1.11.0
 
 *Note: changes to default stances won't occur without resetting your PB custom data!*
 
-# V 1.4.1 (2023-07-30)
+## V 1.4.1 (2023-07-30)
 
 Recently seems like something is broken in WC related to repel mode.  Specifically, WC is always reporting that repel mode is on, even when it is off.  Because RSM can't send discreet commands to control repel, it's checking this variable and then sending a toggle command when required.  **This behaviour is forcing all rails and PDCs onto repel mode when any RSM stance is engaged!**
 
@@ -324,12 +323,12 @@ As a result, I've just pushed a bug fix which removes all repel mode control.  I
 * update your RSM to the latest version, **v 1.4.1**
 * check all weapons for repel mode and adjust accordingly.
 
-# V 1.4.0 (2023-07-14)
+## V 1.4.0 (2023-07-14)
 
 * **New default PDC configuration** As per testing since the recent update, @danimal10055 has made some recommendations on improvements tot he default PDC configuration.  Repel mode will now only be used by PDCs tagged as defence.  This is because repel mode has been found to be much less effective against torpedoes since the recent update.  **Recommend all users update to v1.4.0 to get the most out of their PDCs**
 * **Added support for Coilguns** RSM now supports the new Coilgun.  The coilgun will be named appropriately by init, but otherwise treated like a railgun.
 
-# V 1.3.0 (2023-07-07)
+## V 1.3.0 (2023-07-07)
 
 * **New Subsystem Integrity Monitoring** *as requested by @buranimo*
     * New LCD screen called Subsystem Integrity gives a quick, at-a-glance readout of integrity of each ship's sub system.
@@ -348,7 +347,7 @@ As a result, I've just pushed a bug fix which removes all repel mode control.  I
     * removed some superfluous lists and functionality to improve performance.
     * other minor changes...
 
-# V 1.1.1 (2023-06-24)
+## V 1.1.1 (2023-06-24)
 
 * **Block ownership check:**  As suggested by @buranimo﻿, I'm not running a basic ownership test frequently.  If unowned blocks are detected, a warning will appear on LCD saying `!!UNOWNED BLOCKS!!`.  Doesn't do anything else yet, but I'm open to further suggestions.
 * **Minimum Drive Stance Option:** New Epstein drive setting available for stances; 2=minimum thrusters only.  There is a keyword, `Min` by default but configurable.  In this mode, only drives with the keyword will be turned on, others will be turned off.  New default stance **StealthCruise** is the same as the Cruise stance, except with only min drives.
@@ -357,31 +356,31 @@ As a result, I've just pushed a bug fix which removes all repel mode control.  I
 * **Weapons Config Change:** Small changes to the way RSM auto configures Railguns, Torpedoes.
 * **Assorted Bugfixes**
 
-# V 1.0.2 (2023-06-19)
+## V 1.0.2 (2023-06-19)
 
 Fixed a bug with alternative delimiters not working on some blocks.
 
-# V 1.0.1 (2023-06-18)
+## V 1.0.1 (2023-06-18)
 
 Fixed a crash on malformed command (without argument)
 *thanks to @buranimo*
 
-# V 1.0.0 (2023-06-18)
+## V 1.0.0 (2023-06-18)
 
 * Instead of an annoying steam guide, everything has been moved to github
 * There is a new quick start guide to help get new players up and running.
 * I'm calling this the first release version, so we're starting at 1.0.0
 
-# V 0.12.2 
+## V 0.12.2 
 
 * Added support for 80mm Railgun rounds (T-47)
 * Fixed a bug with spawn custom data obfuscation.
 
-# V 0.12.1
+## V 0.12.1
 
 Fixed a small bug with default hudlcd configs.
 
-# V 0.12.0
+## V 0.12.0
 
 * Added acceleration output both max and actual to thrust and advanced thrust output pages.
 * Spawn custom data management now effects all SKs and MRs regardless of block name, or construct.  RSM now fully cleans all spawn custom data for you automatically.
@@ -396,31 +395,31 @@ Fixed a small bug with default hudlcd configs.
     * Now run init.
     * RSM sets up HUD LCDs perfect for a 16x9 layout.
 
-# V 0.11.0
+## V 0.11.0
 
 Improved LCD output 
 
-# V 0.10.0
+## V 0.10.0
 
 * New command with 3 arguments: 'hudlcd:on', 'hudlcd:off',  'hudlcd:toggle'
 * Hudlcd is game changing, but sometimes you just want it to piss off and take in the stars around you.  The new commands search
 * custom data of every LCD on the ship, and adjust the name in order to remove, or re-add, them to your hud.  Note that the
 * command effects all LCDs, including ignored ones.
 
-# V 0.9.1
+## V 0.9.1
 
 The basic thrust lcd output now defaults to 500ms when stationary, like the one from the advanced view.
 
-# V 0.9.0
+## V 0.9.0
 
 Added support for HudLcd plugin.  You can now add the text 'hudlcd' into the custom data of RSM LCDs, and it won't be cleared.
 Recommended settings: top left= "hudlcd:-.99:.99", "top right= hudlcd:.65:.99"
 
-# V 0.8.3
+## V 0.8.3
 
 Bug fixes
 
-# V 0.8.0
+## V 0.8.0
 
 * Added per-LCD configuration
     * Screen was starting to get a bit busy with new functionality.  Now you can spread it out across multiple screens.
@@ -434,13 +433,13 @@ Bug fixes
     * Note: if you have issues after this, make sure all blocks have the ship name in them by running init.
 
 
-# V 0.7.2
+## V 0.7.2
 
 * Added crash prevention during PDC auto configuration error.  One player reported issues with PDCs which was causing a crash.
 * I've prevented this crash, even though I can't replicate it.  It will throw an error if this occurs to you, if so recommend you grind and rebuild your PDCs as the repel mode function is bugged.
 * Also removed the auto fire mode control on railguns and torpedoes.  I think it was working, but feedback was bad in the menu.
 
-# V 0.7.0
+## V 0.7.0
 
 * New option for extractor management; 3: keep ship tanks full.  In this mode, extractor is loaded sooner to keep fuel tanks on ship at max.
     * Specifically, fill up will occur when there is room for 3 fuel tanks components worth of H2 in the ship tanks.
@@ -455,20 +454,20 @@ Bug fixes
 * Comms commands now permit spaces (ie for command 'Comms:Hello There', antenna was "RSG:HelloThere" is now "RSG:Hello There")
 * Fixed a bug related to crashing during stance calls with high EFC burn percentages, such as during Stance:MaxCruise
 
-# V 0.6.1
+## V 0.6.1
 
 Fixed tank stockpile error
 
-# V 0.6.0
+## V 0.6.0
 
 * Battery discharge functionality added to stance management.
 * Combat and CQB default stance data updated to discharge batteries. Note: reset your stance custom data to apply this change.
 
-# V 0.5.1
+## V 0.5.1
 
 Spaces are now ignored in all arguments to prevent syntax errors. This means no spaces in ship names
 
-# V 0.5.0
+## V 0.5.0
 
 * Added support for some additional inventory items on the LCD...
     * 40mm Tungsten Teflon PDC Boxes
@@ -493,18 +492,18 @@ Spaces are now ignored in all arguments to prevent syntax errors. This means no 
 * Current stance is now retained across instances/restarts. 
 * Updated guide to reflect several versions worth of changes.
 
-# V 0.4.2
+## V 0.4.2
 
 * Fixed a crash on set stance with certain grids.
 * Changed defence PDC default keywork to 'Repel' so it doesn't interact with OPA PDCs which have defence in the name.
 * Fixed a bug where repel/defence PDCs & railguns were not processed by the init command.
 
-# V 0.4.1
+## V 0.4.1
 
 * Fixed a bug with configurable block name delimiter functionality.
 * Fixed a bug with custom data
 
-# V 0.4.0
+## V 0.4.0
 
 * Script now automatically adds own faction tag to Medical Rooms and Survival Kits
 * Added adjustable delimiter functionality. In custom data you can now set a character other than '.' to be used to name blocks during init.
@@ -512,21 +511,21 @@ Spaces are now ignored in all arguments to prevent syntax errors. This means no 
 * No longer numbering servers during init
 * Changes to more smoothly permit additional configurable custom data options.
 
-# V 0.3.3
+## V 0.3.3
 
 * Added a delay to fuel extractor management retries so it won't constantly attempt to refuel.
 * Minor bug fixes.
 
-# V 0.3.2
+## V 0.3.2
 
 Improved init function autonaming of LCD blocks.
 
-# V 0.3.1
+## V 0.3.1
 
 * Fixed a bug caused a crash if no antenna.
 * No longer forcing LCD padding.
 
-# V 0.3.0
+## V 0.3.0
 
 *Added projection offset and orientation mangagement with projectors:save and projectors:load commands
 *Added keep alive functionality to Sensors, LCDs & Cameras
@@ -536,15 +535,15 @@ Improved init function autonaming of LCD blocks.
 *Fixed crash on command to destroyed block.
 *Fixed crash on extractor management with no extractor on board
 
-# V 0.2.2
+## V 0.2.2
 
 Fixed several bugs with the extraction management algorithm.
 
-# V 0.2.1
+## V 0.2.1
 
 Fixed a bug that caused block lists to overflow.
 
-# V 0.2.0
+## V 0.2.0
 
 * Second release, now on steam.
 * Improved init, now can be repeated, so you can update ship names, name new blocks.
@@ -564,10 +563,10 @@ Fixed a bug that caused block lists to overflow.
     * Fixed crash on door custom data parsing error
 * Built Guide
 
-# V 0.1.0
+## V 0.1.0
 
 Initial release on Discord
 
-# V 0.0.1
+## V 0.0.1
 
 Unreleased initial working version
