@@ -186,7 +186,11 @@ namespace IngameScript
                     if (I) _initNames.Add(b, "LCD");
 
                     if (TempLCD.CustomName.Contains(_keywordRsmLcds))
-                        _rsmLcds.Add(sortRsmLcd(TempLCD));
+                    {
+                        RsmLcd rsmlcd = new RsmLcd();
+                        rsmlcd.Block = TempLCD;
+                        _rsmLcds.Add(sortRsmLcd(rsmlcd));
+                    }
 
                     else if (!_disableLcdColourControl && TempLCD.CustomName.Contains(_keywordColourSyncLcds))
                         _colourSyncLcds.Add(TempLCD);
@@ -936,15 +940,14 @@ namespace IngameScript
             return false;
         }
 
-        RsmLcd sortRsmLcd(IMyTextPanel panel, bool attemptParse = true, string hudLcdSafe = "")
+        RsmLcd sortRsmLcd(RsmLcd lcd, string hudLcdSafe = "")
         {
-            RsmLcd lcd = new RsmLcd();
-            lcd.Block = panel;
-
-            bool dontResetConfig = true;
+            bool
+                attemptParse = hudLcdSafe == "",
+                resetConfig = !attemptParse;
 
             string
-                toParse = panel.CustomData,
+                toParse = lcd.Block.CustomData,
                 sec =  "RSM.LCD";
 
             string[] toParseLines = null;
@@ -954,7 +957,7 @@ namespace IngameScript
 
             // if we're not parsing
             // we want to reset custom data
-            if (!attemptParse) dontResetConfig = false;
+            if (!attemptParse) resetConfig = true;
             else
             {
                 // legacy custom data
@@ -1010,7 +1013,7 @@ namespace IngameScript
                     catch (Exception ex)
                     {
                         if (_d) Echo("Failed to parse legacy config.\n" + ex.Message);
-                        dontResetConfig = false;
+                        resetConfig = true;
                         // oh well, we tried.
                     }
                 }
@@ -1021,19 +1024,19 @@ namespace IngameScript
                     // parse failed
 
                     // we want to reset the custom data
-                    dontResetConfig = false;
+                    resetConfig = true;
                 }
                 else
                 {
                     // parse worked, get values
-                    lcd.ShowHeader = config.Get(sec, "ShowHeader").ToBoolean(lcd.ShowHeader);
-                    lcd.ShowHeaderOverlay = config.Get(sec, "ShowHeaderOverlay").ToBoolean(_requireShipName);
-                    lcd.ShowWarnings = config.Get(sec, "ShowWarnings").ToBoolean(_requireShipName);
-                    lcd.ShowPowerAndTanks = config.Get(sec, "ShowPowerAndTanks").ToBoolean(_requireShipName);
-                    lcd.ShowInventory = config.Get(sec, "ShowInventory").ToBoolean(_requireShipName);
-                    lcd.ShowThrust = config.Get(sec, "ShowThrust").ToBoolean(_requireShipName);
-                    lcd.ShowIntegrity = config.Get(sec, "ShowIntegrity").ToBoolean(_requireShipName);
-                    lcd.ShowAdvancedThrust = config.Get(sec, "ShowAdvancedThrust").ToBoolean(_requireShipName);
+                    lcd.ShowHeader =            config.Get(sec, "ShowHeader").ToBoolean(            lcd.ShowHeader);
+                    lcd.ShowHeaderOverlay =     config.Get(sec, "ShowHeaderOverlay").ToBoolean(     lcd.ShowHeaderOverlay);
+                    lcd.ShowWarnings =          config.Get(sec, "ShowWarnings").ToBoolean(          lcd.ShowWarnings);
+                    lcd.ShowPowerAndTanks =     config.Get(sec, "ShowPowerAndTanks").ToBoolean(     lcd.ShowPowerAndTanks);
+                    lcd.ShowInventory =         config.Get(sec, "ShowInventory").ToBoolean(         lcd.ShowInventory);
+                    lcd.ShowThrust =            config.Get(sec, "ShowThrust").ToBoolean(            lcd.ShowThrust);
+                    lcd.ShowIntegrity =         config.Get(sec, "ShowIntegrity").ToBoolean(         lcd.ShowIntegrity);
+                    lcd.ShowAdvancedThrust =    config.Get(sec, "ShowAdvancedThrust").ToBoolean(    lcd.ShowAdvancedThrust);
                 }
             }
 
@@ -1043,11 +1046,11 @@ namespace IngameScript
             {
                 // save it
                 lcd.ShowHeader = false;
-                dontResetConfig = false;
+                resetConfig = true;
             }
                 
 
-            if (!dontResetConfig)
+            if (resetConfig)
             {
                 // failed to parse, so lets reset.
 
@@ -1071,7 +1074,7 @@ namespace IngameScript
                 if (attemptParse)
                     _alerts.Add(new Alert(
                         "LCD CONFIG ERROR!!",
-                        "Failed to parse LCD config for " + panel.CustomName + "!\nLCD config was reset!",
+                        "Failed to parse LCD config for " + lcd.Block.CustomName + "!\nLCD config was reset!",
                         3
                         ));
             }

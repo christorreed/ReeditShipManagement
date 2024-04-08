@@ -27,11 +27,6 @@ namespace IngameScript
 
         void initShip(string ship, bool nameBlocks = true, bool setSubSystems = true, bool setInventory = true)
         {
-            // todo
-            // review this method
-            // tidy it up more.
-            // add more options, like without naming?
-
             if (_d) Echo("Initialising a ship as '" + ship + "'...");
 
             // set init mode on

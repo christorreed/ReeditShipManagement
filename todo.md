@@ -51,7 +51,10 @@
 * opa pdc ammo type support
 * make _lcdOverlayColour configurable
 * improve building of the subsystem integrity panel
-* 
+* booting screen improvements
+* spread init out
+* removed REEDAV stuff?
+* broadcast 
 
 ## todos general
 
@@ -89,4 +92,5 @@
 # wishlist
 
 * add detailed ini block overrides: https://discord.com/channels/348745744846422016/1205752120280743987/1219246089136246826
-* airlock 
+* airlock auto detection
+* more spinners, configurable spinners?

@@ -54,7 +54,7 @@ namespace IngameScript
                     lcd.ShowIntegrity = false;
                     lcd.ShowAdvancedThrust = false;
 
-                    sortRsmLcd(lcd.Block, false, "hudlcd:-0.55:0.99:0.7") ;
+                    sortRsmLcd(lcd, "hudlcd:-0.55:0.99:0.7") ;
                     continue;
                 }
 
@@ -69,7 +69,7 @@ namespace IngameScript
                     lcd.ShowIntegrity = false;
                     lcd.ShowAdvancedThrust = false;
 
-                    sortRsmLcd(lcd.Block, false, "hudlcd:0.22:0.99:0.55");
+                    sortRsmLcd(lcd, "hudlcd:0.22:0.99:0.55");
                     continue;
                 }
 
@@ -84,7 +84,7 @@ namespace IngameScript
                     lcd.ShowIntegrity = false;
                     lcd.ShowAdvancedThrust = false;
 
-                    sortRsmLcd(lcd.Block, false, "hudlcd:0.48:0.99:0.55");
+                    sortRsmLcd(lcd, "hudlcd:0.48:0.99:0.55");
                     continue;
                 }
 
@@ -99,7 +99,7 @@ namespace IngameScript
                     lcd.ShowIntegrity = true;
                     lcd.ShowAdvancedThrust = false;
 
-                    sortRsmLcd(lcd.Block, false, "hudlcd:0.74:0.99:0.55");
+                    sortRsmLcd(lcd, "hudlcd:0.74:0.99:0.55");
                     continue;
                 }
 
@@ -114,7 +114,7 @@ namespace IngameScript
                     lcd.ShowIntegrity = false;
                     lcd.ShowAdvancedThrust = true;
 
-                    sortRsmLcd(lcd.Block, false, "hudlcd:0.75:0:.54");
+                    sortRsmLcd(lcd, "hudlcd:0.75:0:.54");
                     continue;
                 }
 
@@ -129,7 +129,7 @@ namespace IngameScript
                     lcd.ShowIntegrity = false;
                     lcd.ShowAdvancedThrust = false;
 
-                    sortRsmLcd(lcd.Block, false, "hudlcd:-0.55:0.99:0.7");
+                    sortRsmLcd(lcd, "hudlcd:-0.55:0.99:0.7");
                     continue;
                 }
             }
