@@ -35,22 +35,22 @@ namespace IngameScript
 
         // Batteries -----------------------------------------------------------------
 
-        private double TOTAL__batteries = 0;
-        private double _initBatteries = 0;
-        private double ACTUAL__batteries = 0;
-        private double INTEGRITY__batteries = 0;
+        double _totalBatteries = 0;
+        double _initBatteries = 0;
+        double _actualBatteries = 0;
+        double _integrityBatteries = 0;
 
-        private void refreshBatteries(TankAndBatteryModes mode)
+        void refreshBatteries(TankAndBatteryModes mode)
         {
-            TOTAL__batteries = 0;
-            ACTUAL__batteries = 0;
+            _totalBatteries = 0;
+            _actualBatteries = 0;
 
             foreach (IMyBatteryBlock Battery in _batteries)
             {
                 if (Battery != null && Battery.IsFunctional)
                 {
-                    ACTUAL__batteries += Battery.CurrentStoredPower;
-                    TOTAL__batteries += Battery.MaxStoredPower;
+                    _actualBatteries += Battery.CurrentStoredPower;
+                    _totalBatteries += Battery.MaxStoredPower;
                     _maxPower += Battery.MaxOutput;
 
                     // always turn batteries on
@@ -71,9 +71,9 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY__batteries = Math.Round(100 * (_maxPower / _initBatteries));
+            _integrityBatteries = Math.Round(100 * (_maxPower / _initBatteries));
         }
-        private void initBatteries()
+        void initBatteries()
         {
             _initBatteries = 0;
             foreach (IMyBatteryBlock Battery in _batteries)
@@ -82,7 +82,7 @@ namespace IngameScript
             }
         }
 
-        private void setBatteries(TankAndBatteryModes mode)
+        void setBatteries(TankAndBatteryModes mode)
         {
             if (mode == TankAndBatteryModes.NoChange) return;
 
@@ -112,16 +112,16 @@ namespace IngameScript
 
         // Reactors -----------------------------------------------------------------
         
-        private double _initReactors = 0;
-        private double ACTUAL__reactors = 0;
-        private double INTEGRITY__reactors = 0;
+        double _initReactors = 0;
+        double _actualReactors = 0;
+        double _integrityReactors = 0;
 
-        private int EMPTY__reactors = 0;
+        int _emptyReactors = 0;
 
-        private void refreshReactors()
+        void refreshReactors()
         {
-            ACTUAL__reactors = 0;
-            EMPTY__reactors = 0;
+            _actualReactors = 0;
+            _emptyReactors = 0;
 
             foreach (IMyReactor Reactor in _reactors)
             {
@@ -131,19 +131,19 @@ namespace IngameScript
                     Reactor.Enabled = true;
 
                     if (inventoryEmpty(Reactor))
-                        EMPTY__reactors++;
+                        _emptyReactors++;
                     
                     else
-                        ACTUAL__reactors += Reactor.MaxOutput;
+                        _actualReactors += Reactor.MaxOutput;
                     
                 }
             }
-            INTEGRITY__reactors = Math.Round(100 * (ACTUAL__reactors / _initReactors));
+            _integrityReactors = Math.Round(100 * (_actualReactors / _initReactors));
 
-            _maxPower += ACTUAL__reactors;
+            _maxPower += _actualReactors;
         }
 
-        private void initReactors()
+        void initReactors()
         {
             _initReactors = 0;
             foreach (IMyReactor Reactor in _reactors)

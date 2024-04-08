@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.41 ($MDK_DATE$)";
+        string Version = "1.99.42 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -322,7 +322,7 @@ namespace IngameScript
                 doThisStuffRarely();
 
                 // update the _allLcds
-                //refreshLcds();
+                // refreshLcds();
                 // removed this for now bc it takes too long
 
                 return;
@@ -331,19 +331,16 @@ namespace IngameScript
 
             // run these things every time
             doThisStuffOften();
-            // it actually does these things 
-            // one at a time the first time.
+
+            // it actually does the above things one at a time, the first time.
             // ie, it _isBooting.
-            // splitting it up like this because 
-            // SE seems to cache the PB api results,
-            // or something like that bc i see much
-            // slow results the first time round...
+            // splitting it up like this because SE seems to cache the PB api
+            // results, or something like that bc i see much slow results the
+            // first time round...
 
             // we run this method every time as well
             // but it always runs in steps.
             doThisStuffOccasionally();
-            // the final step above runs
-            // doThisStuffInfrequently()
 
             // update the _allLcds
             refreshLcds();

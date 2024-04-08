@@ -636,14 +636,12 @@ namespace IngameScript
 
             // Header -----------------------------------------------------------------
             
-            string div = " -------------------------\n";
-
             // this is the bit at the top of the custom data
-            _config.SetSectionComment(sec, 
-                div + 
-                " Reedit Ship Management\n" + 
-                div + 
-                " Config.ini\n Recompile to apply changes!\n" + div );
+            _config.SetSectionComment(sec,
+                _configDiv + 
+                " Reedit Ship Management\n" +
+                _configDiv + 
+                " Config.ini\n Recompile to apply changes!\n" + _configDiv);
             
             // Spawns -----------------------------------------------------------------
 
@@ -800,7 +798,7 @@ namespace IngameScript
             name = "CurrentStance";
             _config.Set(sec, name, _currentStanceName);
 
-            _config.SetSectionComment(sec, div + " Stances\n Add or remove as required\n" + div);
+            _config.SetSectionComment(sec, _configDiv + " Stances\n Add or remove as required\n" + _configDiv);
 
             string colourComment = "Red, Green, Blue, Alpha";
 
@@ -1049,7 +1047,7 @@ namespace IngameScript
             name = "ShipName";
             _config.Set(sec, name, _shipName);
 
-            _config.SetSectionComment(sec, div + " System\n All items below this point are\n set automatically when running init\n" + div);
+            _config.SetSectionComment(sec, _configDiv + " System\n All items below this point are\n set automatically when running init\n" + _configDiv);
 
             // InitItems -----------------------------------------------------------------
 
@@ -1593,11 +1591,14 @@ namespace IngameScript
             // attempt to parse ini from the custom data
             MyIniParseResult result;
             if (!config.TryParse(toParse, out result))
+            {
                 _alerts.Add(new Alert(
                     "CONFIG ERROR!!",
                     "Failed to save to custom data due to a parsing error!\nFix and recompile!",
                     3
                     ));
+                return;
+            }
 
             string sec, name;
 

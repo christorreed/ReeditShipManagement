@@ -69,8 +69,8 @@ namespace IngameScript
 
         // LCD Lists
         private List<IMyTextPanel> _allLcds = new List<IMyTextPanel>();
-        private List<IMyTextPanel> _rsmLcds = new List<IMyTextPanel>();
         private List<IMyTextPanel> _colourSyncLcds = new List<IMyTextPanel>();
+        private List<RsmLcd> _rsmLcds = new List<RsmLcd>();
 
         // Light Lists
         private List<IMyLightingBlock> _exteriorLights = new List<IMyLightingBlock>();
@@ -186,7 +186,8 @@ namespace IngameScript
                     if (I) _initNames.Add(b, "LCD");
 
                     if (TempLCD.CustomName.Contains(_keywordRsmLcds))
-                        _rsmLcds.Add(TempLCD);
+                        _rsmLcds.Add(sortRsmLcds(TempLCD));
+
                     else if (!_disableLcdColourControl && TempLCD.CustomName.Contains(_keywordColourSyncLcds))
                         _colourSyncLcds.Add(TempLCD);
 
@@ -805,7 +806,7 @@ namespace IngameScript
             }
         }
 
-        private void clearBlockLists() 
+        void clearBlockLists() 
         {
             _shipController = null;
 
@@ -872,7 +873,7 @@ namespace IngameScript
             // built if I = true
         }
 
-        private bool sortPDC(IMyTerminalBlock b, string init, int ammo)
+        bool sortPDC(IMyTerminalBlock b, string init, int ammo)
         {
 
             // sort _normalPdcs from _defensivePdcs
@@ -896,7 +897,7 @@ namespace IngameScript
         }
 
 
-        private bool sortTorp(IMyTerminalBlock b, string init)
+        bool sortTorp(IMyTerminalBlock b, string init)
         {
             // add to the main list.
             _torpedoLaunchers.Add(b);
@@ -916,7 +917,7 @@ namespace IngameScript
             return false;
         }
 
-        private bool sortRail(IMyTerminalBlock b, string init, int ammo)
+        bool sortRail(IMyTerminalBlock b, string init, int ammo)
         {
 
             _kineticWeapons.Add(b);
@@ -933,6 +934,146 @@ namespace IngameScript
             }
 
             return false;
+        }
+
+        RsmLcd sortRsmLcds(IMyTextPanel panel, bool attemptParse = true)
+        {
+            RsmLcd lcd = new RsmLcd();
+            lcd.Block = panel;
+
+            bool success = true;
+
+            string
+                toParse = panel.CustomData,
+                sec =  "RSM.LCD",
+                hudLcdSafe = "";
+
+            string[] toParseLines = null;
+
+
+
+
+
+            MyIni config = new MyIni();
+
+            if (attemptParse)
+            {
+                MyIniParseResult result;
+                if (!config.TryParse(toParse, out result))
+                {
+                    // parse failed
+
+                    // we want to reset the custom data
+                    success = false;
+
+                    try // attempt legacy parse
+                    {
+                        if (toParseLines == null)
+                            toParseLines = toParse.Split('\n');
+                        foreach (string line in toParseLines)
+                        {
+                            if (line.Contains("="))
+                            {
+                                string[] Parsed = line.Split('=');
+
+                                if (Parsed[0] == "Show Tanks & Batteries")
+                                    lcd.ShowPowerAndTanks = bool.Parse(Parsed[1]);
+
+                                else if (Parsed[0] == "Show header" || Parsed[0] == "Show Header")
+                                    lcd.ShowHeader = bool.Parse(Parsed[1]);
+
+                                else if (Parsed[0] == "Show Header Overlay")
+                                    lcd.ShowHeaderOverlay = bool.Parse(Parsed[1]);
+
+                                else if (Parsed[0] == "Show Warnings")
+                                    lcd.ShowWarnings = bool.Parse(Parsed[1]);
+
+                                else if (Parsed[0] == "Show Inventory")
+                                    lcd.ShowInventory = bool.Parse(Parsed[1]);
+                                
+                                else if (Parsed[0] == "Show Thrust")
+                                    lcd.ShowThrust = bool.Parse(Parsed[1]);
+                                
+                                else if (Parsed[0] == "Show Subsystem Integrity")
+                                    lcd.ShowIntegrity = bool.Parse(Parsed[1]);
+                                
+                                else if (Parsed[0] == "Show Advanced Thrust")
+                                    lcd.ShowAdvancedThrust = bool.Parse(Parsed[1]);
+                                
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // oh well, we tried.
+                    }
+                    
+                }
+                else
+                {
+                    // parse worked, get values
+                    lcd.ShowHeader = config.Get(sec, "ShowHeader").ToBoolean(lcd.ShowHeader);
+                    lcd.ShowHeaderOverlay = config.Get(sec, "ShowHeaderOverlay").ToBoolean(_requireShipName);
+                    lcd.ShowWarnings = config.Get(sec, "ShowWarnings").ToBoolean(_requireShipName);
+                    lcd.ShowPowerAndTanks = config.Get(sec, "ShowPowerAndTanks").ToBoolean(_requireShipName);
+                    lcd.ShowInventory = config.Get(sec, "ShowInventory").ToBoolean(_requireShipName);
+                    lcd.ShowThrust = config.Get(sec, "ShowThrust").ToBoolean(_requireShipName);
+                    lcd.ShowIntegrity = config.Get(sec, "ShowIntegrity").ToBoolean(_requireShipName);
+                    lcd.ShowAdvancedThrust = config.Get(sec, "ShowAdvancedThrust").ToBoolean(_requireShipName);
+                }
+            }
+
+
+
+            // header, or overlay
+            // can't be both bro.
+            if (lcd.ShowHeader && lcd.ShowHeaderOverlay) 
+            {
+                // save it
+                lcd.ShowHeader = false;
+                success = false;
+            }
+                
+
+            if (!success)
+            {
+                // failed to parse, so lets reset.
+
+                // save the hudlcd component
+                if (toParseLines == null)
+                    toParseLines = toParse.Split('\n');
+
+                foreach (string line in toParseLines)
+                {
+                    // split like this bc hudXlcd
+                    if (line.Contains("hud"))
+                        if (line.Contains("lcd"))
+                        {
+                            // found the hudlcd string
+                            hudLcdSafe = line;
+                            break;
+                        }    
+                }
+
+                config.Set(sec, "ShowHeader", lcd.ShowHeader);
+                config.Set(sec, "ShowHeaderOverlay", lcd.ShowHeaderOverlay);
+                config.Set(sec, "ShowWarnings", lcd.ShowWarnings);
+                config.Set(sec, "ShowPowerAndTanks", lcd.ShowPowerAndTanks);
+                config.Set(sec, "ShowInventory", lcd.ShowInventory);
+                config.Set(sec, "ShowThrust", lcd.ShowThrust);
+                config.Set(sec, "ShowIntegrity", lcd.ShowIntegrity);
+                config.Set(sec, "ShowAdvancedThrust", lcd.ShowAdvancedThrust);
+
+                lcd.Block.CustomData = config.ToString() + "\n" + hudLcdSafe;
+
+                _alerts.Add(new Alert(
+                    "LCD CONFIG ERROR!!",
+                    "Failed to parse LCD config for " + panel.CustomName + "!\nLCD config was reset!",
+                    3
+                    ));
+            }
+
+            return lcd;
         }
     }
 }
