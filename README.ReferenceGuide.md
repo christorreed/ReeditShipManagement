@@ -93,14 +93,17 @@ For all weapons that are enabled in the current stance, the following settings a
 
 Some players want RSM to leave the guns alone.  If you have a complex configuration, or prefer manual control, it may be preferable to disable weapons automatic configuration.
 
-In custom data, set `Automatically configure PDCs, Railguns, Torpedoes.` to false, and none of the above settings will be adjusted.  RSM will still enforce weapon power status, but no other settings will be adjusted in any stance.
+* In custom data, set `AutoConfigWeapons=false`, and none of the above settings will be adjusted.
+	* RSM will still enforce weapon power status, but no other settings will be adjusted in any stance.
+* You can also use the [ignore keyword](#Ignore Keyword) to ignore certain weapons you don't want to be touched by RSM at all.
 
 If you're doing this because you think I'm configuring the weapons incorrectly, let me know, I'd love to improve the weapons logic instead.
-
 
 ## Block Renaming
 
 When you run `Init:ShipName`, RSM will rename all of the blocks on your ship.  There are a few tricks to getting the most out of this process, but once you understand, you can easily retain info in names and run the `Init:ShipName` command over and over again without problems.
+
+You can also choose not to rename your blocks at when running the `Init:ShipName` command. For more info, see [Init](#init).
 
 ### Block Naming Syntax
 
@@ -178,7 +181,7 @@ Here's how to set that up...
 * Name at least one vent...
 	* The Sytax should be `ShipName.Vent.Airlock.Identifier`
 	* In this example, we will use `ShipName.Vent.Airlock.Main`
-* Set the vents to depressurise.
+* The vent will automatically be set to depressurise.
 	* There are more realistic ways to setup an airlock, but vent on depressurise all the time is the most practical for Space Engineers and makes the overall experience much faster.
 
 That's it, you're done. RSM will refresh every now and then, or you can force it to detect the change by recompiling.
@@ -211,8 +214,19 @@ RSM has some features to handle spawns, such as survival kits or medical rooms.
 
 ## Thruster Management
 
-TODO
+RSM stances can be used to control your epstein drives, RCS and other types of thrusters.
 
+* RSM splits all thrusters into main and maneuvering, each with per-stance configuration options.
+	* Chemical thrusters are grouped with main thrusters. Main thruster stance options allow you to turn either or both on as required.
+	* Atmo thrusters (only SG on DX) are grouped with maneuvering thrusters, and also have discreet stance control options.
+	* Maneuvering thrusters settings `ForwardOff` and `ReverseOff` allow you to disable maneuvering thrusters in those directions only, per stance. For example, by default, the `Cruise` stance disables forward RCS to conserve fuel.
+	* You can configure thrusters to `NoChange` for any given stance, and thrusters won't be touched when that stance is called.
+* RSM only touches your thrusters when running a `Stance:StanceName` command, not at any other time. I like to use manual thruster control as well as stance-based control on my ships.
+* Some players like to use a select few Epstein drives as maneuvering thrusters when docking.
+	* Simply add `[Docking]` to the name of any main thruster which you want to be enabled as forward RCS.
+	* For example, if you name a small secondary drive with `[Docking]`, it will be activated by default during the `Docking` stance
+	* The keyword itself is configurable under `[RSM.Keywords]`
+* Thrusters may also be effected when a stance is called if `NavOsAbortEfcOff=true`. This will force a NavOS `Abort` or EFC `Off` command when the stance is set, and this may disable thrust override and other changes.
 
 ## Weapons Autoloading & Balancing
 
@@ -231,16 +245,16 @@ RSM automatically loads your extractor, depending upong your stance...
 
 * On DX, you probably know fuel tank components are loaded into Extractor blocks to refill your ship tanks (or jerry cans for SG extractors).
 * Each stance can be configured for one of three extractor management options...
-* **Off**
-	* Extractors are switched off and ignored.
-* **Autoload Below 10%**
-	* Extractors are switched on.
-	* If your total ship fuel falls below 10%, RSM will automatically top the ship up by loading a fuel tank.
-* **Keep Ship Tanks Full**
-	* Extractors are switched on.
-	* Once your ship fuel falls below 3x the capacity of one fuel tank (or Jerry Can for SG), RSM will automatically top the ship up by loading a fuel tank.
-* By default, most stances use fuel tanks to keep ship tanks full.
-
+	* **Off**
+		* Extractors are switched off and ignored.
+	* **Autoload Below 10%**
+		* Extractors are switched on.
+		* If your total ship fuel falls below 10%, RSM will automatically top the ship up by loading a fuel tank.
+	* **Keep Ship Tanks Full**
+		* Extractors are switched on.
+		* Once your ship fuel falls below 3x the capacity of one fuel tank (or Jerry Can for SG), RSM will automatically top the ship up by loading a fuel tank.
+	* By default, most stances use fuel tanks to keep ship tanks full.
+* RSM dynamically adjusts the load speed of fuel tanks based on your current fuel level.
 
 ## Inventory Management
 
@@ -269,7 +283,10 @@ I recommend using zero alignment projectors for even simpler usage.  To do that.
 
 ## Auxiliary Block Management
 
-TODO
+RSM auxiliary blocks are simply a way to control a random group of blocks, per stance.
+
+* By default, the auxiliary keyword is `Autorepair`. Add that text to the name of any autorepair welders, as well as warning lights etc, and they will be enabled during combat stances, by default.
+* Auxiliary block functionality really can be any block used for any purpose. Change the keyword as required, and configure your aux blocks to come on with any stance you wish.
 
 
 ## Ignore Keyword
@@ -286,7 +303,6 @@ If you don't already have it, I strongly recommend installing the Hudlcd plugin 
 RSM will only adjust your hudlcd settings when you run the `Init:ShipName` command, and under the following conditions...
 * LCDs with names containing `.[RSM].HUD1` to `.[RSM].HUD6`.  If you change the default values, remove the `HUD1` component from the name, and RSM won't adjust it during subsequent init commands.
 * LCDs containing `[EFC]` or `[NavOS]` will be configured with by prefered default Hudlcd setting
-* LCDs containing `.[REEDAV].1` & `.[REEDAV].2`
 
 RSM also has a simple quality of life feature related to hudlcd; a simple toggle command.  Run `Hudlcd:Toggle`, `Hudlcd:On` or `Hudlcd:Off` to enable or disable all hudlcd screens on your ship.  I mostly use this to disable my hud for screenshots
 
