@@ -55,6 +55,7 @@
 * spread init out
 * removed REEDAV stuff?
 * broadcast IGC data with current stance for other scripts.
+* new hudlcd presets
 
 ## todos general
 
