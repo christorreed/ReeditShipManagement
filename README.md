@@ -1,5 +1,7 @@
 # Reedit Ship Management
 
+<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140"><img src="/thumb.png" alt="RSM" width="300"/></a>
+
 Reedit Ship Management (RSM) is a broad, ship automation script tailor made for the Draconis Expanse Space Engineers server.
 
 ### [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140)
@@ -12,8 +14,6 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 ***Go into detail with all of RSM's features and commands***
 ### [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md)
 ***Read the RSM change log***
-
-<img src="/thumb.png" alt="RSM" width="400"/>
 
 ## The broad goals of this script are to...
 
