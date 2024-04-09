@@ -13,7 +13,7 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 ### [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md)
 ***Read the RSM change log***
 
-<img src="/thumb.png" alt="RSM" width="200"/>
+<img src="/thumb.png" alt="RSM" width="400"/>
 
 ## The broad goals of this script are to...
 
