@@ -2,13 +2,18 @@
 
 Reedit Ship Management (RSM) is a broad, ship automation script tailor made for the Draconis Expanse Space Engineers server.
 
-#### Subscribe to RSM on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140)
-#### Raise bugs, ask questions, or request new features on the [Reedit Developments Discord](https://discord.gg/Z7UtZBBe)
-#### Get started with RSM with the [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md)
-#### Go into detail with the complete [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md)
-#### See release history on the [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md)
+### [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140)
+***Subscribe to RSM on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140)***
+### [Reedit Developments Discord](https://discord.gg/Z7UtZBBe)
+***Raise bugs, ask questions, or request new features***
+### [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md)
+***Get started with RSM!***
+### [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md)
+***Go into detail with all of RSM's features and commands***
+### [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md)
+***Read the RSM change log***
 
-![Reedit Ship Management](/thumb.png "Reedit Ship Management")
+<img src="/thumb.png" alt="RSM" width="200"/>
 
 ## The broad goals of this script are to...
 
@@ -28,3 +33,5 @@ Draconis Expanse is a PvP environment, and scripts have been used as weapons bef
 *This script is safe (all of my ships run it) but it is complex, and using it improperly can lead to damage or destruction of your ship.  Read the guide, ask questions, and practice.*
 **DON'T FIGHT THE SCRIPT!**
 *What? My PDCs keep turning back on when I switch them off! lol, RSM is doing that, and for good reason.  There's probably a stance or other option to achieve what you want with one command to RSM. If it's freaking you out, just turn off the RSM PB!*
+
+[Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/Z7UtZBBe) 

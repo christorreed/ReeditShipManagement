@@ -1,5 +1,5 @@
 ﻿# Reference Guide
-#### Reedit Ship Management
+### Reedit Ship Management
 [Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/Z7UtZBBe) 
 
 This reference guide goes through each [feature](#Features) and [command](#Commands) in detail.
@@ -33,7 +33,7 @@ This reference guide goes through each [feature](#Features) and [command](#Comma
 * [Hudlcd:*On*/*Of*/*Toggle*](#Hudlcd)
 * [Projectors:*Save*/*Load*](#Projectors)
 * [Comms:*Message*](#Comms)
-* [Doors:*Message*](#Doors)
+* [Doors:*Locked*/*Unlocked*/*Toggle*](#Doors)
 
 # Features
 
