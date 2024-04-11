@@ -143,6 +143,7 @@
 
 * Added ReactorFillRatio .
     * Default value 0.5, this is the fill ratio RSM will use for reactors (with 3% wiggle room).
+    * Thanks @mkaito, @draconb
 * Set dynamic battery discharge management to toggle between `Discharge` and `Recharge` rather than `Discharge` and `Auto`
     * Thanks @snek
 * Removed REEDAV hudlcd autoconfig.
