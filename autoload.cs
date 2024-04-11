@@ -42,12 +42,14 @@ namespace IngameScript
 
                 // include temp inventories as well
                 // like torps which change ammo type
-                List<INVENTORY> CombinedInventories = Item.Inventories.Concat(Item.TempInventories).ToList();
+                List<Inventory> CombinedInventories = Item.Inventories.Concat(Item.TempInventories).ToList();
 
                 // to and from inv lists
-                List<INVENTORY> LoadFrom = new List<INVENTORY>();
-                List<INVENTORY> BalanceFrom = new List<INVENTORY>();
-                List<INVENTORY> LoadTo = new List<INVENTORY>();
+                List<Inventory> LoadFrom = new List<Inventory>();
+                List<Inventory> BalanceFrom = new List<Inventory>();
+                List<Inventory> LoadTo = new List<Inventory>();
+                List<Inventory> Unload = new List<Inventory>();
+                List<Inventory> AllInvs = new List<Inventory>();
 
                 // we need average for balancing.
                 int AverageQty = 0;
@@ -55,7 +57,10 @@ namespace IngameScript
 
                 bool ammoCritical = false;
 
-                foreach (INVENTORY Inv in CombinedInventories)
+                double targetFillFactor = .97; // 3% wiggle room
+                if (Item.MaxFillRatio < 1) targetFillFactor = Item.MaxFillRatio * .97; // 3% wiggle room
+
+                foreach (Inventory Inv in CombinedInventories)
                 {
                     if (Inv == null) continue;
 
@@ -67,29 +72,33 @@ namespace IngameScript
                         AutoloadCount++;
                         AverageQty += Inv.Qty;
 
+                        if(_d) Echo("Inv.FillFactor = " + Inv.FillFactor + "\ntargetFillFactor = " + targetFillFactor);
 
                         // if ammo isn't full
-                        if (Inv.FillFactor < 0.95)
-                        {
+                        if (Inv.FillFactor < targetFillFactor)
                             // we could use auto loading
                             LoadTo.Add(Inv);
-                        }
-
+                        
+                        // this one is overfull;
+                        else if (Item.MaxFillRatio < 1 && Inv.FillFactor > Item.MaxFillRatio * 1.03) // 3% wiggle room 
+                            // it requires unloading
+                            Unload.Add(Inv);
+                        
                         // if we're anything other than totally empty
                         if (Inv.FillFactor != 0)
-                        {
                             // we're eligable as a balance source
                             BalanceFrom.Add(Inv);
-                        }
+                        
                         else if(!ammoCritical && Item.SpareQty == 0)
-                        {
                             // we have no spare ammo
                             // and this gun is empty.
                             ammoCritical = true;
-                        }
+                        
                     }
                     else
                     {
+                        AllInvs.Add(Inv);
+
                         // this block is a container
                         if (Inv.Qty > 0)
                         {
@@ -131,7 +140,7 @@ namespace IngameScript
                         // fullest first, emptest last, 
                         LoadFrom = LoadFrom.OrderByDescending(a => a.Qty).ToList();
 
-                        loadInventories(LoadFrom, LoadTo, Item.Type);
+                        loadInventories(LoadFrom, LoadTo, Item.Type, -1, Item.MaxFillRatio);
 
                     }
                     else
@@ -149,6 +158,23 @@ namespace IngameScript
 
                     }
                 }
+
+                else if (Unload.Count > 0)
+                {
+
+                    // we've done all of the loading/balancing required.
+                    // but some inventories are overfull compared to the Item.MaxFillRatio
+
+                    if (_d) Echo("Unloading " + Item.Type.SubtypeId + "...");
+
+                    List<Inventory> UnloadTo = new List<Inventory>();
+                    if (LoadFrom.Count > 0) UnloadTo = LoadFrom;
+                    else UnloadTo = AllInvs;
+
+                    loadInventories(Unload, UnloadTo, Item.Type, -1, 1, Item.MaxFillRatio);
+
+                }
+
                 else
                 {
                     if (_d) Echo("No loading required " + Item.Type.SubtypeId + "...");

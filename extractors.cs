@@ -237,7 +237,7 @@ namespace IngameScript
             _extractorWaitCount = _extractorWaitThreshold;
 
             // build an INVENTORY for the loadInventories method
-            INVENTORY Inv = new INVENTORY();
+            Inventory Inv = new Inventory();
             Inv.Block = TheChosenOne;
             Inv.Inv = TheChosenOne.GetInventory();
 
@@ -246,7 +246,7 @@ namespace IngameScript
 
             // build a list of inventories for the loadInventories method
             // only one extractor in there at a time tho.
-            List<INVENTORY> Invs = new List<INVENTORY>();
+            List<Inventory> Invs = new List<Inventory>();
             Invs.Add(Inv);
 
             if (_d) Echo("Attempting to load extractor " + TheChosenOne.CustomName);

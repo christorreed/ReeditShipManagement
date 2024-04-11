@@ -41,7 +41,7 @@
 
 ## todos high importance
 
-*
+
 
 ## todos low importantance
 
@@ -53,18 +53,19 @@
 * improve building of the subsystem integrity panel
 * booting screen improvements
 * spread init out
-* removed REEDAV stuff?
 * broadcast IGC data with current stance for other scripts.
 * new hudlcd presets
 
 ## todos general
 
 * debug/test
-* update the documentation
 * update the change notes
 
 ## todos done
 
+* ~~finish documentation~~
+* ~~set discharge functionality to Recharge instead of auto~~
+* ~~removed REEDAV stuff?~~
 * ~~review and improve updateLcds~~
 * ~~booting improvements, lcd outputs~~
 * ~~saving custom data on stance set.~~

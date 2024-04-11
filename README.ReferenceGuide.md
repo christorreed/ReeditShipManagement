@@ -140,7 +140,7 @@ RSM sorts all lights on your ship into four categories...
 	* All lights which contain `nav` in their name will be set as navigation lights.
 	* These are intended to be used as red and green navigation lights, with red on the left (port) and green on the right (starboard).
 	* Navigation lights which contain `starboard` in their name will be set to green, all others will be set to red.
-	* These lights will be switched on and coloured with each stance, unless you set your exterior lights to off.  When exterior lights are disabled for a stance, navigation lights will be set to black and will be switched off as well, in order to keep the ship dark for `Combat` or `StealthCruise` stances.
+	* Navigation lights can be enabled or disabled with each stance. When disabled, they are also set to black to ensure they are extra dark.
 	* Be cool like me, and configure these to flash in sequence as well!
 * **Spotlights**
 	* Spotlights are detected automatically by their type, not their name.

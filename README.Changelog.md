@@ -135,7 +135,17 @@
 * Ignore keyword now prevents autoloading on weapons
 * RSM now optionally supports m/s^2 as a acceleration value rather than Gs, configurable in custom data
 * Improved version naming with build date.
+* Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
+
+
+## V 1.99.47 (BETA) (2024-04-11)
+
+* Added ReactorFillRatio .
+    * Default value 0.5, this is the fill ratio RSM will use for reactors (with 3% wiggle room).
+* Set dynamic battery discharge management to toggle between `Discharge` and `Recharge` rather than `Discharge` and `Auto`
+    * Thanks @snek
+* Removed REEDAV hudlcd autoconfig.
 
 ## V 1.99.45 (BETA) (2024-04-08)
 

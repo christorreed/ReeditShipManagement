@@ -25,7 +25,7 @@ namespace IngameScript
     partial class Program
     {
 
-        class INVENTORY
+        class Inventory
         {
             // the block in question
             public IMyTerminalBlock Block { get; set; }
@@ -65,13 +65,13 @@ namespace IngameScript
             public double Percentage;
 
             // list of inventories where this item might be found.
-            public List<INVENTORY> Inventories = new List<INVENTORY>();
+            public List<Inventory> Inventories = new List<Inventory>();
 
             // list of temp inventories where this item might be found.
             // for example, torp launchers
             // will be in different places depending on selected ammo type.
             // so need to be rebuilt more frequently.
-            public List<INVENTORY> TempInventories = new List<INVENTORY>();
+            public List<Inventory> TempInventories = new List<Inventory>();
 
             // the type of item
             public MyItemType Type;
@@ -84,6 +84,8 @@ namespace IngameScript
 
             // name as it appears on the LCD
             public string LcdName;
+
+            public double MaxFillRatio = 1;
 
         }
 
@@ -99,7 +101,7 @@ namespace IngameScript
                 // so add it to aaallll the lists...
                 foreach (var Item in _items)
                 {
-                    INVENTORY Inv = new INVENTORY();
+                    Inventory Inv = new Inventory();
 
                     Inv.Block = b;
                     Inv.Inv = b.GetInventory();
@@ -111,7 +113,7 @@ namespace IngameScript
             // otherwise it's storing this thing in particular...
             else
             {
-                INVENTORY Inv = new INVENTORY();
+                Inventory Inv = new Inventory();
 
                 Inv.Block = b;
                 Inv.Inv = b.GetInventory();
@@ -131,7 +133,7 @@ namespace IngameScript
 
         void addTempInventory(IMyTerminalBlock b, int item)
         {
-            INVENTORY Inv = new INVENTORY();
+            Inventory Inv = new Inventory();
 
             Inv.Block = b;
             Inv.Inv = b.GetInventory();
@@ -191,6 +193,8 @@ namespace IngameScript
                 buildItem("Kess     ", "MyObjectBuilder_AmmoMagazine", "180mmLeadSteelSabotMagazine", true); //16
 
                 buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate"); //17
+
+                _items[0].MaxFillRatio = _reactorFillRatio;
             }
             catch (Exception ex)
             {
@@ -219,12 +223,12 @@ namespace IngameScript
 
                 // include temp inventories as well
                 // like torps which change ammo type
-                List<INVENTORY> CombinedInventories = Item.Inventories.Concat(Item.TempInventories).ToList();
+                List<Inventory> CombinedInventories = Item.Inventories.Concat(Item.TempInventories).ToList();
 
                 //if (_d) Echo("Checking " + Item.LcdName);
 
                 // check them all.
-                foreach (INVENTORY Inv in CombinedInventories)
+                foreach (Inventory Inv in CombinedInventories)
                 {
                     Inv.Qty = Inv.Inv.GetItemAmount(Item.Type).ToIntSafe();
                     Item.ActualQty += Inv.Qty;
@@ -314,12 +318,12 @@ namespace IngameScript
             }
         }
 
-        bool inventorySomewhatFull(IMyTerminalBlock Block) // is a block's inventory > 95% full.
+        /*bool inventorySomewhatFull(IMyTerminalBlock Block) // is a block's inventory > 95% full.
         {
             if (Block == null) return false;
             IMyInventory thisInventory = Block.GetInventory();
             return thisInventory.CurrentVolume.RawValue > (thisInventory.MaxVolume.RawValue * 0.95);
-        }
+        }*/
 
         bool inventoryEmpty(IMyTerminalBlock Block) // is a block's inventory totally empty
         {
@@ -327,20 +331,21 @@ namespace IngameScript
             return thisInventory.VolumeFillFactor == 0;
         }
 
-        bool loadInventories(List<INVENTORY> LoadFrom, List<INVENTORY> LoadTo, MyItemType Type, int Average = -1)
+        bool loadInventories(List<Inventory> LoadFrom, List<Inventory> LoadTo, MyItemType Type, int Average = -1, double maxFillRatio = 1, double unloadDownToRatio = 1)
         {
             if (_d) Echo("Loading " + LoadTo.Count + " inventories from " + LoadFrom.Count + " sources.");
 
             bool Success = false;
+            bool Unloading = unloadDownToRatio < 1;
 
-            foreach (INVENTORY ToInv in LoadTo)
+            foreach (Inventory ToInv in LoadTo)
             {
                 // how many from inventories to try for this to.
                 int Retries = 3;
 
                 //if (_d) Echo("Loading " + ToInv.Block.CustomName);
 
-                foreach (INVENTORY FromInv in LoadFrom)
+                foreach (Inventory FromInv in LoadFrom)
                 {
                     //if (_d) Echo("Checking  " + FromInv.Block.CustomName + "\nRetries = " + Retries);
 
@@ -375,14 +380,60 @@ namespace IngameScript
                             int Qty = InvItem.Amount.ToIntSafe();
 
                             // bail if we're to is empty.
-                            if (Qty == 0) break;
+                            // and if we're not unloading
+                            if (Qty == 0 && !Unloading) break;
 
                             // throttle this a little so we don't go nuts trying everything.
                             Retries--;
 
+                            // we are unloading.
+                            // so our qty needs to reflect the unloadDownToRatio
+                            // in the from.
+                            if (Unloading)
+                            {
+                                // unload one at a time.
+                                Retries = -1;
+                                try
+                                {
+                                    Qty = FromInv.Qty - Convert.ToInt32(FromInv.Qty / FromInv.FillFactor * unloadDownToRatio);
+                                    if (_d) Echo("Unload " + Qty + "\n" + FromInv.Qty + "\n" + Convert.ToInt32(FromInv.Qty / FromInv.FillFactor * unloadDownToRatio));
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    // sometimes the parse fails, nothing to worry about, just do 1 and move on.
+                                    if (_d) Echo("Int conversion error at unload\n" + ex.Message);
+                                    Qty = 1;
+                                }
+                            }
+
+                            // if we have a max fill ratio below 1
+                            // that should dictate our max qty.
+                            else if (maxFillRatio < 1)
+                            {
+                                try
+                                {
+                                    int targetQty = Convert.ToInt32(ToInv.Qty / ToInv.FillFactor * maxFillRatio) - ToInv.Qty;
+                                    if (targetQty < Qty) Qty = targetQty;
+                                }
+                                catch (Exception ex)
+                                {
+                                    // sometimes the parse fails, nothing to worry about, just do 1 and move on.
+                                    if (_d) Echo("Int conversion error at load\n" + ex.Message);
+                                    Qty = 1;
+                                }
+                                
+
+                                //if (_d) Echo("targetQty: " + targetQty);
+
+                                // we only need to use this if it's smaller than the amount in the from inventory.
+                                
+                                
+                            }
+
                             // if we have an average value provided
                             // it means we want to balance Tos and Froms to target the average value.
-                            if (Average != -1)
+                            else if (Average != -1)
                             {
                                 // if our from has less than the average, bail.
                                 if (Qty <= Average)
@@ -402,7 +453,10 @@ namespace IngameScript
                             // if this worked, don't attempt to load this block again.
                             if (Success) Retries = -1;
 
-                            if (_d) Echo("Loading success = " + Success);
+                            //if (_d) Echo("Loading success = " + Success);
+
+                            // if this was an unload success, bail completely.
+                            if (Unloading && Success) return (Success);
 
                             break;
                         }
@@ -411,36 +465,5 @@ namespace IngameScript
             }
             return Success;
         }
-
-        /*
-        void loadInventory(IMyTerminalBlock ToLoad, List<IMyInventory> SourceInventories, string ItemType, int ItemCount)
-        {
-
-            if (_d) Echo("Loading block " + ToLoad.CustomName + " with item type " + ItemType + " from " + SourceInventories.Count + " sources.");
-
-            IMyInventory ToLoadInventory = ToLoad.GetInventory();
-
-            foreach (IMyInventory Source in SourceInventories)
-            {
-                try
-                {
-                    List<MyInventoryItem> Items = new List<MyInventoryItem>();
-                    Source.GetItems(Items);
-
-                    foreach (MyInventoryItem Item in Items)
-                    {
-                        if (Item.ToString().Contains(ItemType))
-                        {
-                            bool success = ToLoadInventory.TransferItemFrom(Source, Item, ItemCount);
-                            if (success) return;
-                        }
-                    }
-                }
-                catch { }
-            }
-
-            if (_d) Echo("Loading failed.");
-        }
-        */
     }
 }

@@ -66,7 +66,7 @@ namespace IngameScript
                         if (_kineticsHaveTarget)
                             Battery.ChargeMode = ChargeMode.Discharge;
                         else
-                            Battery.ChargeMode = ChargeMode.Auto;
+                            Battery.ChargeMode = ChargeMode.Recharge;
                     }
                 }
             }

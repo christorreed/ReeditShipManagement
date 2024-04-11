@@ -113,6 +113,9 @@ namespace IngameScript
         // use m/s^2 rather than G's for thrust values.
         bool _isWeirdAboutThrustLikeGerm = false;
 
+        // how much should we fill reactors? (3% wiggle room)
+        double _reactorFillRatio = 0.5;
+
         // Performance & Debugging -----------------------------------------------------------------
 
         // verbose debugging enabled
@@ -238,6 +241,8 @@ namespace IngameScript
                 }
 
                 _isWeirdAboutThrustLikeGerm = _config.Get(sec, "ShowThrustInMetric").ToBoolean(_isWeirdAboutThrustLikeGerm);
+                _reactorFillRatio = _config.Get(sec, "ReactorFillRatio").ToDouble(_reactorFillRatio);
+                _items[0].MaxFillRatio = _reactorFillRatio;
 
                 // Performance & Debugging -----------------------------------------------------------------
 
@@ -770,6 +775,10 @@ namespace IngameScript
             name = "ShowThrustInMetric";
             _config.Set(sec, name, _isWeirdAboutThrustLikeGerm);
             _config.SetComment(sec, name, "show basic telemetry data on advanced thrust lcds");
+
+            name = "ReactorFillRatio";
+            _config.Set(sec, name, _reactorFillRatio);
+            _config.SetComment(sec, name, "0-1, fill ratio for reactors");
 
             // Performance & Debugging -----------------------------------------------------------------
 
