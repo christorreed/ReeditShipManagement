@@ -55,6 +55,7 @@
 * spread init out
 * broadcast IGC data with current stance for other scripts.
 * new hudlcd presets
+* no active spawn warning
 
 ## todos general
 

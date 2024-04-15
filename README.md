@@ -52,7 +52,7 @@ RSM has a lot of features that you will want to [explore in detail](https://gith
 	* Ship **telemetry**, including current acceleration in G's or m/2^2, stop times and distances at max burn, and at a configurable list of burn percentages.
 	* Ship **inventory status**, including actual verse expected values for ammo, fuel, fusion fuel and steel plates.
 	* Ship **power** and **tank** information
-	* General, **prioritised ship warnings** about various conditions like low fuel, low ammo, no lidar, low batteries, antennas on etc.
+	* General, **prioritised ship warnings** about various conditions like low fuel, low ammo, no lidar, low batteries, antennas on and a range of other conditions.
 	* Automatic configuration of up to 6 screens, including default Hudlcd configuration, lcd text colour control per stance
 * .ini compatible custom data configuration for easy adjustment in an IDE.
 * Detailed [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md), and basic [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) for ease of use.
@@ -70,6 +70,6 @@ Draconis Expanse is a PvP environment, and scripts have been used as weapons bef
 **USE AT YOUR OWN RISK!**
 *This script is safe (all of my ships run it) but it is complex, and using it improperly can lead to damage or destruction of your ship.  Read the guide, ask questions, and practice.*
 **DON'T FIGHT THE SCRIPT!**
-*What? My PDCs keep turning back on when I switch them off! lol, RSM is doing that, and for good reason.  There's probably a stance or other option to achieve what you want with one command to RSM. If it's freaking you out, just turn off the RSM PB!*
+*There's probably a stance or other option to achieve what you want with one command to RSM. If it's freaking you out, just turn off the RSM PB!*
 
 [Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/Z7UtZBBe) 

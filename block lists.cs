@@ -45,6 +45,7 @@ namespace IngameScript
         private List<IMyProjector> _projectors = new List<IMyProjector>();
         private List<IMyReactor> _reactors = new List<IMyReactor>();
         private List<IMySensorBlock> _sensors = new List<IMySensorBlock>();
+        private List<IMyTerminalBlock> _spawns = new List<IMyTerminalBlock>();
         private List<IMyGasTank> _h2Tanks = new List<IMyGasTank>();
         private List<IMyGasTank> _o2Tanks = new List<IMyGasTank>();
         private List<IMyAirVent> _vents = new List<IMyAirVent>();
@@ -117,6 +118,28 @@ namespace IngameScript
                     return false;
                 }
 
+                // Medical Rooms
+                if (blockId.Contains("MedicalRoom/"))
+                {
+                    if (_spawnOpen) b.CustomData = _survivalKitOpenData;
+                    else b.CustomData = _survivalKitData;
+
+                    _spawns.Add(b);
+                    if (I) _initNames.Add(b, "Medical Room");
+                    return false;
+                }
+
+                // Survival Kits
+                if (blockId.Contains("SurvivalKit/"))
+                {
+                    if (_spawnOpen) b.CustomData = _survivalKitOpenData;
+                    else b.CustomData = _survivalKitData;
+
+                    _spawns.Add(b);
+                    if (I) _initNames.Add(b, "Survival Kit");
+                    return false;
+                }
+
                 // IGNORE KEYWORD CHECK -----------------------------------------------------------------
 
                 // Ignore blocks with the ignore keyword...
@@ -147,32 +170,6 @@ namespace IngameScript
                 if (blockId == "MyObjectBuilder_MedicalRoom/LargeRefillStation")
                 {
                     if (I) _initNames.Add(b, "Refill Station");
-                    return false;
-                }
-
-                // Medical Rooms
-                if (blockId.Contains("MedicalRoom/"))
-                {
-                    if (_spawnOpen)
-                        b.CustomData = _survivalKitOpenData;
-                    else
-                        b.CustomData = _survivalKitData;
-
-                    if (!b.CustomName.Contains(_keywordIgnore)) b.ApplyAction("OnOff_On");
-                    if (I) _initNames.Add(b, "Medical Room");
-                    return false;
-                }
-
-                // Survival Kits
-                if (blockId.Contains("SurvivalKit/"))
-                {
-                    if (_spawnOpen)
-                        b.CustomData = _survivalKitOpenData;
-                    else
-                        b.CustomData = _survivalKitData;
-
-                    if (!b.CustomName.Contains(_keywordIgnore)) b.ApplyAction("OnOff_On");
-                    if (I) _initNames.Add(b, "Survival Kit");
                     return false;
                 }
 

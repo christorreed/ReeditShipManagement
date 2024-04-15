@@ -409,6 +409,12 @@ namespace IngameScript
                         ));
                 }
 
+                // handle spawns
+                if (_spawnsDead)
+                {
+                    lcdAlerts.Add(new Alert("NO SPAWNS!", "NO FUNCTIONAL SPAWNS!\nNo functional spawns detected by RSM!", 3));
+                }
+
                 // handle fuel
                 int h2_priority = 0;
                 if (_fuelPercentage < 5)

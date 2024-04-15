@@ -71,5 +71,17 @@ namespace IngameScript
                     Sensor.Enabled = power_state;
             }
         }
+
+
+        // Spawns -----------------------------------------------------------------
+        private void refreshSpawns()
+        {
+            _spawnsDead = true;
+            foreach (IMyTerminalBlock Spawn in _spawns)
+            {
+                Spawn.ApplyAction("OnOff_On");
+                if (Spawn.IsFunctional) _spawnsDead = false;
+            }
+        }
     }
 }
