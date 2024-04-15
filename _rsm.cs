@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.47 ($MDK_DATE$)";
+        string Version = "1.99.48 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -51,6 +51,7 @@ namespace IngameScript
 
         bool _needFuel = false;
         bool _spawnOpen = false;
+        bool _spawnsDead = false;
         bool _noExtractor = false;
         bool _noSpareTanks = false;
         int _unownedBlockCount = 0;
@@ -549,6 +550,10 @@ namespace IngameScript
 
             if (_d) Echo("Refreshing " + _allLcds.Count + " lcds...");
             iterateLcds();
+            // sets power
+
+            if (_d) Echo("Refreshing " + _spawns.Count + " lcds...");
+            refreshSpawns();
             // sets power
 
             // these ones are only keep alives

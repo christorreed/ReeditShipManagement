@@ -10,6 +10,7 @@
 
 ## bugs done
 
+* ~~lcd output new line on basic thrust~~
 * ~~fuel tanks loading?~~
 * ~~run autoload twice?~~
 * ~~airlocks not working~~
@@ -55,7 +56,7 @@
 * spread init out
 * broadcast IGC data with current stance for other scripts.
 * new hudlcd presets
-* no active spawn warning
+* warning supression?
 
 ## todos general
 
@@ -64,6 +65,7 @@
 
 ## todos done
 
+* ~~no active spawn warning~~
 * ~~finish documentation~~
 * ~~set discharge functionality to Recharge instead of auto~~
 * ~~removed REEDAV stuff?~~

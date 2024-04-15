@@ -118,28 +118,6 @@ namespace IngameScript
                     return false;
                 }
 
-                // Medical Rooms
-                if (blockId.Contains("MedicalRoom/"))
-                {
-                    if (_spawnOpen) b.CustomData = _survivalKitOpenData;
-                    else b.CustomData = _survivalKitData;
-
-                    _spawns.Add(b);
-                    if (I) _initNames.Add(b, "Medical Room");
-                    return false;
-                }
-
-                // Survival Kits
-                if (blockId.Contains("SurvivalKit/"))
-                {
-                    if (_spawnOpen) b.CustomData = _survivalKitOpenData;
-                    else b.CustomData = _survivalKitData;
-
-                    _spawns.Add(b);
-                    if (I) _initNames.Add(b, "Survival Kit");
-                    return false;
-                }
-
                 // IGNORE KEYWORD CHECK -----------------------------------------------------------------
 
                 // Ignore blocks with the ignore keyword...
@@ -165,6 +143,28 @@ namespace IngameScript
                 string blockId = b.BlockDefinition.ToString();
 
                 // Spawns -----------------------------------------------------------------
+
+                // Medical Rooms
+                if (blockId.Contains("MedicalRoom/"))
+                {
+                    if (_spawnOpen) b.CustomData = _survivalKitOpenData;
+                    else b.CustomData = _survivalKitData;
+
+                    _spawns.Add(b);
+                    if (I) _initNames.Add(b, "Medical Room");
+                    return false;
+                }
+
+                // Survival Kits
+                if (blockId.Contains("SurvivalKit/"))
+                {
+                    if (_spawnOpen) b.CustomData = _survivalKitOpenData;
+                    else b.CustomData = _survivalKitData;
+
+                    _spawns.Add(b);
+                    if (I) _initNames.Add(b, "Survival Kit");
+                    return false;
+                }
 
                 // Refill Stations
                 if (blockId == "MyObjectBuilder_MedicalRoom/LargeRefillStation")

@@ -125,6 +125,7 @@
 #### Other Changes
 
 * Now monitoring subsystem integrity for cargo containers (based on actual capacity) and welders.
+* Improved spawn management, including a warning if no functional spawn is present.
 * Fixed battery display bugs on subsystem integrity lcd.
 * Now counting steel plates on inventory display screen
 * New default ignore keyword: `[I]`
@@ -138,6 +139,12 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
+## V 1.99.48 (BETA) (2024-04-15)
+
+* Added improved spawn management, including more frequent power on commands, and an LCD warning on a no functional spawn condition.
+    * Thanks @snek, @brillcrafter
+* Fixed LCD output bugs in thrust section
+    * Thanks @brillcrafter
 
 ## V 1.99.47 (BETA) (2024-04-11)
 
