@@ -362,13 +362,13 @@ namespace IngameScript
                     // show actual accel/decel
                     sectionThrust =
                         _keyActualDecel + stopDistance(_actualThrust, vel) +
-                        _keyActualAccel + (accelActual + thrustUnit).PadLeft(15);
+                        _keyActualAccel + (accelActual + thrustUnit).PadLeft(15) + "\n\n";
 
                 else // otherwise, if we are not burning
                     // show damp/best
                     sectionThrust =
                         _keyDampDecel + stopDistance(_maxThrust, vel, true) +
-                        _keyBestAccel + (accelMax + thrustUnit).PadLeft(15);
+                        _keyBestAccel + (accelMax + thrustUnit).PadLeft(15) + "\n\n";
 
                 // build tanks & batteries section ----------------------------------------------
 
