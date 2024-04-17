@@ -2,7 +2,7 @@
 
 ## bugs high importance
 
-*
+
 
 ## bugs low importantance
 
@@ -10,6 +10,7 @@
 
 ## bugs done
 
+* ~~init not saving ship name to cd.~~
 * ~~lcd output new line on basic thrust~~
 * ~~fuel tanks loading?~~
 * ~~run autoload twice?~~

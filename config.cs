@@ -1618,6 +1618,16 @@ namespace IngameScript
 
                 config.Set(sec, name, _currentStanceName);
             }
+            else
+            {
+                // if we're not setting stance
+                // this is an init.
+                // so we have to save the ship name...
+                sec = "RSM.System";
+                name = "ShipName";
+
+                config.Set(sec, name, _shipName);
+            }
 
             if (setSubsystems)
             {

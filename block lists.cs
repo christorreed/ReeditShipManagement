@@ -173,7 +173,7 @@ namespace IngameScript
                     return false;
                 }
 
-                // _allLcds -----------------------------------------------------------------
+                // LCDs -----------------------------------------------------------------
 
                 var TempLCD = b as IMyTextPanel;
                 if (TempLCD != null)
