@@ -160,7 +160,8 @@ namespace IngameScript
         string
             // booting string
             // shown on every screen at boot
-            _bootingString = "RSM is booting...\n\n",
+            _bootingString,
+            _initingString,
 
             // the distance between spinners on the overlay
             _overlayBlank,
@@ -168,7 +169,9 @@ namespace IngameScript
             // bottom of a section
             _lcdDivider,
 
-            _headerEnd = "──\n\n",
+            _doubleLine = "\n\n",
+
+            _headerEnd,
 
             // status light bits
             _statusLightTop = "╔══════╗",
@@ -205,9 +208,12 @@ namespace IngameScript
             _statusLightBottom = _statusLightBottom + _statusLightBottom + _statusLightBottom + _statusLightBottom + "\n";
 
             // misc stuff
+            _bootingString = centreText("Welcome to") + _doubleLine + centreText("R S M.") + _doubleLine;
+            _initingString = centreText("Initialising") + _doubleLine;
             _overlayBlank = new String(' ', _lcdTextWidth - 8);
             _lcdDivider = "└" + new String('─', _lcdTextWidth - 2) + "┘";
             _configDiv = new String('-', 26) + "\n";
+            _headerEnd = "──" + _doubleLine;
 
             // build the lcd section headers
             // these will have spinner appended later.
@@ -282,22 +288,35 @@ namespace IngameScript
             string sectionAdvancedThrust = _headerAdvancedThrust + basicSpinner + _headerEnd;
 
             string sectionHeader =
-                 centreText(_shipName.ToUpper(), _lcdTextWidth) + "\n" +
+                 centreText(_shipName.ToUpper()) + "\n" +
                  "  " + spinner + " " + centreText(_currentStanceName, _lcdTextWidth - 10) + " " + spinner + "  \n";
 
             string sectionHeaderOverlay =
-                "\n  " + overlaySpinner + _overlayBlank + overlaySpinner + "  \n\n";
+                "\n  " + overlaySpinner + _overlayBlank + overlaySpinner + "  " + _doubleLine;
 
 
             // handle script still booting ----------------------------------------------
 
             if (_isBooting)
             {
-                sectionInventory += _bootingString;
-                sectionThrust += _bootingString;
-                sectionPowerAndTanks += _bootingString;
-                sectionWarnings += _bootingString;
-                sectionIntegrity += _bootingString;
+                string boot = _bootingString + centreText("Booting" + new string('.', _stepBoot)) + _doubleLine;
+                sectionInventory += boot;
+                sectionThrust += boot;
+                sectionPowerAndTanks += boot;
+                sectionWarnings += boot;
+                sectionIntegrity += boot;
+            }
+
+            // handle script initialising ----------------------------------------------
+
+            else if (_isIniting)
+            {
+                string init = _initingString + centreText(_shipName) + _doubleLine;
+                sectionInventory += init;
+                sectionThrust += init;
+                sectionPowerAndTanks += init;
+                sectionWarnings += init;
+                sectionIntegrity += init;
             }
 
             // handle not booting (normal ops) ----------------------------------------------
@@ -327,7 +346,8 @@ namespace IngameScript
 
                 string
                     velMsg = _keyVelocity,
-                    thrustUnit = " Gs";
+                    thrustUnit = " Gs", 
+                    working;
 
                 if (vel < 1) // if velocity is close to zero, use 500m/s instead.
                 {
@@ -362,13 +382,13 @@ namespace IngameScript
                     // show actual accel/decel
                     sectionThrust =
                         _keyActualDecel + stopDistance(_actualThrust, vel) +
-                        _keyActualAccel + (accelActual + thrustUnit).PadLeft(15) + "\n\n";
+                        _keyActualAccel + (accelActual + thrustUnit).PadLeft(15) + _doubleLine;
 
                 else // otherwise, if we are not burning
                     // show damp/best
                     sectionThrust =
                         _keyDampDecel + stopDistance(_maxThrust, vel, true) +
-                        _keyBestAccel + (accelMax + thrustUnit).PadLeft(15) + "\n\n";
+                        _keyBestAccel + (accelMax + thrustUnit).PadLeft(15) + _doubleLine;
 
                 // build tanks & batteries section ----------------------------------------------
 
@@ -380,7 +400,7 @@ namespace IngameScript
                     _barKeyO2 + generateBar(o2Percentage) + "] " + (o2Percentage + " %").PadLeft(9) + "\n" +
                     _barKeyBatt + generateBar(battPercentage) + "] " + (battPercentage + " %").PadLeft(9) + "\n" +
                     _barKeyCap + generateBar(capPercentage) + "] " + (capPercentage + " %").PadLeft(9) + "\n" +
-                    "Max Power:" + (maxPowerNice + " MW / " + initPower + " MW").PadLeft(22) + "\n\n";
+                    "Max Power:" + (maxPowerNice + " MW / " + initPower + " MW").PadLeft(22) + _doubleLine;
 
                 // build warnings section, status lights ----------------------------------------------
 
@@ -419,12 +439,14 @@ namespace IngameScript
                 int h2_priority = 0;
                 if (_fuelPercentage < 5)
                 {
-                    lcdAlerts.Add(new Alert("FUEL CRITICAL!", "FUEL CRITICAL!\nFuel Level < 5%!", 3));
+                    working = "FUEL CRITICAL!";
+                    lcdAlerts.Add(new Alert(working, working + "\nFuel Level < 5%!", 3));
                     h2_priority = 3;
                 }
                 else if (_fuelPercentage < 25)
                 {
-                    lcdAlerts.Add(new Alert("FUEL LOW!", "FUEL LOW!\nFuel Level < 10%!", 2));
+                    working = "FUEL LOW!";
+                    lcdAlerts.Add(new Alert(working, working + "\nFuel Level < 10%!", 2));
                     h2_priority = 2;
                 }
 
@@ -445,7 +467,7 @@ namespace IngameScript
                         if (h2_priority == 0) h2_priority = 1;
 
                         lcdAlerts.Add(new Alert(
-                            "No Extractor",
+                            "No extractor",
                             "Cannot refuel!\nNo functional extractor!",
                             h2_priority));
                     }
@@ -458,17 +480,20 @@ namespace IngameScript
                 int o2_priority = 0;
                 if (o2Percentage < 5)
                 {
-                    lcdAlerts.Add(new Alert("OXYGEN CRITICAL!", "OXYGEN CRITICAL!\nShip O2 Level < 5%!", 3));
+                    working = "OXYGEN CRITICAL!";
+                    lcdAlerts.Add(new Alert(working, working + "\nShip O2 Level < 5%!", 3));
                     o2_priority = 3;
                 }
                 else if (o2Percentage < 10)
                 {
-                    lcdAlerts.Add(new Alert("OXYGEN LOW!", "OXYGEN LOW!\nShip O2 Level < 10%!", 2));
+                    working = "OXYGEN LOW!";
+                    lcdAlerts.Add(new Alert(working, working + "\nShip O2 Level < 10%!", 2));
                     o2_priority = 2;
                 }
                 else if (o2Percentage < 25)
                 {
-                    lcdAlerts.Add(new Alert("Oxygen Low", "Oxygen Low!\nShip O2 Level < 25%!", 1));
+                    working = "Oxygen Low!";
+                    lcdAlerts.Add(new Alert(working, working + "\nShip O2 Level < 25%!", 1));
                     o2_priority = 1;
                 }
 
@@ -478,28 +503,22 @@ namespace IngameScript
                 {
                     int unsealed = (_vents.Count - _ventsSealedCount);
                     o2_priority++;
-                    lcdAlerts.Add(new Alert(
-                        unsealed + " vents are unsealed",
-                        unsealed + " vents are unsealed",
-                        1));
+                    working = unsealed + " vents are unsealed";
+                    lcdAlerts.Add(new Alert(working, working, 1));
                 }
 
                 // handle doors
                 if (_doorsCountUnlocked > 0)
                 {
-                    lcdAlerts.Add(new Alert(
-                        _doorsCountUnlocked + " doors are insecure",
-                        _doorsCountUnlocked + " doors are insecure",
-                        0));
+                    working = _doorsCountUnlocked + " doors are insecure";
+                    lcdAlerts.Add(new Alert(working, working, 0));
                 }
 
                 // handle aux
                 if (_activeAuxBlockCount > 0)
                 {
-                    lcdAlerts.Add(new Alert(
-                        _keywordAuxBlocks + " is active (" + _activeAuxBlockCount + ")",
-                        _keywordAuxBlocks + " is active (" + _activeAuxBlockCount + ")",
-                        0));
+                    working = _keywordAuxBlocks + " is active (" + _activeAuxBlockCount + ")";
+                    lcdAlerts.Add(new Alert(working, working, 0));
                 }
 
                 statusLights.Add(new StatusLight("OXYG", o2_priority, _stepSpinner + status_light_spice));
@@ -511,13 +530,16 @@ namespace IngameScript
                 {
                     if (battPercentage < 5)
                     {
+
                         power_priority += 2;
-                        lcdAlerts.Add(new Alert("BATTERIES CRITICAL!", "BATTERIES CRITICAL!\nBattery Level < 5%!", 2));
+                        working = "BATTERIES CRITICAL!";
+                        lcdAlerts.Add(new Alert(working, working + "\nBattery Level < 5%!", 2));
                     }
                     else if (battPercentage < 10)
                     {
                         power_priority += 1;
-                        lcdAlerts.Add(new Alert("Batteries Low!", "Batteries Low!\nBattery Level < 10%!", 1));
+                        working = "Batteries Low!";
+                        lcdAlerts.Add(new Alert(working, working + "\nBattery Level < 10%!", 1));
                     }
                 }
 
@@ -534,18 +556,21 @@ namespace IngameScript
                         if (_items[0].ActualQty > 0)
                         {
                             power_priority += 1;
-                            lcdAlerts.Add(new Alert("No Spare Fusion Fuel!", "No spare fusion fuel detected in ships cargo!", 2));
+                            working = "No Spare Fusion Fuel!";
+                            lcdAlerts.Add(new Alert(working, working, 2));
                         }
                     }
                     else if (_items[0].Percentage < 5) // Fusion fuel below 5% of init quota.
                     {
                         power_priority += 2;
-                        lcdAlerts.Add(new Alert("FUSION FUEL LEVEL CRITICAL!", "Fusion fuel level is low!", 3));
+                        working = "FUSION FUEL LEVEL CRITICAL!";
+                        lcdAlerts.Add(new Alert(working, working, 3));
                     }
                     else if (_items[0].Percentage < 10) // Fusion fuel below 10% of init quota.
                     {
                         power_priority += 1;
-                        lcdAlerts.Add(new Alert("Fusion Fuel Level Low!", "Fusion fuel level is low!", 2));
+                        working = "Fusion Fuel Level Low!";
+                        lcdAlerts.Add(new Alert(working, working, 2));
                     }
                 }
 
@@ -597,9 +622,9 @@ namespace IngameScript
                 // handle unowned
                 if (_unownedBlockCount > 0)
                 {
-                    lcdAlerts.Add(new Alert(
-                    _unownedBlockCount + " UNOWNED BLOCKS!",
-                    "RSM detected " + _unownedBlockCount + " terminal blocks on this grid owned by a player with a different faction tag."
+                    working = _unownedBlockCount + " UNOWNED BLOCKS!";
+                    lcdAlerts.Add(new Alert(working,
+                    working + "\nRSM detected " + _unownedBlockCount + " terminal blocks on this grid owned by a player with a different faction tag."
                     , 3
                     ));
                 }
@@ -609,19 +634,16 @@ namespace IngameScript
                 if (_doorsCount > _doorsCountClosed)
                 {
                     int open = (_doorsCount - _doorsCountClosed);
-                    lcdAlerts.Add(new Alert(
-                        open + " doors are open",
-                        open + " doors are open",
-                        0));
+                    working = open + " doors are open";
+                    lcdAlerts.Add(new Alert(working, working, 0));
                 }
 
 
                 // sort alerts by priority.
                 lcdAlerts = lcdAlerts.OrderBy(a => a.Priority).Reverse().ToList();
 
-
                 if (lcdAlerts.Count < 1) sectionWarnings += "No warnings\n";
-                else Echo("\n\n WARNINGS:");
+                else Echo(_doubleLine + " WARNINGS:");
 
                 // output alerts to warnings list.
                 for (int i = 0; i < lcdAlerts.Count; i++)
@@ -685,7 +707,7 @@ namespace IngameScript
 
                 if (_initBatteries + _initReactors + _initH2 == 0) // nothing init basically.
                     sectionIntegrity += 
-                        "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + "\n\n";
+                        "Run init when ship is\nfully repaired to display\nsubsystem integrity!" + _doubleLine;
 
                 // build header and overlay ----------------------------------------------
 
@@ -708,7 +730,7 @@ namespace IngameScript
 
                 if (!_buildAdvancedThrust)
                 {
-                    sectionAdvancedThrust += "\n\n";
+                    sectionAdvancedThrust += _doubleLine;
                 }
                 else
                 {
@@ -737,7 +759,7 @@ namespace IngameScript
                         sectionAdvancedThrust += "\n" + ("Decel (" + (Percent * 100) + "%):").PadRight(17) + stopDistance((float)(_maxThrust * Percent), vel);
                     }
 
-                    sectionAdvancedThrust += "\n\n";
+                    sectionAdvancedThrust += _doubleLine;
                 }
 
             } // end we are not booting
@@ -895,7 +917,7 @@ namespace IngameScript
 
         // pad text on either side to centre it
         // important for hudlcd
-        string centreText(string Text, int Width)
+        string centreText(string Text, int Width = _lcdTextWidth)
         {
             int spaces = Width - Text.Length;
             int padLeft = spaces / 2 + Text.Length;

@@ -54,7 +54,6 @@
 * make _lcdOverlayColour configurable
 * improve building of the subsystem integrity panel
 * booting screen improvements
-* spread init out
 * broadcast IGC data with current stance for other scripts.
 * new hudlcd presets
 * warning supression?
@@ -66,6 +65,7 @@
 
 ## todos done
 
+* ~~spread init out~~
 * ~~no active spawn warning~~
 * ~~finish documentation~~
 * ~~set discharge functionality to Recharge instead of auto~~

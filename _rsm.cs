@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.50 ($MDK_DATE$)";
+        string Version = "1.99.51 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -40,6 +40,7 @@ namespace IngameScript
         int _stepWait = 0;
         int _stepOccasional = 0;
         int _stepRare;
+        int _stepInit = 0;
 
         bool _isParsing = true;
         bool _isBooting = true;
@@ -83,6 +84,11 @@ namespace IngameScript
         // highest instruction count since recompile
         int _maxInstructionsCount = 0;
 
+        // init bools
+        bool _initingSubSystems;
+        bool _initingInventory;
+        bool _initingBlockNames;
+
         public Program()
         {
             Echo("Welcome to RSM\nV " + Version);
@@ -123,13 +129,21 @@ namespace IngameScript
         {
             if (_d) Echo("Processing command '" + argument + "'...");
 
+            if (_isBooting)
+            {
+                commandFailed(argument, "RSM is still booting");
+                return;
+            }
+
+            if (_isIniting)
+            {
+                commandFailed(argument, "RSM is still initialising");
+                return;
+            }
+
             if (argument == "")
             {
-                _alerts.Add(new Alert(
-                    "COMMAND FAILED: Arg Required!",
-                    "A command was ignored because the argument was blank."
-                    , 3
-                    ));
+                commandFailed(argument, "the argument was blank");
                 return;
             }
 
@@ -137,12 +151,7 @@ namespace IngameScript
 
             if (args.Length < 2)
             {
-
-                _alerts.Add(new Alert(
-                    "COMMAND FAILED: Syntax Error!",
-                    "A command was ignored because it wasn't recognised."
-                    , 3
-                    ));
+                commandFailed(argument, "the argument wasn't recognised");
                 return;
             }
 
@@ -256,17 +265,27 @@ namespace IngameScript
                     }
 
                 default:
-                    _alerts.Add(new Alert(
-                        "COMMAND FAILED: Syntax Error!",
-                        "A command was ignored because it wasn't recognised."
-                        , 3
-                        ));
+                    commandFailed(argument, "the argument wasn't recognised");
                     return;
             }
         }
 
+        void commandFailed(string argument, string reason)
+        {
+            _alerts.Add(new Alert(
+                "COMMAND FAILED!",
+                "Command '" + argument + "' was ignored because " + reason,
+                3
+                ));
+        }
+
         void mainLoop()
         {
+            // if we're profiling
+            // set the start time
+            // no point logging the first one out
+            if (_p) msSinceLast();
+
             // do we need to wait before we loop?
             if (_stepWait < _loopStallCount)
             {
@@ -280,13 +299,19 @@ namespace IngameScript
             // to spread out the startup load
             if (_isParsing)
             {
-                if (_p) msSinceLast();
-
                 Echo("Parsing custom data...");
                 prepCustomData();
 
                 _isParsing = false;
                 return;
+            }
+            else if (_isIniting)
+            {
+                runInitStep();
+
+                // update the _allLcds
+                if (_d) Echo("Updating " + _rsmLcds.Count + " RSM Lcds");
+                refreshLcds();
             }
 
             // write to the console.
@@ -296,11 +321,6 @@ namespace IngameScript
             _instructionsCount = Runtime.CurrentInstructionCount;
             if (_instructionsCount > _maxInstructionsCount)
                 _maxInstructionsCount = Runtime.CurrentInstructionCount;
-
-            // if we're profiling
-            // set the start time
-            // no point logging the first one out
-            if (_p) msSinceLast();
 
             // prep keep alives
             // lots of block refreshes use this

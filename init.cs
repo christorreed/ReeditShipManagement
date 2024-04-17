@@ -32,66 +32,93 @@ namespace IngameScript
             // set init mode on
             _isIniting = true;
 
-            // force a block refresh.
-            doThisStuffRarely();
-
-            // we need to refresh items to get counts for init values
-            refreshItems();
-
-            // also set our step to 0,
-            // reset counter for next rare stuff run
-            _stepRare = 0;
-
             // i now christen this ship, the RSG whatever the fuck
             // it's now variable official.
             _shipName = ship;
 
-            if (_d) Echo("Initialising lcds...");
-            // setup _allLcds.
-            initLcds();
+            // we use these bools later in the init process.
+            _initingBlockNames = nameBlocks;
+            _initingSubSystems = setSubSystems;
+            _initingInventory = setInventory;
 
-            if (setSubSystems)
-            {
-                // now I calculate subsystem total capacities in order to check for damage later.
-                if (_d) Echo("Initialising subsystem values...");
-                initMainThrusters();
-                initRcsThrusters();
-                initBatteries();
-                initReactors();
-                initH2Tanks();
-                initO2Tanks();
-                initCargos();
-                _initPdcs = _normalPdcs.Count + _defensivePdcs.Count;
-                _initTorpLaunchers = _torpedoLaunchers.Count;
-                _initKinetics = _kineticWeapons.Count;
-                _initGyros = _gyroscopes.Count;
-                _initWelders = _welders.Count;
-            }
-
-            if (setInventory)
-            {
-                if (_d) Echo("Initialising item values...");
-                initItems();
-            }
-
-            if (nameBlocks)
-            {
-                if (_d) Echo("Initialising block names...");
-                initBlockNames();
-            }
-
-            // save all of these new values to custom data straight away.
-            setSystemData(false, setSubSystems, setInventory);
-
-            _isIniting = false;
-
-            _alerts.Add(new Alert(
-                "Init:" + ship,
-                "Initialised '" + ship + "'\nGood Hunting!"
-                , 3
-                ));
+            // rest of the init steps occur at runInitStep();
+            // we'll do the first bit now,
+            // leave the rest until later...
+            runInitStep();
         }
 
+        void runInitStep()
+        {
+            switch (_stepInit)
+            {
+                case 0:
+                    // force a block refresh.
+                    doThisStuffRarely();
+
+                    // also set our step to 0,
+                    // reset counter for next rare stuff run
+                    _stepRare = 0;
+                    if (_p) Echo("Took " + msSinceLast());
+                    break;
+
+                case 1:
+                    // we need to refresh items to get counts for init values
+                    refreshItems();
+                    if (_p) Echo("Took " + msSinceLast());
+                    break;
+
+                case 2:
+                    if (_d) Echo("Initialising lcds...");
+                    // setup _allLcds.
+                    initLcds();
+
+                    if (_initingSubSystems)
+                    {
+                        // now I calculate subsystem total capacities in order to check for damage later.
+                        if (_d) Echo("Initialising subsystem values...");
+                        initMainThrusters();
+                        initRcsThrusters();
+                        initBatteries();
+                        initReactors();
+                        initH2Tanks();
+                        initO2Tanks();
+                        initCargos();
+                        _initPdcs = _normalPdcs.Count + _defensivePdcs.Count;
+                        _initTorpLaunchers = _torpedoLaunchers.Count;
+                        _initKinetics = _kineticWeapons.Count;
+                        _initGyros = _gyroscopes.Count;
+                        _initWelders = _welders.Count;
+                    }
+
+                    if (_initingInventory)
+                    {
+                        if (_d) Echo("Initialising item values...");
+                        initItems();
+                    }
+
+                    if (_initingBlockNames)
+                    {
+                        if (_d) Echo("Initialising block names...");
+                        initBlockNames();
+                    }
+
+                    // save all of these new values to custom data straight away.
+                    setSystemData(false, _initingSubSystems, _initingInventory);
+
+                    _alerts.Add(new Alert(
+                        "Init:" + _shipName,
+                        "Initialised '" + _shipName + "'\nGood Hunting!"
+                        , 3
+                        ));
+
+                    // and init is done.
+                    _stepInit = 0;
+                    _isIniting = false;
+                    if (_p) Echo("Took " + msSinceLast());
+                    return;
+            }
+            _stepInit++;
+        }
 
         class NamingCategory
         {
