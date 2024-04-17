@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.48 ($MDK_DATE$)";
+        string Version = "1.99.50 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -43,9 +43,12 @@ namespace IngameScript
 
         bool _isParsing = true;
         bool _isBooting = true;
+        bool _isIniting = false;
 
         bool _adjustKeepAlives = false;
         bool _adjustKeepAlivesTo = false;
+
+        //IEnumerator<bool> _stateMachine;
 
         // Warning Variables -----------------------------------------------------------------
 

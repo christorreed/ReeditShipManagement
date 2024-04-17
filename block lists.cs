@@ -87,10 +87,6 @@ namespace IngameScript
         private List<Door> _doors = new List<Door>();
         private List<Airlock> _airlocks = new List<Airlock>();
 
-        // INIT
-        private bool I = false;
-        // set to true during an init.
-
         // Init Names List
         private Dictionary<IMyTerminalBlock, string> _initNames = new Dictionary<IMyTerminalBlock, string>();
         // built if I = true
@@ -126,7 +122,7 @@ namespace IngameScript
 
                 // SHIP NAME CHECK -----------------------------------------------------------------
 
-                if (!I && _requireShipName && !b.CustomName.Contains(_shipName))
+                if (!_isIniting && _requireShipName && !b.CustomName.Contains(_shipName))
                     // if we are not running init
                     // and we _requireShipName
                     // and the ship name isn't included
@@ -151,7 +147,7 @@ namespace IngameScript
                     else b.CustomData = _survivalKitData;
 
                     _spawns.Add(b);
-                    if (I) _initNames.Add(b, "Medical Room");
+                    if (_isIniting) _initNames.Add(b, "Medical Room");
                     return false;
                 }
 
@@ -162,14 +158,14 @@ namespace IngameScript
                     else b.CustomData = _survivalKitData;
 
                     _spawns.Add(b);
-                    if (I) _initNames.Add(b, "Survival Kit");
+                    if (_isIniting) _initNames.Add(b, "Survival Kit");
                     return false;
                 }
 
                 // Refill Stations
                 if (blockId == "MyObjectBuilder_MedicalRoom/LargeRefillStation")
                 {
-                    if (I) _initNames.Add(b, "Refill Station");
+                    if (_isIniting) _initNames.Add(b, "Refill Station");
                     return false;
                 }
 
@@ -180,7 +176,7 @@ namespace IngameScript
                 {
                     _allLcds.Add(TempLCD);
 
-                    if (I) _initNames.Add(b, "LCD");
+                    if (_isIniting) _initNames.Add(b, "LCD");
 
                     if (TempLCD.CustomName.Contains(_keywordRsmLcds))
                     {
@@ -289,23 +285,23 @@ namespace IngameScript
                     if (blockId.ToUpper().Contains("RCS"))
                     {
                         _rcsThrusters.Add(TempThruster);
-                        if (I) _initNames.Add(b, "RCS");
+                        if (_isIniting) _initNames.Add(b, "RCS");
                     }
                     else if (blockId.Contains("Hydro"))
                     {
                         _chemicalThrusters.Add(TempThruster);
-                        if (I) _initNames.Add(b, "Chem");
+                        if (_isIniting) _initNames.Add(b, "Chem");
                     }
                     else if (blockId.Contains("Atmospheric"))
                     {
                         _atmoThrusters.Add(TempThruster);
-                        if (I) _initNames.Add(b, "Atmo");
+                        if (_isIniting) _initNames.Add(b, "Atmo");
                     }
                     else
                     {
                         _epsteinThrusters.Add(TempThruster);
 
-                        if (I) 
+                        if (_isIniting) 
                         {
                             string append = "";
 
@@ -345,7 +341,7 @@ namespace IngameScript
                         _cargos.Add(TempCargo);
                         addInventory(b); // check this block for stored items
 
-                        if (I)
+                        if (_isIniting)
                         {
                             double Max = b.GetInventory().MaxVolume.RawValue;
                             double VolumeFactor = Math.Round(Max / 1265625024, 1);
@@ -361,7 +357,7 @@ namespace IngameScript
                 if (TempGyro != null)
                 {
                     _gyroscopes.Add(TempGyro);
-                    if (I) _initNames.Add(b, "Gyroscope");
+                    if (_isIniting) _initNames.Add(b, "Gyroscope");
                     return false;
                 }
 
@@ -370,7 +366,7 @@ namespace IngameScript
                 if (TempBatts != null)
                 {
                     _batteries.Add(TempBatts);
-                    if (I) _initNames.Add(b, "Power" + _nameDelimiter + "Battery");
+                    if (_isIniting) _initNames.Add(b, "Power" + _nameDelimiter + "Battery");
                     return false;
                 }
 
@@ -380,7 +376,7 @@ namespace IngameScript
                 if (TempSpot != null)
                 {
                     _spotlights.Add(TempSpot);
-                    if (I) _initNames.Add(b, "Spotlight");
+                    if (_isIniting) _initNames.Add(b, "Spotlight");
                     return false;
                 }
 
@@ -398,7 +394,7 @@ namespace IngameScript
                         )
                     {
                         _interiorLights.Add(TempLight);
-                        if (I) _initNames.Add(b, "Light" + _nameDelimiter + "Interior");
+                        if (_isIniting) _initNames.Add(b, "Light" + _nameDelimiter + "Interior");
                     }
 
                     // nav lights
@@ -407,12 +403,12 @@ namespace IngameScript
                         if (b.CustomName.ToUpper().Contains("STARBOARD"))
                         {
                             _starboardNavLights.Add(TempLight);
-                            if (I) _initNames.Add(b, "Light" + _nameDelimiter + "Nav" + _nameDelimiter + "Starboard");
+                            if (_isIniting) _initNames.Add(b, "Light" + _nameDelimiter + "Nav" + _nameDelimiter + "Starboard");
                         }
                         else
                         {
                             _portNavLights.Add(TempLight);
-                            if (I) _initNames.Add(b, "Light" + _nameDelimiter + "Nav" + _nameDelimiter + "Port");
+                            if (_isIniting) _initNames.Add(b, "Light" + _nameDelimiter + "Nav" + _nameDelimiter + "Port");
                         }
                     }
 
@@ -420,7 +416,7 @@ namespace IngameScript
                     else
                     {
                         _exteriorLights.Add(TempLight);
-                        if (I) _initNames.Add(b, "Light" + _nameDelimiter + "Exterior");
+                        if (_isIniting) _initNames.Add(b, "Light" + _nameDelimiter + "Exterior");
                     }
 
                     return false;
@@ -434,12 +430,12 @@ namespace IngameScript
                     if (blockId.Contains("Hydro"))
                     {
                         _h2Tanks.Add(TempTank);
-                        if (I) _initNames.Add(b, "Tank" + _nameDelimiter + "Hydrogen");
+                        if (_isIniting) _initNames.Add(b, "Tank" + _nameDelimiter + "Hydrogen");
                     }
                     else
                     {
                         _o2Tanks.Add(TempTank);
-                        if (I) _initNames.Add(b, "Tank" + _nameDelimiter + "Oxygen");
+                        if (_isIniting) _initNames.Add(b, "Tank" + _nameDelimiter + "Oxygen");
                     }
                     return false;
                 }
@@ -452,7 +448,7 @@ namespace IngameScript
                     _reactors.Add(TempReactor);
                     addInventory(b, 0);
 
-                    if (I)
+                    if (_isIniting)
                     {
                         string AppendReactor = "Lg";
                         if (blockId.Contains("SmallGenerator"))
@@ -477,7 +473,7 @@ namespace IngameScript
                     if (TempController.HasInventory)
                         addInventory(b);
 
-                    if (I && blockId.Contains("Cockpit/"))
+                    if (_isIniting && blockId.Contains("Cockpit/"))
                     {
                         if (blockId.Contains("StandingCockpit") || blockId.Contains("Console"))
                         {
@@ -534,7 +530,7 @@ namespace IngameScript
                         _doors.Add(d);
                     }
                     
-                    if (I) _initNames.Add(b, "Door");
+                    if (_isIniting) _initNames.Add(b, "Door");
                     return false;
                 }
 
@@ -575,7 +571,7 @@ namespace IngameScript
                             if (_d) Echo("Error with airlock vent name " + b.CustomName);
                         }
                     }
-                    if (I) _initNames.Add(b, "Vent");
+                    if (_isIniting) _initNames.Add(b, "Vent");
                     return false;
                 }
 
@@ -584,7 +580,7 @@ namespace IngameScript
                 if (TempCam != null)
                 {
                     _cameras.Add(TempCam);
-                    if (I) _initNames.Add(b, "Camera");
+                    if (_isIniting) _initNames.Add(b, "Camera");
                     return false;
                 }
 
@@ -595,7 +591,7 @@ namespace IngameScript
                     _connectors.Add(TempConnector);
                     addInventory(b);
 
-                    if (I)
+                    if (_isIniting)
                     {
                         string ConnectorAppend = "";
                         if (blockId.Contains("Passageway"))
@@ -610,7 +606,7 @@ namespace IngameScript
                 if (TempHangars != null)
                 {
                     _hangarDoors.Add(TempHangars);
-                    if (I) _initNames.Add(b, "Door" + _nameDelimiter + "Hangar");
+                    if (_isIniting) _initNames.Add(b, "Door" + _nameDelimiter + "Hangar");
                     return false;
                 }
 
@@ -621,7 +617,7 @@ namespace IngameScript
                     if (TempLidar != null)
                     {
                         _lidars.Add(TempLidar);
-                        if (I) _initNames.Add(b, "LiDAR");
+                        if (_isIniting) _initNames.Add(b, "LiDAR");
                         return false;
                     }
                 }
@@ -630,13 +626,13 @@ namespace IngameScript
                 if (blockId == "MyObjectBuilder_OxygenGenerator/Extractor")
                 {
                     _largeExtractors.Add(b);
-                    if (I) _initNames.Add(b, "Extractor");
+                    if (_isIniting) _initNames.Add(b, "Extractor");
                     return false;
                 }
                 if (blockId == "MyObjectBuilder_OxygenGenerator/ExtractorSmall")
                 {
                     _smallExtractors.Add(b);
-                    if (I) _initNames.Add(b, "Extractor");
+                    if (_isIniting) _initNames.Add(b, "Extractor");
                     return false;
                 }
 
@@ -645,7 +641,7 @@ namespace IngameScript
                 if (TempAntenna != null)
                 {
                     _antennas.Add(TempAntenna);
-                    if (I) _initNames.Add(b, "Antenna");
+                    if (_isIniting) _initNames.Add(b, "Antenna");
                     return false;
                 }
 
@@ -653,7 +649,7 @@ namespace IngameScript
                 var TempPB = b as IMyProgrammableBlock;
                 if (TempPB != null)
                 {
-                    if (I) _initNames.Add(b, "PB Server");
+                    if (_isIniting) _initNames.Add(b, "PB Server");
 
                     // don't bother checking the RSM pb
                     // for other PBs.
@@ -677,7 +673,7 @@ namespace IngameScript
                 if (TempProjectors != null)
                 {
                     _projectors.Add(TempProjectors);
-                    if (I) _initNames.Add(b, "Projectors");
+                    if (_isIniting) _initNames.Add(b, "Projectors");
                     return false;
                 }
 
@@ -686,7 +682,7 @@ namespace IngameScript
                 if (TempSensor != null)
                 {
                     _sensors.Add(TempSensor);
-                    if (I) _initNames.Add(b, "Sensor");
+                    if (_isIniting) _initNames.Add(b, "Sensor");
                     return false;
                 }
 
@@ -695,7 +691,7 @@ namespace IngameScript
                 if (TempCollectors != null)
                 {
                     addInventory(b);
-                    if (I) _initNames.Add(b, "Collector");
+                    if (_isIniting) _initNames.Add(b, "Collector");
                     return false;
                 }
 
@@ -705,7 +701,7 @@ namespace IngameScript
                 {
                     //if (_d) Echo(b.CustomName);
                     _welders.Add(b);
-                    if (I) _initNames.Add(b, "Tool" + _nameDelimiter + "Welder");
+                    if (_isIniting) _initNames.Add(b, "Tool" + _nameDelimiter + "Welder");
                     return false;
                 }
 
@@ -713,7 +709,7 @@ namespace IngameScript
                 // blocks which are not iterated over later
                 // only need to be processed at init.
 
-                if (I)
+                if (_isIniting)
                 {
                     if (blockId.Contains("LandingGear/"))
                     {
@@ -870,7 +866,7 @@ namespace IngameScript
             
 
             // Init Names List
-            if (I) _initNames.Clear();
+            if (_isIniting) _initNames.Clear();
             // built if I = true
         }
 
@@ -887,7 +883,7 @@ namespace IngameScript
 
             // if we're running init
             // setup the block naming...
-            if (I)
+            if (_isIniting)
             {
                 string append = "";
                 if (_appendWeaponTypes) append = _nameDelimiter + init;
@@ -908,7 +904,7 @@ namespace IngameScript
 
             // if we're running init
             // setup the block naming...
-            if (I)
+            if (_isIniting)
             {
                 string Append = "";
                 if (_appendWeaponTypes) Append = _nameDelimiter + init;
@@ -927,7 +923,7 @@ namespace IngameScript
 
             // if we're running init
             // setup the block naming...
-            if (I)
+            if (_isIniting)
             {
                 string Append = "";
                 if (_appendWeaponTypes) Append = _nameDelimiter + init;

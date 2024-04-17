@@ -30,9 +30,9 @@ namespace IngameScript
             if (_d) Echo("Initialising a ship as '" + ship + "'...");
 
             // set init mode on
-            I = true;
+            _isIniting = true;
 
-            // this rebuilds general that we need here lists.
+            // force a block refresh.
             doThisStuffRarely();
 
             // we need to refresh items to get counts for init values
@@ -41,8 +41,6 @@ namespace IngameScript
             // also set our step to 0,
             // reset counter for next rare stuff run
             _stepRare = 0;
-
-            I = false;
 
             // i now christen this ship, the RSG whatever the fuck
             // it's now variable official.
@@ -84,6 +82,8 @@ namespace IngameScript
 
             // save all of these new values to custom data straight away.
             setSystemData(false, setSubSystems, setInventory);
+
+            _isIniting = false;
 
             _alerts.Add(new Alert(
                 "Init:" + ship,
