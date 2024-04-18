@@ -213,6 +213,10 @@ namespace IngameScript
                 if (blockId.Contains("Redfields Ballistics PDC"))
                     return sortPDC(b, "Red", 4);
 
+                // Red
+                if (blockId.Contains("OPA Shotgun PDC"))
+                    return sortPDC(b, "Shotgun", 4);
+
                 // Torpedoes -----------------------------------------------------------------
 
                 // Apollo
