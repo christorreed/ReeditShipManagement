@@ -83,9 +83,14 @@ namespace IngameScript
             public bool IsAmmo = false;
 
             // name as it appears on the LCD
+            public string FriendlyName;
+
+            // same as above, but padded for qty bars
             public string LcdName;
 
             public double MaxFillRatio = 1;
+
+
 
         }
 
@@ -148,17 +153,19 @@ namespace IngameScript
         }
 
         void buildItem(
-        string LcdName,
-        string SubTypeID,
-        string TypeID,
-        bool  IsAmmo = false,
-        bool IsTorp = false
+            string FriendlyName,
+            string SubTypeID,
+            string TypeID,
+            bool  IsAmmo = false,
+            bool IsTorp = false
         )
         {
             Item Item = new Item();
             Item.Type = new MyItemType(SubTypeID, TypeID);
             Item.IsAmmo = IsAmmo;
             Item.IsTorp = IsTorp;
+            Item.FriendlyName = FriendlyName;
+            string LcdName = FriendlyName.PadRight(9);
             Item.LcdName = LcdName;
             _items.Add(Item);
         }

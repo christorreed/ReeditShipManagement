@@ -23,15 +23,14 @@ namespace IngameScript
 {
     partial class Program
     {
-
-        string _ammoCritical = "";
+        List<string> _ammoCritical = new List<string>();
 
         void runAutoLoad()
         {
 
             if (!_autoLoad) return;
 
-            _ammoCritical = "";
+            _ammoCritical.Clear();
 
             foreach (var Item in _items)
             {
@@ -108,11 +107,10 @@ namespace IngameScript
                     }
                 }
 
+                // store for LCD list of critical ammo.
                 if (ammoCritical)
-                {
-                    if (_ammoCritical != "") _ammoCritical += "\n";
-                    _ammoCritical += Item.Type.SubtypeId;
-                }
+                    _ammoCritical.Add(Item.FriendlyName);
+                
 
                 if (LoadTo.Count > 0)
                 {

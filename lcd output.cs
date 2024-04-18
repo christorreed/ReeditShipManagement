@@ -581,15 +581,15 @@ namespace IngameScript
 
                 int weap_priority = 0;
 
-                if (_ammoCritical != "")
+                if (_ammoCritical.Count > 0)
                 {
-                    string[] Ammos = _ammoCritical.Split('\n');
-                    foreach (string Ammo in Ammos)
+                    foreach (string Ammo in _ammoCritical)
                     {
                         string output_ammo = Ammo;
                         if (Ammo.Length > 23) output_ammo = Ammo.Substring(0, 23);
                         output_ammo = output_ammo.ToUpper();
-                        lcdAlerts.Add(new Alert("NEED " + output_ammo + "!", "NEED " + output_ammo + "!  Ammo Critical!", 3));
+                        working = "NEED " + output_ammo + "AMMO!";
+                        lcdAlerts.Add(new Alert(working, working, 3));
                     }
                     weap_priority = 3;
                 }
