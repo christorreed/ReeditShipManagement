@@ -65,6 +65,7 @@
 
 ## todos done
 
+* ~~shotgun pdc support~~
 * ~~spread init out~~
 * ~~no active spawn warning~~
 * ~~finish documentation~~

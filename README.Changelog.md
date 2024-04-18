@@ -139,6 +139,15 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
+## V 1.99.53 (BETA) (2024-04-18)
+
+* Fixed name not saved during init
+* Added support for shotgun PDCs
+* Improved ammo critical warning output
+* Improved lcd booting output
+* Split init operations over several runs for improved performance, added LCD output to show.
+* Other minor refactors/improvements
+
 ## V 1.99.48 (BETA) (2024-04-15)
 
 * Added improved spawn management, including more frequent power on commands, and an LCD warning on a no functional spawn condition.
