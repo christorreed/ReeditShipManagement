@@ -176,28 +176,28 @@ namespace IngameScript
             {
                 // this order is important, don't change it.
 
-                buildItem("Fusion F ", "MyObjectBuilder_Ingot", "FusionFuel", true); //0
+                buildItem("Fusion F", "MyObjectBuilder_Ingot", "FusionFuel", true); //0
                 buildItem("Fuel Tank", "MyObjectBuilder_Component", "Fuel_Tank"); //1
                 buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank"); //2
 
-                buildItem("PDC      ", "MyObjectBuilder_AmmoMagazine", "40mmLeadSteelPDCBoxMagazine", true); //3
-                buildItem("PDC Tefl ", "MyObjectBuilder_AmmoMagazine", "40mmTungstenTeflonPDCBoxMagazine", true); //4
+                buildItem("PDC", "MyObjectBuilder_AmmoMagazine", "40mmLeadSteelPDCBoxMagazine", true); //3
+                buildItem("PDC Tefl", "MyObjectBuilder_AmmoMagazine", "40mmTungstenTeflonPDCBoxMagazine", true); //4
 
                 buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine", true, true); //5
-                buildItem("220 MCRN ", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine", true, true); //6
-                buildItem("220 UNN  ", "MyObjectBuilder_AmmoMagazine", "220mmUNNTorpedoMagazine", true, true); //7
-                buildItem("RS Torp  ", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine", true, true); //8
-                buildItem("LRS Torp ", "MyObjectBuilder_AmmoMagazine", "LargeRamshackleTorpedoMagazine", true, true); //9
+                buildItem("220 MCRN", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine", true, true); //6
+                buildItem("220 UNN", "MyObjectBuilder_AmmoMagazine", "220mmUNNTorpedoMagazine", true, true); //7
+                buildItem("RS Torp", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine", true, true); //8
+                buildItem("LRS Torp", "MyObjectBuilder_AmmoMagazine", "LargeRamshackleTorpedoMagazine", true, true); //9
 
-                buildItem("120mm RG ", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine", true); //10
-                buildItem("Dawson   ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine", true); //11
-                buildItem("Stiletto ", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine", true); //12
-                buildItem("80mm     ", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine", true); //13
+                buildItem("120mm RG", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine", true); //10
+                buildItem("Dawson", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine", true); //11
+                buildItem("Stiletto", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine", true); //12
+                buildItem("80mm", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine", true); //13
 
-                buildItem("Foehammr ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugMCRNMagazine", true); //14
-                buildItem("Farren   ", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugUNNMagazine", true); //15
+                buildItem("Foehammr", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugMCRNMagazine", true); //14
+                buildItem("Farren", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugUNNMagazine", true); //15
 
-                buildItem("Kess     ", "MyObjectBuilder_AmmoMagazine", "180mmLeadSteelSabotMagazine", true); //16
+                buildItem("Kess", "MyObjectBuilder_AmmoMagazine", "180mmLeadSteelSabotMagazine", true); //16
 
                 buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate"); //17
 

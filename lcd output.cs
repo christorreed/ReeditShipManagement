@@ -208,7 +208,7 @@ namespace IngameScript
             _statusLightBottom = _statusLightBottom + _statusLightBottom + _statusLightBottom + _statusLightBottom + "\n";
 
             // misc stuff
-            _bootingString = centreText("Welcome to") + _doubleLine + centreText("R S M.") + _doubleLine;
+            _bootingString = centreText("Welcome to") + _doubleLine + centreText("R S M") + _doubleLine;
             _initingString = centreText("Initialising") + _doubleLine;
             _overlayBlank = new String(' ', _lcdTextWidth - 8);
             _lcdDivider = "└" + new String('─', _lcdTextWidth - 2) + "┘";
@@ -380,13 +380,13 @@ namespace IngameScript
                 // if we're burning
                 if (_actualThrust > 0)
                     // show actual accel/decel
-                    sectionThrust =
+                    sectionThrust +=
                         _keyActualDecel + stopDistance(_actualThrust, vel) +
                         _keyActualAccel + (accelActual + thrustUnit).PadLeft(15) + _doubleLine;
 
                 else // otherwise, if we are not burning
                     // show damp/best
-                    sectionThrust =
+                    sectionThrust +=
                         _keyDampDecel + stopDistance(_maxThrust, vel, true) +
                         _keyBestAccel + (accelMax + thrustUnit).PadLeft(15) + _doubleLine;
 

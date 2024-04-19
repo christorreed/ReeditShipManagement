@@ -189,6 +189,8 @@ namespace IngameScript
             // the item to load
             int Item = 1;
 
+
+
             // check for an LG extractor first...
             foreach (IMyTerminalBlock Extractor in _largeExtractors)
             {
@@ -226,9 +228,10 @@ namespace IngameScript
             if (_items[Item].ActualQty < 1)
             {
                 _noSpareTanks = true;
-                if (_d) Echo("No spare " + _items[Item].Type.SubtypeId + " to load!" );
+                if (_d) Echo("No spare " + _items[Item].Type.SubtypeId + " to load!");
                 return;
             }
+            _noSpareTanks = false;
 
             // alright, we're doing this, lets prep for it...
 

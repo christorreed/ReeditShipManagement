@@ -139,6 +139,10 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
+## V 1.99.x (BETA) (2024-04-x)
+
+* Fixed a bug with new ammo critical names (too many spaces)
+
 ## V 1.99.53 (BETA) (2024-04-18)
 
 * Fixed name not saved during init
