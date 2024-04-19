@@ -177,7 +177,7 @@ namespace IngameScript
                 // this order is important, don't change it.
 
                 buildItem("Fusion F", "MyObjectBuilder_Ingot", "FusionFuel", true); //0
-                buildItem("Fuel Tank", "MyObjectBuilder_Component", "Fuel_Tank"); //1
+                buildItem("Fuel Can ", "MyObjectBuilder_Component", "Fuel_Tank"); //1
                 buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank"); //2
 
                 buildItem("PDC", "MyObjectBuilder_AmmoMagazine", "40mmLeadSteelPDCBoxMagazine", true); //3
