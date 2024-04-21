@@ -953,15 +953,19 @@ namespace IngameScript
             MyIniParseResult result;
 
             // if we're not parsing
+            // or if it's blank
             // we want to reset custom data
-            if (!attemptParse) resetConfig = true;
+            if (!attemptParse || toParse == "")
+                resetConfig = true;
+
             else
             {
-                // legacy custom data
-                if (toParse.Substring(0, 12) == "Show Header=")
+                try
                 {
-                    try // attempt legacy parse
+                    // legacy custom data
+                    if (toParse.Substring(0, 12) == "Show Header=")
                     {
+
                         toParseLines = toParse.Split('\n');
 
                         foreach (string line in toParseLines)
@@ -971,7 +975,7 @@ namespace IngameScript
                             {
                                 if (line.Contains("lcd"))
                                 {
-                                    // found the hudlcd string
+                                    // found the hudlacd string
                                     hudLcdSafe = line;
                                     break;
                                 }
@@ -1006,35 +1010,34 @@ namespace IngameScript
 
                             }
                         }
+
                     }
-                    catch (Exception ex)
+                    else if (!config.TryParse(toParse, out result))
                     {
-                        if (_d) Echo("Failed to parse legacy config.\n" + ex.Message);
+                        // ini parse failed
+                        // we want to reset the custom data
                         resetConfig = true;
-                        // oh well, we tried.
+                    }
+                    else
+                    {
+                        // parse worked, get values
+                        lcd.ShowHeader = config.Get(sec, "ShowHeader").ToBoolean(lcd.ShowHeader);
+                        lcd.ShowHeaderOverlay = config.Get(sec, "ShowHeaderOverlay").ToBoolean(lcd.ShowHeaderOverlay);
+                        lcd.ShowWarnings = config.Get(sec, "ShowWarnings").ToBoolean(lcd.ShowWarnings);
+                        lcd.ShowPowerAndTanks = config.Get(sec, "ShowPowerAndTanks").ToBoolean(lcd.ShowPowerAndTanks);
+                        lcd.ShowInventory = config.Get(sec, "ShowInventory").ToBoolean(lcd.ShowInventory);
+                        lcd.ShowThrust = config.Get(sec, "ShowThrust").ToBoolean(lcd.ShowThrust);
+                        lcd.ShowIntegrity = config.Get(sec, "ShowIntegrity").ToBoolean(lcd.ShowIntegrity);
+                        lcd.ShowAdvancedThrust = config.Get(sec, "ShowAdvancedThrust").ToBoolean(lcd.ShowAdvancedThrust);
                     }
                 }
-
-
-                else if (!config.TryParse(toParse, out result))
+                catch (Exception ex)
                 {
-                    // parse failed
-
+                    if (_d) Echo("LCD parsing error, resetting\n" + ex.Message);
                     // we want to reset the custom data
                     resetConfig = true;
                 }
-                else
-                {
-                    // parse worked, get values
-                    lcd.ShowHeader =            config.Get(sec, "ShowHeader").ToBoolean(            lcd.ShowHeader);
-                    lcd.ShowHeaderOverlay =     config.Get(sec, "ShowHeaderOverlay").ToBoolean(     lcd.ShowHeaderOverlay);
-                    lcd.ShowWarnings =          config.Get(sec, "ShowWarnings").ToBoolean(          lcd.ShowWarnings);
-                    lcd.ShowPowerAndTanks =     config.Get(sec, "ShowPowerAndTanks").ToBoolean(     lcd.ShowPowerAndTanks);
-                    lcd.ShowInventory =         config.Get(sec, "ShowInventory").ToBoolean(         lcd.ShowInventory);
-                    lcd.ShowThrust =            config.Get(sec, "ShowThrust").ToBoolean(            lcd.ShowThrust);
-                    lcd.ShowIntegrity =         config.Get(sec, "ShowIntegrity").ToBoolean(         lcd.ShowIntegrity);
-                    lcd.ShowAdvancedThrust =    config.Get(sec, "ShowAdvancedThrust").ToBoolean(    lcd.ShowAdvancedThrust);
-                }
+
             }
 
             // header, or overlay
