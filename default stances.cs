@@ -41,6 +41,7 @@ namespace IngameScript
                         ExteriorLightColour = new Color(33, 144, 255, 255),
                         InteriorLightMode = LightToggleModes.On,
                         InteriorLightColour = new Color(255, 214, 170, 255),
+                        NavLightMode = LightToggleModes.On,
                         LcdTextColour = new Color(33, 144, 255, 255),
                         TankAndBatteryMode = TankAndBatteryModes.Auto,
                         BurnPercentage = 50,
@@ -49,7 +50,7 @@ namespace IngameScript
                         AuxMode = ToggleModes.NoChange,
                         ExtractorMode = ExtractorModes.KeepFull,
                         KeepAlives = ToggleModes.On,
-                        HangarDoorsMode = HangarDoorModes.NoChange
+                        HangarDoorsMode = HangarDoorModes.NoChange,
                     }
                 },
                 {
@@ -66,6 +67,7 @@ namespace IngameScript
                         ExteriorLightColour = new Color(0, 0, 0, 255),
                         InteriorLightMode = LightToggleModes.On,
                         InteriorLightColour = new Color(23, 73, 186, 255),
+                        NavLightMode = LightToggleModes.Off,
                         LcdTextColour = new Color(23, 73, 186, 255),
                         TankAndBatteryMode = TankAndBatteryModes.Auto,
                         BurnPercentage = 5,
@@ -169,7 +171,7 @@ namespace IngameScript
                         ExteriorLightColour = new Color(0, 0, 0, 255),
                         InteriorLightMode = LightToggleModes.On,
                         InteriorLightColour = new Color(210, 98, 17, 255),
-                        NavLightMode = LightToggleModes.On,
+                        NavLightMode = LightToggleModes.Off,
                         LcdTextColour = new Color(210, 98, 17, 255),
                         TankAndBatteryMode = TankAndBatteryModes.Discharge,
                         BurnPercentage = 100,
@@ -195,7 +197,7 @@ namespace IngameScript
                         ExteriorLightColour = new Color(0, 0, 0, 255),
                         InteriorLightMode = LightToggleModes.On,
                         InteriorLightColour = new Color(243, 18, 18, 255),
-                        NavLightMode = LightToggleModes.On,
+                        NavLightMode = LightToggleModes.Off,
                         LcdTextColour = new Color(243, 18, 18, 255),
                         TankAndBatteryMode = TankAndBatteryModes.Discharge,
                         BurnPercentage = 100,
