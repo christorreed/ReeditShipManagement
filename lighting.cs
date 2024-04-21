@@ -87,7 +87,7 @@ namespace IngameScript
 
         Color _colourBlack = new Color(255, 0, 0, 255);
         Color _colourPort = new Color(255, 0, 0, 255);
-        Color _colourStarboard = new Color(255, 0, 0, 255);
+        Color _colourStarboard = new Color(0, 255, 0, 255);
 
         void setNavLights(LightToggleModes mode)
         {
