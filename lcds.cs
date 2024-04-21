@@ -80,7 +80,7 @@ namespace IngameScript
                     lcd.ShowWarnings = false;
                     lcd.ShowPowerAndTanks = true;
                     lcd.ShowInventory = false;
-                    lcd.ShowThrust = true;
+                    lcd.ShowThrust = false;
                     lcd.ShowIntegrity = false;
                     lcd.ShowAdvancedThrust = false;
 
