@@ -254,8 +254,8 @@ namespace IngameScript
 
         string buildValueKey(string valueName)
         {
-            // "\nKey:             ";
-            return "\n" + valueName + ":" + new String(' ', _lcdTextWidth - 16 - valueName.Length);
+            // "Key:             ";
+            return  valueName + ":" + new String(' ', _lcdTextWidth - 16 - valueName.Length);
         }
 
         string buildBarKey(string barName)
@@ -381,13 +381,13 @@ namespace IngameScript
                 if (_actualThrust > 0)
                     // show actual accel/decel
                     sectionThrust +=
-                        _keyActualDecel + stopDistance(_actualThrust, vel) +
+                        _keyActualDecel + stopDistance(_actualThrust, vel) + "\n" +
                         _keyActualAccel + (accelActual + thrustUnit).PadLeft(15) + _doubleLine;
 
                 else // otherwise, if we are not burning
                     // show damp/best
                     sectionThrust +=
-                        _keyDampDecel + stopDistance(_maxThrust, vel, true) +
+                        _keyDampDecel + stopDistance(_maxThrust, vel, true) + "\n" +
                         _keyBestAccel + (accelMax + thrustUnit).PadLeft(15) + _doubleLine;
 
                 // build tanks & batteries section ----------------------------------------------
@@ -741,22 +741,22 @@ namespace IngameScript
                     if (_showBasicTelemetry)
                     {
                         Basics =
-                            _keyMass + (Math.Round((_shipMass / 1000000), 2) + " Mkg").PadLeft(15) +
-                             velMsg + (vel + " ms").PadLeft(15) +
-                            _keyMaxAccel + (accelMax + thrustUnit).PadLeft(15) +
-                            _keyActualAccel + (accelActual + thrustUnit).PadLeft(15) +
-                            _keyMaxThrust + ((_maxThrust / 1000000) + " MN").PadLeft(15) +
-                            _keyActualThrust + ((_actualThrust / 1000000) + " MN").PadLeft(15);
+                            _keyMass + (Math.Round((_shipMass / 1000000), 2) + " Mkg").PadLeft(15) + "\n" +
+                             velMsg + (vel + " ms").PadLeft(15) + "\n" +
+                            _keyMaxAccel + (accelMax + thrustUnit).PadLeft(15) + "\n" +
+                            _keyActualAccel + (accelActual + thrustUnit).PadLeft(15) + "\n" +
+                            _keyMaxThrust + ((_maxThrust / 1000000) + " MN").PadLeft(15) + "\n" +
+                            _keyActualThrust + ((_actualThrust / 1000000) + " MN").PadLeft(15) + "\n";
                     }
 
                     sectionAdvancedThrust +=
                         Basics +
-                        _keyDampDecel + stopDistance(_maxThrust, vel, true) +
-                        _keyActualDecel + stopDistance(_actualThrust, vel);
+                        _keyDampDecel + stopDistance(_maxThrust, vel, true) + "\n" +
+                        _keyActualDecel + stopDistance(_actualThrust, vel) + "\n";
 
                     foreach (double Percent in _decelPercentages)
                     {
-                        sectionAdvancedThrust += "\n" + ("Decel (" + (Percent * 100) + "%):").PadRight(17) + stopDistance((float)(_maxThrust * Percent), vel);
+                        sectionAdvancedThrust += ("Decel (" + (Percent * 100) + "%):").PadRight(17) + stopDistance((float)(_maxThrust * Percent), vel) + "\n";
                     }
 
                     sectionAdvancedThrust += _doubleLine;
