@@ -139,9 +139,17 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
-## V 1.99.x (BETA) (2024-04-x)
+## V 1.99.54 (BETA) (2024-04-22)
 
-* Fixed a bug with new ammo critical names (too many spaces)
+* LCD ammo warnings now use friendly names
+* Starboard nav lights now green
+* Fixed HUD lcd defaults not working due to custom data parsing error
+* Fixed a few errors in default stances
+* Fixed incorrect no fuel tanks warnings
+* Renamed fuel tanks to fuel cans
+* Fixed a bug with the basic thrust header, removed it from the hud default
+* Fixed a few other small LCD output bugs.
+* Removed some overly verbose logging
 
 ## V 1.99.53 (BETA) (2024-04-18)
 

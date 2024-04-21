@@ -256,11 +256,6 @@ namespace IngameScript
                         Item.SpareQty += Inv.Qty;
                     }
                 }
-
-
-
-
-
             }
         }
 
