@@ -37,7 +37,7 @@ namespace IngameScript
                 // if this item isn't ammo, we don't need to do anything.
                 if (!Item.IsTorp && !Item.IsAmmo) continue;
 
-                if (_d) Echo("Checking " + Item.LcdName);
+                if (_d) Echo("Checking " + Item.FriendlyName);
 
                 // include temp inventories as well
                 // like torps which change ammo type
@@ -71,7 +71,7 @@ namespace IngameScript
                         AutoloadCount++;
                         AverageQty += Inv.Qty;
 
-                        if(_d) Echo("Inv.FillFactor = " + Inv.FillFactor + "\ntargetFillFactor = " + targetFillFactor);
+                        //if(_d) Echo("Inv.FillFactor = " + Inv.FillFactor + "\ntargetFillFactor = " + targetFillFactor);
 
                         // if ammo isn't full
                         if (Inv.FillFactor < targetFillFactor)
