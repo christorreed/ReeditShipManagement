@@ -69,7 +69,7 @@ namespace IngameScript
         {
             if (mode == LightToggleModes.NoChange) return;
 
-            foreach (IMyLightingBlock Light in _exteriorLights)
+            foreach (IMyLightingBlock Light in _interiorLights)
             {
                 if (Light == null) continue;
 

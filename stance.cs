@@ -152,12 +152,11 @@ namespace IngameScript
                 setSpotlights(_currentStance.SpotlightMode);
 
                 // set exterior lights
-                if (_d) Echo("Setting " + _exteriorLights.Count + " exterior lights to " + _currentStance.ExteriorLightMode);
-
+                if (_d) Echo("Setting " + _exteriorLights.Count + " exterior lights to " + _currentStance.ExteriorLightMode /*+ "\n" + _currentStance.ExteriorLightColour*/);
                 setExteriorLights(_currentStance.ExteriorLightMode, _currentStance.ExteriorLightColour);
 
                 // set nav lights
-                if (_d) Echo("Setting " + _interiorLights.Count + " exterior lights to " + _currentStance.InteriorLightMode);
+                if (_d) Echo("Setting " + _interiorLights.Count + " exterior lights to " + _currentStance.InteriorLightMode /*+ "\n" + _currentStance.InteriorLightColour*/);
                 setInteriorLights(_currentStance.InteriorLightMode, _currentStance.InteriorLightColour);
 
                 if (_d) Echo(
