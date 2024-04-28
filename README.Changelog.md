@@ -142,7 +142,8 @@
 ## V 1.99.55 (BETA) (2024-04-29)
 
 * Added support for ToolCore tools in auxiliary management. Tools tagged with the aux keyword will be activated/deactivated as required.
-* Discharge management is now a stance option rather than a global setting. This is default for combat stances.
+* Discharge management is now a stance option rather than a global setting.
+* New stance option is the new default for combat stances, however existing beta users will need to reset stances to apply this (or change in custom data manually).
 * Discharge management will only discharge if there are no functional reactors on board
 * Fixed all bugs with fusion fuel/fuel tanks/jerry cans/ammo critical warnings.
 * Fixed a bug with stance lighting colours
