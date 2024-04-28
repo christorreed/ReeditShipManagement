@@ -56,12 +56,10 @@ namespace IngameScript
                     // always turn batteries on
                     Battery.Enabled = true;
 
-                    bool Discharging = mode == TankAndBatteryModes.Discharge;
-                    // if we're discharging in this stance
-                    // and we're using discharge management
+                    // if we're using discharge management
                     // choose if to discharge or auto based on
                     // railgun target status.
-                    if (Discharging && _manageBatteryDischarge)
+                    if (mode == TankAndBatteryModes.ManagedDischarge)
                     {
                         if (_kineticsHaveTarget)
                             Battery.ChargeMode = ChargeMode.Discharge;
@@ -103,7 +101,7 @@ namespace IngameScript
 
                     // if _manageBatteryDischarge is active, we will do this dynamically
                     // but if its not, just fulltime recharge it.
-                    else if (!_manageBatteryDischarge)
+                    else if (mode == TankAndBatteryModes.Discharge)
                         Battery.ChargeMode = ChargeMode.Recharge;
                     
                 }

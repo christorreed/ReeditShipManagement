@@ -78,7 +78,7 @@ namespace IngameScript
         enum TankAndBatteryModes
         {
             #region mdk preserve
-            Auto, StockpileRecharge, Discharge, NoChange
+            Auto, StockpileRecharge, Discharge, ManagedDischarge, NoChange
             #endregion
         }
 

@@ -45,7 +45,7 @@ namespace IngameScript
         bool _setTurretFireMode = true;
 
         // Only set batteries to discharge on active railgun/coilgun target.
-        bool _manageBatteryDischarge = true; 
+        //bool _manageBatteryDischarge = true; 
 
         // Spawns -----------------------------------------------------------------
 
@@ -176,8 +176,7 @@ namespace IngameScript
                 _autoLoadReactors = _config.Get(sec, "AutoloadReactors").ToBoolean(_autoLoadReactors);
                 _autoConfigWeapons = _config.Get(sec, "AutoConfigWeapons").ToBoolean(_autoConfigWeapons);
                 _setTurretFireMode = _config.Get(sec, "SetTurretFireMode").ToBoolean(_setTurretFireMode);
-                _manageBatteryDischarge = _config.Get(sec, "ManageBatteryDischarge").ToBoolean(_manageBatteryDischarge);
-
+                
                 // Spawns -----------------------------------------------------------------
 
                 sec = "RSM.Spawns"; Echo(sec);
@@ -634,10 +633,6 @@ namespace IngameScript
             name = "SetTurretFireMode";
             _config.Set(sec, name, _setTurretFireMode);
             _config.SetComment(sec, name, "set turret fire mode based on stance");
-
-            name = "ManageBatteryDischarge";
-            _config.Set(sec, name, _manageBatteryDischarge);
-            _config.SetComment(sec, name, "set batteries to discharge on active railgun/coilgun target");
 
             // Header -----------------------------------------------------------------
             
@@ -1183,11 +1178,6 @@ namespace IngameScript
                             case "Add type names to weapons at init.":
                                 _appendWeaponTypes = bool.Parse(value);
                                 break;
-
-                            case "Only set batteries to discharge on active railgun/coilgun target.":
-                                _manageBatteryDischarge = bool.Parse(value);
-                                break;
-
 
                             case "Show basic telemetry.":
                                 _showBasicTelemetry = bool.Parse(value);
