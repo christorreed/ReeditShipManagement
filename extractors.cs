@@ -227,11 +227,11 @@ namespace IngameScript
             // do we have fuel tanks to load?
             if (_items[Item].ActualQty < 1)
             {
-                _noSpareTanks = true;
-                if (_d) Echo("No spare " + _items[Item].Type.SubtypeId + " to load!");
+                _lowTankType = _items[Item].FriendlyName;
+                //if (_d) Echo("No spare " + _items[Item].FriendlyName + " to load!");
                 return;
             }
-            _noSpareTanks = false;
+            _lowTankType = "";
 
             // alright, we're doing this, lets prep for it...
 

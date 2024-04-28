@@ -80,7 +80,7 @@ namespace IngameScript
             public bool IsTorp = false;
 
             // does this a ammo other than a torpedo
-            public bool IsAmmo = false;
+            public bool IsAutoloaded = false;
 
             // name as it appears on the LCD
             public string FriendlyName;
@@ -157,16 +157,18 @@ namespace IngameScript
             string FriendlyName,
             string SubTypeID,
             string TypeID,
-            bool  IsAmmo = false,
+            bool IsAutoloaded = false,
             bool IsTorp = false
         )
         {
             Item Item = new Item();
             Item.Type = new MyItemType(SubTypeID, TypeID);
-            Item.IsAmmo = IsAmmo;
+            Item.IsAutoloaded = IsAutoloaded;
             Item.IsTorp = IsTorp;
             Item.FriendlyName = FriendlyName;
-            string LcdName = FriendlyName.PadRight(9);
+            string LcdName;
+            if (FriendlyName.Length > 9) LcdName = FriendlyName.Substring(0, 9);
+            else LcdName = FriendlyName.PadRight(9);
             Item.LcdName = LcdName;
             _items.Add(Item);
         }
@@ -177,7 +179,7 @@ namespace IngameScript
             {
                 // this order is important, don't change it.
 
-                buildItem("Fusion F", "MyObjectBuilder_Ingot", "FusionFuel", true); //0
+                buildItem("Fusion Fuel", "MyObjectBuilder_Ingot", "FusionFuel", true); //0
                 buildItem("Fuel Can ", "MyObjectBuilder_Component", "Fuel_Tank"); //1
                 buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank"); //2
 
@@ -257,6 +259,8 @@ namespace IngameScript
                         Item.SpareQty += Inv.Qty;
                     }
                 }
+
+                if (_d) Echo("Item " + Item.FriendlyName + "\nActualQty=" + Item.ActualQty + "\nSpareQty=" + Item.SpareQty);
             }
         }
 

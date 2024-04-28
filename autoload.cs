@@ -23,19 +23,14 @@ namespace IngameScript
 {
     partial class Program
     {
-        List<string> _ammoCritical = new List<string>();
-
         void runAutoLoad()
         {
-
             if (!_autoLoad) return;
-
-            _ammoCritical.Clear();
 
             foreach (var Item in _items)
             {
                 // if this item isn't ammo, we don't need to do anything.
-                if (!Item.IsTorp && !Item.IsAmmo) continue;
+                if (!Item.IsTorp && !Item.IsAutoloaded) continue;
 
                 if (_d) Echo("Checking " + Item.FriendlyName);
 
@@ -53,8 +48,6 @@ namespace IngameScript
                 // we need average for balancing.
                 int AverageQty = 0;
                 int AutoloadCount = 0;
-
-                bool ammoCritical = false;
 
                 double targetFillFactor = .97; // 3% wiggle room
                 if (Item.MaxFillRatio < 1) targetFillFactor = Item.MaxFillRatio * .97; // 3% wiggle room
@@ -87,12 +80,7 @@ namespace IngameScript
                         if (Inv.FillFactor != 0)
                             // we're eligable as a balance source
                             BalanceFrom.Add(Inv);
-                        
-                        else if(!ammoCritical && Item.SpareQty == 0)
-                            // we have no spare ammo
-                            // and this gun is empty.
-                            ammoCritical = true;
-                        
+                                                
                     }
                     else
                     {
@@ -105,12 +93,7 @@ namespace IngameScript
                             LoadFrom.Add(Inv);
                         }
                     }
-                }
-
-                // store for LCD list of critical ammo.
-                if (ammoCritical)
-                    _ammoCritical.Add(Item.FriendlyName);
-                
+                }               
 
                 if (LoadTo.Count > 0)
                 {

@@ -349,6 +349,8 @@ namespace IngameScript
                     thrustUnit = " Gs", 
                     working;
 
+                List<string> ammoCritical = new List<string>();
+
                 if (vel < 1) // if velocity is close to zero, use 500m/s instead.
                 {
                     vel = 500;
@@ -363,6 +365,23 @@ namespace IngameScript
 
                 // build inventory section ----------------------------------------------
 
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    if (_items[i].InitQty != 0)
+                    {
+                        _items[i].Percentage = (100 * ((double)_items[i].ActualQty / (double)_items[i].InitQty));
+                        string val = (_items[i].ActualQty + "/" + _items[i].InitQty).PadLeft(9);
+                        if (val.Length > 9) val = val.Substring(0, 9);
+                        sectionInventory += _items[i].LcdName + " [" + generateBar(_items[i].Percentage) + "] " + val + "\n";
+
+                        // if not fusion fuel or fuel tank or jerry can
+                        // and no spares
+                        // we will note this as a warning later...
+                        if (i > 2 && _items[i].SpareQty < 1) ammoCritical.Add(_items[i].FriendlyName);
+
+                    }
+                }
+
                 foreach (Item Item in _items)
                 {
                     if (Item.InitQty != 0)
@@ -371,6 +390,9 @@ namespace IngameScript
                         string val = (Item.ActualQty + "/" + Item.InitQty).PadLeft(9);
                         if (val.Length > 9) val = val.Substring(0, 9);
                         sectionInventory += Item.LcdName + " [" + generateBar(Item.Percentage) + "] " + val + "\n";
+
+                        if (Item.SpareQty < 1) ammoCritical.Add(Item.FriendlyName);
+
                     }
                 }
                 sectionInventory += "\n";
@@ -452,12 +474,12 @@ namespace IngameScript
 
                 if (_currentStance.ExtractorMode != ExtractorModes.Off)
                 {
-                    if (_noSpareTanks)
+                    if (_lowTankType != "")
                     {
                         if (h2_priority == 0) h2_priority = 1;
 
                         lcdAlerts.Add(new Alert(
-                            "No spare fuel tanks",
+                            "NO SPARE "+ _lowTankType.ToUpper() + "!",
                             "Cannot refuel!\nNo spare fuel tanks or failed to load fuel tanks.",
                             h2_priority));
                     }
@@ -467,7 +489,7 @@ namespace IngameScript
                         if (h2_priority == 0) h2_priority = 1;
 
                         lcdAlerts.Add(new Alert(
-                            "No extractor",
+                            "NO EXTRACTOR!",
                             "Cannot refuel!\nNo functional extractor!",
                             h2_priority));
                     }
@@ -551,22 +573,26 @@ namespace IngameScript
                         lcdAlerts.Add(new Alert(_emptyReactors + " REACTORS NEED FUS. FUEL!", "At least one reactor needs Fusion Fuel!", 3));
                     }
 
-                    if (_items[0].InitQty == 0) // Different error if there is no target.
+
+                    if (_items[0].ActualQty < 1)
                     {
-                        if (_items[0].ActualQty > 0)
-                        {
-                            power_priority += 1;
-                            working = "No Spare Fusion Fuel!";
-                            lcdAlerts.Add(new Alert(working, working, 2));
-                        }
+                        power_priority += 3;
+                        working = "NO FUSION FUEL!";
+                        lcdAlerts.Add(new Alert(working, working, 2));
                     }
-                    else if (_items[0].Percentage < 5) // Fusion fuel below 5% of init quota.
+                    else if (_items[0].ActualQty < 50)
                     {
                         power_priority += 2;
-                        working = "FUSION FUEL LEVEL CRITICAL!";
+                        working = "FUSION FUEL CRITICAL! (" + _items[0].ActualQty + ")";
+                        lcdAlerts.Add(new Alert(working, working, 2));
+                    }
+                    else if (_items[0].InitQty > 0 && _items[0].Percentage < 5) // Fusion fuel below 5% of init quota.
+                    {
+                        power_priority += 2;
+                        working = "FUSION FUEL CRITICAL!";
                         lcdAlerts.Add(new Alert(working, working, 3));
                     }
-                    else if (_items[0].Percentage < 10) // Fusion fuel below 10% of init quota.
+                    else if (_items[0].InitQty > 0 && _items[0].Percentage < 10) // Fusion fuel below 10% of init quota.
                     {
                         power_priority += 1;
                         working = "Fusion Fuel Level Low!";
@@ -581,14 +607,14 @@ namespace IngameScript
 
                 int weap_priority = 0;
 
-                if (_ammoCritical.Count > 0)
+                if (ammoCritical.Count > 0)
                 {
-                    foreach (string Ammo in _ammoCritical)
+                    foreach (string Ammo in ammoCritical)
                     {
                         string output_ammo = Ammo;
                         if (Ammo.Length > 23) output_ammo = Ammo.Substring(0, 23);
                         output_ammo = output_ammo.ToUpper();
-                        working = "NEED " + output_ammo + "AMMO!";
+                        working = "NO SPARE " + output_ammo + "!";
                         lcdAlerts.Add(new Alert(working, working, 3));
                     }
                     weap_priority = 3;
@@ -602,7 +628,6 @@ namespace IngameScript
                 // handle comms
                 if (_commsActive)
                 {
-
                     string output_comms = _commsMessage;
                     if (_antennas.Count > 0)
                         if (_antennas[0] != null)
