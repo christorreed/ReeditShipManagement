@@ -389,16 +389,16 @@ namespace IngameScript
                 if (TempLight != null)
                 {
                     // use name to determine grouping for lights
-                    if (
-                        b.CustomName.ToUpper().Contains("INTERIOR")
-                        ||
-                        blockId.Contains("Kitchen")
-                        ||
-                        blockId.Contains("Aquarium")
-                        )
+                    if (b.CustomName.ToUpper().Contains("INTERIOR"))
                     {
                         _interiorLights.Add(TempLight);
                         if (_isIniting) _initNames.Add(b, "Light" + _nameDelimiter + "Interior");
+                    }
+
+                    else if (blockId.Contains("Kitchen") || blockId.Contains("Aquarium"))
+                    {
+                        _interiorLights.Add(TempLight);
+                        if (_isIniting) _initNames.Add(b, "Light" + _nameDelimiter + "Interior" + _nameDelimiter + b.DefinitionDisplayNameText);
                     }
 
                     // nav lights
