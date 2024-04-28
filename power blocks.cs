@@ -61,7 +61,10 @@ namespace IngameScript
                     // railgun target status.
                     if (mode == TankAndBatteryModes.ManagedDischarge)
                     {
-                        if (_kineticsHaveTarget)
+                        // if we have an active target...
+                        // or if there are no reactors functional on the ship
+                        // set to discharge.
+                        if (_kineticsHaveTarget || _actualReactors > 0)
                             Battery.ChargeMode = ChargeMode.Discharge;
                         else
                             Battery.ChargeMode = ChargeMode.Recharge;
@@ -99,11 +102,12 @@ namespace IngameScript
                     else if (mode == TankAndBatteryModes.StockpileRecharge)
                         Battery.ChargeMode = ChargeMode.Recharge;
 
-                    // if _manageBatteryDischarge is active, we will do this dynamically
-                    // but if its not, just fulltime recharge it.
                     else if (mode == TankAndBatteryModes.Discharge)
                         Battery.ChargeMode = ChargeMode.Recharge;
-                    
+
+                    // if managed discharge is active, we will do this dynamically
+                    // so do nothing for now.
+
                 }
             }
         }
