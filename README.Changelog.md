@@ -139,6 +139,16 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
+## V 1.99.55 (BETA) (2024-04-29)
+
+* Added support for ToolCore tools in auxiliary management. Tools tagged with the aux keyword will be activated/deactivated as required.
+* Discharge management is now a stance option rather than a global setting. This is default for combat stances.
+* Discharge management will only discharge if there are no functional reactors on board
+* Fixed all bugs with fusion fuel/fuel tanks/jerry cans/ammo critical warnings.
+* Fixed a bug with stance lighting colours
+* Fixed an init naming bug with aquariums, kitchens.
+* Fixed crash on removed torpedo launcher
+
 ## V 1.99.54 (BETA) (2024-04-22)
 
 * LCD ammo warnings now use friendly names

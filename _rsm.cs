@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.54 ($MDK_DATE$)";
+        string Version = "1.99.55 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -57,7 +57,7 @@ namespace IngameScript
         bool _spawnOpen = false;
         bool _spawnsDead = false;
         bool _noExtractor = false;
-        bool _noSpareTanks = false;
+        string _lowTankType = "";
         int _unownedBlockCount = 0;
         int _activeAuxBlockCount = 0;
 
