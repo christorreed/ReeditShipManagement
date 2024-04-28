@@ -2,14 +2,11 @@
 
 ## bugs high importance
 
-
-
 ## bugs low importantance
-
-* hudlcd:toggle:pattern not working
 
 ## bugs done
 
+* ~~hudlcd:toggle:pattern not working~~
 * ~~init not saving ship name to cd.~~
 * ~~lcd output new line on basic thrust~~
 * ~~fuel tanks loading?~~

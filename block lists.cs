@@ -82,6 +82,8 @@ namespace IngameScript
 
         // Aux List
         private List<IMyTerminalBlock> _auxiliaries = new List<IMyTerminalBlock>();
+        private List<IMyTerminalBlock> _auxiliaryToolCore = new List<IMyTerminalBlock>();
+
 
         // Doors
         private List<Door> _doors = new List<Door>();
@@ -128,15 +130,15 @@ namespace IngameScript
                     // and the ship name isn't included
                     return false; // ignore this block
 
+                string blockId = b.BlockDefinition.ToString();
+
                 // Aux -----------------------------------------------------------------
 
                 // grab aux blocks
                 if (b.CustomName.Contains(_keywordAuxBlocks))
+                {
                     _auxiliaries.Add(b);
-
-                //if (_d) Echo("Sorting " + b.CustomName);
-
-                string blockId = b.BlockDefinition.ToString();
+                }
 
                 // Spawns -----------------------------------------------------------------
 

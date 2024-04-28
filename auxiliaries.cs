@@ -1,4 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
+﻿using ParallelTasks;
+using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -23,8 +24,6 @@ namespace IngameScript
     partial class Program
     {
         // Auxiliaries -----------------------------------------------------------------
-        
-        
 
         void iterateAuxiliaries()
         {
@@ -49,10 +48,29 @@ namespace IngameScript
 
                 try
                 {
-                    if (mode == ToggleModes.Off)
-                        Block.ApplyAction("OnOff_Off");
-                    else
+                    bool isToolCore = Block.BlockDefinition.ToString().Contains("ToolCore");
+
+                    if (mode == ToggleModes.On || isToolCore) // don't turn toolcore stuff off!
                         Block.ApplyAction("OnOff_On");
+                    
+                    else if (!isToolCore) // don't turn toolcore stuff off!
+                        Block.ApplyAction("OnOff_Off");
+
+                    if (isToolCore)
+                    {
+                        ITerminalAction action = Block.GetActionWithName("ToolCore_Shoot_Action");
+                        if (action != null)
+                        {
+                            StringBuilder actionStringBuilder = new StringBuilder();
+                            action.WriteValue(Block, actionStringBuilder);
+                            string actionString = actionStringBuilder.ToString();
+                            if (_d) Echo(actionString);
+                            if (actionString == "Active" && mode == ToggleModes.Off)
+                                action.Apply(Block);
+                            else if (actionString == "Inactive" && mode == ToggleModes.On)
+                                action.Apply(Block);
+                        }
+                    }
                 }
                 catch
                 {
