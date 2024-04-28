@@ -148,8 +148,9 @@ namespace IngameScript
             // i mean, if we are autoloading in general.
             Inv.AutoLoad = _autoLoad;
 
-            // and add it to that item's list only
-            _items[item].TempInventories.Add(Inv);
+            if (item != 99)
+                // and add it to that item's list only
+                _items[item].TempInventories.Add(Inv);
         }
 
         void buildItem(
