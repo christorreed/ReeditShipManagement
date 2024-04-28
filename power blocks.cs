@@ -64,7 +64,7 @@ namespace IngameScript
                         // if we have an active target...
                         // or if there are no reactors functional on the ship
                         // set to discharge.
-                        if (_kineticsHaveTarget || _actualReactors > 0)
+                        if (_kineticsHaveTarget || _actualReactors <= 0)
                             Battery.ChargeMode = ChargeMode.Discharge;
                         else
                             Battery.ChargeMode = ChargeMode.Recharge;

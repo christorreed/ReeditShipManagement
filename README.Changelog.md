@@ -139,6 +139,10 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
+## V 1.99.56 (BETA) (2024-04-29)
+
+* Fixed a bug with discharge management.
+
 ## V 1.99.55 (BETA) (2024-04-29)
 
 * Added support for ToolCore tools in auxiliary management. Tools tagged with the aux keyword will be activated/deactivated as required.
