@@ -260,7 +260,7 @@ namespace IngameScript
                     }
                 }
 
-                if (_d) Echo("Item " + Item.FriendlyName + "\nActualQty=" + Item.ActualQty + "\nSpareQty=" + Item.SpareQty);
+                //if (_d) Echo("Item " + Item.FriendlyName + "\nActualQty=" + Item.ActualQty + "\nSpareQty=" + Item.SpareQty);
             }
         }
 
