@@ -35,14 +35,11 @@ namespace IngameScript
             
             foreach (IMyRadioAntenna Antenna in _antennas)
             {
-                if (Antenna != null)
+                if (Antenna != null && !Antenna.Closed && Antenna.IsFunctional)
                 {
-                    if (Antenna.IsFunctional)
-                    {
-                        float range = Antenna.Radius;
-                        if (range > _commsRange) _commsRange = range;
-                        if (Antenna.IsBroadcasting && Antenna.Enabled) _commsActive = true;
-                    }
+                    float range = Antenna.Radius;
+                    if (range > _commsRange) _commsRange = range;
+                    if (Antenna.IsBroadcasting && Antenna.Enabled) _commsActive = true;
                 }
             }
         }
