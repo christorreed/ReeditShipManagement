@@ -382,19 +382,6 @@ namespace IngameScript
                     }
                 }
 
-                foreach (Item Item in _items)
-                {
-                    if (Item.InitQty != 0)
-                    {
-                        Item.Percentage = (100 * ((double)Item.ActualQty / (double)Item.InitQty));
-                        string val = (Item.ActualQty + "/" + Item.InitQty).PadLeft(9);
-                        if (val.Length > 9) val = val.Substring(0, 9);
-                        sectionInventory += Item.LcdName + " [" + generateBar(Item.Percentage) + "] " + val + "\n";
-
-                        if (Item.SpareQty < 1) ammoCritical.Add(Item.FriendlyName);
-
-                    }
-                }
                 sectionInventory += "\n";
 
                 // build thrust section ----------------------------------------------
