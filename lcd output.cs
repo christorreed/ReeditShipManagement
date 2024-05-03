@@ -485,6 +485,12 @@ namespace IngameScript
                 statusLights.Add(new StatusLight("FUEL", h2_priority, _stepSpinner + status_light_spice));
                 status_light_spice++;
 
+                if (_spawnOpen)
+                {
+                    working = _spawns.Count + " spawns are open to friends";
+                    lcdAlerts.Add(new Alert(working, working, 0));
+                }
+
                 // handle oxygen
                 int o2_priority = 0;
                 if (o2Percentage < 5)
