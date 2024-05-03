@@ -90,7 +90,7 @@ namespace IngameScript
 
             foreach (IMyBatteryBlock Battery in _batteries)
             {
-                if (Battery != null & Battery.IsFunctional)
+                if (Battery != null && !Battery.Closed && Battery.IsFunctional)
                 {
                     // always phucking on
                     Battery.Enabled = true;
@@ -105,7 +105,7 @@ namespace IngameScript
 
                     else if (mode == TankAndBatteryModes.Discharge)
                         Battery.ChargeMode = ChargeMode.Discharge;
-
+                       
                     // if managed discharge is active, we will do this dynamically
                     // so do nothing for now.
 
@@ -128,7 +128,7 @@ namespace IngameScript
 
             foreach (IMyReactor Reactor in _reactors)
             {
-                if (Reactor != null && Reactor.IsFunctional)
+                if (Reactor != null && !Reactor.Closed && Reactor.IsFunctional)
                 {
                     // always turn reactors on
                     Reactor.Enabled = true;
