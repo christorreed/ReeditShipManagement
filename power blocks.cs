@@ -29,8 +29,9 @@ namespace IngameScript
         {
             _maxPower = 0;
 
-            refreshBatteries(mode);
             refreshReactors();
+            refreshBatteries(mode);
+
         }
 
         // Batteries -----------------------------------------------------------------
@@ -103,7 +104,7 @@ namespace IngameScript
                         Battery.ChargeMode = ChargeMode.Recharge;
 
                     else if (mode == TankAndBatteryModes.Discharge)
-                        Battery.ChargeMode = ChargeMode.Recharge;
+                        Battery.ChargeMode = ChargeMode.Discharge;
 
                     // if managed discharge is active, we will do this dynamically
                     // so do nothing for now.

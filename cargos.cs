@@ -36,7 +36,7 @@ namespace IngameScript
             {
                 if (Cargo != null && Cargo.IsFunctional)
                 {
-                    _actualCargos+= Cargo.GetInventory().MaxVolume.RawValue;
+                    _actualCargos += Cargo.GetInventory().MaxVolume.RawValue;
                 }
             }
 
