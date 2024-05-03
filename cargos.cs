@@ -34,9 +34,18 @@ namespace IngameScript
 
             foreach (IMyCargoContainer Cargo in _cargos)
             {
-                if (Cargo != null && Cargo.IsFunctional)
+                if (Cargo != null && !Cargo.Closed && Cargo.IsFunctional)
                 {
-                    _actualCargos += Cargo.GetInventory().MaxVolume.RawValue;
+                    try
+                    {
+                        _actualCargos += Cargo.GetInventory().MaxVolume.RawValue;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_d) Echo("Cargo integrity error!\n" + ex.Message);
+                        throw ex;
+                    }
+                    
                 }
             }
 
