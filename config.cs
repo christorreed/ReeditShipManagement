@@ -274,7 +274,7 @@ namespace IngameScript
                 sec = "RSM.InitSubSystems"; Echo(sec);
 
                 _initReactors = _config.Get(sec, "Reactors").ToDouble(_initReactors);
-                _initReactors = _config.Get(sec, "Batteries").ToDouble(_initReactors);
+                _initReactors = _config.Get(sec, "Batteries").ToDouble(_initBatteries);
                 _initPdcs = _config.Get(sec, "Pdcs").ToInt32(_initPdcs);
                 _initTorpLaunchers = _config.Get(sec, "TorpLaunchers").ToInt32(_initTorpLaunchers);
                 _initKinetics = _config.Get(sec, "KineticWeapons").ToInt32(_initKinetics);
@@ -1624,7 +1624,7 @@ namespace IngameScript
                 sec = "RSM.InitSubSystems";
 
                 config.Set(sec, "Reactors", _initReactors);
-                config.Set(sec, "Batteries", _initReactors);
+                config.Set(sec, "Batteries", _initBatteries);
                 config.Set(sec, "Pdcs", _initPdcs);
                 config.Set(sec, "TorpLaunchers", _initTorpLaunchers);
                 config.Set(sec, "KineticWeapons", _initKinetics);

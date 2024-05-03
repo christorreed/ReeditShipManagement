@@ -23,14 +23,16 @@ namespace IngameScript
 {
     partial class Program
     {
-        private double _maxPower;
+        double _maxPower;
 
         private void refreshPowerBlocks(TankAndBatteryModes mode)
         {
             _maxPower = 0;
 
             refreshReactors();
+
             refreshBatteries(mode);
+
 
         }
 
@@ -46,13 +48,15 @@ namespace IngameScript
             _totalBatteries = 0;
             _actualBatteries = 0;
 
+            double battMaxPower = 0;
+
             foreach (IMyBatteryBlock Battery in _batteries)
             {
                 if (Battery != null && Battery.IsFunctional)
                 {
                     _actualBatteries += Battery.CurrentStoredPower;
                     _totalBatteries += Battery.MaxStoredPower;
-                    _maxPower += Battery.MaxOutput;
+                    battMaxPower += Battery.MaxOutput;
 
                     // always turn batteries on
                     Battery.Enabled = true;
@@ -73,14 +77,22 @@ namespace IngameScript
                 }
             }
 
-            _integrityBatteries = Math.Round(100 * (_maxPower / _initBatteries));
+            _integrityBatteries = Math.Round(100 * (battMaxPower / _initBatteries));
+            _maxPower += battMaxPower;
         }
         void initBatteries()
         {
             _initBatteries = 0;
+
             foreach (IMyBatteryBlock Battery in _batteries)
             {
+                Echo("FFS CUNT1" + Battery.MaxOutput);
+                ChargeMode currentMode = Battery.ChargeMode;
+                Battery.ChargeMode = ChargeMode.Auto;
+                Echo("FFS CUNT2" + Battery.MaxOutput);
                 _initBatteries += Battery.MaxOutput;
+                Battery.ChargeMode = currentMode;
+                Echo("FFS CUNT3" + Battery.MaxOutput);
             }
         }
 
