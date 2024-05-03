@@ -26,7 +26,7 @@ namespace IngameScript
     {
         #region mdk preserve
         #region mdk macros
-        string Version = "1.99.57 ($MDK_DATE$)";
+        string Version = "1.99.58 ($MDK_DATE$)";
         #endregion
         #endregion
 
@@ -216,12 +216,6 @@ namespace IngameScript
 
                         // force a block refresh now.
                         _stepRare = _blockRefreshFreq;
-
-                        _alerts.Add(new Alert(
-                            "Spawns were opened to friends",
-                            "Spawns are now opened to the friends list as defined in PB custom data."
-                            , 2
-                            ));
                     }
                     else
                     {
@@ -229,12 +223,6 @@ namespace IngameScript
 
                         // force a block refresh now.
                         _stepRare = _blockRefreshFreq;
-
-                        _alerts.Add(new Alert(
-                            "Spawns were closed to friends",
-                            "Spawns are now closed to the friends list as defined in PB custom data."
-                            , 2
-                            ));
                     }
                     return;
 
@@ -662,14 +650,19 @@ namespace IngameScript
 
         void isThereAnEchoInHere() // Outputs stuff to the console.
         {
-            string Output = 
-                "REEDIT SHIP MANAGEMENT \n\n|- V " + Version +
+            string Output =
+                "REEDIT SHIP MANAGEMENT \n\n";
+
+            if (_isBooting)
+                Output += "Booting, please wait (" + _stepBoot + "/5)...\n\n";
+
+            Output +=
+                "|- V " + Version +
                 "\n|- Ship Name: " + _shipName +
                 "\n|- Stance: " + _currentStanceName +
                 "\n|- Step: " + _stepRare + "/" + _blockRefreshFreq + " (" + _stepOccasional + ")";
 
-            if (_isBooting)
-                Output += "\n|- Booting " + _stepBoot;              
+        
 
             if (_p) // if we are profiling, profile...
             {
