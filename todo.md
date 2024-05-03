@@ -50,7 +50,7 @@
 * opa pdc ammo type support
 * make _lcdOverlayColour configurable
 * improve building of the subsystem integrity panel
-* booting screen improvements
+
 * broadcast IGC data with current stance for other scripts.
 * new hudlcd presets
 * warning supression?
@@ -62,6 +62,7 @@
 
 ## todos done
 
+* ~~booting screen improvements~~
 * ~~shotgun pdc support~~
 * ~~spread init out~~
 * ~~no active spawn warning~~

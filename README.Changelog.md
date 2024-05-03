@@ -139,6 +139,16 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
+## V 1.99.58 (BETA) (2024-05-04)
+
+* Fixed crashes on deleted blocks, including cargos, reactors and antennas.
+* Fixed issues with the battery discharge management changes.
+* Fixed a bug that caused doubled up items in the inventory list.
+* Removed spawn open command warning, added a spawn is open constant warning.
+* Improved debug output on boot.
+* Removed some superfluous logs
+* Fixed a number of battery init and subsystem display bugs
+
 ## V 1.99.56 (BETA) (2024-04-29)
 
 * Fixed a bug with discharge management.
