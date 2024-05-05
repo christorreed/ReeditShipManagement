@@ -86,13 +86,10 @@ namespace IngameScript
 
             foreach (IMyBatteryBlock Battery in _batteries)
             {
-                Echo("FFS CUNT1" + Battery.MaxOutput);
                 ChargeMode currentMode = Battery.ChargeMode;
                 Battery.ChargeMode = ChargeMode.Auto;
-                Echo("FFS CUNT2" + Battery.MaxOutput);
                 _initBatteries += Battery.MaxOutput;
                 Battery.ChargeMode = currentMode;
-                Echo("FFS CUNT3" + Battery.MaxOutput);
             }
         }
 
