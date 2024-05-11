@@ -139,6 +139,16 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
+## V 1.99.59 (BETA) (2024-05-11)
+
+* Simplified extractor wait code, drastically sped up extractor loading.
+* Fixed a bug causing sg extractors to engage too late, and a few other small extractor management bugs.
+* Fixed several airlock bugs...
+    * Fixed a bug causing airlocks to open second door before first closed under strange O2 conditions.
+    * Fixed a bug causing non-airlock doors not to turn on
+    * Fixed a bug causing airlocks not to turn off other doors fast enough
+    * Fixed a bug causing airlocks not to cycle when door closed manually.
+
 ## V 1.99.58 (BETA) (2024-05-04)
 
 * Fixed crashes on deleted blocks, including cargos, reactors and antennas.

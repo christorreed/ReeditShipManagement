@@ -40,7 +40,13 @@
 
 ## todos high importance
 
-
+* ~~speed up fuel can delivery~~
+* ~~check jerry cans not working~~
+* ~~airlock blowing~~
+* check subsys values weird on tubul
+* kess not a railgun, rethink naming cats on kinetics.
+* LCDConfigError on legacy configs (toma)
+* EFC command failed (toma)
 
 ## todos low importantance
 
