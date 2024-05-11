@@ -31,12 +31,12 @@ namespace IngameScript
         double _extractorKeepFullThreshold;
 
         // dampening for extractor management
-        int _extractorWaitCount = 0;
+        //int _extractorWaitCount = 0;
 
         // threshold for above
         // not a constant, will be modified
         // to speed up fueling.
-        int _extractorWaitThreshold = 8;
+        //int _extractorWaitThreshold = 3;
 
         // if extractor is topping up,
         // fill when fuel % falls below this value.
@@ -94,11 +94,11 @@ namespace IngameScript
             {
                 if (_d) Echo("Extractor management disabled.");
             }
-            else if (_extractorWaitCount > 0)
+            /*else if (_extractorWaitCount > 0)
             {
                 _extractorWaitCount--;
                 if (_d) Echo("waiting (" + _extractorWaitCount + ")...");
-            }
+            }*/
             else if (_h2Tanks.Count < 1)
             {
                 if (_d) Echo("No tanks!");
@@ -110,9 +110,9 @@ namespace IngameScript
                 )
             // refuel at 10%
             {
-                if (_d) Echo("Fuel low! (" + _fuelPercentage + "% / " + _topUpPercentage + "%)");
                 _needFuel = true;
-                calculateExtractorWaitThreshold();
+                //calculateExtractorWaitThreshold();
+                if (_d) Echo("Fuel low! (" + _fuelPercentage + "% / " + _topUpPercentage + "%)");
             }
             else if (
                 _currentStance.ExtractorMode == ExtractorModes.KeepFull
@@ -122,7 +122,7 @@ namespace IngameScript
             // refuel to keep tanks full.
             {
                 _needFuel = true;
-                calculateExtractorWaitThreshold();
+                //calculateExtractorWaitThreshold();
                 if (_d) Echo("Fuel ready for top up (" + _actualH2 + " < " + (_totalH2 - _extractorKeepFullThreshold) + ")");
             }
             else if (_d)
@@ -134,12 +134,12 @@ namespace IngameScript
             }
         }
 
-        void calculateExtractorWaitThreshold()
+        /*void calculateExtractorWaitThreshold()
         {
             string speed = "";
             int newThresh = 8;
 
-            if (_fuelPercentage < 5)
+            if (_fuelPercentage < 50)
             {
                 newThresh = 0;
                 if (_extractorWaitThreshold != newThresh)
@@ -160,10 +160,6 @@ namespace IngameScript
             else if(_extractorWaitThreshold != newThresh)
                 speed = "slow";
 
-
-
-
-
             if (speed != "")
             {
                 _extractorWaitThreshold = newThresh;
@@ -173,10 +169,7 @@ namespace IngameScript
                     0
                     ));
             }
-            
-
-
-        }
+        }*/
 
         void loadExtractors()
         {
@@ -188,8 +181,6 @@ namespace IngameScript
 
             // the item to load
             int Item = 1;
-
-
 
             // check for an LG extractor first...
             foreach (IMyTerminalBlock Extractor in _largeExtractors)
@@ -233,19 +224,26 @@ namespace IngameScript
             }
             _lowTankType = "";
 
-            // alright, we're doing this, lets prep for it...
-
-            // set the wait threshold
-            // so we don't keep trying to do this over and over again.
-            _extractorWaitCount = _extractorWaitThreshold;
+            // make sure it is on
+            TheChosenOne.ApplyAction("OnOff_On");
 
             // build an INVENTORY for the loadInventories method
             Inventory Inv = new Inventory();
             Inv.Block = TheChosenOne;
             Inv.Inv = TheChosenOne.GetInventory();
 
-            // make sure it is on
-            TheChosenOne.ApplyAction("OnOff_On");
+            // extractor is already loaded.
+            if (Inv.Inv.VolumeFillFactor > 0)
+            {
+                if (_d) Echo("Extractor already loaded, waiting...");
+                return;
+            }
+
+            // alright, we're doing this, lets prep for it...
+
+            // set the wait threshold
+            // so we don't keep trying to do this over and over again.
+            //_extractorWaitCount = _extractorWaitThreshold;
 
             // build a list of inventories for the loadInventories method
             // only one extractor in there at a time tho.
