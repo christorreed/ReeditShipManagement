@@ -56,10 +56,11 @@ namespace IngameScript
 
         // returns true if door just opened,
         // or else, false.
-        bool refreshDoor(Door door)
+        int refreshDoor(Door door, bool airlock = false)
         {
             bool justClosed = false;
-            if (door.Block == null) return false;
+            bool justOpened = false;
+            if (door.Block == null) return 0;
 
             // is our door at least a little bit open?
             bool open = door.Block.OpenRatio > 0;
@@ -71,15 +72,21 @@ namespace IngameScript
             if (isDoorUnlocked(door.Block))
                 _doorsCountUnlocked++;
 
-            if (open)
-            {
-                // if we're open, we should be on
+            // if we're not an airlock, or if we're open,
+            if (!airlock || open)
+                // we should be on
                 door.Block.Enabled = true;
 
-                if (_d && door.OpenCounter == 0)
+            if (open)
+            {
+                if (door.OpenCounter == 0)
+                {
                     // this door only just opened.
-                    Echo("Door just opened... (" + door.Block.CustomName + ")");
-                    
+                    //if (_d) Echo("Door just opened... (" + door.Block.CustomName + ")");
+
+                    justOpened = true;
+                }
+
                 door.OpenCounter++;
 
                 // has the timer reached the threshold?
@@ -94,9 +101,21 @@ namespace IngameScript
             {
                 // count closed doors
                 _doorsCountClosed++;
+
+                // this handles players manually closing door.
+                if (door.OpenCounter != 0)
+                {
+                    justClosed = true;
+                    door.OpenCounter = 0;
+                }
+
             } 
 
-            return justClosed;
+            int output = 0;
+            if (justClosed) output = 1;
+            else if (justOpened) output = 2;
+
+            return output;
         }
 
         void refreshAirlocks()
@@ -111,17 +130,18 @@ namespace IngameScript
             {
                 //if (_d) Echo("Airlock " + airlock.Id + " has " + airlock.Doors.Count + " doors");
 
+                bool doorOpened = false;
+
                 // iterate over the doors as normal.
                 // doors still close via the normal timer.
                 foreach (Door door in airlock.Doors)
                 {
                     if (door.Block == null) continue;
 
-                    bool justClosed = refreshDoor(door);
-
+                    int doorStatus = refreshDoor(door, true); // 1 just closed, 2 just opened
 
                     // if our door just closed, and the airlock didn't just cycle
-                    if (justClosed)
+                    if (doorStatus == 1)
                     {
                         if (_d) Echo("Airlock door " + door.Block.CustomName + " just closed");
 
@@ -136,7 +156,17 @@ namespace IngameScript
                             if (_d) Echo("Airlock " + airlock.Id + " needs to cycle");
                         }
                     }
+                    // door just opened
+                    else if (doorStatus == 2)
+                    {
+                        if (_d) Echo("Airlock door " + door.Block.CustomName + " just opened");
+                        
+                        // so mark this airlock for disabling
+                        doorOpened = true;
+                    }
                 }
+
+                bool allClosed = true;
 
                 // okay so we're actively cycling
                 if (airlock.nowCycling)
@@ -147,8 +177,11 @@ namespace IngameScript
                         if (door.Block == null) continue;
 
                         if (door.Block.OpenRatio > 0)
+                        {
                             // if we're open, close.
                             door.Block.CloseDoor();
+                            allClosed = false;
+                        }
                         else
                             // if we're closed, disable.
                             door.Block.Enabled = false;
@@ -168,8 +201,8 @@ namespace IngameScript
                         // force Depressurize
                         if (!vent.Depressurize) vent.Depressurize = true;
 
-                        // if at least one vent can CanPressurize, has depressurized, and is now cycling
-                        if (vent.CanPressurize && vent.GetOxygenLevel() < .01 && airlock.nowCycling)
+                        // if at least one vent can CanPressurize, has depressurized, and is now cycling, and if all doors closed
+                        if (vent.CanPressurize && vent.GetOxygenLevel() < .01 && airlock.nowCycling && allClosed)
                             // cycle is complete
                             cycleDone = true;
                     }
@@ -213,6 +246,25 @@ namespace IngameScript
                         }
                     }
                 }
+                // this bit turns other airlock doors off as soon as you open one, to prevent accidental blow out.
+                else if (doorOpened)
+                {
+                    foreach (Door door in airlock.Doors)
+                    {
+                        if (door.Block == null) continue;
+                        if (door.Block.OpenRatio == 0) door.Block.Enabled = false;
+                    }
+                }
+                else
+                {
+                    // since !doorsOpened, all doors are closed.
+                    // so turn all doors on.
+                    foreach (Door door in airlock.Doors)
+                    {
+                        door.Block.Enabled = true;
+                    }
+                }
+
             }
         }
 
