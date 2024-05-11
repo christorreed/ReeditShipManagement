@@ -60,7 +60,8 @@ namespace IngameScript
         {
             foreach (IMyTerminalBlock Extractor in _largeExtractors)
             {
-                if (Extractor == null) continue;
+                if (Extractor == null)
+                    continue;
 
                 if (mode == ExtractorModes.Off)
                     Extractor.ApplyAction("OnOff_Off");
@@ -72,7 +73,7 @@ namespace IngameScript
         void setKeepFullThresh()
         {
             // set fuel tank/jerry can for extractor management = 3
-            if (_largeExtractors.Count < 1 && _smallExtractors.Count > 1)
+            if (_largeExtractors.Count < 1 && _smallExtractors.Count > 0)
                 // we have no large extractors and at least one small one
                 // so base the keep full thresh off a jerry can's capacity
                 _extractorKeepFullThreshold = (_extractorKeepFullMultiplier * _jerryCanCapacity);
@@ -182,7 +183,7 @@ namespace IngameScript
             // the item to load
             int Item = 1;
 
-            // check for an LG extractor first...
+            // try find a functional lg extractor
             foreach (IMyTerminalBlock Extractor in _largeExtractors)
             {
                 if (Extractor.IsFunctional)
@@ -191,22 +192,31 @@ namespace IngameScript
                     break;
                 }
             }
-            if (TheChosenOne == null)
+
+            // if we haven't found one yet.
+            // of if we have, but we don't have any cans for it
+            if (TheChosenOne == null || _items[Item].ActualQty < 1)
             {
-                // no LG extractor, check for SG one.
+                Item = 2;
+
+                // try find a functional sg extractor
                 foreach (IMyTerminalBlock Extractor in _smallExtractors)
                 {
                     if (Extractor.IsFunctional)
                     {
                         TheChosenOne = Extractor;
                         Item = 2;
+
+                        // if we have at least one 
+                        if (_items[Item].ActualQty < 1)
                         break;
                     }
                 }
+                
+                // if that didn't work...
                 if (TheChosenOne == null)
                 {
-                    // no sg extractor either...
-                    if (_d) Echo("No functional extractor to load!");
+                    // well, not much we can do about it.
                     _noExtractor = true;
                     return;
                 }
@@ -224,9 +234,6 @@ namespace IngameScript
             }
             _lowTankType = "";
 
-            // make sure it is on
-            TheChosenOne.ApplyAction("OnOff_On");
-
             // build an INVENTORY for the loadInventories method
             Inventory Inv = new Inventory();
             Inv.Block = TheChosenOne;
@@ -236,6 +243,10 @@ namespace IngameScript
             if (Inv.Inv.VolumeFillFactor > 0)
             {
                 if (_d) Echo("Extractor already loaded, waiting...");
+
+                // make sure it is on
+                TheChosenOne.ApplyAction("OnOff_On");
+
                 return;
             }
 
@@ -251,7 +262,7 @@ namespace IngameScript
             Invs.Add(Inv);
 
             if (_d) Echo("Attempting to load extractor " + TheChosenOne.CustomName);
-            bool success = loadInventories(_items[Item].Inventories, Invs, _items[Item].Type);
+            bool success = loadInventories(_items[Item].Inventories, Invs, _items[Item].Type, 1);
 
             string typeName = "fuel tank";
             if (Item == 2) typeName = "jerry can";
@@ -263,7 +274,6 @@ namespace IngameScript
                     0
                     ));
             
-
         }
     }
 }
