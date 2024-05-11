@@ -23,10 +23,6 @@ namespace IngameScript
     partial class Program
     {
 
-        // todo
-        // add toolcore support!
-
-
         int _initWelders = 0;
         double _actualWelders = 0;
         double _integrityWelders = 0;
