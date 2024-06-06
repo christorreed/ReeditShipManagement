@@ -5,7 +5,7 @@
 Reedit Ship Management (RSM) is a broad, ship automation script tailor made for the Draconis Expanse Space Engineers server.
 
 ### [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140)
-***Subscribe to RSM on Stream***
+***Subscribe to RSM on Steam***
 ### [Reedit Developments Discord](https://discord.gg/Z7UtZBBe)
 ***Raise bugs, ask questions, or request new features***
 ### [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md)
