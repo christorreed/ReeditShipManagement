@@ -210,7 +210,11 @@ namespace IngameScript
 
                 sec = "RSM.InitNaming"; Echo(sec);
 
-                _nameDelimiter = _config.Get(sec, "Ignore").ToChar(_nameDelimiter);
+                string delim = _config.Get(sec, "NameDelimiter").ToString(_nameDelimiter.ToString());
+                int parseCharAt = 0;
+                if (delim.Length > 1) parseCharAt = 1;
+                _nameDelimiter = char.Parse(delim.Substring(parseCharAt, 1));
+
                 _appendWeaponTypes = _config.Get(sec, "NameWeaponTypes").ToBoolean(_appendWeaponTypes);
                 _appendDriveTypes = _config.Get(sec, "NameDriveTypes").ToBoolean(_appendDriveTypes);
 
@@ -716,7 +720,7 @@ namespace IngameScript
             sec = "RSM.InitNaming";
 
             name = "NameDelimiter";
-            _config.Set(sec, name, _nameDelimiter.ToString());
+            _config.Set(sec, name, '"' + _nameDelimiter.ToString() + '"');
             _config.SetComment(sec, name, "single char delimiter for names");
 
             name = "NameWeaponTypes";
