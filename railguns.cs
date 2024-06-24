@@ -62,6 +62,17 @@ namespace IngameScript
                 }
             }
 
+            foreach (IMyTerminalBlock Rail in _kineticFixedWeapons)
+            {
+                if (Rail != null && Rail.IsFunctional)
+                {
+                    _actualKinetics++;
+
+                    // turn railguns on for 1+ on [2]
+                    (Rail as IMyConveyorSorter).Enabled = _currentStance.RailgunMode != RailgunModes.Off;
+                }
+            }
+
             _integrityKinetics = Math.Round(100 * (_actualKinetics / _initKinetics));
         }
 
@@ -69,38 +80,51 @@ namespace IngameScript
         {
             if (mode == RailgunModes.NoChange) return;
 
-            foreach (IMyTerminalBlock Rail in _kineticWeapons)
+            foreach (IMyTerminalBlock rail in _kineticWeapons)
             {
-                if (Rail != null & Rail.IsFunctional)
-                {
-                    if (mode == RailgunModes.Off)
-                    {
-                        (Rail as IMyConveyorSorter).Enabled = false;
-                    }
-                    else
-                    {
-                        (Rail as IMyConveyorSorter).Enabled = true;
+                setRail(rail, mode, false);
+            }
 
+            foreach (IMyTerminalBlock rail in _kineticFixedWeapons)
+            {
+                setRail(rail, mode, true);
+            }
+        }
+
+        private void setRail(IMyTerminalBlock rail, RailgunModes mode, bool fixedWeap)
+        {
+            if (rail != null & rail.IsFunctional)
+            {
+                if (mode == RailgunModes.Off)
+                {
+                    (rail as IMyConveyorSorter).Enabled = false;
+                }
+                else
+                {
+                    (rail as IMyConveyorSorter).Enabled = true;
+                    
+                    if (!fixedWeap)
+                    {
                         if (_autoConfigWeapons)
                         {
-                            Rail.SetValue("WC_Grids", true);
-                            Rail.SetValue("WC_LargeGrid", true);
-                            Rail.SetValue("WC_SmallGrid", true);
-                            Rail.SetValue("WC_SubSystems", true);
-                            setBlockRepelOff(Rail);
+                            rail.SetValue("WC_Grids", true);
+                            rail.SetValue("WC_LargeGrid", true);
+                            rail.SetValue("WC_SmallGrid", true);
+                            rail.SetValue("WC_SubSystems", true);
+                            setBlockRepelOff(rail);
                         }
 
                         if (_setTurretFireMode)
                         {
-                            if (mode == RailgunModes.OpenFire) 
+                            if (mode == RailgunModes.OpenFire)
                             {
                                 // weapons free
-                                setBlockFireModeAuto(Rail);
+                                setBlockFireModeAuto(rail);
                             }
-                            else 
+                            else
                             {
                                 // hold fire
-                                setBlockFireModeManual(Rail);
+                                setBlockFireModeManual(rail);
                             }
                         }
                     }

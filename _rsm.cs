@@ -381,7 +381,7 @@ namespace IngameScript
             switch (_stepBoot)
             {
                 case 0:
-                    if (_d) Echo("Refreshing " + _kineticWeapons.Count + " railguns...");
+                    if (_d) Echo("Refreshing " + (_kineticWeapons.Count + _kineticFixedWeapons.Count) + " kinetics...");
                     refreshRailguns();
                     // checks integrity, sets power, gets target status for discharge mgmt
 

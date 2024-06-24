@@ -56,6 +56,7 @@ namespace IngameScript
         private List<IMyTerminalBlock> _normalPdcs = new List<IMyTerminalBlock>();
         private List<IMyTerminalBlock> _defensivePdcs = new List<IMyTerminalBlock>();
         private List<IMyTerminalBlock> _kineticWeapons = new List<IMyTerminalBlock>();
+        private List<IMyTerminalBlock> _kineticFixedWeapons = new List<IMyTerminalBlock>();
         private List<IMyTerminalBlock> _torpedoLaunchers = new List<IMyTerminalBlock>();
 
         // Thruster Lists
@@ -257,7 +258,7 @@ namespace IngameScript
 
                 // Roci
                 if (blockId == "MyObjectBuilder_ConveyorSorter/T-47 Roci Light Fixed Railgun")
-                    return sortRail(b, "Roci", 13);
+                    return sortRail(b, "Roci", 13, true);
 
                 // Foehammer
                 if (blockId == "MyObjectBuilder_ConveyorSorter/VX-12 Foehammer Ultra-Heavy Railgun")
@@ -268,20 +269,24 @@ namespace IngameScript
                     return sortRail(b, "Farren", 15);
 
                 // Zako
-                if (blockId.Contains("Zakosetara"))
+                if (blockId == "MyObjectBuilder_ConveyorSorter/Zakosetara Heavy Railgun")
                     return sortRail(b, "Zako", 10);
+
+                // Zako
+                if (blockId == "MyObjectBuilder_ConveyorSorter/Mounted Zakosetara Heavy Railgun")
+                    return sortRail(b, "Zako", 10, true, "Fixed");
 
                 // Kess
                 if (blockId.Contains("Kess Hashari Cannon"))
-                    return sortRail(b, "Kess", 16);
+                    return sortRail(b, "Kess", 16, true, "Fixed");
 
                 // Coilgun
                 if (blockId.Contains("Coilgun"))
-                    return sortRail(b, "Coilgun", 13);
+                    return sortRail(b, "Coilgun", 13, false, "");
 
                 // Glapion
                 if (blockId.Contains("Glapion"))
-                    return sortRail(b, "Glapion", 3);
+                    return sortRail(b, "Glapion", 3, true, "Fixed");
 
                 // Thrusters -----------------------------------------------------------------
 
@@ -839,6 +844,7 @@ namespace IngameScript
             _normalPdcs.Clear();
             _defensivePdcs.Clear();
             _kineticWeapons.Clear();
+            _kineticFixedWeapons.Clear();
             _torpedoLaunchers.Clear();
 
             // Thruster Lists
@@ -920,10 +926,11 @@ namespace IngameScript
             return false;
         }
 
-        bool sortRail(IMyTerminalBlock b, string init, int ammo)
+        bool sortRail(IMyTerminalBlock b, string init, int ammo, bool fixedWeap = false, string typeName = "Rail")
         {
 
-            _kineticWeapons.Add(b);
+            if (fixedWeap) _kineticFixedWeapons.Add(b);
+            else _kineticWeapons.Add(b);
 
             addInventory(b, ammo);
 
@@ -932,8 +939,9 @@ namespace IngameScript
             if (_isIniting)
             {
                 string Append = "";
+                if (typeName != "") typeName = _nameDelimiter + typeName;
                 if (_appendWeaponTypes) Append = _nameDelimiter + init;
-                _initNames.Add(b, "Railgun" + Append);
+                _initNames.Add(b, "Kinetic" + typeName + Append);
             }
 
             return false;
