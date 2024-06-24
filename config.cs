@@ -1175,9 +1175,10 @@ namespace IngameScript
                                 }
                                 break;
 
-                            case "Add type names to weapons at init.":
+                            /*case "Add type names to weapons at init.":
                                 _appendWeaponTypes = bool.Parse(value);
-                                break;
+                                break;*/
+                            // lol no, they will be forced to try it.
 
                             case "Show basic telemetry.":
                                 _showBasicTelemetry = bool.Parse(value);
