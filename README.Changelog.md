@@ -141,9 +141,11 @@
 
 ## V 1.99.60 (BETA) (2024-06-24)
 * Fixed issues with fixed kinetic weapons.
-    * Naming improved, no longer listed as railguns
+    * Naming improved, no longer listed as railguns, now kinetics.
     * Fire modes no longer controlled on fixed weapons
 * Fixed a bug preventing loading of Large Ramshackle Torpedoes
+* Append weapon type names is now default from old versions of RSM.
+* Fixed a bug with name delimiter configuration.
 
 ## V 1.99.59 (BETA) (2024-05-11)
 
