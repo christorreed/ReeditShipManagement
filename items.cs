@@ -318,6 +318,9 @@ namespace IngameScript
                 case "180mm Lead-Steel Sabot Ammo":
                     return 16;
 
+                case "Large Ramshackle Torpedo Magazine":
+                    return 9;
+
                 default:
                     if (_d) Echo("Unknown AmmoType = " + AmmoType);
                     return 99;

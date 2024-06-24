@@ -139,6 +139,12 @@
 * Updated RSM thumbnail image
 * Removed old beacon-based signal data from display (custom hud now)
 
+## V 1.99.60 (BETA) (2024-06-24)
+* Fixed issues with fixed kinetic weapons.
+    * Naming improved, no longer listed as railguns
+    * Fire modes no longer controlled on fixed weapons
+* Fixed a bug preventing loading of Large Ramshackle Torpedoes
+
 ## V 1.99.59 (BETA) (2024-05-11)
 
 * Simplified extractor wait code, drastically sped up extractor loading.
