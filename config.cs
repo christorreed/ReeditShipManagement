@@ -119,7 +119,7 @@ namespace IngameScript
         // Performance & Debugging -----------------------------------------------------------------
 
         // verbose debugging enabled
-        bool _d = true;
+        bool _d = false;
 
         // performance profiling enabled
         bool _p = false;

@@ -37,7 +37,7 @@ namespace IngameScript
                     Spot.Enabled = false; // off
                 else
                 {
-                    Spot.Enabled = false; // on
+                    Spot.Enabled = true; // on
                     if (mode == SpotlightModes.OnMax) Spot.Radius = 9999;
                 }
             }
