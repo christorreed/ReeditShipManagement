@@ -28,79 +28,79 @@ namespace IngameScript
 
         enum ToggleModes
         {
-            #region mdk preserve
-            Off, On, NoChange
-            #endregion
+#region mdk preserve
+Off, On, NoChange
+#endregion
         }
 
         enum LightToggleModes
         {
-            #region mdk preserve
-            Off, On, NoChange, OnNoColourChange
-            #endregion
+#region mdk preserve
+Off, On, NoChange, OnNoColourChange
+#endregion
         }
 
         enum PdcModes
         {
-            #region mdk preserve
-            Off, MinDefence, AllDefence, Offence, AllOnOnly, NoChange
-            #endregion
+#region mdk preserve
+Off, MinDefence, AllDefence, Offence, AllOnOnly, NoChange
+#endregion
         }
 
         enum RailgunModes
         {
-            #region mdk preserve
-            Off, HoldFire, OpenFire, NoChange
-            #endregion
+#region mdk preserve
+Off, HoldFire, OpenFire, NoChange
+#endregion
         }
 
         enum MainDriveModes
         {
-            #region mdk preserve
-            Off, On, Minimum, EpsteinOnly, ChemOnly, NoChange
-            #endregion
+#region mdk preserve
+Off, On, Minimum, EpsteinOnly, ChemOnly, NoChange
+#endregion
         }
 
         enum ManeuveringThrusterModes
         {
-            #region mdk preserve
-            Off, On, ForwardOff, ReverseOff, RcsOnly, AtmoOnly, NoChange
-            #endregion
+#region mdk preserve
+Off, On, ForwardOff, ReverseOff, RcsOnly, AtmoOnly, NoChange
+#endregion
         }
 
         enum SpotlightModes
         {
-            #region mdk preserve
-            On, Off, OnMax, NoChange
-            #endregion
+#region mdk preserve
+On, Off, OnMax, NoChange
+#endregion
         }
 
         enum TankAndBatteryModes
         {
-            #region mdk preserve
-            Auto, StockpileRecharge, Discharge, ManagedDischarge, NoChange
-            #endregion
+#region mdk preserve
+Auto, StockpileRecharge, Discharge, ManagedDischarge, NoChange
+#endregion
         }
 
         enum KillOrAbortNavigationModes
         {
-            #region mdk preserve
-            Abort, NoChange
-            #endregion
+#region mdk preserve
+Abort, NoChange
+#endregion
         }
 
         enum ExtractorModes
         {
-            #region mdk preserve
-            Off, On, FillWhenLow, KeepFull,
-            #endregion
+#region mdk preserve
+Off, On, FillWhenLow, KeepFull,
+#endregion
         }
 
         enum HangarDoorModes
         {
-            #region mdk preserve
-            Closed, Open, NoChange
-            #endregion
+#region mdk preserve
+Closed, Open, NoChange
+#endregion
         }
 
     }

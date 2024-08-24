@@ -24,11 +24,12 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        #region mdk preserve
-        #region mdk macros
-        string Version = "2.0.0 ($MDK_DATE$)";
-        #endregion
-        #endregion
+
+#region mdk preserve
+#region mdk macros
+string Version = "2.0.1 ($MDK_DATE$)";
+#endregion
+#endregion
 
         // StarCpt's Profiler
         // https://github.com/StarCpt/SERuntimeProfiler/blob/main/RuntimeProfiler.cs
