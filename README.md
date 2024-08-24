@@ -6,7 +6,7 @@ Reedit Ship Management (RSM) is a broad, ship automation script tailor made for 
 
 ### [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140)
 ***Subscribe to RSM on Steam***
-### [Reedit Developments Discord](https://discord.gg/Z7UtZBBe)
+### [Reedit Developments Discord](https://discord.gg/tq3H4sem66)
 ***Raise bugs, ask questions, or request new features***
 ### [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md)
 ***Get started with RSM!***
@@ -72,4 +72,4 @@ Draconis Expanse is a PvP environment, and scripts have been used as weapons bef
 **DON'T FIGHT THE SCRIPT!**
 *There's probably a stance or other option to achieve what you want with one command to RSM. If it's freaking you out, just turn off the RSM PB!*
 
-[Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/Z7UtZBBe) 
+[Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/tq3H4sem66) 
