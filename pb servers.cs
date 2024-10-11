@@ -38,7 +38,7 @@ namespace IngameScript
                 if (script == "EFC") Pbs = _pbsEfc;
                 else if (script == "NavOS") Pbs = _pbsNavOs;
 
-                foreach (IMyProgrammableBlock pb in _pbsEfc)
+                foreach (IMyProgrammableBlock pb in Pbs)
                 {
                     // if PB gone or turned off, try the next one...
                     if (pb == null || !pb.Enabled) continue;
