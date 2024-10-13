@@ -2,6 +2,19 @@
 ### Reedit Ship Management
 [Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/tq3H4sem66) 
 
+## V 2.0.4
+
+* NavOS Abort command now runs before rather than after controlling thrusters.
+> This fixes a condition where a 'Stance:Docking' command while an active NavOS burn is running fails to disable the main drives (because NavOS turns them back on again prior to being aborted).
+* Blocked an error where a command was reported to have failed.
+> When RSM runs a command, like Abort to NavOS, the keen API returns a value which is intended to indicate some kind of failure.  This value seems to be returning a false result for some players for unknown reasons, even though the command is working correctly.  So this error has been blocked; it's unhelpful. RSM will indicate when it has found a relevant block and run an EFC or NavOS command in the warnings LCD, but won't be able to provide any feedback as to whether that command actually worked.
+
+## V 2.0.3
+
+* Fixed NavOS control command; now sending ThrustRatio 0.5 rather than Thrust Set 0.5.  This may have caused a full burn condition when calling the Combat stance.
+* Fixed error with NavOS burn percentages (int/float error)
+* NavOS/EFC commands ran by RSM now appear in the warnings screen, so you can see what was ran and when.
+
 ## V 2.0.2
 
 * Fixed errors with init values for reactors, batteries.

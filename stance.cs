@@ -95,6 +95,16 @@ namespace IngameScript
 
             if (_d) Echo("Setting stance '" + stance + "'.");
 
+            // this one first bc its important if a NavOS cruise is already running.
+            // before we deal with thrusters.
+            // NavOs/Efc Abort/Kill
+            if (_currentStance.KillOrAbortNavigation == KillOrAbortNavigationModes.Abort)
+            {
+                addPbServerCommand("Off", "EFC");
+                addPbServerCommand("Abort", "NavOS");
+            }
+
+
             // set the main stance vars
             _currentStance = newStance;
             _currentStanceName = stance;
@@ -193,19 +203,14 @@ namespace IngameScript
 
             // prep pb commands
 
-            // this one first bc it's most important.
-            // NavOs/Efc Abort/Kill
-            if (_currentStance.KillOrAbortNavigation == KillOrAbortNavigationModes.Abort)
-            {
-                addPbServerCommand("Off", "EFC");
-                addPbServerCommand("Abort", "NavOS");
-            }
-            
             // NavOs/Efc Burn
             if (_currentStance.BurnPercentage > 0)
             {
                 addPbServerCommand("Set Burn " + _currentStance.BurnPercentage, "EFC");
-                addPbServerCommand("Thrust Set " + _currentStance.BurnPercentage/100, "NavOS");
+
+                float navOSval = Convert.ToSingle(_currentStance.BurnPercentage) / 100;
+
+                addPbServerCommand("ThrustRatio " + navOSval, "NavOS");
             }
 
             // Efc Boost

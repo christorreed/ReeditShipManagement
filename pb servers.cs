@@ -46,14 +46,32 @@ namespace IngameScript
                     // run the command
                     Success = (pb as IMyProgrammableBlock).TryRun(argument);
 
-                    if (Success && _d)
-                        Echo("Ran " + argument + " on " + pb.CustomName + " successfully.");
+                    // success is a lie.
+                    // ignore it.
+
+                    if (_d) Echo("Ran " + argument + " on " + pb.CustomName + " successfully.");
+                    _alerts.Add(new Alert(
+                        "Ran " + script + " (" + argument + ")",
+                        "Ran " + script + " (" + argument + ")"
+                        , 0
+                        ));
+
+                    /*if (Success && _d)
+                    {
+                        ;
+                        _alerts.Add(new Alert(
+                            "Ran " + script + " (" + argument + ")",
+                            "Ran " + script + " (" + argument + ")"
+                            , 1
+                            ));
+                    }
                     else
                         _alerts.Add(new Alert(
                             script + " command failed!",
                             script + " command " + argument + " failed!"
                             , 1
                             ));
+                    */
 
                     if (script == "EFC") _pbCommandRanEfc = true;
                     else if (script == "NavOS") _pbCommandRanNavOs = true;
