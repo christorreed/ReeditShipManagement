@@ -270,11 +270,11 @@ namespace IngameScript
 
                 // Zako
                 if (blockId == "MyObjectBuilder_ConveyorSorter/Zakosetara Heavy Railgun")
-                    return sortRail(b, "Zako", 10);
+                    return sortRail(b, "Zako", 10, true, "Fixed");
 
                 // Zako
                 if (blockId == "MyObjectBuilder_ConveyorSorter/Mounted Zakosetara Heavy Railgun")
-                    return sortRail(b, "Zako", 10, true, "Fixed");
+                    return sortRail(b, "Zako", 10);
 
                 // Kess
                 if (blockId.Contains("Kess Hashari Cannon"))

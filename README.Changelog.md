@@ -4,6 +4,10 @@
 
 ## V 2.0.4
 
+* Fixed a bug causing Zako turrets to be recognised as fixed, and fixed Zakos as turrets.
+
+## V 2.0.4
+
 * NavOS Abort command now runs before rather than after controlling thrusters.
 > This fixes a condition where a 'Stance:Docking' command while an active NavOS burn is running fails to disable the main drives (because NavOS turns them back on again prior to being aborted).
 * Blocked an error where a command was reported to have failed.
