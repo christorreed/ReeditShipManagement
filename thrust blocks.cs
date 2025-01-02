@@ -170,6 +170,8 @@ namespace IngameScript
 
         private void setRcsThrusters(ManeuveringThrusterModes mode)
         {
+            if (mode == ManeuveringThrusterModes.NoChange) return;
+
             foreach (IMyThrust Thruster in _rcsThrusters)
             {
                 if (Thruster != null)
