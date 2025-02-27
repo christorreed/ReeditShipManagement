@@ -142,7 +142,7 @@ namespace IngameScript
 
         private float ACTUAL__rcsThrusters;
         private float _initThrustRCS;
-        private double INTEGRITY__rcsThrusters;
+        private double _integrityThrustRCS;
 
         private void refreshRcsThrusters()
         {
@@ -156,7 +156,7 @@ namespace IngameScript
                 }
             }
 
-            INTEGRITY__rcsThrusters = Math.Round(100 * (ACTUAL__rcsThrusters / _initThrustRCS));
+            _integrityThrustRCS = Math.Round(100 * (ACTUAL__rcsThrusters / _initThrustRCS));
         }
         private void initRcsThrusters()
         {

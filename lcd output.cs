@@ -675,21 +675,17 @@ namespace IngameScript
                 // build Subsystem Integrity ----------------------------------------------
 
                 string mainThrusterStance = _currentStance.MainDriveMode.ToString().ToUpper();
-                if (mainThrusterStance.Length > 3) mainThrusterStance = mainThrusterStance.Substring(0, 3);
-
                 string rcsThrusterStance = _currentStance.ManeuveringThrusterMode.ToString().ToUpper();
-                if (rcsThrusterStance.Length > 3) rcsThrusterStance = rcsThrusterStance.Substring(0, 3);
-
-                string tanksAndBatteriesStance = _currentStance.MainDriveMode.ToString().ToUpper();
-                if (tanksAndBatteriesStance.Length > 3) tanksAndBatteriesStance = tanksAndBatteriesStance.Substring(0, 3);
-
+                string tanksAndBatteriesStance = _currentStance.TankAndBatteryMode.ToString().ToUpper();
                 string pdcsStance = _currentStance.PdcMode.ToString().ToUpper();
-                if (pdcsStance.Length > 3) pdcsStance = pdcsStance.Substring(0, 3);
-
                 string torpStance = _currentStance.TorpedoMode.ToString().ToUpper();
-                if (torpStance.Length > 3) torpStance = torpStance.Substring(0, 3);
-
                 string railStance = _currentStance.RailgunMode.ToString().ToUpper();
+
+                if (mainThrusterStance.Length > 3) mainThrusterStance = mainThrusterStance.Substring(0, 3);
+                if (rcsThrusterStance.Length > 3) rcsThrusterStance = rcsThrusterStance.Substring(0, 3);
+                if (tanksAndBatteriesStance.Length > 3) tanksAndBatteriesStance = tanksAndBatteriesStance.Substring(0, 3);
+                if (pdcsStance.Length > 3) pdcsStance = pdcsStance.Substring(0, 3);
+                if (torpStance.Length > 3) torpStance = torpStance.Substring(0, 3);
                 if (railStance.Length > 3) railStance = railStance.Substring(0, 3);
 
                 try
@@ -697,7 +693,7 @@ namespace IngameScript
                     if (_initThrustMain > 0)
                         sectionIntegrity += "Epstein   [" + generateBar(_integrityThrustMain) + "] " + (_integrityThrustMain + "% ").PadLeft(5) + mainThrusterStance + "\n";
                     if (_initThrustRCS > 0)
-                        sectionIntegrity += "RCS       [" + generateBar(INTEGRITY__rcsThrusters) + "] " + (INTEGRITY__rcsThrusters + "% ").PadLeft(5) + rcsThrusterStance + "\n";
+                        sectionIntegrity += "RCS       [" + generateBar(_integrityThrustRCS) + "] " + (_integrityThrustRCS + "% ").PadLeft(5) + rcsThrusterStance + "\n";
                     if (_initReactors > 0)
                         sectionIntegrity += "Reactors  [" + generateBar(_integrityReactors) + "] " + (_integrityReactors + "% ").PadLeft(5) + "    \n";
                     if (_initBatteries > 0)
@@ -711,7 +707,7 @@ namespace IngameScript
                     if (_initH2 > 0)
                         sectionIntegrity += "H2 Tanks  [" + generateBar(_integrityH2) + "] " + (_integrityH2 + "% ").PadLeft(5) + tanksAndBatteriesStance + "\n";
                     if (_initO2 > 0)
-                        sectionIntegrity += "O2 Tanks  [" + generateBar(INTEGRITY_O2) + "] " + (INTEGRITY_O2 + "% ").PadLeft(5) + tanksAndBatteriesStance + "\n";
+                        sectionIntegrity += "O2 Tanks  [" + generateBar(_integrityO2) + "] " + (_integrityO2 + "% ").PadLeft(5) + tanksAndBatteriesStance + "\n";
                     if (_initGyros > 0)
                         sectionIntegrity += "Gyros     [" + generateBar(_integrityGyros) + "] " + (_integrityGyros + "% ").PadLeft(5) + "    \n";
                     if (_initCargos > 0)

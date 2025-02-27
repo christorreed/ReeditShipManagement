@@ -27,7 +27,7 @@ namespace IngameScript
 
 #region mdk preserve
 #region mdk macros
-string Version = "2.1.1 ($MDK_DATE$)";
+string Version = "2.1.2 ($MDK_DATE$)";
 #endregion
 #endregion
 
@@ -495,7 +495,7 @@ string Version = "2.1.1 ($MDK_DATE$)";
                     // checks if we _needFuel?
 
                     // if we do...
-                    if (_needFuel && !_noExtractor)
+                    if (_needFuel && !_noExtractor && _lowTankType == "")
                     {
                         // ...load extractors
                         if (_d) Echo("Fuel low, filling extractors...");

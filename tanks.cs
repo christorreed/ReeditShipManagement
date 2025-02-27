@@ -82,7 +82,7 @@ namespace IngameScript
         private double TOTAL_O2 = 0;
         private double ACTUAL_O2 = 0;
         private double _initO2 = 0;
-        private double INTEGRITY_O2 = 0;
+        private double _integrityO2 = 0;
         private void refreshO2Tanks()
         {
             ACTUAL_O2 = 0;
@@ -99,7 +99,7 @@ namespace IngameScript
                     ACTUAL_O2 += (Tank.Capacity * Tank.FilledRatio);
                 }
             }
-            INTEGRITY_O2 = Math.Round(100 * (TOTAL_O2 / _initO2));
+            _integrityO2 = Math.Round(100 * (TOTAL_O2 / _initO2));
         }
 
         private void initO2Tanks()
