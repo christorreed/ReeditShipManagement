@@ -204,6 +204,8 @@ namespace IngameScript
 
                 buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate"); //17
 
+                buildItem("Reactor C", "MyObjectBuilder_Component", "Reactor"); //18
+
                 _items[0].MaxFillRatio = _reactorFillRatio;
             }
             catch (Exception ex)
@@ -278,12 +280,16 @@ namespace IngameScript
             switch (AmmoType)
             {
                 case "220mm Explosive Torpedo":
+                case "220mm Decoy Torpedo":
+                case "220mm Explosive Anti-Torp Torpedo":
                     return 5;
 
+                case "MCRN Anti-Torp Torpedo":
                 case "MCRN Torpedo High Spread":
                 case "MCRN Torpedo Low Spread":
                     return 6;
 
+                case "UNN Anti-Torp Torpedo":
                 case "UNN Torpedo High Spread":
                 case "UNN Torpedo Low Spread":
                     return 7;

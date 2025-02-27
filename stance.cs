@@ -25,7 +25,7 @@ namespace IngameScript
         class Stance
         {
             public string Inherits = "";
-            public ToggleModes TorpedoMode;
+            public TorpedoModes TorpedoMode;
             public PdcModes PdcMode;
             public RailgunModes RailgunMode;
             public MainDriveModes MainDriveMode;
@@ -56,7 +56,7 @@ namespace IngameScript
         // default stance mode values
         // strings so they can be used as default values
         // by the MyIni parser
-        ToggleModes _defaultTorpedoMode = ToggleModes.On;
+        TorpedoModes _defaultTorpedoMode = TorpedoModes.On;
         PdcModes _defaultPdcMode = PdcModes.Offence;
         RailgunModes _defaultRailgunMode = RailgunModes.OpenFire;
         MainDriveModes _defaultMainDriveMode = MainDriveModes.On;

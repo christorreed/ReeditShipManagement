@@ -31,7 +31,7 @@ namespace IngameScript
                 {
                     "Cruise",
                     new Stance{
-                        TorpedoMode = ToggleModes.On,
+                        TorpedoMode = TorpedoModes.On,
                         PdcMode = PdcModes.AllDefence,
                         RailgunMode = RailgunModes.HoldFire,
                         MainDriveMode = MainDriveModes.EpsteinOnly,
@@ -57,7 +57,7 @@ namespace IngameScript
                     "StealthCruise",
                     new Stance{
                         Inherits = "Cruise",
-                        TorpedoMode = ToggleModes.On,
+                        TorpedoMode = TorpedoModes.On,
                         PdcMode = PdcModes.AllDefence,
                         RailgunMode = RailgunModes.HoldFire,
                         MainDriveMode = MainDriveModes.Minimum,
@@ -83,7 +83,7 @@ namespace IngameScript
                     "Docked",
                     new Stance{
                         Inherits = "Cruise",
-                        TorpedoMode = ToggleModes.On,
+                        TorpedoMode = TorpedoModes.On,
                         PdcMode = PdcModes.AllDefence,
                         RailgunMode = RailgunModes.HoldFire,
                         MainDriveMode = MainDriveModes.Off,
@@ -109,7 +109,7 @@ namespace IngameScript
                     "Docking",
                     new Stance{
                         Inherits = "Docked",
-                        TorpedoMode = ToggleModes.On,
+                        TorpedoMode = TorpedoModes.On,
                         PdcMode = PdcModes.AllDefence,
                         RailgunMode = RailgunModes.HoldFire,
                         MainDriveMode = MainDriveModes.Off,
@@ -135,7 +135,7 @@ namespace IngameScript
                     "NoAttack",
                     new Stance{
                         Inherits = "Docked",
-                        TorpedoMode = ToggleModes.Off,
+                        TorpedoMode = TorpedoModes.Off,
                         PdcMode = PdcModes.Off,
                         RailgunMode = RailgunModes.Off,
                         MainDriveMode = MainDriveModes.On,
@@ -161,7 +161,7 @@ namespace IngameScript
                     "Combat",
                     new Stance{
                         Inherits = "Cruise",
-                        TorpedoMode = ToggleModes.On,
+                        TorpedoMode = TorpedoModes.On,
                         PdcMode = PdcModes.AllDefence,
                         RailgunMode = RailgunModes.OpenFire,
                         MainDriveMode = MainDriveModes.On,
@@ -187,7 +187,7 @@ namespace IngameScript
                     "CQB",
                     new Stance{
                         Inherits = "Combat",
-                        TorpedoMode = ToggleModes.On,
+                        TorpedoMode = TorpedoModes.On,
                         PdcMode = PdcModes.Offence,
                         RailgunMode = RailgunModes.OpenFire,
                         MainDriveMode = MainDriveModes.On,
@@ -213,7 +213,7 @@ namespace IngameScript
                     "WeaponsHot",
                     new Stance{
                         Inherits = "CQB",
-                        TorpedoMode = ToggleModes.On,
+                        TorpedoMode = TorpedoModes.On,
                         PdcMode = PdcModes.Offence,
                         RailgunMode = RailgunModes.OpenFire,
                         MainDriveMode = MainDriveModes.NoChange,

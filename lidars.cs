@@ -24,7 +24,9 @@ namespace IngameScript
     {
         // LiDARs -----------------------------------------------------------------
         private bool _lidarWorking;
-        
+        private bool _lidarHasTarget;
+
+
         private void refreshLidars(bool power_state, bool set_power_state)
         {
             _lidarWorking = false;
@@ -38,7 +40,30 @@ namespace IngameScript
                     if (set_power_state)
                         Lidar.Enabled = power_state;
 
+                    // check to see if the lidar has a target
+                    // if it does, torpedoes will be switched on (if so configured)
+                    // if it doesn't, torpedoes will be switched off (if so configured)
+                    if (!_lidarHasTarget)
+                    {
+                        MyDetectedEntityInfo? LidarTarget = _wcPbApi.GetWeaponTarget(Lidar);
+                        if (LidarTarget.HasValue)
+                        {
+                            string Name = LidarTarget.Value.Name;
+                            if (Name != null && Name != "")
+                            {
+                                if (_d) Echo("At least one lidar  has a target!");
+                                _lidarHasTarget = true;
+                            }
+                        }
+                    }
+
                 }
+            }
+
+            // no lidar working, so pretend like we have a target and to turn on torps.
+            if (!_lidarWorking)
+            {
+                _lidarHasTarget = true;
             }
         }
     }

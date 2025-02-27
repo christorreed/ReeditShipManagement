@@ -2,6 +2,17 @@
 ### Reedit Ship Management
 [Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/tq3H4sem66) 
 
+## V 2.1.0
+
+* Torpedo Improvements
+	* Autoloading now properly supports latest torp configurations (decoys, anti-torp)
+    * Torpedos now support automatic power management.  Set the torpedo mode per stance to OnWhenLidarTarget and it will only be enabled when a lidar block has a valid target, or when no lidar is operational. This will be made the new default after some more testing and is a response to increased power consumtion on launcher blocks.
+* Fixed a bug with manouvering thrusters NoChange not working.
+    * Thanks to Braste for this fix
+* Added reactor components to the inventory LCD
+    * An init command will be requried to bring it up on your LCD.
+    * A future update may add the ability to configure additional components manually, let me know if you're interested in that.
+
 ## V 2.0.5
 
 * Fixed a bug causing Zako turrets to be recognised as fixed, and fixed Zakos as turrets.

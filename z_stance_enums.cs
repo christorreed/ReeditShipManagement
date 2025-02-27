@@ -103,5 +103,11 @@ Closed, Open, NoChange
 #endregion
         }
 
+        enum TorpedoModes
+        {
+            #region mdk preserve
+            Off, On, NoChange, OnWhenLidarTarget
+            #endregion
+        }
     }
 }

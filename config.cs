@@ -355,18 +355,15 @@ namespace IngameScript
                         if (_config.ContainsKey(sect, key))
                         {
                             newStance.TorpedoMode =
-                                (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
-                            Echo("1");
+                                (TorpedoModes)Enum.Parse(typeof(TorpedoModes), _config.Get(sect, key).ToString());
                         }
                         else if (inherits)
                         {
                             newStance.TorpedoMode = inheritee.TorpedoMode;
-                            Echo("2");
                         }
                         else
                         {
                             newStance.TorpedoMode = _defaultTorpedoMode;
-                            Echo("3");
                         }
 
 
@@ -834,7 +831,7 @@ namespace IngameScript
                 else
                 { // otherwise, load it up
                     _config.Set(sec, name, stance.TorpedoMode.ToString());
-                    _config.SetComment(sec, name, getAllEnumValues(typeof(ToggleModes)));
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(TorpedoModes)));
                 }
 
                 name = "Pdcs";
@@ -1434,8 +1431,8 @@ namespace IngameScript
 
                     Stance newStance = new Stance();
 
-                    if (newData[0] == 0) newStance.TorpedoMode = ToggleModes.Off;
-                    else newStance.TorpedoMode = ToggleModes.On;
+                    if (newData[0] == 0) newStance.TorpedoMode = TorpedoModes.Off;
+                    else newStance.TorpedoMode = TorpedoModes.On;
 
                     if (newData[1] == 0) newStance.PdcMode = PdcModes.Off;
                     else if (newData[1] == 1) newStance.PdcMode = PdcModes.MinDefence;
