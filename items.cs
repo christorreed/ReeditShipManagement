@@ -179,31 +179,34 @@ namespace IngameScript
             {
                 // this order is important, don't change it.
 
-                buildItem("Fusion Fuel", "MyObjectBuilder_Ingot", "FusionFuel", true); //0
+                buildItem("Fusion Pellets", "MyObjectBuilder_Ingot", "sdx_itemReactorFuel", true); //0
 
                 // Fuel tanks and jerry cans were removed in SDX2.0
                 // these items are still here to retain this order for now.
                 buildItem("Fuel Can ", "MyObjectBuilder_Component", "Fuel_Tank"); //1
-                buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank"); //2
 
+                buildItem("50mm PDC", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazinePdc50mm"); //2
                 buildItem("40mm Impv", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazinePdc40mmImprovised", true); //3
                 buildItem("40mm PDC", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazinePdc40mm", true); //4
 
-                buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine", true, true); //5
-                buildItem("220 MCRN", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine", true, true); //6
-                buildItem("220 UNN", "MyObjectBuilder_AmmoMagazine", "220mmUNNTorpedoMagazine", true, true); //7
+                buildItem("160mm Torp ", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineTorpedo160mm", true, true); //5
+                buildItem("190mm Torp", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineTorpedo190mmImprovised", true, true); //6
+                buildItem("220mm Torp", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineTorpedo220mm", true, true); //7
+
+                // These aren't used.
+                // these items are still here to retain this order for now.
                 buildItem("RS Torp", "MyObjectBuilder_AmmoMagazine", "RamshackleTorpedoMagazine", true, true); //8
                 buildItem("LRS Torp", "MyObjectBuilder_AmmoMagazine", "LargeRamshackleTorpedoMagazine", true, true); //9
-
                 buildItem("120mm RG", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine", true); //10
                 buildItem("Dawson", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine", true); //11
                 buildItem("Stiletto", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine", true); //12
 
                 buildItem("80mm Pb", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineSabot80mmImprovised", true); //13
-
                 buildItem("80mm W-U", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineSabot80mm", true); //14
                 buildItem("100mm W-U", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineSabot100mm", true); //15
 
+                // These aren't used.
+                // these items are still here to retain this order for now.
                 buildItem("Kess", "MyObjectBuilder_AmmoMagazine", "180mmLeadSteelSabotMagazine", true); //16
 
                 buildItem("Steel Pla", "MyObjectBuilder_Component", "SteelPlate"); //17
@@ -283,6 +286,34 @@ namespace IngameScript
         {
             switch (AmmoType)
             {
+                case "220mm Plasma Torpedo":
+                    return 7;
+
+                case "190mm Improvised Torpedo":
+                    return 6;
+
+                case "160mm Plasma Torpedo":
+                    return 5;
+
+                case "50mm PDC Ammo":
+                    return 2;
+
+                case "40mm PDC Ammo":
+                    return 4;
+
+                case "40mm PDC Ammo Improvised":
+                    return 3;
+
+                case "80mm Sabot Improvised":
+                    return 13;
+
+                case "80mm Sabot":
+                    return 14;
+
+                case "100mm Tungsten-Uranium Sabot":
+                    return 3;
+
+                /* Removed SDX1 defs
                 case "220mm Explosive Torpedo":
                 case "220mm Decoy Torpedo":
                 case "220mm Explosive Anti-Torp Torpedo":
@@ -330,6 +361,7 @@ namespace IngameScript
 
                 case "Large Ramshackle Torpedo Magazine":
                     return 9;
+                */
 
                 default:
                     if (_d) Echo("Unknown AmmoType = " + AmmoType);
