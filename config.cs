@@ -1050,7 +1050,18 @@ namespace IngameScript
                 { // otherwise, load it up
                     _config.Set(sec, name, stance.HangarDoorsMode.ToString());
                     _config.SetComment(sec, name, getAllEnumValues(typeof(HangarDoorModes)));
-                }       
+                }
+
+                name = "RcsGyroscopes";
+                if (inheritee != null && stance.RcsGyroscopeMode == inheritee.RcsGyroscopeMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.RcsGyroscopeMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(RcsGyroscopeModes)));
+                }
 
             }
 
