@@ -246,6 +246,30 @@ namespace IngameScript
 
                 // Torpedoes -----------------------------------------------------------------
 
+                // Improvised
+                if (blockId.Contains("sdx_torpedoLauncher"))
+                {
+                    string name = "";
+
+                    if (blockId.Contains("Improvised"))
+                        name = "Improv";
+                    else if (blockId.Contains("Light"))
+                        name = "Light";
+                    else if (blockId.Contains("Medium"))
+                        name = "Medium";
+
+                    if (blockId.Contains("Single"))
+                        name = "x1";
+                    else if (blockId.Contains("Double"))
+                        name = "x2";
+                    else if (blockId.Contains("Triple"))
+                        name = "x3";
+
+                    return sortTorp(b, name);
+                }
+                    
+                /* Removed for SDX2.0
+
                 // Apollo
                 if (blockId == "MyObjectBuilder_ConveyorSorter/Apollo Class Torpedo Launcher")
                     return sortTorp(b, "Apollo");
@@ -269,6 +293,7 @@ namespace IngameScript
                 // Artemis
                 if (blockId.Contains("Artemis_Torpedo_Tube"))
                     return sortTorp(b, "Artemis");
+                */
 
                 // Railguns -----------------------------------------------------------------
 
