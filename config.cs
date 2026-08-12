@@ -1199,6 +1199,7 @@ namespace IngameScript
                                 _items[0].InitQty = int.Parse(value);
                                 break;
 
+                            /* Removed for SDX2.0
                             case "Fuel tank count":
                                 _items[1].InitQty = int.Parse(value);
                                 break;
@@ -1206,6 +1207,8 @@ namespace IngameScript
                             case "Jerry can count":
                                 _items[2].InitQty = int.Parse(value);
                                 break;
+                            */
+
 
                             case "40mm PDC Magazine count":
                                 _items[3].InitQty = int.Parse(value);

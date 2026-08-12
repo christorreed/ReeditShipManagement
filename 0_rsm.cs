@@ -27,7 +27,7 @@ namespace IngameScript
 
 #region mdk preserve
 #region mdk macros
-string Version = "2.1.2 ($MDK_DATE$)";
+string Version = "3.0.0 ($MDK_DATE$)";
 #endregion
 #endregion
 
@@ -57,7 +57,7 @@ string Version = "2.1.2 ($MDK_DATE$)";
         bool _needFuel = false;
         bool _spawnOpen = false;
         bool _spawnsDead = false;
-        bool _noExtractor = false;
+        //bool _noExtractor = false;
         string _lowTankType = "";
         int _unownedBlockCount = 0;
         int _activeAuxBlockCount = 0;
@@ -480,8 +480,11 @@ string Version = "2.1.2 ($MDK_DATE$)";
                     // count each of the checked items in each inventory
 
                     if (_p) Echo("Took " + msSinceLast());
-                    break;
+                    _stepOccasional = 0;
+                    return;
 
+
+                /* Extractor checks removed for SDX2
                 case 2:
                     if (_d) Echo("Refreshing " + _h2Tanks.Count + " H2 tanks...");
                     refreshH2Tanks();
@@ -514,6 +517,7 @@ string Version = "2.1.2 ($MDK_DATE$)";
 
                     _stepOccasional = 0;
                     return;
+                */
             }
 
             _stepOccasional++;
@@ -599,8 +603,9 @@ string Version = "2.1.2 ($MDK_DATE$)";
             GridTerminalSystem.GetBlocksOfType((List<IMyTerminalBlock>)null, sortBlockLists);
             if (_p) Echo("Took " + msSinceLast());
 
-            if (_d) Echo("Setting KeepFull threshold");
-            setKeepFullThresh();
+            // Extractor management removed for SDX2
+            //if (_d) Echo("Setting KeepFull threshold");
+            //setKeepFullThresh();
 
 
 

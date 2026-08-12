@@ -228,6 +228,7 @@ RSM stances can be used to control your epstein drives, RCS and other types of t
 	* The keyword itself is configurable under `[RSM.Keywords]`
 * Thrusters may also be effected when a stance is called if `NavOsAbortEfcOff=true`. This will force a NavOS `Abort` or EFC `Off` command when the stance is set, and this may disable thrust override and other changes.
 
+* 
 ## Weapons Autoloading & Balancing
 
 * RSM acts as an autoloader, constantly automatically searching your cargo containers (as well as connectors & ejectors) for ammo that your weapons need, and then attempting to place that ammo into the weapons for you.
@@ -237,28 +238,17 @@ RSM stances can be used to control your epstein drives, RCS and other types of t
 * Autoloading and balancing is enabled by default, but can be disabled in custom data if desired.
 * Autoloading functionality is also present on reactors, forcing fusion fuel up to the quantity configured in custom data.
 
-In rare cases, some players have reported a condition where RSM seems to remove all ammo from or misload a torpedo launcher after an ammo type change. This appears to be caused by a desync condition where you and the server disagree on the ammo type for the given weapon. Fix this with a `!fixship` command.
+In rare cases, some 
+players have reported a condition where RSM seems to remove all ammo from or misload a torpedo launcher after an ammo type change. This appears to be caused by a desync condition where you and the server disagree on the ammo type for the given weapon. Fix this with a `!fixship` command.
 
-## Extractor Management
+## ~~Extractor Management~~
 
-RSM automatically loads your extractor, depending upong your stance...
+RSM extraction management was removed in v3.0.0 for SDX2.
 
-* On DX, you probably know fuel tank components are loaded into Extractor blocks to refill your ship tanks (or jerry cans for SG extractors).
-* Each stance can be configured for one of three extractor management options...
-	* **Off**
-		* Extractors are switched off and ignored.
-	* **Autoload Below 10%**
-		* Extractors are switched on.
-		* If your total ship fuel falls below 10%, RSM will automatically top the ship up by loading a fuel tank.
-	* **Keep Ship Tanks Full**
-		* Extractors are switched on.
-		* Once your ship fuel falls below 3x the capacity of one fuel tank (or Jerry Can for SG), RSM will automatically top the ship up by loading a fuel tank.
-	* By default, most stances use fuel tanks to keep ship tanks full.
-* RSM dynamically adjusts the load speed of fuel tanks based on your current fuel level.
 
 ## Inventory Management
 
-RSM counts inventory for certain items including fuel tanks, fusion fuel canisters, jerry cans and all types of ammo.
+RSM counts inventory for certain items including fusion fuel canisters and all types of ammo.
 
 RSM measures the counts of all of these items at `Init:ShipName`, and then constantly compares the current counts to populate the Inventory LCD.
 
@@ -336,6 +326,7 @@ Here are a few miscellaneous alerts you may see pop up on the Warnings LCD...
 	* Init command completed successfully
 * **Loaded Fuel Tank**
 	* RSM just loaded a fuel tank or jerry can into your extractor successfully.
+	* Removed in v3.0.0 for SDX2.0
 * **Comms (Range): Message**
 	* Indicates your antennas are on, and shows the broadcasting range and message.
 
@@ -434,7 +425,7 @@ This LCD includes two sections; Inventory, and Telemetry & Thrust.
 
 ### Inventory
 
-The Inventory screen is a readout of your ship's critical inventory, including fuel tanks, fusion fuel canisters, jerry cans and all types of ammo.
+The Inventory screen is a readout of your ship's critical inventory, including fusion fuel canisters and all types of ammo.
 
 RSM measures the counts of all of these items at `Init:ShipName`, and then constantly compares the current counts to provide this percentage.  Any items you don't have on your ship at `Init:ShipName` will be given an init value of 0, and so won't appear in the list at all.
 

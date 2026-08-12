@@ -1,4 +1,4 @@
-﻿using EmptyKeys.UserInterface.Generated.ActiveContractsView_Bindings;
+﻿//using EmptyKeys.UserInterface.Generated.ActiveContractsView_Bindings;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
@@ -459,6 +459,7 @@ namespace IngameScript
                     h2_priority = 2;
                 }
 
+                /* Extractor management removed for SDX2
                 if (_currentStance.ExtractorMode != ExtractorModes.Off)
                 {
                     if (_lowTankType != "")
@@ -476,11 +477,15 @@ namespace IngameScript
                         if (h2_priority == 0) h2_priority = 1;
 
                         lcdAlerts.Add(new Alert(
-                            "NO EXTRACTOR!",
+                            "NO 
+                
+                
+                
+                !",
                             "Cannot refuel!\nNo functional extractor!",
                             h2_priority));
                     }
-                }
+                }*/
 
                 statusLights.Add(new StatusLight("FUEL", h2_priority, _stepSpinner + status_light_spice));
                 status_light_spice++;

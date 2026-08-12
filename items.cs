@@ -180,6 +180,9 @@ namespace IngameScript
                 // this order is important, don't change it.
 
                 buildItem("Fusion Fuel", "MyObjectBuilder_Ingot", "FusionFuel", true); //0
+
+                // Fuel tanks and jerry cans were removed in SDX2.0
+                // these items are still here to retain this order for now.
                 buildItem("Fuel Can ", "MyObjectBuilder_Component", "Fuel_Tank"); //1
                 buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank"); //2
 

@@ -2,6 +2,12 @@
 ### Reedit Ship Management
 [Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/tq3H4sem66) 
 
+## V 3.0.0
+
+* Welcome to SDX2.0!
+ 	* Note that there is no backwards compatibility with SDX1. Updates will contain breaking changes, for SDX2 use v2.1.2
+* Removed all extraction mangement; extractors are no more.
+
 ## V 2.1.2
 
 * Fixed another similar runtime issue related to an extractor that was failing to load

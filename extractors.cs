@@ -23,6 +23,17 @@ namespace IngameScript
 {
     partial class Program
     {
+        // Extractors removed for SDX2
+
+        // fuel percentage retained.
+
+        // the current ship calculated fuel percentage.
+        // starts at 100 so we don't refuel before we check.
+        double _fuelPercentage = 100;
+
+        /*
+
+
         // Extractors -----------------------------------------------------------------
 
         // this value multiplies the capacity by
@@ -52,9 +63,6 @@ namespace IngameScript
         // litres of fuel in a jerry can
         double _jerryCanCapacity = 50000;
 
-        // the current ship calculated fuel percentage.
-        // starts at 100 so we don't refuel before we check.
-        double _fuelPercentage = 100;
 
         void setExtractors(ExtractorModes mode)
         {
@@ -95,11 +103,11 @@ namespace IngameScript
             {
                 if (_d) Echo("Extractor management disabled.");
             }
-            /*else if (_extractorWaitCount > 0)
-            {
-                _extractorWaitCount--;
-                if (_d) Echo("waiting (" + _extractorWaitCount + ")...");
-            }*/
+            //else if (_extractorWaitCount > 0)
+            //{
+            //    _extractorWaitCount--;
+            //    if (_d) Echo("waiting (" + _extractorWaitCount + ")...");
+            //}
             else if (_h2Tanks.Count < 1)
             {
                 if (_d) Echo("No tanks!");
@@ -134,43 +142,6 @@ namespace IngameScript
                     Echo("Keeping tanks full\n(" + _actualH2 + " < " + (_totalH2 - _extractorKeepFullThreshold) + ")");
             }
         }
-
-        /*void calculateExtractorWaitThreshold()
-        {
-            string speed = "";
-            int newThresh = 8;
-
-            if (_fuelPercentage < 50)
-            {
-                newThresh = 0;
-                if (_extractorWaitThreshold != newThresh)
-                    speed = "v fast";
-            }
-            else if (_fuelPercentage < 10)
-            {
-                newThresh = 2;
-                if (_extractorWaitThreshold != newThresh)
-                    speed = "fast";
-            } 
-            else if (_fuelPercentage < 60)
-            {
-                newThresh = 4;
-                if (_extractorWaitThreshold != newThresh)
-                    speed = "medium";
-            }
-            else if(_extractorWaitThreshold != newThresh)
-                speed = "slow";
-
-            if (speed != "")
-            {
-                _extractorWaitThreshold = newThresh;
-                _alerts.Add(new Alert(
-                    "Extractor loading " + speed,
-                    "Extractor load speed has been set to " + speed + " automatically)",
-                    0
-                    ));
-            }
-        }*/
 
         void loadExtractors()
         {
@@ -275,5 +246,7 @@ namespace IngameScript
                     ));
             
         }
+
+        */
     }
 }
