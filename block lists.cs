@@ -194,8 +194,31 @@ namespace IngameScript
                     return false;
                 }
 
-                // _normalPdcs -----------------------------------------------------------------
+                // PDCs -----------------------------------------------------------------
 
+                // Improvised
+                if (blockId.Contains("sdx_pdcImprovised"))
+                    return sortPDC(b, "Improv", 3);
+
+                // MCRN
+                if (blockId.Contains("sdx_pdcMcrn"))
+                    return sortPDC(b, "MCRN", 4);
+
+                // UNN
+                if (blockId.Contains("sdx_pdcUnn"))
+                    return sortPDC(b, "UNN", 4);
+
+                // OPA
+                if (blockId.Contains("sdx_pdcOpa"))
+                    return sortPDC(b, "OPA", 4);
+
+                // PGEN
+                if (blockId.Contains("sdx_pdcPgenAdv"))
+                    return sortPDC(b, "PGEN", 4);
+
+
+                /* Removed for SDX2.0
+                
                 // Flak
                 if (blockId == "MyObjectBuilder_ConveyorSorter/Ostman-Jazinski Flak Cannon")
                     return sortPDC(b, "Flak", 3);
@@ -219,6 +242,7 @@ namespace IngameScript
                 // Red
                 if (blockId.Contains("OPA Shotgun PDC"))
                     return sortPDC(b, "Shotgun", 4);
+                */
 
                 // Torpedoes -----------------------------------------------------------------
 
@@ -633,7 +657,11 @@ namespace IngameScript
                     }
                 }
 
-                // Extractor -----------------------------------------------------------------
+                //
+                //
+                //
+                //
+                // -----------------------------------------------------------------
                 if (blockId == "MyObjectBuilder_OxygenGenerator/Extractor")
                 {
                     _largeExtractors.Add(b);
