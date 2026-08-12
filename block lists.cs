@@ -246,7 +246,6 @@ namespace IngameScript
 
                 // Torpedoes -----------------------------------------------------------------
 
-                // Improvised
                 if (blockId.Contains("sdx_torpedoLauncher"))
                 {
                     string name = "Unknown";
@@ -259,15 +258,15 @@ namespace IngameScript
                         name = "Medium";
 
                     if (blockId.Contains("Single"))
-                        name = "x1";
+                        name += "x1";
                     else if (blockId.Contains("Double"))
-                        name = "x2";
+                        name += "x2";
                     else if (blockId.Contains("Triple"))
-                        name = "x3";
+                        name += "x3";
 
                     return sortTorp(b, name);
                 }
-                    
+
                 /* Removed for SDX2.0
 
                 // Apollo
@@ -296,6 +295,36 @@ namespace IngameScript
                 */
 
                 // Railguns -----------------------------------------------------------------
+
+                if (blockId.Contains("sdx_railgun"))
+                {
+                    string name = "Unknown";
+                    int ammo = 13;
+
+                    if (blockId.Contains("Fixed"))
+                        name = "Fixed";
+
+
+                    if (blockId.Contains("Improvised"))
+                    {
+                        name += "Improv";
+                    }
+                    else if (blockId.Contains("Light"))
+                    {
+                        name += "Light";
+                        ammo = 14;
+                    }
+                    else if (blockId.Contains("Medium"))
+                    {
+                        name += "Medium";
+                        ammo = 15;
+                    }
+
+
+                    return sortRail(b, name, ammo);
+                }
+
+                /*
 
                 // Dawson
                 if (blockId == "MyObjectBuilder_ConveyorSorter/Dawson-Pattern Medium Railgun")
@@ -336,6 +365,8 @@ namespace IngameScript
                 // Glapion
                 if (blockId.Contains("Glapion"))
                     return sortRail(b, "Glapion", 3, true, "Fixed");
+
+                */
 
                 // Thrusters -----------------------------------------------------------------
 

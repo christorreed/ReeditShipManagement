@@ -198,10 +198,11 @@ namespace IngameScript
                 buildItem("120mm RG", "MyObjectBuilder_AmmoMagazine", "120mmLeadSteelSlugMagazine", true); //10
                 buildItem("Dawson", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugUNNMagazine", true); //11
                 buildItem("Stiletto", "MyObjectBuilder_AmmoMagazine", "100mmTungstenUraniumSlugMCRNMagazine", true); //12
-                buildItem("80mm", "MyObjectBuilder_AmmoMagazine", "80mmTungstenUraniumSabotMagazine", true); //13
 
-                buildItem("Foehammr", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugMCRNMagazine", true); //14
-                buildItem("Farren", "MyObjectBuilder_AmmoMagazine", "120mmTungstenUraniumSlugUNNMagazine", true); //15
+                buildItem("80mm Pb", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineSabot80mmImprovised", true); //13
+
+                buildItem("80mm W-U", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineSabot80mm", true); //14
+                buildItem("100mm W-U", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazineSabot100mm", true); //15
 
                 buildItem("Kess", "MyObjectBuilder_AmmoMagazine", "180mmLeadSteelSabotMagazine", true); //16
 
