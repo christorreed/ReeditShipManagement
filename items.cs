@@ -186,8 +186,8 @@ namespace IngameScript
                 buildItem("Fuel Can ", "MyObjectBuilder_Component", "Fuel_Tank"); //1
                 buildItem("Jerry Can", "MyObjectBuilder_Component", "SG_Fuel_Tank"); //2
 
-                buildItem("PDC", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazinePdc40mmImprovised", true); //3
-                buildItem("PDC Tefl", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazinePdc40mm", true); //4
+                buildItem("40mm Impv", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazinePdc40mmImprovised", true); //3
+                buildItem("40mm PDC", "MyObjectBuilder_AmmoMagazine", "sdx_ammomagazinePdc40mm", true); //4
 
                 buildItem("220 Torp ", "MyObjectBuilder_AmmoMagazine", "220mmExplosiveTorpedoMagazine", true, true); //5
                 buildItem("220 MCRN", "MyObjectBuilder_AmmoMagazine", "220mmMCRNTorpedoMagazine", true, true); //6
