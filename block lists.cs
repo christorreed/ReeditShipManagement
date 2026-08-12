@@ -671,7 +671,7 @@ namespace IngameScript
                 }
 
                 // LiDAR -----------------------------------------------------------------
-                if (blockId.Contains("Lidar"))
+                if (blockId.Contains("sdx_detectorTargeted_lidar"))
                 {
                     var TempLidar = b as IMyConveyorSorter;
                     if (TempLidar != null)
@@ -682,11 +682,9 @@ namespace IngameScript
                     }
                 }
 
-                //
-                //
-                //
-                //
                 // -----------------------------------------------------------------
+
+                /* Removed for SDX2.0
                 if (blockId == "MyObjectBuilder_OxygenGenerator/Extractor")
                 {
                     _largeExtractors.Add(b);
@@ -699,6 +697,7 @@ namespace IngameScript
                     if (_isIniting) _initNames.Add(b, "Extractor");
                     return false;
                 }
+                */
 
                 // Antennas -----------------------------------------------------------------
                 var TempAntenna = b as IMyRadioAntenna;
