@@ -32,7 +32,6 @@ RSM has a lot of features that you will want to [explore in detail](https://gith
 * Fully configurable ship ***Stances*** allow you to rapidly re-configure your ship for various circumstances.
 * Optionally rename and tidy all **block names** on your ship.
 * Control **lighting*, per *Stance*, in **Spotlight**, **Exterior**, **Interior** and **Navigational** categories, including power status and colour.
-* **Extractor management**; automatically load fuel tanks into extractors to keep your grid fueled up, including dynamic fuel tank load speed
 * **Dynamic battery discharge management** means batteries are recharging when your railguns aren't firing.
 * Automatically control **doors**, including a default 3 second **auto closer**, and a fully automated, **one-touch airlock** algorithm.
 * Door **lock management**; quickly permit access to your grid during trading, then automatically lock it again in combat.
