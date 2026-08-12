@@ -24,7 +24,7 @@
 * Reactor autoloading/balancing is working.
 * Weapons autoloading is working.
 * Added RCS Gyro Computer management, controllable per stance.
-* Removed all extraction mangement.
+* Removed all extraction management.
 
 ## V 2.1.2
 
