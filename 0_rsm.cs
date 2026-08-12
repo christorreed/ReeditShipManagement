@@ -54,11 +54,16 @@ string Version = "3.0.0 ($MDK_DATE$)";
 
         // Warning Variables -----------------------------------------------------------------
 
-        bool _needFuel = false;
+
         bool _spawnOpen = false;
         bool _spawnsDead = false;
-        //bool _noExtractor = false;
+
+        /* Removed for SDX2.0
+        bool _needFuel = false;
+        bool _noExtractor = false;
         string _lowTankType = "";
+        */
+
         int _unownedBlockCount = 0;
         int _activeAuxBlockCount = 0;
 

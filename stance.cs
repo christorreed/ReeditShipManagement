@@ -181,9 +181,11 @@ namespace IngameScript
             if (_d) Echo("Setting " + _auxiliaries.Count + " aux block to " + _currentStance.AuxMode);
             setAuxiliaries(_currentStance.AuxMode);
 
+            /* removed for SDX2.0
             // set extractors
             if (_d) Echo("Setting " + _largeExtractors.Count + " extrators to " + _currentStance.ExtractorMode);
             setExtractors(_currentStance.ExtractorMode);
+            */
 
             // set hangar doors
             if (_d) Echo("Setting " + _hangarDoors.Count + " hangar doors units to " + _currentStance.HangarDoorsMode);
