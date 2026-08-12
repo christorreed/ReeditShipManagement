@@ -4,16 +4,27 @@
 
 ## V 3.0.0
 
-* Welcome to SDX2.0!
- 	* Note that there is no backwards compatibility with SDX1. Updates will contain breaking changes, for SDX2 use v2.1.2
-* Removed all extraction mangement; extractors are no more.+
-* Fixed block definitions, ammo for
+* Welcome to SDX 2.0!
+    * RSM is up and running on SDX 2.0. 
+    * This is a BETA version, with more updates coming soon.
+    * This contains some of the most critical intial updates for SDX2 compatibility, but more work is required.  Have a request or idea, reach out on Discord.
+    * One example of this is velocity.  Note that RSM does not yet handle speeds over 1000m/s on SDX2.0 due to the new speed mod in play not yet being handled.
+    * Note that there is no backwards compatibility with SDX1!  This update will contain breaking changes, for SDX1 use [v2.1.2](https://github.com/christorreed/ReeditShipManagement/blob/main/releases/rsm%20v2_1_2.cs)
+* Fixed block definitions for SDX2
     * PDCs
     * Railguns
     * Torpedos
     * LiDAR
     * LG Grinders
-* Added RCS Gyro Computers, controllable per stance.
+* Updated item definitions for SDX2
+    * PDC ammo
+    * Railgun ammo
+    * Torpedo ammo
+    * Fusion Pellets
+* Reactor autoloading/balancing is working.
+* Weapons autoloading is working.
+* Added RCS Gyro Computer management, controllable per stance.
+* Removed all extraction mangement.
 
 ## V 2.1.2
 
