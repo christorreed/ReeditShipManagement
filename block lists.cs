@@ -249,7 +249,7 @@ namespace IngameScript
                 // Improvised
                 if (blockId.Contains("sdx_torpedoLauncher"))
                 {
-                    string name = "";
+                    string name = "Unknown";
 
                     if (blockId.Contains("Improvised"))
                         name = "Improv";
