@@ -45,6 +45,7 @@ namespace IngameScript
             public ExtractorModes ExtractorMode;
             public ToggleModes KeepAlives;
             public HangarDoorModes HangarDoorsMode;
+            public RcsGyroscopeModes RcsGyroscopeMode;
         }
 
         // the name of the current stance.
@@ -76,7 +77,7 @@ namespace IngameScript
         ExtractorModes _defaultExtractorMode = ExtractorModes.KeepFull;
         ToggleModes _defaultKeepAlives = ToggleModes.On;
         HangarDoorModes _defaultHangarDoorMode = HangarDoorModes.NoChange;
-
+        RcsGyroscopeModes _defaultRcsGyroscopeMode = RcsGyroscopeModes.NoChange;
 
         void setStance(string stance)
         {

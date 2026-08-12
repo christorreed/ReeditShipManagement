@@ -6,7 +6,14 @@
 
 * Welcome to SDX2.0!
  	* Note that there is no backwards compatibility with SDX1. Updates will contain breaking changes, for SDX2 use v2.1.2
-* Removed all extraction mangement; extractors are no more.
+* Removed all extraction mangement; extractors are no more.+
+* Fixed block definitions, ammo for
+    * PDCs
+    * Railguns
+    * Torpedos
+    * LiDAR
+    * LG Grinders
+* Added RCS Gyro Computers, controllable per stance.
 
 ## V 2.1.2
 

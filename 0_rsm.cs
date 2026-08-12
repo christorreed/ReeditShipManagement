@@ -543,6 +543,10 @@ string Version = "3.0.0 ($MDK_DATE$)";
             refreshGyros(_adjustKeepAlivesTo, _adjustKeepAlives);
             // checks integrity, sets power
 
+            if (_d) Echo("Refreshing " + _rcsGyroscopes.Count + " RCS gyros...");
+            refreshRcsGyros(_adjustKeepAlivesTo, _adjustKeepAlives);
+            // checks integrity, sets power
+
             if (_d) Echo("Refreshing " + _o2Tanks.Count + " O2 tanks...");
             refreshO2Tanks();
             // checks integrity, filled ratio

@@ -103,11 +103,18 @@ Closed, Open, NoChange
 #endregion
         }
 
+        enum RcsGyroscopeModes
+        {
+#region mdk preserve
+On, Off, NoChange
+#endregion
+        }
+
         enum TorpedoModes
         {
-            #region mdk preserve
-            Off, On, NoChange, OnWhenLidarTarget
-            #endregion
+#region mdk preserve
+Off, On, NoChange, OnWhenLidarTarget
+#endregion
         }
     }
 }

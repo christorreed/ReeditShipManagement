@@ -428,6 +428,16 @@ namespace IngameScript
                         lcdAlerts.Add(_alerts[i]);
                 }
 
+                // handle RCS gyroscopes
+                if (_initRcsGyros > 0 && _actualRcsGyros == 0)
+                {
+                    lcdAlerts.Add(new Alert(
+                        "RCS GYROS OFFLINE!",
+                        "RCS Gyroscope Computers are no longer functional!.",
+                        2
+                        ));
+                }
+
                 // handle lidar
                 if (!_lidarWorking)
                 {

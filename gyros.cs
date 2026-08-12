@@ -46,5 +46,32 @@ namespace IngameScript
 
             _integrityGyros = Math.Round(100 * (_actualGyros / _initGyros));
         }
+
+        // RCS Gyroscope Computers -----------------------------------------------------------------
+
+        private double _initRcsGyros = 0;
+        private int _actualRcsGyros = 0;
+        private double _integrityRcsGyros = 0;
+
+        private void refreshRcsGyros()
+        {
+            _actualRcsGyros = 0;
+
+            foreach (IMyGyro Gyro in _rcsGyroscopes)
+            {
+                if (Gyro != null && Gyro.IsFunctional)
+                {
+                    _actualRcsGyros++;
+
+                    if (_currentStance.RcsGyroscopeMode == RcsGyroscopeModes.On)
+                        Gyro.Enabled = true;
+                    else if (_currentStance.RcsGyroscopeMode == RcsGyroscopeModes.Off)
+                        Gyro.Enabled = false;
+
+                }
+            }
+
+            _integrityRcsGyros = Math.Round(100 * (_actualRcsGyros / _initRcsGyros));
+        }
     }
 }

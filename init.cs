@@ -87,6 +87,7 @@ namespace IngameScript
                         _initTorpLaunchers = _torpedoLaunchers.Count;
                         _initKinetics = _kineticWeapons.Count;
                         _initGyros = _gyroscopes.Count;
+                        _initRcsGyros = _rcsGyroscopes.Count;
                         _initWelders = _welders.Count;
                     }
 

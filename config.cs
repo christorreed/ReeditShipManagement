@@ -567,6 +567,15 @@ namespace IngameScript
                         else
                             newStance.HangarDoorsMode = _defaultHangarDoorMode;
 
+                        key = "RcsGyroscopes";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.RcsGyroscopeMode =
+                                (RcsGyroscopeModes)Enum.Parse(typeof(RcsGyroscopeModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.RcsGyroscopeMode = inheritee.RcsGyroscopeMode;
+                        else
+                            newStance.RcsGyroscopeMode = _defaultRcsGyroscopeMode;
+
                         newStances.Add(newName, newStance);
                     }
                     catch (Exception ex)

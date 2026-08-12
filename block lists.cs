@@ -42,6 +42,7 @@ namespace IngameScript
         private List<IMyTerminalBlock> _largeExtractors = new List<IMyTerminalBlock>();
         private List<IMyTerminalBlock> _smallExtractors = new List<IMyTerminalBlock>();
         private List<IMyGyro> _gyroscopes = new List<IMyGyro>();
+        private List<IMyGyro> _rcsGyroscopes = new List<IMyGyro>();
         private List<IMyProjector> _projectors = new List<IMyProjector>();
         private List<IMyReactor> _reactors = new List<IMyReactor>();
         private List<IMySensorBlock> _sensors = new List<IMySensorBlock>();
@@ -447,8 +448,19 @@ namespace IngameScript
                 var TempGyro = b as IMyGyro;
                 if (TempGyro != null)
                 {
-                    _gyroscopes.Add(TempGyro);
-                    if (_isIniting) _initNames.Add(b, "Gyroscope");
+
+
+                    string Name = "Gyroscope";
+
+                    if (blockId.Contains("rcsGyroComputer"))
+                    {
+                        Name = "RCS.GyroscopeComputer";
+                        _rcsGyroscopes.Add(TempGyro);
+                    }
+                    else
+                        _gyroscopes.Add(TempGyro);
+
+                    if (_isIniting) _initNames.Add(b, Name);
                     return false;
                 }
 
@@ -819,7 +831,7 @@ namespace IngameScript
                         return false;
                     }
 
-                    if (blockId.Contains("Grinder"))
+                    if (blockId.Contains("Grinder") || blockId.Contains("grinder"))
                     {
                         _initNames.Add(b, "Tool" + _nameDelimiter + "Grinder");
                         return false;
@@ -914,6 +926,7 @@ namespace IngameScript
             _largeExtractors.Clear();
             _smallExtractors.Clear();
             _gyroscopes.Clear();
+            _rcsGyroscopes.Clear();
             _projectors.Clear();
             _reactors.Clear();   
             _sensors.Clear();
