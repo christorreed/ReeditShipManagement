@@ -767,7 +767,7 @@ namespace IngameScript
                 if (TempProjectors != null)
                 {
                     _projectors.Add(TempProjectors);
-                    if (_isIniting) _initNames.Add(b, "Projectors");
+                    if (_isIniting) _initNames.Add(b, "Projector");
                     return false;
                 }
 
