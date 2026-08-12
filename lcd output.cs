@@ -433,7 +433,7 @@ namespace IngameScript
                 {
                     lcdAlerts.Add(new Alert(
                         "RCS GYROS OFFLINE!",
-                        "RCS Gyroscope Computers are no longer functional!.",
+                        "RCS Gyroscope Computers are no longer functional!. Ship will turn more slowly.",
                         2
                         ));
                 }
