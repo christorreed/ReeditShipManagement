@@ -197,25 +197,44 @@ namespace IngameScript
 
                 // PDCs -----------------------------------------------------------------
 
-                // Improvised
-                if (blockId.Contains("sdx_pdcImprovised"))
-                    return sortPDC(b, "Improv", 3);
+                if (blockId.Contains("sdx_pdc"))
+                {
+                    // Improvised
+                    if (blockId.Contains("sdx_pdcImprovised"))
+                        return sortPDC(b, "Improv", 3);
 
-                // MCRN
-                if (blockId.Contains("sdx_pdcMcrn"))
-                    return sortPDC(b, "MCRN", 4);
+                    // MCRN ADVANCED
+                    if (blockId.Contains("sdx_pdcMcrnAdv"))
+                        return sortPDC(b, "Maegnus", 2);
 
-                // UNN
-                if (blockId.Contains("sdx_pdcUnn"))
-                    return sortPDC(b, "UNN", 4);
+                    // OPA ADVANCED
+                    if (blockId.Contains("sdx_pdcOpaAdv"))
+                        return sortPDC(b, "Fragmanta", 2);
 
-                // OPA
-                if (blockId.Contains("sdx_pdcOpa"))
-                    return sortPDC(b, "OPA", 4);
+                    // UNN ADVANCED
+                    if (blockId.Contains("sdx_pdcUnnAdv"))
+                        return sortPDC(b, "Redfield", 4);
 
-                // PGEN
-                if (blockId.Contains("sdx_pdcPgenAdv"))
-                    return sortPDC(b, "PGEN", 4);
+                    // PGEN ADVANCED
+                    //if (blockId.Contains("sdx_pdcPgenAdv"))
+                    //    return sortPDC(b, "PGEN", 2);
+
+                    // MCRN
+                    if (blockId.Contains("sdx_pdcMcrn"))
+                        return sortPDC(b, "Nariman", 4);
+
+                    // OPA
+                    if (blockId.Contains("sdx_pdcOpa"))
+                        return sortPDC(b, "Kess", 4);
+
+                    // UNN
+                    if (blockId.Contains("sdx_pdcUnn"))
+                        return sortPDC(b, "Mikazuki", 4);
+
+
+                }
+
+
 
 
                 /* Removed for SDX2.0
