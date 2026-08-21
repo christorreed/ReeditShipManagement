@@ -450,7 +450,7 @@ namespace IngameScript
                         coreLongMsg += "\nCheck the core for details.";
 
                     lcdAlerts.Add(new Alert(
-                        "CORE: " + _corePunishments[i].Name.ToUpper() + "!",
+                        "CORE PUNISH: " + _corePunishments[i].Name.ToUpper() + "!",
                         coreLongMsg,
                         2
                         ));

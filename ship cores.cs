@@ -74,9 +74,10 @@ namespace IngameScript
         {
             string info;
 
+
             try
             {
-                info = Core.DetailedInfo;
+                info = Core.CustomInfo;
             }
             catch (Exception ex)
             {
@@ -84,10 +85,15 @@ namespace IngameScript
                 return false;
             }
 
+
+
             if (string.IsNullOrEmpty(info)) return false;
+
 
             int start = info.IndexOf("Punishments:");
             if (start < 0) return false;
+
+
 
             string[] lines = info.Substring(start).Split('\n');
 
@@ -98,6 +104,7 @@ namespace IngameScript
             // skip lines[0], that's the "Punishments:" header itself.
             for (int i = 1; i < lines.Length; i++)
             {
+
                 // TrimEnd sheds any \r, but keep the leading spaces;
                 // the indent is how we know where the section ends.
                 string raw = lines[i].TrimEnd();
