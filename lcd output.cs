@@ -438,6 +438,24 @@ namespace IngameScript
                         ));
                 }
 
+                // handle ship core punishments
+                for (int i = 0; i < _corePunishments.Count; i++)
+                {
+                    string coreLongMsg =
+                        "The ship core is applying a '" + _corePunishments[i].Name + "' punishment to this grid.";
+
+                    if (_corePunishments[i].Reason.Length > 0)
+                        coreLongMsg += "\n" + _corePunishments[i].Reason;
+                    else
+                        coreLongMsg += "\nCheck the core for details.";
+
+                    lcdAlerts.Add(new Alert(
+                        "CORE: " + _corePunishments[i].Name.ToUpper() + "!",
+                        coreLongMsg,
+                        2
+                        ));
+                }
+
                 // handle lidar
                 if (!_lidarWorking)
                 {

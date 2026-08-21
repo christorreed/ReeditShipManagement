@@ -45,6 +45,7 @@ namespace IngameScript
             public ExtractorModes ExtractorMode;
             public ToggleModes KeepAlives;
             public HangarDoorModes HangarDoorsMode;
+            public ToggleModes HangarMode;
             public RcsGyroscopeModes RcsGyroscopeMode;
         }
 
@@ -77,6 +78,7 @@ namespace IngameScript
         ExtractorModes _defaultExtractorMode = ExtractorModes.KeepFull;
         ToggleModes _defaultKeepAlives = ToggleModes.On;
         HangarDoorModes _defaultHangarDoorMode = HangarDoorModes.NoChange;
+        ToggleModes _defaultHangarMode = ToggleModes.NoChange;
         RcsGyroscopeModes _defaultRcsGyroscopeMode = RcsGyroscopeModes.NoChange;
 
         void setStance(string stance)
@@ -191,6 +193,10 @@ namespace IngameScript
             // set hangar doors
             if (_d) Echo("Setting " + _hangarDoors.Count + " hangar doors units to " + _currentStance.HangarDoorsMode);
             setHangarDoors(_currentStance.HangarDoorsMode);
+
+            // set hangar pads
+            if (_d) Echo("Setting " + _hangars.Count + " hangar pads to " + _currentStance.HangarMode);
+            setHangars(_currentStance.HangarMode);
 
             // lock doors if we're in close combat
             // 2: railguns; 0: off, 1: hold fire, 2: AI weapons free;

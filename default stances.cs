@@ -51,6 +51,7 @@ namespace IngameScript
                         ExtractorMode = ExtractorModes.KeepFull,
                         KeepAlives = ToggleModes.On,
                         HangarDoorsMode = HangarDoorModes.NoChange,
+                        HangarMode = ToggleModes.NoChange,
                         RcsGyroscopeMode = RcsGyroscopeModes.On
                     }
                 },
@@ -78,6 +79,7 @@ namespace IngameScript
                         ExtractorMode = ExtractorModes.KeepFull,
                         KeepAlives = ToggleModes.On,
                         HangarDoorsMode = HangarDoorModes.NoChange,
+                        HangarMode = ToggleModes.NoChange,
                         RcsGyroscopeMode = RcsGyroscopeModes.On
                     }
                 },
@@ -105,6 +107,7 @@ namespace IngameScript
                         ExtractorMode = ExtractorModes.On,
                         KeepAlives = ToggleModes.On,
                         HangarDoorsMode = HangarDoorModes.NoChange,
+                        HangarMode = ToggleModes.NoChange,
                         RcsGyroscopeMode = RcsGyroscopeModes.Off
                     }
                 },
@@ -132,6 +135,7 @@ namespace IngameScript
                         ExtractorMode = ExtractorModes.KeepFull,
                         KeepAlives = ToggleModes.On,
                         HangarDoorsMode = HangarDoorModes.NoChange,
+                        HangarMode = ToggleModes.NoChange,
                         RcsGyroscopeMode = RcsGyroscopeModes.On
                     }
                 },
@@ -159,6 +163,7 @@ namespace IngameScript
                         ExtractorMode = ExtractorModes.KeepFull,
                         KeepAlives = ToggleModes.On,
                         HangarDoorsMode = HangarDoorModes.NoChange,
+                        HangarMode = ToggleModes.NoChange,
                         RcsGyroscopeMode = RcsGyroscopeModes.NoChange
                     }
                 },
@@ -186,6 +191,7 @@ namespace IngameScript
                         ExtractorMode = ExtractorModes.KeepFull,
                         KeepAlives = ToggleModes.On,
                         HangarDoorsMode = HangarDoorModes.NoChange,
+                        HangarMode = ToggleModes.NoChange,
                         RcsGyroscopeMode = RcsGyroscopeModes.On
                     }
                 },
@@ -213,6 +219,7 @@ namespace IngameScript
                         ExtractorMode = ExtractorModes.KeepFull,
                         KeepAlives = ToggleModes.On,
                         HangarDoorsMode = HangarDoorModes.NoChange,
+                        HangarMode = ToggleModes.NoChange,
                         RcsGyroscopeMode = RcsGyroscopeModes.On
                     }
                 },
@@ -240,6 +247,7 @@ namespace IngameScript
                         ExtractorMode = ExtractorModes.KeepFull,
                         KeepAlives = ToggleModes.On,
                         HangarDoorsMode = HangarDoorModes.NoChange,
+                        HangarMode = ToggleModes.NoChange,
                         RcsGyroscopeMode = RcsGyroscopeModes.On
                     }
                 }

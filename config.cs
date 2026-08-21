@@ -279,6 +279,7 @@ namespace IngameScript
 
                 _initReactors = _config.Get(sec, "Reactors").ToDouble(_initReactors);
                 _initBatteries = _config.Get(sec, "Batteries").ToDouble(_initBatteries);
+                _initBatteryStorage = _config.Get(sec, "BatteryStorage").ToDouble(_initBatteryStorage);
                 _initPdcs = _config.Get(sec, "Pdcs").ToInt32(_initPdcs);
                 _initTorpLaunchers = _config.Get(sec, "TorpLaunchers").ToInt32(_initTorpLaunchers);
                 _initKinetics = _config.Get(sec, "KineticWeapons").ToInt32(_initKinetics);
@@ -300,6 +301,11 @@ namespace IngameScript
             Echo("Parsing stances...");
 
             Dictionary<string, Stance> newStances = new Dictionary<string, Stance>();
+
+            // set when a setting new to this version wasn't found in the
+            // custom data. we write the ini back out at the end so the new
+            // keys actually turn up in the config for people to edit.
+            bool addedMissingKeys = false;
 
             // get all sections
             List<string> sections = new List<string>();
@@ -567,6 +573,20 @@ namespace IngameScript
                         else
                             newStance.HangarDoorsMode = _defaultHangarDoorMode;
 
+                        key = "Hangars";
+                        if (_config.ContainsKey(sect, key))
+                            newStance.HangarMode =
+                                (ToggleModes)Enum.Parse(typeof(ToggleModes), _config.Get(sect, key).ToString());
+                        else if
+                            (inherits) newStance.HangarMode = inheritee.HangarMode;
+                        else
+                        {
+                            newStance.HangarMode = _defaultHangarMode;
+                            _config.Set(sect, key, newStance.HangarMode.ToString());
+                            _config.SetComment(sect, key, getAllEnumValues(typeof(ToggleModes)));
+                            addedMissingKeys = true;
+                        }
+
                         key = "RcsGyroscopes";
                         if (_config.ContainsKey(sect, key))
                             newStance.RcsGyroscopeMode =
@@ -574,7 +594,12 @@ namespace IngameScript
                         else if
                             (inherits) newStance.RcsGyroscopeMode = inheritee.RcsGyroscopeMode;
                         else
+                        {
                             newStance.RcsGyroscopeMode = _defaultRcsGyroscopeMode;
+                            _config.Set(sect, key, newStance.RcsGyroscopeMode.ToString());
+                            _config.SetComment(sect, key, getAllEnumValues(typeof(RcsGyroscopeModes)));
+                            addedMissingKeys = true;
+                        }
 
                         newStances.Add(newName, newStance);
                     }
@@ -610,6 +635,14 @@ namespace IngameScript
             } // otherwise, we found our guy.
             else _currentStance = newCurrentStance;
 
+            // settings added since this custom data was written are now in
+            // the ini with their defaults, so put it back into custom data.
+            // everything else in there is left exactly as it was.
+            if (success && addedMissingKeys)
+            {
+                Echo("Added new settings to custom data.");
+                Me.CustomData = _config.ToString();
+            }
 
             return success;
         }
@@ -1052,6 +1085,17 @@ namespace IngameScript
                     _config.SetComment(sec, name, getAllEnumValues(typeof(HangarDoorModes)));
                 }
 
+                name = "Hangars";
+                if (inheritee != null && stance.HangarMode == inheritee.HangarMode)
+                { // this value matches it's inheritor, so delete it from the ini.
+                    if (_config.ContainsKey(sec, name)) _config.Delete(sec, name);
+                }
+                else
+                { // otherwise, load it up
+                    _config.Set(sec, name, stance.HangarMode.ToString());
+                    _config.SetComment(sec, name, getAllEnumValues(typeof(ToggleModes)));
+                }
+
                 name = "RcsGyroscopes";
                 if (inheritee != null && stance.RcsGyroscopeMode == inheritee.RcsGyroscopeMode)
                 { // this value matches it's inheritor, so delete it from the ini.
@@ -1092,6 +1136,7 @@ namespace IngameScript
 
             _config.Set(sec, "Reactors", _initReactors);
             _config.Set(sec, "Batteries", _initBatteries);
+            _config.Set(sec, "BatteryStorage", _initBatteryStorage);
             _config.Set(sec, "Pdcs", _initPdcs);
             _config.Set(sec, "TorpLaunchers", _initTorpLaunchers);
             _config.Set(sec, "KineticWeapons", _initKinetics);
@@ -1517,6 +1562,10 @@ namespace IngameScript
                     else if (newData[23] == 1) newStance.HangarDoorsMode = HangarDoorModes.Open;
                     else newStance.HangarDoorsMode = HangarDoorModes.NoChange;
 
+                    // legacy configs predate hangar pads.
+                    // don't let the enum default (Off) switch anyone's pads off.
+                    newStance.HangarMode = ToggleModes.NoChange;
+
                     newStances.Add(newName, newStance);
 
                 }
@@ -1650,6 +1699,7 @@ namespace IngameScript
 
                 config.Set(sec, "Reactors", _initReactors);
                 config.Set(sec, "Batteries", _initBatteries);
+                config.Set(sec, "BatteryStorage", _initBatteryStorage);
                 config.Set(sec, "Pdcs", _initPdcs);
                 config.Set(sec, "TorpLaunchers", _initTorpLaunchers);
                 config.Set(sec, "KineticWeapons", _initKinetics);

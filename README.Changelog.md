@@ -2,6 +2,24 @@
 ### Reedit Ship Management
 [Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/tq3H4sem66) 
 
+## V 3.1.0
+
+* Fixed subsystem integrity showing 0% for RCS, PDCs, gyros, RCS gyros, O2 tanks, cargo and welders.
+    * The low priority refresh only ran when the ship didn't need fuel, and that check went away with extractor management in v3.0.0.
+    * This also brings back PDC, gyro, vent, aux, welder, LCD and spawn management, and connector, camera and sensor keep-alives.
+* Fixed H2 tank integrity and the fuel bar, which were stale for the same reason.
+* Fixed battery integrity showing 0% whenever a stance had the batteries on charge.
+    * Run an init once your ship is repaired to set the new baseline.
+* Improved reactor and weapons autoloading and balancing on SDX2.
+* Fixed the SDX2 freight containers not being recognised as cargo.
+* Fixed the LCC size in cargo names set at init, which was coming out at about a third of the real figure.
+* Fixed 100mm Tungsten-Uranium Sabot being sorted as 40mm Improvised PDC ammo, so weapons loaded with it were autoloaded against the wrong item.
+* Fixed drive types not being appended at init for drives whose names use typographic quotes, such as the Epstein Technologies “Esquibel” Series Drive.
+* Added hangar pad management, controllable per stance.  Defaults to NoChange.
+* Added ship core management.  Any punishment a core is applying now shows on the warnings LCD.
+* Changed the init name of RCS Gyro computers to ShipName.Gyroscope.RCSComp
+* Fixed new stance settings not appearing in an existing custom data.  Missing settings are now added with their defaults on load, without touching anything else.
+
 ## V 3.0.0
 
 * Welcome to SDX 2.0!

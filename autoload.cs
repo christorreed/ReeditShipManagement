@@ -45,9 +45,11 @@ namespace IngameScript
                 List<Inventory> Unload = new List<Inventory>();
                 List<Inventory> AllInvs = new List<Inventory>();
 
-                // we need average for balancing.
-                int AverageQty = 0;
-                int AutoloadCount = 0;
+                // we balance on fill ratio rather than raw item count,
+                // because autoloaded inventories vary enormously in size.
+                double TotalQty = 0;
+                double TotalCapacity = 0;
+                bool CapacitiesKnown = true;
 
                 double targetFillFactor = .97; // 3% wiggle room
                 if (Item.MaxFillRatio < 1) targetFillFactor = Item.MaxFillRatio * .97; // 3% wiggle room
@@ -61,8 +63,10 @@ namespace IngameScript
                         // this block needs loading
                         //if (_d) Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
 
-                        AutoloadCount++;
-                        AverageQty += Inv.Qty;
+                        TotalQty += Inv.Qty;
+
+                        if (Inv.Capacity > 0) TotalCapacity += Inv.Capacity;
+                        else CapacitiesKnown = false;
 
                         //if(_d) Echo("Inv.FillFactor = " + Inv.FillFactor + "\ntargetFillFactor = " + targetFillFactor);
 
@@ -97,10 +101,19 @@ namespace IngameScript
 
                 if (LoadTo.Count > 0)
                 {
-                    // calculate average qty
-                    int IntQty = (int)(AverageQty / AutoloadCount);
+                    // the fill ratio every autoloaded inventory should settle
+                    // at if we share out what is already loaded.
+                    double BalanceRatio = -1;
 
-                    /*if (_d) Echo("Average qty = " + IntQty +
+                    if (CapacitiesKnown && TotalCapacity > 0)
+                    {
+                        BalanceRatio = TotalQty / TotalCapacity;
+
+                        // never balance past the item's own ceiling.
+                        if (BalanceRatio > Item.MaxFillRatio) BalanceRatio = Item.MaxFillRatio;
+                    }
+
+                    /*if (_d) Echo("Balance ratio = " + BalanceRatio +
                         "\nNeed loading count = " + LoadTo.Count +
                         "\nSpare qty = " + Item.SpareQty);*/
 
@@ -108,7 +121,9 @@ namespace IngameScript
 
                     // this should order the list
                     // emptest first, fullest last.
-                    LoadTo = LoadTo.OrderBy(a => a.Qty).ToList();
+                    // by ratio, not count, so a nearly empty small reactor
+                    // gets served before a half full big one.
+                    LoadTo = LoadTo.OrderBy(a => a.FillFactor).ToList();
 
                     if (Item.SpareQty > 0)
                     {
@@ -133,9 +148,9 @@ namespace IngameScript
 
                         // this should order the list
                         // fullest first, emptiest last.
-                        BalanceFrom = BalanceFrom.OrderByDescending(a => a.Qty).ToList();
+                        BalanceFrom = BalanceFrom.OrderByDescending(a => a.FillFactor).ToList();
 
-                        loadInventories(BalanceFrom, LoadTo, Item.Type, IntQty);
+                        loadInventories(BalanceFrom, LoadTo, Item.Type, BalanceRatio, Item.MaxFillRatio);
 
                     }
                 }

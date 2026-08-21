@@ -48,6 +48,13 @@ namespace IngameScript
             // if it does, how full is it?
             public float FillFactor;
 
+            // how many of this item this inventory holds when completely full.
+            // 0 means we haven't been able to work it out yet.
+            // needed because SDX2 reactors of different sizes have wildly
+            // different inventory volumes, so an item count on its own
+            // says nothing about how full a reactor actually is.
+            public int Capacity = 0;
+
         }
 
         class Item
@@ -89,6 +96,11 @@ namespace IngameScript
             public string LcdName;
 
             public double MaxFillRatio = 1;
+
+            // how many of this item fit in one raw unit of inventory volume.
+            // learned from any inventory we can see holding some, then reused
+            // to size up inventories that are currently empty.
+            public double ItemsPerVolume = 0;
 
 
 
@@ -261,11 +273,37 @@ namespace IngameScript
 
                         Inv.FillFactor = Inv.Inv.VolumeFillFactor;
                         //if (_d) Echo(Inv.Block.CustomName + " VFF = " + Inv.FillFactor);
+
+                        // if this one has some in it, we can learn how much
+                        // of this item fits in a given volume.
+                        if (Inv.Qty > 0 && Inv.FillFactor > 0)
+                        {
+                            double volume = Inv.Inv.MaxVolume.RawValue;
+                            if (volume > 0)
+                                Item.ItemsPerVolume = Inv.Qty / (Inv.FillFactor * volume);
+                        }
                     }
                     else
                     {
                         // this inventory is a cargo container
                         Item.SpareQty += Inv.Qty;
+                    }
+                }
+
+                // now we know the density, size up every autoloaded inventory,
+                // including the empty ones.
+                if (Item.ItemsPerVolume > 0)
+                {
+                    foreach (Inventory Inv in CombinedInventories)
+                    {
+                        if (!Inv.AutoLoad) continue;
+
+                        double capacity = Item.ItemsPerVolume * Inv.Inv.MaxVolume.RawValue;
+
+                        if (capacity > int.MaxValue) capacity = int.MaxValue;
+                        if (capacity < 0) capacity = 0;
+
+                        Inv.Capacity = Convert.ToInt32(capacity);
                     }
                 }
 
@@ -311,7 +349,7 @@ namespace IngameScript
                     return 14;
 
                 case "100mm Tungsten-Uranium Sabot":
-                    return 3;
+                    return 15;
 
                 /* Removed SDX1 defs
                 case "220mm Explosive Torpedo":
@@ -383,17 +421,44 @@ namespace IngameScript
             return thisInventory.VolumeFillFactor == 0;
         }
 
-        bool loadInventories(List<Inventory> LoadFrom, List<Inventory> LoadTo, MyItemType Type, int Average = -1, double maxFillRatio = 1, double unloadDownToRatio = 1)
+        // balanceRatio is the fill ratio we're trying to bring every
+        // autoloaded inventory to; -1 means "just fill them up".
+        // it replaces the old absolute item count, which fell apart on SDX2
+        // where reactors of different sizes hold very different amounts.
+        bool loadInventories(List<Inventory> LoadFrom, List<Inventory> LoadTo, MyItemType Type, double balanceRatio = -1, double maxFillRatio = 1, double unloadDownToRatio = 1)
         {
             if (_d) Echo("Loading " + LoadTo.Count + " inventories from " + LoadFrom.Count + " sources.");
 
             bool Success = false;
             bool Unloading = unloadDownToRatio < 1;
 
+            // the fill ratio we're aiming at is whichever is tighter:
+            // the item's own ceiling, or the balancing target.
+            double targetRatio = maxFillRatio;
+            if (balanceRatio >= 0 && balanceRatio < targetRatio) targetRatio = balanceRatio;
+
             foreach (Inventory ToInv in LoadTo)
             {
                 // how many from inventories to try for this to.
                 int Retries = 3;
+
+                // how many items this inventory should end up holding.
+                // -1 means we don't know, so don't cap the transfer.
+                int TargetQty = -1;
+
+                if (targetRatio < 1)
+                {
+                    if (ToInv.Capacity > 0)
+                        TargetQty = Convert.ToInt32(ToInv.Capacity * targetRatio);
+                    else
+                        // we've never seen this item anywhere, so we can't size
+                        // the inventory yet. move a few over to seed it; we'll
+                        // know the capacity on the next pass.
+                        TargetQty = ToInv.Qty + 10;
+                }
+
+                // already where we want it.
+                if (!Unloading && TargetQty >= 0 && ToInv.Qty >= TargetQty) continue;
 
                 //if (_d) Echo("Loading " + ToInv.Block.CustomName);
 
@@ -404,12 +469,11 @@ namespace IngameScript
                     // we're done with this 
                     if (Retries < 0) break;
 
-                    // if an average value is provided
-                    // and this inventory already has at least that much
-                    // skip this 
+                    // if we know what this inventory is supposed to hold
+                    // and it already has at least that much, skip it.
                     // note the .95 modifier, which adds 5% wiggle room
                     // so we don't loop forever.
-                    if (Average != -1 && ToInv.Qty >= (Average * .95)) break;
+                    if (TargetQty >= 0 && ToInv.Qty >= (TargetQty * .95)) break;
 
                     // if there is no terminal connection, move onto the next source.
                     if (!ToInv.Inv.IsConnectedTo(FromInv.Inv)) continue;
@@ -445,57 +509,46 @@ namespace IngameScript
                             {
                                 // unload one at a time.
                                 Retries = -1;
-                                try
-                                {
-                                    Qty = FromInv.Qty - Convert.ToInt32(FromInv.Qty / FromInv.FillFactor * unloadDownToRatio);
-                                    if (_d) Echo("Unload " + Qty + "\n" + FromInv.Qty + "\n" + Convert.ToInt32(FromInv.Qty / FromInv.FillFactor * unloadDownToRatio));
 
-                                }
-                                catch (Exception ex)
-                                {
-                                    // sometimes the parse fails, nothing to worry about, just do 1 and move on.
-                                    if (_d) Echo("Int conversion error at unload\n" + ex.Message);
-                                    Qty = 1;
-                                }
+                                int keep;
+
+                                if (FromInv.Capacity > 0)
+                                    keep = Convert.ToInt32(FromInv.Capacity * unloadDownToRatio);
+                                else if (FromInv.FillFactor > 0)
+                                    keep = Convert.ToInt32(FromInv.Qty / FromInv.FillFactor * unloadDownToRatio);
+                                else
+                                    keep = FromInv.Qty;
+
+                                if (keep < 0) keep = 0;
+                                if (keep > FromInv.Qty) keep = FromInv.Qty;
+
+                                Qty = FromInv.Qty - keep;
+
+                                if (_d) Echo("Unload " + Qty + " of " + FromInv.Qty + ", keeping " + keep);
+
+                                if (Qty < 1) break;
                             }
 
-                            // if we have a max fill ratio below 1
-                            // that should dictate our max qty.
-                            else if (maxFillRatio < 1)
+                            // otherwise don't take more than this inventory
+                            // is supposed to end up holding.
+                            else if (TargetQty >= 0)
                             {
-                                try
+                                int room = TargetQty - ToInv.Qty;
+
+                                if (room < 1) break;
+                                if (room < Qty) Qty = room;
+
+                                // when balancing, leave the source with at
+                                // least as much as the target is getting,
+                                // so we don't just shuffle a shortage around.
+                                if (balanceRatio >= 0 && FromInv.AutoLoad)
                                 {
-                                    int targetQty = Convert.ToInt32(ToInv.Qty / ToInv.FillFactor * maxFillRatio) - ToInv.Qty;
-                                    if (targetQty < Qty) Qty = targetQty;
+                                    int spare = FromInv.Qty - ToInv.Qty;
+                                    if (spare < 2) break;
+
+                                    int half = spare / 2;
+                                    if (half < Qty) Qty = half;
                                 }
-                                catch (Exception ex)
-                                {
-                                    // sometimes the parse fails, nothing to worry about, just do 1 and move on.
-                                    if (_d) Echo("Int conversion error at load\n" + ex.Message);
-                                    Qty = 1;
-                                }
-                                
-
-                                //if (_d) Echo("targetQty: " + targetQty);
-
-                                // we only need to use this if it's smaller than the amount in the from inventory.
-                                
-                                
-                            }
-
-                            // if we have an average value provided
-                            // it means we want to balance Tos and Froms to target the average value.
-                            else if (Average != -1)
-                            {
-                                // if our from has less than the average, bail.
-                                if (Qty <= Average)
-                                {
-                                    break;
-                                }
-
-                                // set the transfer amount to the average
-                                // less whatever we already have in to.
-                                Qty = Average - ToInv.Qty;
                             }
 
                             // load the item.
@@ -503,7 +556,17 @@ namespace IngameScript
                                 (FromInv.Inv, InvItem, Qty);
 
                             // if this worked, don't attempt to load this block again.
-                            if (Success) Retries = -1;
+                            if (Success)
+                            {
+                                // keep our cached counts roughly honest for the
+                                // rest of this pass, so one source doesn't get
+                                // drained several times over.
+                                FromInv.Qty -= Qty;
+                                if (FromInv.Qty < 0) FromInv.Qty = 0;
+                                ToInv.Qty += Qty;
+
+                                Retries = -1;
+                            }
 
                             //if (_d) Echo("Loading success = " + Success);
 

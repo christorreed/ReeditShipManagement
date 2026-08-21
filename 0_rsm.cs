@@ -27,7 +27,7 @@ namespace IngameScript
 
 #region mdk preserve
 #region mdk macros
-string Version = "3.0.1 ($MDK_DATE$)";
+string Version = "3.1.0 ($MDK_DATE$)";
 #endregion
 #endregion
 
@@ -63,6 +63,10 @@ string Version = "3.0.1 ($MDK_DATE$)";
         bool _noExtractor = false;
         string _lowTankType = "";
         */
+
+        // the current ship calculated fuel percentage.
+        // starts at 100 so we don't warn before we've checked.
+        double _fuelPercentage = 100;
 
         int _unownedBlockCount = 0;
         int _activeAuxBlockCount = 0;
@@ -485,44 +489,26 @@ string Version = "3.0.1 ($MDK_DATE$)";
                     // count each of the checked items in each inventory
 
                     if (_p) Echo("Took " + msSinceLast());
-                    _stepOccasional = 0;
-                    return;
+                    break;
 
 
-                /* Extractor checks removed for SDX2
                 case 2:
+                    // Extractor/refuel checks were removed for SDX2.
+                    // This step used to sit behind them, which meant
+                    // everything below stopped running entirely.
                     if (_d) Echo("Refreshing " + _h2Tanks.Count + " H2 tanks...");
                     refreshH2Tanks();
-                    // > priority low
                     // checks integrity, filled ratio
 
                     if (_p) Echo("Took " + msSinceLast());
 
-                    if (_d) Echo("Refreshing refuel status...");
-                    refreshRefuelStatus();
-                    // checks if we _needFuel?
+                    // all the low priority stuff
+                    doThisStuffInfrequently();
 
-                    // if we do...
-                    if (_needFuel && !_noExtractor && _lowTankType == "")
-                    {
-                        // ...load extractors
-                        if (_d) Echo("Fuel low, filling extractors...");
-                        loadExtractors();
-
-                        if (_p) Echo("Took " + msSinceLast());
-                    }
-                    else
-                    {
-                        // if we don't need fuel,
-                        // do something low priority instead
-                        doThisStuffInfrequently();
-
-                        if (_p) Echo("Took " + msSinceLast());
-                    }
+                    if (_p) Echo("Took " + msSinceLast());
 
                     _stepOccasional = 0;
                     return;
-                */
             }
 
             _stepOccasional++;
@@ -558,6 +544,14 @@ string Version = "3.0.1 ($MDK_DATE$)";
             if (_d) Echo("Refreshing " + _cargos.Count + " cargos...");
             refreshCargos();
             // checks integrity
+
+            if (_d) Echo("Refreshing " + _hangars.Count + " hangar pads...");
+            refreshHangars();
+            // enforces stance power state, counts working pads
+
+            if (_d) Echo("Refreshing " + _shipCores.Count + " ship cores...");
+            refreshShipCores();
+            // reads active punishments for the warnings list
 
             if (_d) Echo("Refreshing " + _vents.Count + " vents...");
             refreshVents(_adjustKeepAlivesTo, _adjustKeepAlives);

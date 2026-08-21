@@ -39,6 +39,8 @@ namespace IngameScript
         private List<IMyShipConnector> _connectors = new List<IMyShipConnector>();
         private List<IMyShipController> _controllers = new List<IMyShipController>();
         private List<IMyAirtightHangarDoor> _hangarDoors = new List<IMyAirtightHangarDoor>();
+        private List<IMyFunctionalBlock> _hangars = new List<IMyFunctionalBlock>();
+        private List<IMyTerminalBlock> _shipCores = new List<IMyTerminalBlock>();
         private List<IMyTerminalBlock> _largeExtractors = new List<IMyTerminalBlock>();
         private List<IMyTerminalBlock> _smallExtractors = new List<IMyTerminalBlock>();
         private List<IMyGyro> _gyroscopes = new List<IMyGyro>();
@@ -420,7 +422,18 @@ namespace IngameScript
                             {
                                 try
                                 {
-                                    append = b.DefinitionDisplayNameText.Split('"')[1];
+                                    // some drives quote the model name with
+                                    // typographic quotes rather than plain ones,
+                                    // which used to fail the split below.
+                                    string driveName = b.DefinitionDisplayNameText
+                                        .Replace('\u201C', '"')  // left double
+                                        .Replace('\u201D', '"')  // right double
+                                        .Replace('\u201E', '"')  // low double
+                                        .Replace('\u201F', '"')  // high reversed double
+                                        .Replace('\u00AB', '"')  // left guillemet
+                                        .Replace('\u00BB', '"'); // right guillemet
+
+                                    append = driveName.Split('"')[1];
                                     append =
                                         _nameDelimiter +
                                         append[0].ToString().ToUpper() +
@@ -446,16 +459,23 @@ namespace IngameScript
                 {
                     // below is needed cause locker rooms etc.
                     // let those filter through to the bottom instead.
-                    string blockIdTwo = blockId.Split('/')[1];
-                    if (blockIdTwo.Contains("Container") || blockIdTwo.Contains("Cargo"))
+                    // note this is deliberately case insensitive; the SDX2
+                    // freight containers use lower case subtype ids
+                    // (sdx_cargocontainer7x7x7 etc) and used to be missed.
+                    string blockIdTwo = blockId.Split('/')[1].ToUpper();
+                    if (blockIdTwo.Contains("CONTAINER") || blockIdTwo.Contains("CARGO"))
                     {
                         _cargos.Add(TempCargo);
                         addInventory(b); // check this block for stored items
 
                         if (_isIniting)
                         {
+                            // one large cargo container is 421.875m3, which is
+                            // 421875000 raw. the old divisor here was three times
+                            // that, so every container named at init came out at
+                            // about a third of its real LCC size.
                             double Max = b.GetInventory().MaxVolume.RawValue;
-                            double VolumeFactor = Math.Round(Max / 1265625024, 1);
+                            double VolumeFactor = Math.Round(Max / 421875000, 1);
                             if (VolumeFactor == 0) VolumeFactor = 0.1;
                             _initNames.Add(b, "Cargo [" + VolumeFactor + "]");
                         }
@@ -473,7 +493,7 @@ namespace IngameScript
 
                     if (blockId.Contains("rcsGyroComputer"))
                     {
-                        Name = "RCS.GyroscopeComputer";
+                        Name = "Gyroscope.RCSComp";
                         _rcsGyroscopes.Add(TempGyro);
                     }
                     else
@@ -732,6 +752,28 @@ namespace IngameScript
                     return false;
                 }
 
+                // Hangar Pads -----------------------------------------------------------------
+                // the SDX2 hangar pad blocks (sdx_hangar3x3, sdx_hangar5x5Civilian,
+                // sdx_hangar5x5Military, sdx_hangar7x5, sdx_hangar11x7)
+                if (blockId.Contains("sdx_hangar") && !blockId.Contains("sdx_hangardoor"))
+                {
+                    var TempHangarPad = b as IMyFunctionalBlock;
+                    if (TempHangarPad != null)
+                    {
+                        _hangars.Add(TempHangarPad);
+                        if (_isIniting) _initNames.Add(b, "Hangar");
+                        return false;
+                    }
+                }
+
+                // Ship Cores -----------------------------------------------------------------
+                if (blockId.Contains("sdx_shipcore"))
+                {
+                    _shipCores.Add(b);
+                    if (_isIniting) _initNames.Add(b, "Core");
+                    return false;
+                }
+
                 // LiDAR -----------------------------------------------------------------
                 if (blockId.Contains("sdx_detectorTargeted_lidar"))
                 {
@@ -942,6 +984,8 @@ namespace IngameScript
             _doors.Clear();
             _airlocks.Clear();
             _hangarDoors.Clear();
+            _hangars.Clear();
+            _shipCores.Clear();
             _largeExtractors.Clear();
             _smallExtractors.Clear();
             _gyroscopes.Clear();

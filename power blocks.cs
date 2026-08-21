@@ -43,6 +43,12 @@ namespace IngameScript
         double _actualBatteries = 0;
         double _integrityBatteries = 0;
 
+        // battery integrity is measured against stored power capacity,
+        // not MaxOutput; MaxOutput reads 0 on a battery set to Recharge,
+        // which used to drop battery integrity to 0% whenever the stance
+        // put the batteries on charge.
+        double _initBatteryStorage = 0;
+
         void refreshBatteries(TankAndBatteryModes mode)
         {
             _totalBatteries = 0;
@@ -77,12 +83,21 @@ namespace IngameScript
                 }
             }
 
-            _integrityBatteries = Math.Round(100 * (battMaxPower / _initBatteries));
+            // if we're coming from a config written before battery storage
+            // was recorded, seed it now rather than reporting a bogus 0%.
+            if (_initBatteryStorage <= 0) _initBatteryStorage = _totalBatteries;
+
+            if (_initBatteryStorage > 0)
+                _integrityBatteries = Math.Round(100 * (_totalBatteries / _initBatteryStorage));
+            else
+                _integrityBatteries = 0;
+
             _maxPower += battMaxPower;
         }
         void initBatteries()
         {
             _initBatteries = 0;
+            _initBatteryStorage = 0;
 
             foreach (IMyBatteryBlock Battery in _batteries)
             {
@@ -90,6 +105,8 @@ namespace IngameScript
                 Battery.ChargeMode = ChargeMode.Auto;
                 _initBatteries += Battery.MaxOutput;
                 Battery.ChargeMode = currentMode;
+
+                _initBatteryStorage += Battery.MaxStoredPower;
             }
         }
 
