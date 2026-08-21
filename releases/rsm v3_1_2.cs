@@ -11,7 +11,7 @@
 // 
 // ----------------------------------------------------------------------------------------------------------------------
 
-string Version = "3.1.1 (2026-08-22)";
+string Version = "3.1.2 (2026-08-22)";
 A B;int C=0;int D=0;int E=0;int F;int G=0;bool H=true;bool I=true;bool J=false;bool K=false;bool L=false;bool M=false;
 bool N=false;double O=100;int P=0;int Q=0;double R;float S;string T;string U;string V;bool W=false;int X=0;int Y=0;bool Z;
 bool a;bool b;public
