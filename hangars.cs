@@ -50,8 +50,8 @@ namespace IngameScript
         {
             _actualHangars = 0;
 
-            bool set = _currentStance.HangarMode != ToggleModes.NoChange;
-            bool state = _currentStance.HangarMode == ToggleModes.On;
+            //bool set = _currentStance.HangarMode != ToggleModes.NoChange;
+            //bool state = _currentStance.HangarMode == ToggleModes.On;
 
             foreach (IMyFunctionalBlock Hangar in _hangars)
             {
@@ -59,8 +59,8 @@ namespace IngameScript
 
                 _actualHangars++;
 
-                if (set && Hangar.Enabled != state)
-                    Hangar.Enabled = state;
+                //if (set && Hangar.Enabled != state)
+                    //Hangar.Enabled = state;
             }
         }
     }

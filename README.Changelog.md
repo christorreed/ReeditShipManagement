@@ -2,6 +2,10 @@
 ### Reedit Ship Management
 [Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/tq3H4sem66) 
 
+## V 3.1.2
+
+* Hangar pad power is now set only at stance change rather than enforced continuously.
+
 ## V 3.1.1
 
 * Fixed a bug with the core punishment warnings display.
