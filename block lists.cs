@@ -569,10 +569,10 @@ namespace IngameScript
                 if (TempTank != null)
                 {
 
-                    if (blockId.Contains("Hydro"))
+                    if (blockId.ToUpper().Contains("HYDRO") || blockId.ToUpper().Contains("WATER"))
                     {
                         _h2Tanks.Add(TempTank);
-                        if (_isIniting) _initNames.Add(b, "Tank" + _nameDelimiter + "Hydrogen");
+                        if (_isIniting) _initNames.Add(b, "Tank" + _nameDelimiter + "Water");
                     }
                     else
                     {

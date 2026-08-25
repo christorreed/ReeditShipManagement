@@ -219,6 +219,10 @@ namespace IngameScript
                 for (int i = 2; i < parsed.Length; i++)
                 {
 
+                    // if this is Hydrogen, ignore it.
+                    // fixes ships already Inited with water tanks as hydrogen
+                    if (parsed[i] == "Hydrogen") continue;
+
                     // sometimes the third bit is just a number
                     // but i'm renumbering
                     // so fuck that cunt off.
@@ -229,6 +233,7 @@ namespace IngameScript
                     int oldnum = 0;
                     bool isNum = int.TryParse(parsed[i], out oldnum);
                     if (isNum) parsed[i] = "";
+
 
 
                     // this lets me have delimiters in the names fed into processList
