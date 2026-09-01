@@ -2,6 +2,18 @@
 ### Reedit Ship Management
 [Home](https://github.com/christorreed/ReeditShipManagement/) | [Quick Start Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.QuickStartGuide.md) | [Reference Guide](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ReferenceGuide.md) | [Change Log](https://github.com/christorreed/ReeditShipManagement/blob/main/README.ChangeLog.md) | [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2911212140) | [Discord](https://discord.gg/tq3H4sem66) 
 
+## V 3.2.0
+
+* Adjusted non-combat stances to prevent weapons activation errors in safe zones.
+    * SDX2 has introduced new checks for PBs which are forcing weapons to turn on while in a safe zone.
+    * You may have seen this appear as a red warning on your screen when arriving at a station.
+    * I've changed the default value for Pdcs, Torps and Kinetics to 'NoChange' for all non-combat stances, and fixed some related bugs.
+    * This means PDCs won't be forced on by default unless you are in 
+    * USERS NEED TO DELETE THEIR CUSTOM DATA AND RECOMPILE TO GET THESE NEW DEFAULT SETTINGS ON EXISTING GRIDS
+    * ...or otherwise adjust your custom presets to match.
+    * Note that in this new configuration, you can still trigger the error by entering a safezone while in a combat stance.  Simply change to a non-combat stane like 'Cruise' or 'Docking' and the error will stop.
+* Fixed a bug which prevented disabling keep alive.
+
 ## V 3.1.3
 
 * Init no longer names water tanks hydrogen tanks.

@@ -28,7 +28,7 @@ namespace IngameScript
         private double _actualPdcs = 0;
         private double _integrityPdcs = 0;
 
-        private void refresh_normalPdcs()
+        private void refreshPdcs()
         {
             _actualPdcs = 0;
 
@@ -40,7 +40,10 @@ namespace IngameScript
                     _currentStance.PdcMode != PdcModes.Off
                     &&
                     // or min defence
-                    _currentStance.PdcMode != PdcModes.MinDefence
+                    _currentStance.PdcMode != PdcModes.MinDefence,
+
+                     // or just do nothing
+                     _currentStance.PdcMode != PdcModes.NoChange
                     );
             }
 
@@ -48,19 +51,27 @@ namespace IngameScript
             {
                 processPdc(Pdc,
                     // except if off
-                    _currentStance.PdcMode != PdcModes.Off);
+                    _currentStance.PdcMode != PdcModes.Off,
+
+                     // or just do nothing
+                     _currentStance.PdcMode != PdcModes.NoChange
+                     );
             }
 
             _integrityPdcs = Math.Round(100 * (_actualPdcs / _initPdcs));
         }
 
-        private void processPdc(IMyTerminalBlock pdc, bool power_state)
+        private void processPdc(IMyTerminalBlock pdc, bool power_state, bool set_power)
         {
             if (pdc != null && pdc.IsFunctional)
             {
                 _actualPdcs++;
 
-                (pdc as IMyConveyorSorter).Enabled = power_state;
+                if (set_power)
+                {
+                    (pdc as IMyConveyorSorter).Enabled = power_state;
+                }
+                
             }
         }
 

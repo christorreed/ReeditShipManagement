@@ -38,9 +38,14 @@ namespace IngameScript
                 {
                     _actualTorpLaunchers++;
 
-                    // turn torps on for 1+ on [0]
-                    (Torp as IMyConveyorSorter).Enabled = 
-                        (_currentStance.TorpedoMode == TorpedoModes.On || (_currentStance.TorpedoMode == TorpedoModes.OnWhenLidarTarget && _lidarHasTarget));
+
+                    if (_currentStance.TorpedoMode != TorpedoModes.NoChange)
+                    {
+                        // turn torps on for 1+ on [0]
+                        (Torp as IMyConveyorSorter).Enabled =
+                            (_currentStance.TorpedoMode == TorpedoModes.On || (_currentStance.TorpedoMode == TorpedoModes.OnWhenLidarTarget && _lidarHasTarget));
+                    }
+
 
                     // autoloading is complex for torpedoes.
                     if (_autoLoad)
@@ -71,11 +76,7 @@ namespace IngameScript
             {
                 if (Torp != null & Torp.IsFunctional)
                 {
-                    if (mode == TorpedoModes.OnWhenLidarTarget)
-                    { 
-                        // only turn the torps on if lidar has a target
 
-                    }
 
                     bool TurnOn = (mode == TorpedoModes.On || (mode == TorpedoModes.OnWhenLidarTarget && _lidarHasTarget));
 

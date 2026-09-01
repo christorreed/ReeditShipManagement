@@ -43,8 +43,12 @@ namespace IngameScript
                 {
                     _actualKinetics++;
 
-                    // turn railguns on for 1+ on [2]
-                    (Rail as IMyConveyorSorter).Enabled = _currentStance.RailgunMode != RailgunModes.Off;
+                    // don't touch railguns in NoChange
+                    if (_currentStance.RailgunMode != RailgunModes.NoChange)
+                    {
+                        // turn railguns on for 1+ on [2]
+                        (Rail as IMyConveyorSorter).Enabled = _currentStance.RailgunMode != RailgunModes.Off;
+                    }
 
                     if (!_kineticsHaveTarget)
                     {
@@ -99,10 +103,10 @@ namespace IngameScript
                 {
                     (rail as IMyConveyorSorter).Enabled = false;
                 }
-                else
+                else if (mode != RailgunModes.NoChange)
                 {
                     (rail as IMyConveyorSorter).Enabled = true;
-                    
+
                     if (!fixedWeap)
                     {
                         if (_autoConfigWeapons)

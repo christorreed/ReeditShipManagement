@@ -27,7 +27,7 @@ namespace IngameScript
 
 #region mdk preserve
 #region mdk macros
-string Version = "3.1.3 ($MDK_DATE$)";
+string Version = "3.2.0 ($MDK_DATE$)";
 #endregion
 #endregion
 
@@ -332,7 +332,7 @@ string Version = "3.1.3 ($MDK_DATE$)";
             }
             else if (_currentStance.KeepAlives == ToggleModes.Off)
             {
-                _adjustKeepAlives = true;
+                _adjustKeepAlives = false;
             }
 
             // okay now let's actually do some stuff...
@@ -522,7 +522,7 @@ string Version = "3.1.3 ($MDK_DATE$)";
             // checks integrity
 
             if (_d) Echo("Refreshing " + _normalPdcs.Count + " Pdcs & " + _defensivePdcs.Count + " defensive Pdcs...");
-            refresh_normalPdcs();
+            refreshPdcs();
             // checks integrity, sets power on
 
             if (_d) Echo("Refreshing " + _gyroscopes.Count + " gyros...");
